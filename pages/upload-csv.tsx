@@ -35,41 +35,42 @@ const UploadCSV: React.FC<Props> = () => {
     const formData = new FormData();
     formData.append("file", csvFile);
 
-    const response = await fetch(`${ROOT_URL}/process-csv`, {
+    fetch(`${ROOT_URL}/process-csv`, {
       method: "POST",
       body: formData,
-    });
+    })
+      .then((res) => res.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
 
-    if (response.ok) {
-      // Do something
+        a.href = url;
+        a.setAttribute("download", "output.xlsx");
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
+        setCsvFile(null);
+        setIsLoading(false);
 
-      a.href = url;
-      a.setAttribute("download", "output.xlsx");
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-
-      toast({
-        title: "Success",
-        description: "Your CSV file has been processed",
-        status: "success",
-        isClosable: true,
+        toast({
+          title: "Success",
+          description: "Your CSV file has been processed",
+          status: "success",
+          isClosable: true,
+        });
+      })
+      .catch(() => {
+        setCsvFile(null);
+        setIsLoading(false);
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       });
-    } else {
-      // Do something else
-      toast({
-        title: "Error",
-        description: "There was an error processing your CSV file",
-        status: "error",
-        isClosable: true,
-      });
-    }
-
-    setIsLoading(false);
   };
 
   const handleUploadClick = () => {
