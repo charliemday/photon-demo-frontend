@@ -1,0 +1,48 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.3.4",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@nivo/bar": "^0.80.0",
+    "@nivo/core": "^0.80.0",
+    "@nivo/line": "^0.80.0",
+    "@reduxjs/toolkit": "^1.8.5",
+    "@types/humps": "^2.0.2",
+    "@types/react-select": "^5.0.1",
+    "@vercel/analytics": "^0.1.5",
+    "date-fns": "^2.29.3",
+    "formik": "^2.2.9",
+    "framer-motion": "^7.3.6",
+    "fuse.js": "^6.6.2",
+    "humps": "^2.0.1",
+    "next": "12.3.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-icons": "^4.4.0",
+    "react-redux": "^8.0.4",
+    "react-select": "^5.6.1",
+    "react-slugify": "^2.1.0",
+    "react-spinners": "^0.13.7",
+    "react-step-wizard": "^5.3.11",
+    "redux-persist": "^6.0.0",
+    "reduxsauce": "^1.2.1",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "@types/node": "18.7.20",
+    "@types/react": "18.0.21",
+    "@types/react-dom": "18.0.6",
+    "eslint": "8.24.0",
+    "eslint-config-next": "12.3.1",
+    "typescript": "4.8.3"
+  }
+}
