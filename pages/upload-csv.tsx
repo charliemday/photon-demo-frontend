@@ -15,6 +15,7 @@ import { Button } from "components/button";
 import { BsCheckCircle } from "react-icons/bs";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { BRAND_COLOR } from "config";
+import { ROOT_URL } from "config/urls";
 
 interface Props {}
 
@@ -34,7 +35,7 @@ const UploadCSV: React.FC<Props> = () => {
     const formData = new FormData();
     formData.append("file", csvFile);
 
-    const response = await fetch("http://localhost:8000/process-csv", {
+    const response = await fetch(`${ROOT_URL}/process-csv`, {
       method: "POST",
       body: formData,
     });

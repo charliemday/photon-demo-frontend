@@ -1,7 +1,10 @@
 
 // TODO: Add conditions for Dev and Prod environments
 // let BASE_URL = 'https://antler-backend.herokuapp.com/api/'
-let BASE_URL = 'http://localhost:8000/api/';
+
+let ROOT_URL = 'http://localhost:8000';
+let BASE_URL = `${ROOT_URL}/api/`;
+
 
 const xeroClientId = process.env.NEXT_PUBLIC_XERO_CLIENT_ID;
 const xeroRedirectUri = process.env.NEXT_PUBLIC_XERO_REDIRECT_URI;
@@ -14,7 +17,8 @@ const OAUTH_URLS = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-    BASE_URL = process.env.NEXT_PUBLIC_PROD_URL || ''
+    BASE_URL = process.env.NEXT_PUBLIC_PROD_API_URL || ''
+    ROOT_URL = process.env.NEXT_PUBLIC_PROD_URL || ''
 }
 
-export { BASE_URL, OAUTH_URLS };
+export { BASE_URL, OAUTH_URLS, ROOT_URL };
