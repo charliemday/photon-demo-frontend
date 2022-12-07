@@ -16,6 +16,7 @@ import { BsCheckCircle } from "react-icons/bs";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { BRAND_COLOR } from "config";
 import { ROOT_URL } from "config/urls";
+import Head from "next/head";
 
 interface Props {}
 
@@ -117,6 +118,9 @@ const UploadCSV: React.FC<Props> = () => {
 
   return (
     <Container size="2xl" py={32}>
+      <Head>
+        <title>Upload CSV</title>
+      </Head>
       <Heading fontSize="lg">Upload raw CSV</Heading>
       <Input
         type="file"
