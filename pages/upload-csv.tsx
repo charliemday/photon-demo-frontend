@@ -20,7 +20,7 @@ import { ROOT_URL } from "config/urls";
 interface Props {}
 
 const UploadCSV: React.FC<Props> = () => {
-  const [csvFile, setCsvFile] = useState<File | null | undefined>(null);
+  const [csvFile, setCsvFile] = useState<File[] | null | undefined>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -28,12 +28,15 @@ const UploadCSV: React.FC<Props> = () => {
   const toast = useToast();
 
   const handleSubmit = async () => {
-    if (!csvFile) return;
+    if (!csvFile || !csvFile.length) return;
 
     setIsLoading(true);
     // Call the API to upload the CSV file
     const formData = new FormData();
-    formData.append("file", csvFile);
+
+    csvFile.forEach((file) => {
+      formData.append("files", file);
+    });
 
     fetch(`${ROOT_URL}/process-csv`, {
       method: "POST",
@@ -93,12 +96,12 @@ const UploadCSV: React.FC<Props> = () => {
       }}
       onClick={handleUploadClick}
     >
-      {csvFile ? (
+      {csvFile && csvFile.length ? (
         <Stack alignItems="center" spacing={6}>
           <HStack>
             <BsCheckCircle fontSize={18} color="green" />
             <Text fontSize="sm" color="green.500">
-              {csvFile.name} ready for submission
+              {csvFile[0].name} ready for submission
             </Text>
           </HStack>
           {isLoading && <BarLoader color={BRAND_COLOR} />}
@@ -117,7 +120,8 @@ const UploadCSV: React.FC<Props> = () => {
       <Heading fontSize="lg">Upload raw CSV</Heading>
       <Input
         type="file"
-        onInput={(e: any) => setCsvFile(e.target.files?.[0])}
+        onInput={(e: any) => setCsvFile(Object.values(e.target.files))}
+        multiple
         ref={inputRef}
         display="none"
       />
