@@ -9,6 +9,11 @@ import {
   Heading,
   Divider,
   Box,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Button as ChakraButton,
 } from "@chakra-ui/react";
 import { BarLoader } from "react-spinners";
 import { Button } from "components/button";
@@ -19,14 +24,30 @@ import { BRAND_COLOR } from "config";
 import Head from "next/head";
 
 import { useAutomation } from "hooks";
+import { htmlTemplate } from "templates";
+import { BsChevronDown } from "react-icons/bs";
 
 interface Props {}
+
+type PeopleAlsoAskedNode = {
+  name: string;
+  parent: string | null;
+  children: PeopleAlsoAskedNode[];
+};
+
+interface AlsoAskedResponse extends Array<PeopleAlsoAskedNode> {
+  [index: number]: PeopleAlsoAskedNode;
+}
 
 const UploadCSV: React.FC<Props> = () => {
   const [rawDataFiles, setRawDataFiles] = useState<File[] | null>(null);
   const [alsoAskedFile, setAlsoAskedFile] = useState<File | null | undefined>(
     null
   );
+  const [alsoAskedResponse, setAlsoAskedResponse] = useState<
+    PeopleAlsoAskedNode[][]
+  >([]);
+  const [selectedKeyword, setSelectedKeyword] = useState<number>(0);
 
   const {
     uploadAlsoAskedData,
@@ -49,7 +70,9 @@ const UploadCSV: React.FC<Props> = () => {
   const handleSubmitAlsoAskedData = async () => {
     if (!alsoAskedFile) return;
 
-    await uploadAlsoAskedData(alsoAskedFile);
+    const response = await uploadAlsoAskedData(alsoAskedFile);
+
+    setAlsoAskedResponse(response);
 
     setAlsoAskedFile(null);
   };
@@ -134,7 +157,7 @@ const UploadCSV: React.FC<Props> = () => {
       ) : (
         <HStack>
           <AiOutlineCloudDownload fontSize={18} />
-          <Text fontSize="sm">Click here to upload the raw keyword data</Text>
+          <Text fontSize="sm">Click here to upload keyword data</Text>
         </HStack>
       )}
     </Flex>
@@ -209,6 +232,50 @@ const UploadCSV: React.FC<Props> = () => {
             </Button>
           </Flex>
         </Box>
+
+        <Divider />
+        {alsoAskedResponse.length && (
+          <Box>
+            <Heading fontSize="lg" mb={6}>
+              3. People Also Asked Tree
+            </Heading>
+            <Text mb={3} fontSize="sm" fontWeight="medium">
+              Select a Keyword
+            </Text>
+            <Menu>
+              <MenuButton
+                size="sm"
+                as={ChakraButton}
+                rightIcon={<BsChevronDown />}
+                mb={6}
+                variant="outline"
+              >
+                {alsoAskedResponse[selectedKeyword][0].name}
+                test
+              </MenuButton>
+              <MenuList>
+                {alsoAskedResponse.map((item, index) => (
+                  <MenuItem
+                    fontSize="sm"
+                    key={index}
+                    onClick={() => setSelectedKeyword(index)}
+                  >
+                    {item[0].name}
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </Menu>
+            <Box border="solid 1px lightgray" borderRadius="md">
+              <iframe
+                srcDoc={htmlTemplate(
+                  JSON.stringify(alsoAskedResponse[selectedKeyword])
+                )}
+                width="100%"
+                height="500px"
+              />
+            </Box>
+          </Box>
+        )}
       </Stack>
     </Container>
   );
