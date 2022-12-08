@@ -234,7 +234,7 @@ const UploadCSV: React.FC<Props> = () => {
         </Box>
 
         <Divider />
-        {alsoAskedResponse.length && (
+        {alsoAskedResponse?.length && (
           <Box>
             <Heading fontSize="lg" mb={6}>
               3. People Also Asked Tree
