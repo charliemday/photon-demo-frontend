@@ -102,7 +102,15 @@ const UploadCSV: React.FC<Props> = () => {
           <HStack>
             <BsCheckCircle fontSize={18} color="green" />
             <Text fontSize="sm" color="green.500">
-              {csvFile[0].name} ready for submission
+              {csvFile[0].name}{" "}
+              {csvFile.length > 1
+                ? `and ${
+                    csvFile.length - 1 > 2
+                      ? `${csvFile.length - 1} others`
+                      : `${csvFile.length - 1} other`
+                  }`
+                : ``}{" "}
+              ready for submission
             </Text>
           </HStack>
           {isLoading && <BarLoader color={BRAND_COLOR} />}
@@ -131,6 +139,9 @@ const UploadCSV: React.FC<Props> = () => {
       />
       {renderUploadZone()}
       <Flex justifyContent="flex-end">
+        <Button size="sm" onClick={() => setCsvFile(null)}>
+          Clear
+        </Button>
         <Button
           size="sm"
           onClick={handleSubmit}
