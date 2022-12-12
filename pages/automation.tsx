@@ -39,7 +39,7 @@ interface AlsoAskedResponse extends Array<PeopleAlsoAskedNode> {
   [index: number]: PeopleAlsoAskedNode;
 }
 
-const UploadCSV: React.FC<Props> = () => {
+const Automation: React.FC<Props> = () => {
   const [rawDataFiles, setRawDataFiles] = useState<File[] | null>(null);
   const [alsoAskedFile, setAlsoAskedFile] = useState<File | null | undefined>(
     null
@@ -281,4 +281,4 @@ const UploadCSV: React.FC<Props> = () => {
   );
 };
 
-export default UploadCSV;
+export default Automation;

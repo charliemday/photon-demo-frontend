@@ -1,5 +1,5 @@
 import { useToast } from "@chakra-ui/react";
-import { ROOT_URL } from "config/urls";
+import { BASE_URL, ENGINE_URL } from "config/urls";
 import { useState } from "react";
 
 interface ReturnProps {
@@ -26,7 +26,7 @@ export const useAutomation = (): ReturnProps => {
             formData.append("files", file);
         });
 
-        fetch(`${ROOT_URL}/process-csv`, {
+        fetch(`${ENGINE_URL}/process-csv`, {
             method: "POST",
             body: formData,
         })
@@ -71,8 +71,7 @@ export const useAutomation = (): ReturnProps => {
 
         formData.append("file", file);
 
-
-        const response = fetch(`${ROOT_URL}/people-also-ask-file`, {
+        const response = fetch(`${BASE_URL}/questions-asked/`, {
             method: "POST",
             body: formData,
         })
@@ -81,13 +80,14 @@ export const useAutomation = (): ReturnProps => {
                 setIsAlsoAskedDataLoading(false);
                 toast({
                     title: "Success",
-                    description: "Your CSV file has been processed",
+                    description: "Your CSV file has been sent. We will send the QuestionsAsked output to your email and notify you on Slack when it's ready.",
                     status: "success",
                     isClosable: true,
                 });
                 return response;
             })
-            .catch(() => {
+            .catch((e) => {
+                console.log('error', e)
                 setIsAlsoAskedDataLoading(false);
                 toast({
                     title: "Error",

@@ -3,7 +3,8 @@
 // let BASE_URL = 'https://antler-backend.herokuapp.com/api/'
 
 let ROOT_URL = 'http://localhost:8000';
-let BASE_URL = `${ROOT_URL}/api/`;
+let ENGINE_URL = 'http://localhost:8001';
+let BASE_URL = `${ROOT_URL}/api`;
 
 
 const xeroClientId = process.env.NEXT_PUBLIC_XERO_CLIENT_ID;
@@ -19,6 +20,7 @@ const OAUTH_URLS = {
 if (process.env.NODE_ENV === 'production') {
     BASE_URL = process.env.NEXT_PUBLIC_PROD_API_URL || ''
     ROOT_URL = process.env.NEXT_PUBLIC_PROD_URL || ''
+    ENGINE_URL = process.env.NEXT_PUBLIC_PROD_ENGINE_URL || ''
 }
 
-export { BASE_URL, OAUTH_URLS, ROOT_URL };
+export { BASE_URL, OAUTH_URLS, ROOT_URL, ENGINE_URL };
