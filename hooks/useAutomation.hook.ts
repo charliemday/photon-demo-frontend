@@ -87,7 +87,6 @@ export const useAutomation = (): ReturnProps => {
                 return response;
             })
             .catch((e) => {
-                console.log('error', e)
                 setIsAlsoAskedDataLoading(false);
                 toast({
                     title: "Error",
