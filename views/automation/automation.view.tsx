@@ -17,16 +17,14 @@ import { CodeResponse, useGoogleLogin } from "@react-oauth/google";
 import { GoogleLoginButton } from "react-social-login-buttons";
 
 import { BsCheckCircle } from "react-icons/bs";
-import { AiOutlineCloudDownload } from "react-icons/ai";
+import { AiOutlineCloudDownload, AiOutlineConsoleSql } from "react-icons/ai";
 import { BRAND_COLOR } from "config";
 import Head from "next/head";
 
 import { useAutomation } from "hooks";
 import { useCompleteOauthMutation } from "api/auth.api";
 
-interface Props {}
-
-export const AutomationView: React.FC<Props> = () => {
+export const AutomationView: React.FC = () => {
   const [rawDataFiles, setRawDataFiles] = useState<File[] | null>(null);
   const [alsoAskedFile, setAlsoAskedFile] = useState<File | null | undefined>(
     null
@@ -70,6 +68,11 @@ export const AutomationView: React.FC<Props> = () => {
   const rawDataInputRef = useRef<HTMLInputElement>(null);
   const alsoAskedInputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    if (rawDataInputRef.current) rawDataInputRef.current.value = "";
+    if (alsoAskedInputRef.current) alsoAskedInputRef.current.value = "";
+  }, [alsoAskedFile, rawDataFiles]);
+
   const googleLogin = useGoogleLogin({
     flow: "auth-code",
     scope: "https://www.googleapis.com/auth/webmasters.readonly",
@@ -98,6 +101,7 @@ export const AutomationView: React.FC<Props> = () => {
   };
 
   const handleUploadAlsoAskedClick = () => {
+    console.log("handleUploadClick");
     alsoAskedInputRef.current?.click();
   };
 
