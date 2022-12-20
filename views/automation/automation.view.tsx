@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import {
   Input,
   Flex,
@@ -12,6 +12,7 @@ import {
   useToast,
   Select,
 } from "@chakra-ui/react";
+import ReactSelect from "react-select";
 import { BarLoader } from "react-spinners";
 import { Button } from "components/button";
 import { CodeResponse, useGoogleLogin } from "@react-oauth/google";
@@ -19,7 +20,7 @@ import { GoogleLoginButton } from "react-social-login-buttons";
 
 import { BsCheckCircle } from "react-icons/bs";
 import { AiOutlineCloudDownload } from "react-icons/ai";
-import { BRAND_COLOR } from "config";
+import { BRAND_COLOR, GOOGLE_LANGUAGES } from "config";
 import Head from "next/head";
 
 import { useAutomation } from "hooks";
@@ -35,6 +36,7 @@ export const AutomationView: React.FC = () => {
   const [alsoAskedFile, setAlsoAskedFile] = useState<File | null | undefined>(
     null
   );
+  const [language, setLanguage] = useState<string | null>(null);
 
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
@@ -63,6 +65,13 @@ export const AutomationView: React.FC = () => {
       createReport({ startDate, endDate, domain });
     }
   };
+
+  const langOptions = useMemo(() => {
+    return GOOGLE_LANGUAGES.map(({ language_code, language_name }) => ({
+      value: language_code,
+      label: `${language_name} (${language_code})`,
+    }));
+  }, []);
 
   useEffect(() => {
     if (!isReportLoading && isReportSuccess) {
@@ -132,7 +141,7 @@ export const AutomationView: React.FC = () => {
 
   const handleSubmitAlsoAskedData = async () => {
     if (!alsoAskedFile) return;
-    await uploadAlsoAskedData(alsoAskedFile);
+    await uploadAlsoAskedData(alsoAskedFile, language || "en");
     setAlsoAskedFile(null);
   };
 
@@ -141,7 +150,6 @@ export const AutomationView: React.FC = () => {
   };
 
   const handleUploadAlsoAskedClick = () => {
-    console.log("handleUploadClick");
     alsoAskedInputRef.current?.click();
   };
 
@@ -278,7 +286,26 @@ export const AutomationView: React.FC = () => {
             display="none"
           />
           {renderAlsoAskedUploadZone()}
-          <Flex justifyContent="flex-end">
+          <Stack>
+            <Text fontSize="sm" fontWeight="semibold">
+              Language to use in Google Search:
+            </Text>
+
+            <ReactSelect
+              className="basic-single"
+              classNamePrefix="select"
+              isSearchable
+              name="color"
+              defaultValue={
+                langOptions[
+                  langOptions.findIndex(({ value }) => value === "en")
+                ]
+              }
+              onChange={(e: any) => setLanguage(e.value)}
+              options={langOptions as any}
+            />
+          </Stack>
+          <Flex justifyContent="flex-end" pt={6}>
             <Button size="sm" onClick={() => setAlsoAskedFile(null)}>
               Clear
             </Button>
