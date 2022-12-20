@@ -8,4 +8,5 @@ export enum ROUTES {
     VERIFY_EMAIL = '/verify-email',
     NOT_FOUND = '/not-found',
     SERVER_ERROR = '/server-error',
+    AUTOMATION = '/automation',
 }

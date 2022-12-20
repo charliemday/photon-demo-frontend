@@ -10,6 +10,7 @@ import {
   Divider,
   Box,
   useToast,
+  Select,
 } from "@chakra-ui/react";
 import { BarLoader } from "react-spinners";
 import { Button } from "components/button";
@@ -17,12 +18,17 @@ import { CodeResponse, useGoogleLogin } from "@react-oauth/google";
 import { GoogleLoginButton } from "react-social-login-buttons";
 
 import { BsCheckCircle } from "react-icons/bs";
-import { AiOutlineCloudDownload, AiOutlineConsoleSql } from "react-icons/ai";
+import { AiOutlineCloudDownload } from "react-icons/ai";
 import { BRAND_COLOR } from "config";
 import Head from "next/head";
 
 import { useAutomation } from "hooks";
 import { useCompleteOauthMutation } from "api/auth.api";
+import { useUserDetailsQuery } from "api/user.api";
+import {
+  useCreateSearchConsoleReportMutation,
+  useGetSearchConsoleSitesQuery,
+} from "api/vendor.api";
 
 export const AutomationView: React.FC = () => {
   const [rawDataFiles, setRawDataFiles] = useState<File[] | null>(null);
@@ -30,10 +36,44 @@ export const AutomationView: React.FC = () => {
     null
   );
 
+  const [startDate, setStartDate] = useState<string | null>(null);
+  const [endDate, setEndDate] = useState<string | null>(null);
+  const [domain, setDomain] = useState<string | null>(null);
+
+  const { data: user } = useUserDetailsQuery(undefined);
+
   const toast = useToast();
 
   const [completeOauth, { isLoading, isSuccess, isError }] =
     useCompleteOauthMutation();
+
+  const [
+    createReport,
+    { isLoading: isReportLoading, isSuccess: isReportSuccess },
+  ] = useCreateSearchConsoleReportMutation();
+
+  const {
+    isLoading: isSiteLoading,
+    isSuccess: isSiteSuccess,
+    data: sites,
+  } = useGetSearchConsoleSitesQuery(undefined);
+
+  const handleGetReport = () => {
+    if (startDate && endDate && domain) {
+      createReport({ startDate, endDate, domain });
+    }
+  };
+
+  useEffect(() => {
+    if (!isReportLoading && isReportSuccess) {
+      toast({
+        title: "Success",
+        description: "Report created successfully. Check your Email.",
+        status: "success",
+        isClosable: true,
+      });
+    }
+  }, [isReportLoading, isReportSuccess, toast]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -184,13 +224,13 @@ export const AutomationView: React.FC = () => {
   );
 
   return (
-    <Container size="2xl" py={32}>
+    <Container size="2xl" py={32} pb={64}>
       <Head>
         <title>Automation</title>
       </Head>
 
       <Heading fontSize="2xl" mb={8}>
-        🤖 Welcome to the Automation page
+        {`🤖 Welcome to the Automation page, ${user?.firstName || ""}`}
       </Heading>
 
       <Divider my={6} />
@@ -264,6 +304,70 @@ export const AutomationView: React.FC = () => {
           <GoogleLoginButton onClick={googleLogin}>
             <Text fontSize="sm">Connect up Google Search Console</Text>
           </GoogleLoginButton>
+        </Box>
+        <Divider />
+
+        <Box>
+          <Stack spacing={6}>
+            <Heading fontSize="lg">4. Google Search Console Report</Heading>
+            <Text fontSize="xs" opacity={0.5}>
+              Get the search console report sent to info@getbaser.com
+            </Text>
+            <HStack>
+              <Stack w="full">
+                <Text fontSize="sm" fontWeight="semibold">
+                  Start Date:
+                </Text>
+                <Input
+                  type="date"
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                  }}
+                  size="sm"
+                  bgColor="white"
+                />
+              </Stack>
+              <Stack w="full">
+                <Text fontSize="sm" fontWeight="semibold">
+                  End Date:
+                </Text>
+                <Input
+                  type="date"
+                  onChange={(e) => {
+                    setEndDate(e.target.value);
+                  }}
+                  bgColor="white"
+                  size="sm"
+                />
+              </Stack>
+            </HStack>
+            <Stack>
+              <Text fontSize="sm" fontWeight="semibold">
+                Domain
+              </Text>
+              <Select
+                placeholder="Select Site"
+                bgColor="white"
+                onChange={({ target: { value } }) => setDomain(value)}
+              >
+                {sites?.map((site, idx) => (
+                  <option key={idx} value={site}>
+                    {site}
+                  </option>
+                ))}
+              </Select>
+            </Stack>
+            <Flex justifyContent="flex-end">
+              <Button
+                size="sm"
+                onClick={handleGetReport}
+                isDisabled={!startDate || !endDate || !sites}
+                isLoading={isReportLoading}
+              >
+                Get Report
+              </Button>
+            </Flex>
+          </Stack>
         </Box>
       </Stack>
     </Container>

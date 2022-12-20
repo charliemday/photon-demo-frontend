@@ -27,7 +27,7 @@ export const WelcomeView: React.FC = () => {
     signup(values)
       .unwrap()
       .then(() => {
-        router.push(ROUTES.OVERVIEW);
+        router.push(ROUTES.AUTOMATION);
       })
       .catch(() => setSignupError("Unable to signup with details"));
   };
@@ -37,7 +37,7 @@ export const WelcomeView: React.FC = () => {
     await login(values)
       .unwrap()
       .then((res) => {
-        router.push(ROUTES.OVERVIEW);
+        router.push(ROUTES.AUTOMATION);
       })
       .catch(() => setLoginError("Unable to login with credentials"));
   };
