@@ -10,7 +10,6 @@ import {
   Divider,
   Box,
   useToast,
-  Select,
 } from "@chakra-ui/react";
 import ReactSelect from "react-select";
 import { BarLoader } from "react-spinners";
@@ -26,10 +25,8 @@ import Head from "next/head";
 import { useAutomation } from "hooks";
 import { useCompleteOauthMutation } from "api/auth.api";
 import { useUserDetailsQuery } from "api/user.api";
-import {
-  useCreateSearchConsoleReportMutation,
-  useGetSearchConsoleSitesQuery,
-} from "api/vendor.api";
+
+import { SearchConsoleReport } from "./search-console-report";
 
 export const AutomationView: React.FC = () => {
   const [rawDataFiles, setRawDataFiles] = useState<File[] | null>(null);
@@ -38,10 +35,6 @@ export const AutomationView: React.FC = () => {
   );
   const [language, setLanguage] = useState<string | null>(null);
 
-  const [startDate, setStartDate] = useState<string | null>(null);
-  const [endDate, setEndDate] = useState<string | null>(null);
-  const [domain, setDomain] = useState<string | null>(null);
-
   const { data: user } = useUserDetailsQuery(undefined);
 
   const toast = useToast();
@@ -49,40 +42,12 @@ export const AutomationView: React.FC = () => {
   const [completeOauth, { isLoading, isSuccess, isError }] =
     useCompleteOauthMutation();
 
-  const [
-    createReport,
-    { isLoading: isReportLoading, isSuccess: isReportSuccess },
-  ] = useCreateSearchConsoleReportMutation();
-
-  const {
-    isLoading: isSiteLoading,
-    isSuccess: isSiteSuccess,
-    data: sites,
-  } = useGetSearchConsoleSitesQuery(undefined);
-
-  const handleGetReport = () => {
-    if (startDate && endDate && domain) {
-      createReport({ startDate, endDate, domain });
-    }
-  };
-
   const langOptions = useMemo(() => {
     return GOOGLE_LANGUAGES.map(({ language_code, language_name }) => ({
       value: language_code,
       label: `${language_name} (${language_code})`,
     }));
   }, []);
-
-  useEffect(() => {
-    if (!isReportLoading && isReportSuccess) {
-      toast({
-        title: "Success",
-        description: "Report created successfully. Check your Email.",
-        status: "success",
-        isClosable: true,
-      });
-    }
-  }, [isReportLoading, isReportSuccess, toast]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -327,74 +292,31 @@ export const AutomationView: React.FC = () => {
           <Text fontSize="xs" my={6} opacity={0.5}>
             {`This will allow Baser to access your Google Search Console data through Google's API so we can show your site metrics on your SEO hub.`}
           </Text>
-          {/* @ts-ignore */}
-          <GoogleLoginButton onClick={googleLogin}>
-            <Text fontSize="sm">Connect up Google Search Console</Text>
-          </GoogleLoginButton>
+          {user?.connectedSearchConsole && (
+            <HStack mb={6} color="green.400">
+              <BsCheckCircle />
+              <Text fontSize="sm" fontWeight="semibold">
+                You are already connected to Google Search Console
+              </Text>
+            </HStack>
+          )}
+          <Box opacity={user?.connectedSearchConsole ? 0.5 : 1}>
+            {/* @ts-ignore */}
+            <GoogleLoginButton onClick={googleLogin}>
+              <Text fontSize="sm">
+                {user?.connectedSearchConsole
+                  ? "Reconnect to Google Search Console"
+                  : "Connect up Google Search Console"}
+              </Text>
+            </GoogleLoginButton>
+          </Box>
         </Box>
         <Divider />
 
         <Box>
-          <Stack spacing={6}>
-            <Heading fontSize="lg">4. Google Search Console Report</Heading>
-            <Text fontSize="xs" opacity={0.5}>
-              Get the search console report sent to info@getbaser.com
-            </Text>
-            <HStack>
-              <Stack w="full">
-                <Text fontSize="sm" fontWeight="semibold">
-                  Start Date:
-                </Text>
-                <Input
-                  type="date"
-                  onChange={(e) => {
-                    setStartDate(e.target.value);
-                  }}
-                  size="sm"
-                  bgColor="white"
-                />
-              </Stack>
-              <Stack w="full">
-                <Text fontSize="sm" fontWeight="semibold">
-                  End Date:
-                </Text>
-                <Input
-                  type="date"
-                  onChange={(e) => {
-                    setEndDate(e.target.value);
-                  }}
-                  bgColor="white"
-                  size="sm"
-                />
-              </Stack>
-            </HStack>
-            <Stack>
-              <Text fontSize="sm" fontWeight="semibold">
-                Domain
-              </Text>
-              <Select
-                placeholder="Select Site"
-                bgColor="white"
-                onChange={({ target: { value } }) => setDomain(value)}
-              >
-                {sites?.map((site, idx) => (
-                  <option key={idx} value={site}>
-                    {site}
-                  </option>
-                ))}
-              </Select>
-            </Stack>
-            <Flex justifyContent="flex-end">
-              <Button
-                size="sm"
-                onClick={handleGetReport}
-                isDisabled={!startDate || !endDate || !sites}
-                isLoading={isReportLoading}
-              >
-                Get Report
-              </Button>
-            </Flex>
-          </Stack>
+          <SearchConsoleReport
+            isDisabled={user?.connectedSearchConsole === false}
+          />
         </Box>
       </Stack>
     </Container>

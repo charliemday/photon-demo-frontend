@@ -12,4 +12,8 @@ export interface User {
      * Their onboarding state
      */
     onboardingStep?: number;
+    /**
+     * Whether they have connected their search console
+     */
+    connectedSearchConsole?: boolean;
 }
