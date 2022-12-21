@@ -27,6 +27,7 @@ import { useCompleteOauthMutation } from "api/auth.api";
 import { useUserDetailsQuery } from "api/user.api";
 
 import { SearchConsoleReport } from "./search-console-report";
+import { CompareConsoleReport } from "./compare-console-report";
 
 export const AutomationView: React.FC = () => {
   const [rawDataFiles, setRawDataFiles] = useState<File[] | null>(null);
@@ -133,6 +134,7 @@ export const AutomationView: React.FC = () => {
         opacity: 1,
       }}
       onClick={handleUploadClick}
+      bgColor="white"
     >
       {rawDataFiles && rawDataFiles.length ? (
         <Stack alignItems="center" spacing={6}>
@@ -176,6 +178,7 @@ export const AutomationView: React.FC = () => {
         opacity: 1,
       }}
       onClick={handleUploadAlsoAskedClick}
+      bgColor="white"
     >
       {alsoAskedFile ? (
         <Stack alignItems="center" spacing={6}>
@@ -317,6 +320,9 @@ export const AutomationView: React.FC = () => {
           <SearchConsoleReport
             isDisabled={user?.connectedSearchConsole === false}
           />
+        </Box>
+        <Box>
+          <CompareConsoleReport />
         </Box>
       </Stack>
     </Container>

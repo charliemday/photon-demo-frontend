@@ -25,6 +25,13 @@ export interface SearchConsoleSitesResponse {
     siteEntry: SearchConsoleSite[];
 }
 
+export interface CompareConsoleData extends GetSearchConsoleData {
+    payload: {
+        page: string;
+    }
+}
+
+
 // Define a service using a base URL and expected endpoints
 export const vendorApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -45,10 +52,18 @@ export const vendorApi = baseApi.injectEndpoints({
                 const sites = response.siteEntry.map(site => site.siteUrl);
                 return sites;
             }
+        }),
+        compareSearchConsoleReport: builder.mutation<null, CompareConsoleData>({
+            query: ({ domain, startDate, endDate, payload }) => ({
+                url: `/google/compare-data?domain=${encodeURIComponent(domain)}&start_date=${startDate}&end_date=${endDate}`,
+                method: "POST",
+                body: payload
+            })
+
         })
     }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetAuthUrlQuery, useCreateSearchConsoleReportMutation, useGetSearchConsoleSitesQuery } = vendorApi;
+export const { useGetAuthUrlQuery, useCreateSearchConsoleReportMutation, useGetSearchConsoleSitesQuery, useCompareSearchConsoleReportMutation } = vendorApi;
