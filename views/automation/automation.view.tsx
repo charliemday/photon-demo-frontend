@@ -321,7 +321,9 @@ export const AutomationView: React.FC = () => {
             isDisabled={user?.connectedSearchConsole === false}
           />
         </Box>
-        <Box>{/* <CompareConsoleReport /> */}</Box>
+        <Box>
+          <CompareConsoleReport />
+        </Box>
       </Stack>
     </Container>
   );

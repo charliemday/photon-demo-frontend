@@ -50,7 +50,12 @@ export const SearchConsoleReport: React.FC<Props> = ({ isDisabled }) => {
 
   const handleGetReport = () => {
     if (startDate && endDate && domain) {
-      createReport({ startDate, endDate, domain });
+      createReport({
+        startDate,
+        endDate,
+        domain,
+        dimensions: ["query", "page"],
+      });
     }
   };
 

@@ -12,6 +12,7 @@ export interface GetSearchConsoleData {
     domain: string;
     startDate: string;
     endDate: string;
+    dimensions?: string[];
 }
 
 export interface GetSearchConsoleResponse { }
@@ -40,12 +41,6 @@ export const vendorApi = baseApi.injectEndpoints({
                 url: appName ? `/get-auth-url?app=${appName}` : "/get-auth-url",
             }),
         }),
-        createSearchConsoleReport: builder.mutation<GetSearchConsoleResponse, GetSearchConsoleData>({
-            query: ({ domain, startDate, endDate }) => ({
-                url: `/google/keyword-report?domain=${encodeURIComponent(domain)}&start_date=${startDate}&end_date=${endDate}`,
-                method: "POST",
-            })
-        }),
         getSearchConsoleSites: builder.query<string[], undefined>({
             query: () => "/google/sites",
             transformResponse: (response: SearchConsoleSitesResponse) => {
@@ -53,9 +48,15 @@ export const vendorApi = baseApi.injectEndpoints({
                 return sites;
             }
         }),
+        createSearchConsoleReport: builder.mutation<GetSearchConsoleResponse, GetSearchConsoleData>({
+            query: ({ domain, startDate, endDate, dimensions }) => ({
+                url: `/google/keyword-report?domain=${encodeURIComponent(domain)}&start_date=${startDate}&end_date=${endDate}&dimensions=${dimensions}`,
+                method: "POST",
+            })
+        }),
         compareSearchConsoleReport: builder.mutation<null, CompareConsoleData>({
-            query: ({ domain, startDate, endDate, payload }) => ({
-                url: `/google/compare-data?domain=${encodeURIComponent(domain)}&start_date=${startDate}&end_date=${endDate}`,
+            query: ({ domain, startDate, endDate, dimensions, payload }) => ({
+                url: `/google/compare-data?domain=${encodeURIComponent(domain)}&start_date=${startDate}&end_date=${endDate}&dimensions=${dimensions}`,
                 method: "POST",
                 body: payload
             })
