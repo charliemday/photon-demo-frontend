@@ -13,9 +13,11 @@ import {
 } from "@chakra-ui/react";
 import ReactSelect from "react-select";
 import { BarLoader } from "react-spinners";
-import { Button } from "components/button";
+import { Button, FloatingButton } from "components/button";
 import { CodeResponse, useGoogleLogin } from "@react-oauth/google";
 import { GoogleLoginButton } from "react-social-login-buttons";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 import { BsCheckCircle } from "react-icons/bs";
 import { AiOutlineCloudDownload } from "react-icons/ai";
@@ -25,6 +27,7 @@ import Head from "next/head";
 import { useAutomation } from "hooks";
 import { useCompleteOauthMutation } from "api/auth.api";
 import { useUserDetailsQuery } from "api/user.api";
+import { useListTeamsQuery } from "api/team.api";
 
 import { SearchConsoleReport } from "./search-console-report";
 import { CompareConsoleReport } from "./compare-console-report";
@@ -36,12 +39,14 @@ export const AutomationView: React.FC = () => {
   );
   const [language, setLanguage] = useState<string | null>(null);
 
-  const { data: user } = useUserDetailsQuery(undefined);
-
   const toast = useToast();
 
+  const activeTeam = useSelector((state: RootState) => state.team.activeTeam);
+
+  const { data: user } = useUserDetailsQuery(undefined);
   const [completeOauth, { isLoading, isSuccess, isError }] =
     useCompleteOauthMutation();
+  const { data: teams } = useListTeamsQuery(undefined);
 
   const langOptions = useMemo(() => {
     return GOOGLE_LANGUAGES.map(({ language_code, language_name }) => ({
@@ -205,6 +210,8 @@ export const AutomationView: React.FC = () => {
         <title>Automation</title>
       </Head>
 
+      {teams && <FloatingButton teams={teams} />}
+
       <Heading fontSize="2xl" mb={8}>
         {`🤖 Welcome to the Automation page, ${user?.firstName || ""}`}
       </Heading>
@@ -213,7 +220,7 @@ export const AutomationView: React.FC = () => {
 
       <Stack spacing={12}>
         <Box>
-          <Heading fontSize="lg">1. Upload raw CSV</Heading>
+          <Heading fontSize="lg">1. Upload raw CSV {activeTeam?.name}</Heading>
           <Text fontSize="xs" mt={6} opacity={0.5}>
             This will take a group of CSV files from Ahrefs and sort them to
             exclude duplicate keywords and only show the keywords on the the
@@ -243,7 +250,9 @@ export const AutomationView: React.FC = () => {
         </Box>
         <Divider />
         <Box>
-          <Heading fontSize="lg">2. People Also Asked</Heading>
+          <Heading fontSize="lg">
+            2. Questions Asked for {activeTeam?.name}
+          </Heading>
           <Text fontSize="xs" mt={6} opacity={0.5}>
             {`This will take a CSV file with the first column of sorted keywords and get the "People Also Asked" questions for each keyword`}
           </Text>

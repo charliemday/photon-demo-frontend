@@ -14,6 +14,9 @@ import {
   useGetSearchConsoleSitesQuery,
   useCompareSearchConsoleReportMutation,
 } from "api/vendor.api";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
+import { Team } from "types";
 
 interface Props {
   isDisabled?: boolean;
@@ -24,6 +27,10 @@ export const CompareConsoleReport: React.FC<Props> = ({ isDisabled }) => {
   const [endDate, setEndDate] = useState<string | null>(null);
   const [domain, setDomain] = useState<string | null>(null);
   const [page, setPage] = useState<string | null>(null);
+
+  const activeTeam: Team = useSelector(
+    (state: RootState) => state.team.activeTeam
+  );
 
   const toast = useToast();
 
@@ -55,13 +62,14 @@ export const CompareConsoleReport: React.FC<Props> = ({ isDisabled }) => {
   }, [isComparing, hasComparedSuccessfully, toast, error]);
 
   const handleGetReport = () => {
-    if (page && startDate && endDate && domain) {
+    if (page && startDate && endDate && domain && activeTeam) {
       compareReport({
         startDate,
         endDate,
         domain,
         payload: {
           page,
+          team: activeTeam.id,
         },
       });
     }
@@ -69,7 +77,9 @@ export const CompareConsoleReport: React.FC<Props> = ({ isDisabled }) => {
 
   return (
     <Stack spacing={6} pointerEvents={isDisabled ? "none" : "auto"}>
-      <Heading fontSize="lg">5. Compare Console Report</Heading>
+      <Heading fontSize="lg">
+        5. Compare Console Report for {activeTeam?.name}
+      </Heading>
       <Text fontSize="xs" opacity={0.5}>
         Compare the Search Console Results whether the keywords exist on a
         specific page. The output will be an email sent to info@getbaser.com

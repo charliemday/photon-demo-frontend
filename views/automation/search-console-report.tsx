@@ -14,6 +14,9 @@ import {
   useGetSearchConsoleSitesQuery,
   useCreateSearchConsoleReportMutation,
 } from "api/vendor.api";
+import { RootState } from "store";
+import { useSelector } from "react-redux";
+import { Team } from "types";
 
 interface Props {
   isDisabled?: boolean;
@@ -25,6 +28,10 @@ export const SearchConsoleReport: React.FC<Props> = ({ isDisabled }) => {
   const [domain, setDomain] = useState<string | null>(null);
 
   const toast = useToast();
+
+  const activeTeam = useSelector(
+    (state: RootState) => state.team.activeTeam
+  ) as Team | null;
 
   const {
     isLoading: isSiteLoading,
@@ -61,7 +68,9 @@ export const SearchConsoleReport: React.FC<Props> = ({ isDisabled }) => {
 
   return (
     <Stack spacing={6} pointerEvents={isDisabled ? "none" : "auto"}>
-      <Heading fontSize="lg">4. Google Search Console Report</Heading>
+      <Heading fontSize="lg">
+        4. Google Search Console Report for {activeTeam?.name}
+      </Heading>
       <Text fontSize="xs" opacity={0.5}>
         {isDisabled
           ? "You need to connect to Google Search Console to use this feature."
@@ -104,6 +113,13 @@ export const SearchConsoleReport: React.FC<Props> = ({ isDisabled }) => {
             placeholder="Select Site"
             bgColor="white"
             onChange={({ target: { value } }) => setDomain(value)}
+            defaultValue={
+              activeTeam?.url
+                ? sites?.find(
+                    (site) => activeTeam?.url && site.includes(activeTeam?.url)
+                  )
+                : undefined
+            }
           >
             {sites?.map((site, idx) => (
               <option key={idx} value={site}>

@@ -29,9 +29,9 @@ export interface SearchConsoleSitesResponse {
 export interface CompareConsoleData extends GetSearchConsoleData {
     payload: {
         page: string;
-    }
+        team: number;
+    };
 }
-
 
 // Define a service using a base URL and expected endpoints
 export const vendorApi = baseApi.injectEndpoints({
@@ -44,27 +44,38 @@ export const vendorApi = baseApi.injectEndpoints({
         getSearchConsoleSites: builder.query<string[], undefined>({
             query: () => "/google/sites",
             transformResponse: (response: SearchConsoleSitesResponse) => {
-                const sites = response.siteEntry.map(site => site.siteUrl);
+                const sites = response.siteEntry.map((site) => site.siteUrl);
                 return sites;
-            }
+            },
         }),
-        createSearchConsoleReport: builder.mutation<GetSearchConsoleResponse, GetSearchConsoleData>({
+        createSearchConsoleReport: builder.mutation<
+            GetSearchConsoleResponse,
+            GetSearchConsoleData
+        >({
             query: ({ domain, startDate, endDate, dimensions }) => ({
-                url: `/google/keyword-report?domain=${encodeURIComponent(domain)}&start_date=${startDate}&end_date=${endDate}&dimensions=${dimensions}`,
+                url: `/google/keyword-report?domain=${encodeURIComponent(
+                    domain
+                )}&start_date=${startDate}&end_date=${endDate}&dimensions=${dimensions}`,
                 method: "POST",
-            })
+            }),
         }),
         compareSearchConsoleReport: builder.mutation<null, CompareConsoleData>({
             query: ({ domain, startDate, endDate, dimensions, payload }) => ({
-                url: `/google/compare-data?domain=${encodeURIComponent(domain)}&start_date=${startDate}&end_date=${endDate}&dimensions=${dimensions}`,
+                url: `/google/compare-data?domain=${encodeURIComponent(
+                    domain
+                )}&start_date=${startDate}&end_date=${endDate}&dimensions=${dimensions}`,
                 method: "POST",
-                body: payload
-            })
-
-        })
+                body: payload,
+            }),
+        }),
     }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetAuthUrlQuery, useCreateSearchConsoleReportMutation, useGetSearchConsoleSitesQuery, useCompareSearchConsoleReportMutation } = vendorApi;
+export const {
+    useGetAuthUrlQuery,
+    useCreateSearchConsoleReportMutation,
+    useGetSearchConsoleSitesQuery,
+    useCompareSearchConsoleReportMutation,
+} = vendorApi;
