@@ -33,6 +33,14 @@ export interface CompareConsoleData extends GetSearchConsoleData {
     };
 }
 
+export interface GetSearchConsolePagesRequest {
+    domain: string;
+}
+
+export interface GetSearchConsolePagesResponse {
+    pages: string[];
+}
+
 // Define a service using a base URL and expected endpoints
 export const vendorApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -68,6 +76,11 @@ export const vendorApi = baseApi.injectEndpoints({
                 body: payload,
             }),
         }),
+        getSearchConsolePages: builder.query<GetSearchConsolePagesResponse, GetSearchConsolePagesRequest>({
+            query: ({ domain }) => ({
+                url: `/google/pages?domain=${encodeURIComponent(domain)}`,
+            })
+        })
     }),
 });
 
@@ -78,4 +91,5 @@ export const {
     useCreateSearchConsoleReportMutation,
     useGetSearchConsoleSitesQuery,
     useCompareSearchConsoleReportMutation,
+    useGetSearchConsolePagesQuery
 } = vendorApi;

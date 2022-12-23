@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { authApi, userApi } from 'api';
+import { teamApi } from 'api';
 import { Team } from 'types';
 
 export interface TeamState {
@@ -19,6 +19,11 @@ export const teamSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
+        builder.addMatcher(teamApi.endpoints.listTeams.matchFulfilled, (state, action) => {
+            if (!state.activeTeam) {
+                state.activeTeam = action.payload[0];
+            }
+        })
     },
 })
 

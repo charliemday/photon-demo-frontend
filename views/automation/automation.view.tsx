@@ -9,13 +9,10 @@ import {
   Heading,
   Divider,
   Box,
-  useToast,
 } from "@chakra-ui/react";
 import ReactSelect from "react-select";
 import { BarLoader } from "react-spinners";
 import { Button, FloatingButton } from "components/button";
-import { CodeResponse, useGoogleLogin } from "@react-oauth/google";
-import { GoogleLoginButton } from "react-social-login-buttons";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
 
@@ -25,12 +22,12 @@ import { BRAND_COLOR, GOOGLE_LANGUAGES } from "config";
 import Head from "next/head";
 
 import { useAutomation } from "hooks";
-import { useCompleteOauthMutation } from "api/auth.api";
 import { useUserDetailsQuery } from "api/user.api";
 import { useListTeamsQuery } from "api/team.api";
 
 import { SearchConsoleReport } from "./search-console-report";
 import { CompareConsoleReport } from "./compare-console-report";
+import { SearchConsoleConnect } from "./search-console-connect";
 
 export const AutomationView: React.FC = () => {
   const [rawDataFiles, setRawDataFiles] = useState<File[] | null>(null);
@@ -38,14 +35,9 @@ export const AutomationView: React.FC = () => {
     null
   );
   const [language, setLanguage] = useState<string | null>(null);
-
-  const toast = useToast();
-
   const activeTeam = useSelector((state: RootState) => state.team.activeTeam);
 
   const { data: user } = useUserDetailsQuery(undefined);
-  const [completeOauth, { isLoading, isSuccess, isError }] =
-    useCompleteOauthMutation();
   const { data: teams } = useListTeamsQuery(undefined);
 
   const langOptions = useMemo(() => {
@@ -54,29 +46,6 @@ export const AutomationView: React.FC = () => {
       label: `${language_name} (${language_code})`,
     }));
   }, []);
-
-  useEffect(() => {
-    if (!isLoading) {
-      if (isSuccess) {
-        toast({
-          title: "Success",
-          description:
-            "Connected to Google Search Console successfully. We'll start processing your data shortly.",
-          status: "success",
-          isClosable: true,
-        });
-      }
-
-      if (isError) {
-        toast({
-          title: "Error",
-          description: "Could not connect to Google Search Console",
-          status: "error",
-          isClosable: true,
-        });
-      }
-    }
-  }, [isLoading, isSuccess, isError, toast]);
 
   const {
     uploadAlsoAskedData,
@@ -92,15 +61,6 @@ export const AutomationView: React.FC = () => {
     if (rawDataInputRef.current) rawDataInputRef.current.value = "";
     if (alsoAskedInputRef.current) alsoAskedInputRef.current.value = "";
   }, [alsoAskedFile, rawDataFiles]);
-
-  const googleLogin = useGoogleLogin({
-    flow: "auth-code",
-    scope: "https://www.googleapis.com/auth/webmasters.readonly",
-    onSuccess: (response: CodeResponse) => {
-      // On Success we should complete the OAuth flow by exchanging the code for an access token
-      completeOauth({ code: response.code, app: "google" });
-    },
-  });
 
   const handleSubmitRawData = async () => {
     if (!rawDataFiles || !rawDataFiles.length) return;
@@ -297,32 +257,7 @@ export const AutomationView: React.FC = () => {
           </Flex>
         </Box>
         <Divider />
-        <Box>
-          <Heading fontSize="lg" mb={6}>
-            3. Connect up your Google Search Console
-          </Heading>
-          <Text fontSize="xs" my={6} opacity={0.5}>
-            {`This will allow Baser to access your Google Search Console data through Google's API so we can show your site metrics on your SEO hub.`}
-          </Text>
-          {user?.connectedSearchConsole && (
-            <HStack mb={6} color="green.400">
-              <BsCheckCircle />
-              <Text fontSize="sm" fontWeight="semibold">
-                You are already connected to Google Search Console
-              </Text>
-            </HStack>
-          )}
-          <Box opacity={user?.connectedSearchConsole ? 0.5 : 1}>
-            {/* @ts-ignore */}
-            <GoogleLoginButton onClick={googleLogin}>
-              <Text fontSize="sm">
-                {user?.connectedSearchConsole
-                  ? "Reconnect to Google Search Console"
-                  : "Connect up Google Search Console"}
-              </Text>
-            </GoogleLoginButton>
-          </Box>
-        </Box>
+        <SearchConsoleConnect />
         <Divider />
 
         <Box>

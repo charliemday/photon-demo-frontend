@@ -8,11 +8,14 @@ import {
   Select,
   Flex,
   useToast,
+  Spinner,
 } from "@chakra-ui/react";
 import { Button } from "components/button";
+import ReactSelect from "react-select";
 import {
   useGetSearchConsoleSitesQuery,
   useCompareSearchConsoleReportMutation,
+  useGetSearchConsolePagesQuery,
 } from "api/vendor.api";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
@@ -40,6 +43,18 @@ export const CompareConsoleReport: React.FC<Props> = ({ isDisabled }) => {
     compareReport,
     { isLoading: isComparing, isSuccess: hasComparedSuccessfully, error },
   ] = useCompareSearchConsoleReportMutation();
+  const {
+    data: pageData,
+    refetch: refetchPages,
+    isLoading: isFetchingPages,
+  } = useGetSearchConsolePagesQuery(
+    {
+      domain: domain || "",
+    },
+    {
+      skip: !domain,
+    }
+  );
 
   useEffect(() => {
     if (!isComparing && hasComparedSuccessfully) {
@@ -61,6 +76,12 @@ export const CompareConsoleReport: React.FC<Props> = ({ isDisabled }) => {
     }
   }, [isComparing, hasComparedSuccessfully, toast, error]);
 
+  useEffect(() => {
+    if (domain) {
+      refetchPages();
+    }
+  }, [domain, refetchPages]);
+
   const handleGetReport = () => {
     if (page && startDate && endDate && domain && activeTeam) {
       compareReport({
@@ -73,6 +94,34 @@ export const CompareConsoleReport: React.FC<Props> = ({ isDisabled }) => {
         },
       });
     }
+  };
+
+  const renderPageSelect = () => {
+    const pages = pageData?.pages;
+
+    if (pages && pages?.length) {
+      return (
+        <ReactSelect
+          className="basic-single"
+          classNamePrefix="select"
+          isSearchable
+          name="color"
+          onChange={(e: any) => {
+            setPage(e.value);
+          }}
+          options={pages.map((page) => ({
+            value: page,
+            label: page,
+          }))}
+        />
+      );
+    }
+
+    return (
+      <Text fontWeight="semibold" opacity={0.25}>
+        Select a Domain First
+      </Text>
+    );
   };
 
   return (
@@ -115,7 +164,7 @@ export const CompareConsoleReport: React.FC<Props> = ({ isDisabled }) => {
         </HStack>
         <Stack>
           <Text fontSize="sm" fontWeight="semibold">
-            Domain
+            Select a domain
           </Text>
           <Select
             placeholder="Select Site"
@@ -136,14 +185,15 @@ export const CompareConsoleReport: React.FC<Props> = ({ isDisabled }) => {
         </Stack>
         <Stack>
           <Text fontSize="sm" fontWeight="semibold">
-            Page
+            Select a page within the domain
           </Text>
-          <Input
-            bgColor="white"
-            value={page || ""}
-            onChange={({ target: { value } }) => setPage(value)}
-            placeholder="https://yoursite.com/your-page"
-          />
+          {renderPageSelect()}
+          {isFetchingPages && (
+            <HStack opacity={0.5}>
+              <Text fontSize="sm">Fetching the pages for {domain}</Text>
+              <Spinner size="xs" />
+            </HStack>
+          )}
         </Stack>
       </Stack>
       <Flex justifyContent="flex-end">
