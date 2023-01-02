@@ -8,6 +8,9 @@ import {
   Text,
   Box,
   Stack,
+  MenuDivider,
+  HStack,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { BsChevronDown as ChevronDownIcon } from "react-icons/bs";
@@ -16,6 +19,8 @@ import { useDispatch } from "react-redux";
 import { Team } from "types";
 import { Image } from "components/image";
 import { AiOutlineTeam } from "react-icons/ai";
+import { GrAdd } from "react-icons/gr";
+import { AddTeamModal } from "components/modals";
 
 interface Props {
   teams: Team[];
@@ -25,6 +30,7 @@ export const FloatingButton: React.FC<Props> = ({ teams }) => {
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(
     teams?.[0] || null
   );
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const dispatch = useDispatch();
   const onSelect = (team: Team) => {
     setSelectedTeam(team);
@@ -34,7 +40,8 @@ export const FloatingButton: React.FC<Props> = ({ teams }) => {
   if (!teams) return null;
 
   return (
-    <Flex cursor="pointer" w="auto" position="fixed" right="15%" zIndex={99}>
+    <Flex cursor="pointer" w="auto" position="fixed" right="5%" zIndex={99}>
+      <AddTeamModal isOpen={isOpen} onClose={onClose} />
       <Stack>
         <Text fontWeight="semibold" fontSize="sm">
           Select a Team to Work on:
@@ -80,6 +87,13 @@ export const FloatingButton: React.FC<Props> = ({ teams }) => {
                 <Text fontSize="sm">{team.name}</Text>
               </MenuItem>
             ))}
+            <MenuDivider />
+            <MenuItem onClick={onOpen}>
+              <HStack>
+                <GrAdd />
+                <Text fontSize="sm">Add a Team</Text>
+              </HStack>
+            </MenuItem>
           </MenuList>
         </Menu>
       </Stack>

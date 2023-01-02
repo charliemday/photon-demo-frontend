@@ -7,7 +7,6 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Button,
   Stack,
   FormControl,
   FormLabel,
@@ -22,6 +21,7 @@ import * as Yup from "yup";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
 import { useCreateTeamMutation, useListTeamsQuery } from "api/team.api";
+import { Button } from "components/button";
 
 interface Props {
   isOpen: boolean;
@@ -30,16 +30,16 @@ interface Props {
 
 export interface FormValues {
   name: string;
+  url: string;
 }
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required("Name Required"),
+  url: Yup.string().required("URL Required"),
 });
 
 export const AddTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
-  const [createTerritory, { isLoading, isSuccess, error }] =
-    useCreateTeamMutation();
-  const activeTeam = useSelector((state: RootState) => state.team?.activeTeam);
+  const [createTeam, { isLoading, isSuccess, error }] = useCreateTeamMutation();
   const toast = useToast();
   const { refetch: refetchTeams } = useListTeamsQuery(undefined);
 
@@ -60,13 +60,15 @@ export const AddTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const formik = useFormik<FormValues>({
     initialValues: {
       name: "",
+      url: "",
     },
     validationSchema: FormSchema,
     onSubmit: (values) => {
-      // Create the territory here
-      createTerritory({
+      // Create the team here
+      createTeam({
         body: {
           name: values.name,
+          url: values.url,
         },
       });
     },
@@ -82,13 +84,22 @@ export const AddTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
           <ModalBody>
             <Stack spacing={6} mb={4}>
               <FormControl isInvalid={!!formik.errors?.name}>
-                <FormLabel>Team Name</FormLabel>
+                <FormLabel fontSize="sm">Team Name</FormLabel>
                 <Input
                   name="name"
-                  placeholder="Insert your team name here"
+                  placeholder="Insert the team name here"
                   onChange={formik.handleChange}
                 />
                 <FormErrorMessage>{formik.errors?.name}</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={!!formik.errors?.url}>
+                <FormLabel fontSize="sm">Team URL</FormLabel>
+                <Input
+                  name="url"
+                  placeholder="Insert their URL here"
+                  onChange={formik.handleChange}
+                />
+                <FormErrorMessage>{formik.errors?.url}</FormErrorMessage>
               </FormControl>
             </Stack>
 
@@ -102,7 +113,7 @@ export const AddTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
           </ModalBody>
           <ModalFooter>
             <Flex alignItems="center" justifyContent="flex-end">
-              <Button colorScheme="purple" type="submit" isLoading={isLoading}>
+              <Button size="sm" type="submit" isLoading={isLoading}>
                 Create
               </Button>
             </Flex>

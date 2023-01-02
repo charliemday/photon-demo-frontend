@@ -165,7 +165,7 @@ export const AutomationView: React.FC = () => {
   );
 
   return (
-    <Container size="2xl" py={32} pb={64}>
+    <Container maxW="2xl" py={32} pb={64}>
       <Head>
         <title>Automation</title>
       </Head>
