@@ -13,6 +13,10 @@ export interface GetSearchConsoleData {
     startDate: string;
     endDate: string;
     dimensions?: string[];
+    /**
+     * Whether to send the report to the team
+     */
+    notify?: "true" | undefined;
 }
 
 export interface GetSearchConsoleResponse { }
@@ -60,10 +64,10 @@ export const vendorApi = baseApi.injectEndpoints({
             GetSearchConsoleResponse,
             GetSearchConsoleData
         >({
-            query: ({ domain, startDate, endDate, dimensions }) => ({
+            query: ({ domain, startDate, endDate, dimensions, notify }) => ({
                 url: `/google/keyword-report?domain=${encodeURIComponent(
                     domain
-                )}&start_date=${startDate}&end_date=${endDate}&dimensions=${dimensions}`,
+                )}&start_date=${startDate}&end_date=${endDate}&dimensions=${dimensions}&notify=${notify}`,
                 method: "POST",
             }),
         }),

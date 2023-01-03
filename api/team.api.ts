@@ -1,5 +1,5 @@
 import { camelizeKeys } from "humps";
-import { ConvertToSnakeCase, Team } from "types";
+import { APIErrorResponse, ConvertToSnakeCase, Team } from "types";
 import { baseApi, TAG_TYPES } from ".";
 
 interface CreateTeamInterface {
@@ -23,7 +23,7 @@ export const teamApi = baseApi.injectEndpoints({
       transformResponse: (response: TeamResponse[]) =>
         response.map((t) => camelizeKeys(t) as Team),
     }),
-    createTeam: builder.mutation<Team, CreateTeamInterface>({
+    createTeam: builder.mutation<Team | APIErrorResponse, CreateTeamInterface>({
       query: ({ body }) => ({
         url: "teams/",
         method: "POST",

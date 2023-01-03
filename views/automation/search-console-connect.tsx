@@ -6,10 +6,9 @@ import { useUserDetailsQuery } from "api/user.api";
 import { CodeResponse, useGoogleLogin } from "@react-oauth/google";
 import { useCompleteOauthMutation } from "api/auth.api";
 
-interface Props {}
-
-export const SearchConsoleConnect: React.FC<Props> = () => {
-  const { data: user } = useUserDetailsQuery(undefined);
+export const SearchConsoleConnect: React.FC = () => {
+  const { data: user, refetch: refetchUserDetails } =
+    useUserDetailsQuery(undefined);
   const [completeOauth, { isLoading, isSuccess, isError }] =
     useCompleteOauthMutation();
 
@@ -25,6 +24,8 @@ export const SearchConsoleConnect: React.FC<Props> = () => {
           status: "success",
           isClosable: true,
         });
+
+        refetchUserDetails();
       }
 
       if (isError) {
@@ -36,7 +37,7 @@ export const SearchConsoleConnect: React.FC<Props> = () => {
         });
       }
     }
-  }, [isLoading, isSuccess, isError, toast]);
+  }, [isLoading, isSuccess, isError, toast, refetchUserDetails]);
 
   const googleLogin = useGoogleLogin({
     flow: "auth-code",

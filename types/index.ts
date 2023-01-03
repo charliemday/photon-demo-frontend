@@ -3,6 +3,7 @@ export type {
   CamelToSnakeCase,
   ConvertToCamelCase,
   ConvertToSnakeCase,
+  APIErrorResponse,
 } from "./utils";
 
 export type { Territory, Opportunity, Account } from "./territories";

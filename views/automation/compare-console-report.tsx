@@ -20,6 +20,7 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "store";
 import { Team } from "types";
+import { typeCheckError } from "utils";
 
 interface Props {
   isDisabled?: boolean;
@@ -41,7 +42,12 @@ export const CompareConsoleReport: React.FC<Props> = ({ isDisabled }) => {
 
   const [
     compareReport,
-    { isLoading: isComparing, isSuccess: hasComparedSuccessfully, error },
+    {
+      isLoading: isComparing,
+      isSuccess: hasComparedSuccessfully,
+      error,
+      isError,
+    },
   ] = useCompareSearchConsoleReportMutation();
   const {
     data: pageData,
@@ -66,15 +72,15 @@ export const CompareConsoleReport: React.FC<Props> = ({ isDisabled }) => {
       });
     }
 
-    if (!isComparing && error) {
+    if (!isComparing && isError && error) {
       toast({
         title: "Error",
-        description: "Something went wrong. Please try again.",
+        description: typeCheckError(error) || "Something went wrong.",
         status: "error",
         isClosable: true,
       });
     }
-  }, [isComparing, hasComparedSuccessfully, toast, error]);
+  }, [isComparing, hasComparedSuccessfully, toast, error, isError]);
 
   useEffect(() => {
     if (domain) {

@@ -15,13 +15,13 @@ import {
   Flex,
   Text,
   useToast,
+  FormHelperText,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useSelector } from "react-redux";
-import { RootState } from "store";
 import { useCreateTeamMutation, useListTeamsQuery } from "api/team.api";
 import { Button } from "components/button";
+import { typeCheckError } from "utils";
 
 interface Props {
   isOpen: boolean;
@@ -39,23 +39,36 @@ const FormSchema = Yup.object().shape({
 });
 
 export const AddTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
-  const [createTeam, { isLoading, isSuccess, error }] = useCreateTeamMutation();
+  const [createTeam, { isLoading, isSuccess, error, isError }] =
+    useCreateTeamMutation();
   const toast = useToast();
   const { refetch: refetchTeams } = useListTeamsQuery(undefined);
 
   useEffect(() => {
-    if (isSuccess) {
-      toast({
-        title: "Team created.",
-        description: "You've created your team.",
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
-      refetchTeams();
-      onClose();
+    if (!isLoading) {
+      if (isSuccess) {
+        toast({
+          title: "Team created.",
+          description: "You've created your team.",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+        refetchTeams();
+        onClose();
+      }
+
+      if (isError && error) {
+        toast({
+          title: "Error creating team.",
+          description: typeCheckError(error) || "Something went wrong",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      }
     }
-  }, [isSuccess, toast, onClose, refetchTeams]);
+  }, [isSuccess, toast, onClose, refetchTeams, error, isLoading, isError]);
 
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -100,16 +113,12 @@ export const AddTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
                   onChange={formik.handleChange}
                 />
                 <FormErrorMessage>{formik.errors?.url}</FormErrorMessage>
+                <FormHelperText
+                  fontSize="xs"
+                  pl={2}
+                >{`We'll get their logo from the URL provided`}</FormHelperText>
               </FormControl>
             </Stack>
-
-            {error && (
-              <Flex>
-                <Text textColor={"red.500"} fontSize="sm">
-                  Oops, unable to create Team
-                </Text>
-              </Flex>
-            )}
           </ModalBody>
           <ModalFooter>
             <Flex alignItems="center" justifyContent="flex-end">

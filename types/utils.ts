@@ -17,9 +17,22 @@ export type ConvertToSnakeCase<
 export type SnakeToCamelCase<S extends any> = S extends `${infer T}_${infer U}`
   ? `${T}${Capitalize<SnakeToCamelCase<U>>}`
   : S;
-  
+
 export type ConvertToCamelCase<
   T extends {
     [key: string]: any;
   }
 > = { [K in keyof T as SnakeToCamelCase<K>]: T[K] };
+
+
+
+// API Error Response
+export interface APIErrorResponse {
+  error: {
+    status_code: number;
+    message: string;
+    details: {
+      [key: string]: string[];
+    };
+  }
+}

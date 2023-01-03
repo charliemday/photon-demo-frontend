@@ -8,6 +8,7 @@ import {
   Select,
   Flex,
   useToast,
+  Spinner,
 } from "@chakra-ui/react";
 import { Button } from "components/button";
 import {
@@ -17,6 +18,7 @@ import {
 import { RootState } from "store";
 import { useSelector } from "react-redux";
 import { Team } from "types";
+import { typeCheckError } from "utils";
 
 interface Props {
   isDisabled?: boolean;
@@ -33,27 +35,40 @@ export const SearchConsoleReport: React.FC<Props> = ({ isDisabled }) => {
     (state: RootState) => state.team.activeTeam
   ) as Team | null;
 
-  const {
-    isLoading: isSiteLoading,
-    isSuccess: isSiteSuccess,
-    data: sites,
-  } = useGetSearchConsoleSitesQuery(undefined);
+  const { isLoading: isSiteLoading, data: sites } =
+    useGetSearchConsoleSitesQuery(undefined);
 
   const [
     createReport,
-    { isLoading: isReportLoading, isSuccess: isReportSuccess },
+    {
+      isLoading: isReportLoading,
+      isSuccess: isReportSuccess,
+      error: reportError,
+      isError,
+    },
   ] = useCreateSearchConsoleReportMutation();
 
   useEffect(() => {
-    if (!isReportLoading && isReportSuccess) {
-      toast({
-        title: "Success",
-        description: "Report created successfully. Check your Email.",
-        status: "success",
-        isClosable: true,
-      });
+    if (!isReportLoading) {
+      if (isReportSuccess) {
+        toast({
+          title: "Success",
+          description: "Report created successfully. Check your Email.",
+          status: "success",
+          isClosable: true,
+        });
+      }
+
+      if (isError && reportError) {
+        toast({
+          title: "Error",
+          description: typeCheckError(reportError) || "Something went wrong",
+          status: "error",
+          isClosable: true,
+        });
+      }
     }
-  }, [isReportLoading, isReportSuccess, toast]);
+  }, [isReportLoading, isReportSuccess, toast, isError, reportError]);
 
   const handleGetReport = () => {
     if (startDate && endDate && domain) {
@@ -62,6 +77,7 @@ export const SearchConsoleReport: React.FC<Props> = ({ isDisabled }) => {
         endDate,
         domain,
         dimensions: ["query", "page"],
+        notify: "true",
       });
     }
   };
@@ -127,6 +143,12 @@ export const SearchConsoleReport: React.FC<Props> = ({ isDisabled }) => {
               </option>
             ))}
           </Select>
+          {!isDisabled && isSiteLoading && (
+            <HStack opacity={0.5}>
+              <Text fontSize="sm">Fetching the domainsyou have access to</Text>
+              <Spinner size="xs" />
+            </HStack>
+          )}
         </Stack>
       </Stack>
       <Flex justifyContent="flex-end">
