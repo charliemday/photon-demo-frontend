@@ -130,10 +130,12 @@ export const CompareConsoleReport: React.FC<Props> = ({ isDisabled }) => {
         5. Compare Console Report for {activeTeam?.name}
       </Heading>
       <Text fontSize="xs" opacity={0.5}>
-        Compare the Search Console Results whether the keywords exist on a
-        specific page. The output will be an email sent to info@getbaser.com
+        {isDisabled
+          ? `You need to connect to Google Search Console to use this automation`
+          : `Compare the Search Console Results whether the keywords exist on a
+        specific page. The output will be an email sent to info@getbaser.com`}
       </Text>
-      <Stack spacing={6}>
+      <Stack spacing={6} opacity={isDisabled ? 0.25 : 1}>
         <HStack>
           <Stack w="full">
             <Text fontSize="sm" fontWeight="semibold">

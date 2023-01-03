@@ -73,7 +73,7 @@ export const SearchConsoleReport: React.FC<Props> = ({ isDisabled }) => {
       </Heading>
       <Text fontSize="xs" opacity={0.5}>
         {isDisabled
-          ? "You need to connect to Google Search Console to use this feature."
+          ? "You need to connect to Google Search Console to use this automation"
           : "Get the search console report sent to info@getbaser.com"}
       </Text>
       <Stack opacity={isDisabled ? 0.25 : 1}>
