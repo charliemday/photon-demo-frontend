@@ -1,4 +1,4 @@
-export const typeCheckError = (error: unknown): boolean | string => {
+export const typeCheckError = (error: any): boolean | string => {
     /**
      * This function is used to check if an error is an API error.
      */
