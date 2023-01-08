@@ -17,6 +17,7 @@
     "@nivo/line": "^0.80.0",
     "@react-oauth/google": "^0.5.1",
     "@reduxjs/toolkit": "^1.8.5",
+    "@sentry/nextjs": "^7.29.0",
     "@types/humps": "^2.0.2",
     "@types/react-select": "^5.0.1",
     "@vercel/analytics": "^0.1.5",

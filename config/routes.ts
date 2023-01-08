@@ -9,4 +9,8 @@ export enum ROUTES {
     NOT_FOUND = '/not-found',
     SERVER_ERROR = '/server-error',
     AUTOMATION = '/automation',
+    DASHBOARD = '/dashboard',
+    SETTINGS = '/settings',
+    KEYWORDS = '/keywords',
+    REPORTS = '/reports',
 }
