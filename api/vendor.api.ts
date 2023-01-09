@@ -83,7 +83,17 @@ export const vendorApi = baseApi.injectEndpoints({
         getSearchConsolePages: builder.query<GetSearchConsolePagesResponse, GetSearchConsolePagesRequest>({
             query: ({ domain }) => ({
                 url: `/google/pages?domain=${encodeURIComponent(domain)}`,
-            })
+            }),
+            transformResponse: (response: {
+                pages: string[] | string;
+            }) => {
+                if (typeof response.pages === "string") {
+                    return {
+                        pages: JSON.parse(response.pages),
+                    };
+                }
+                return response;
+            }
         })
     }),
 });
