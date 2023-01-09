@@ -1,1 +1,0 @@
-export { htmlTemplate } from './paa';
