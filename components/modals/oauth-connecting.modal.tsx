@@ -12,7 +12,6 @@ import {
   Spinner,
   Stack,
 } from "@chakra-ui/react";
-import { OAUTH_URLS } from "config";
 
 interface Props {
   isOpen: boolean;
