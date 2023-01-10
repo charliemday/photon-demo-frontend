@@ -17,6 +17,11 @@ export interface GetSearchConsoleData {
      * Whether to send the report to the team
      */
     notify?: "true" | undefined;
+    /**
+     * Team ID to save the report to. Optional, 
+     * if omitted the report will not be saved
+     */
+    team?: number;
 }
 
 export interface GetSearchConsoleResponse { }
@@ -66,10 +71,10 @@ export const vendorApi = baseApi.injectEndpoints({
             GetSearchConsoleResponse,
             GetSearchConsoleData
         >({
-            query: ({ domain, startDate, endDate, dimensions, notify }) => ({
+            query: ({ domain, startDate, endDate, dimensions, notify, team }) => ({
                 url: `/google/keyword-report?domain=${encodeURIComponent(
                     domain
-                )}&start_date=${startDate}&end_date=${endDate}&dimensions=${dimensions}&notify=${notify}`,
+                )}&start_date=${startDate}&end_date=${endDate}&dimensions=${dimensions}&notify=${notify}&team=${team}`,
                 method: "POST",
             }),
         }),

@@ -37,6 +37,7 @@ const STEPS: {
   key?: KEY;
   comingSoon?: boolean;
   image?: string;
+  isDisabled?: boolean;
 }[] = [
   {
     title: "1. Process CSV",
@@ -63,6 +64,7 @@ const STEPS: {
     description: "Get the search console report sent to info@getbaser.com",
     key: KEY.SEARCH_CONSOLE_REPORT,
     image: "/steps/search-console.svg",
+    isDisabled: true,
   },
   {
     title: "5. Compare Console Report",
@@ -114,6 +116,7 @@ export const AutomationView: React.FC = () => {
               }}
               comingSoon={step.comingSoon}
               image={step.image}
+              isDisabled={step.isDisabled}
             />
           </GridItem>
         ))}

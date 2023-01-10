@@ -9,6 +9,7 @@ import {
   Flex,
   useToast,
   Spinner,
+  Checkbox,
 } from "@chakra-ui/react";
 import { Button } from "components/button";
 import {
@@ -35,6 +36,7 @@ export const SearchConsoleReport: React.FC<Props> = ({
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
   const [domain, setDomain] = useState<string | null>(null);
+  const [saveReport, setSaveReport] = useState<boolean>(false);
 
   const toast = useToast();
 
@@ -79,13 +81,19 @@ export const SearchConsoleReport: React.FC<Props> = ({
 
   const handleGetReport = () => {
     if (startDate && endDate && domain) {
-      createReport({
+      const body = {
         startDate,
         endDate,
         domain,
         dimensions: ["query", "page"],
-        notify: "true",
-      });
+        notify: "true" as const,
+      } as any;
+
+      if (saveReport) {
+        body["team"] = activeTeam?.id;
+      }
+
+      createReport(body);
     }
   };
 
@@ -160,6 +168,17 @@ export const SearchConsoleReport: React.FC<Props> = ({
                 <Spinner size="xs" />
               </HStack>
             )}
+          </Stack>
+          <Stack pt={4} pl={2}>
+            <Checkbox
+              size="sm"
+              onChange={(e) => setSaveReport(e.target.checked)}
+            >
+              Save Report
+            </Checkbox>
+            <Text fontSize="xs" opacity={0.75}>
+              This will save the report to the Database for this Team.
+            </Text>
           </Stack>
         </Stack>
         <Flex justifyContent="flex-end">

@@ -41,7 +41,7 @@ export const FloatingButton: React.FC<Props> = ({ teams, fixed }) => {
   const renderButton = () => (
     <>
       <AddTeamModal isOpen={isOpen} onClose={onClose} />
-      <Stack>
+      <Stack zIndex={101}>
         <Text fontWeight="semibold" fontSize="sm">
           Select a Team to Work on:
         </Text>

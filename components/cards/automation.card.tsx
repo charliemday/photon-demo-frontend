@@ -10,6 +10,7 @@ interface Props {
   onClick: () => void;
   comingSoon?: boolean;
   image?: string;
+  isDisabled?: boolean;
 }
 
 export const AutomationCard: React.FC<Props> = ({
@@ -18,6 +19,7 @@ export const AutomationCard: React.FC<Props> = ({
   onClick,
   comingSoon,
   image,
+  isDisabled,
 }) => {
   const renderComingSoon = () => (
     <Flex
@@ -34,15 +36,31 @@ export const AutomationCard: React.FC<Props> = ({
     </Flex>
   );
 
+  const renderDisabled = () => (
+    <Flex
+      position="absolute"
+      h="full"
+      w="full"
+      bgColor="rgba(255,255,255,0.75)"
+      pointerEvents="none"
+      zIndex={100}
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Text fontWeight="semibold">Disabled</Text>
+    </Flex>
+  );
+
   return (
     <Box position="relative">
-      {comingSoon && renderComingSoon()}
+      {comingSoon && !isDisabled && renderComingSoon()}
+      {isDisabled && renderDisabled()}
       <Stack
         p={6}
         borderRadius="md"
         boxShadow="lg"
         _hover={
-          !comingSoon
+          !comingSoon && !isDisabled
             ? {
                 boxShadow: "xl",
                 bgColor: BRAND_COLOR,
