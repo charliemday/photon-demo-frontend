@@ -126,10 +126,22 @@ export const UploadAhrefsReport: FC<Props> = (props) => {
         <Heading fontSize="lg">
           6. Upload Ahrefs Report {activeTeam?.name}
         </Heading>
-        <Text fontSize="xs" mt={6} opacity={0.5}>
+        <Text fontSize="xs" my={6} opacity={0.75}>
           Upload custom Ahrefs report for {activeTeam?.name}. This will be saved
           on the Database as an Ahref report.
         </Text>
+        <a download href="/demo/ahrefs-report/demo.csv">
+          <Text
+            opacity={0.75}
+            fontSize="xs"
+            cursor="pointer"
+            _hover={{
+              textDecoration: "underline",
+            }}
+          >
+            See the correct structure of a single input file here
+          </Text>
+        </a>
         <Input
           type="file"
           onInput={(e: any) => setFiles(Object.values(e.target.files))}

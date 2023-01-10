@@ -99,9 +99,21 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
         <Heading fontSize="lg">
           2. Questions Asked for {activeTeam?.name}
         </Heading>
-        <Text fontSize="xs" mt={6} opacity={0.5}>
+        <Text fontSize="xs" my={6} opacity={0.75}>
           {`This will take a CSV file with the first column of sorted keywords and get the "People Also Asked" questions for each keyword`}
         </Text>
+        <a download href="/demo/people-also-ask/demo.csv">
+          <Text
+            opacity={0.75}
+            fontSize="xs"
+            cursor="pointer"
+            _hover={{
+              textDecoration: "underline",
+            }}
+          >
+            See the correct structure of an input file here
+          </Text>
+        </a>
         <Input
           type="file"
           onInput={(e: any) => setAlsoAskedFile(e.target.files[0])}

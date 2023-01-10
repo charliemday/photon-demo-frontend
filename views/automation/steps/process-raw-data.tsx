@@ -13,6 +13,7 @@ import { BsCheckCircle } from "react-icons/bs";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { BRAND_COLOR } from "config";
 import { useSelector } from "react-redux";
+import Link from "next/link";
 
 import { useAutomation } from "hooks";
 import { Button } from "components/button";
@@ -96,11 +97,23 @@ export const ProcessRawData: React.FC<Props> = (props) => {
     <ModalStepWrapper {...props}>
       <Box>
         <Heading fontSize="lg">1. Upload raw CSV {activeTeam?.name}</Heading>
-        <Text fontSize="xs" mt={6} opacity={0.5}>
+        <Text fontSize="xs" my={6} opacity={0.75}>
           This will take a group of CSV files from Ahrefs and sort them to
           exclude duplicate keywords and only show the keywords on the the first
           2 pages
         </Text>
+        <a download href="/demo/process-raw-data/demo.csv">
+          <Text
+            opacity={0.75}
+            fontSize="xs"
+            cursor="pointer"
+            _hover={{
+              textDecoration: "underline",
+            }}
+          >
+            See the correct structure of a single input file here
+          </Text>
+        </a>
         <Input
           type="file"
           onInput={(e: any) => setRawDataFiles(Object.values(e.target.files))}
