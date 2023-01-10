@@ -44,7 +44,7 @@ const STEPS: {
     exclude duplicate keywords and only show the keywords on the the
     first 2 pages`,
     key: KEY.PROCESS_RAW_DATA,
-    image: "/steps/excel.jpeg",
+    image: "/steps/excel.ico",
   },
   {
     title: "2. People Also Asked",
