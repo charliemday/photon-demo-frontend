@@ -44,9 +44,9 @@ export const MainLayout: React.FC<Props> = ({ children }) => {
           {BRAND_NAME} | {TAG_LINE}
         </title>
       </Head>
-      <Flex position="relative" bgColor="#F5F5F5" flexDir="column">
+      <Flex position="relative" bgColor="#F5F5F5" flexDir="column" w="full">
         <Topbar />
-        <Box minH="100vh" w="full" px={["0%", "20%"]}>
+        <Box minH="100vh" w="full" px={["0%", "10%"]}>
           {children}
         </Box>
       </Flex>

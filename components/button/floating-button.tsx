@@ -24,9 +24,10 @@ import { AddTeamModal } from "components/modals";
 
 interface Props {
   teams: Team[];
+  fixed?: boolean;
 }
 
-export const FloatingButton: React.FC<Props> = ({ teams }) => {
+export const FloatingButton: React.FC<Props> = ({ teams, fixed }) => {
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(
     teams?.[0] || null
   );
@@ -37,10 +38,8 @@ export const FloatingButton: React.FC<Props> = ({ teams }) => {
     dispatch(setActiveTeam(team));
   };
 
-  if (!teams) return null;
-
-  return (
-    <Flex cursor="pointer" w="auto" position="fixed" right="5%" zIndex={99}>
+  const renderButton = () => (
+    <>
       <AddTeamModal isOpen={isOpen} onClose={onClose} />
       <Stack>
         <Text fontWeight="semibold" fontSize="sm">
@@ -97,6 +96,18 @@ export const FloatingButton: React.FC<Props> = ({ teams }) => {
           </MenuList>
         </Menu>
       </Stack>
-    </Flex>
+    </>
   );
+
+  if (!teams) return null;
+
+  if (fixed) {
+    return (
+      <Flex cursor="pointer" w="auto" position="fixed" right="5%" zIndex={99}>
+        {renderButton()}
+      </Flex>
+    );
+  }
+
+  return <>{renderButton()}</>;
 };

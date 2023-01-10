@@ -45,6 +45,8 @@ export interface GetSearchConsolePagesResponse {
     pages: string[];
 }
 
+export interface AhrefsRequestData extends FormData { }
+
 // Define a service using a base URL and expected endpoints
 export const vendorApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -94,6 +96,13 @@ export const vendorApi = baseApi.injectEndpoints({
                 }
                 return response;
             }
+        }),
+        uploadAhrefsReport: builder.mutation<null, AhrefsRequestData>({
+            query: (data) => ({
+                url: "/ahrefs/report/",
+                method: "POST",
+                body: data,
+            }),
         })
     }),
 });
@@ -105,5 +114,6 @@ export const {
     useCreateSearchConsoleReportMutation,
     useGetSearchConsoleSitesQuery,
     useCompareSearchConsoleReportMutation,
-    useGetSearchConsolePagesQuery
+    useGetSearchConsolePagesQuery,
+    useUploadAhrefsReportMutation,
 } = vendorApi;
