@@ -1,3 +1,6 @@
+/**
+ * TODO: Use RTK for this file
+ */
 import { useToast } from "@chakra-ui/react";
 import { BASE_URL, ENGINE_URL } from "config/urls";
 import { useState } from "react";
@@ -73,7 +76,7 @@ export const useAutomation = (): ReturnProps => {
 
         if (language) formData.append("language", language);
 
-        const response = fetch(`${BASE_URL}/questions-asked/`, {
+        const response = fetch(`${BASE_URL}/people-also-ask/`, {
             method: "POST",
             body: formData,
         })
