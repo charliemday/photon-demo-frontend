@@ -108,6 +108,12 @@ export const vendorApi = baseApi.injectEndpoints({
                 method: "POST",
                 body: data,
             }),
+        }),
+        populateSearchConsoleReports: builder.mutation<null, null>({
+            query: () => ({
+                url: "/google/populate-reports",
+                method: "POST",
+            })
         })
     }),
 });
@@ -121,4 +127,5 @@ export const {
     useCompareSearchConsoleReportMutation,
     useGetSearchConsolePagesQuery,
     useUploadAhrefsReportMutation,
+    usePopulateSearchConsoleReportsMutation
 } = vendorApi;

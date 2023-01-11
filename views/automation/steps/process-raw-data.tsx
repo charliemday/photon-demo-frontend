@@ -13,7 +13,6 @@ import { BsCheckCircle } from "react-icons/bs";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { BRAND_COLOR } from "config";
 import { useSelector } from "react-redux";
-import Link from "next/link";
 
 import { useAutomation } from "hooks";
 import { Button } from "components/button";

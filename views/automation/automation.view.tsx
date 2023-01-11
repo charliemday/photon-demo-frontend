@@ -20,6 +20,7 @@ import {
   SearchConsoleConnect,
   SearchConsoleReport,
   UploadAhrefsReport,
+  PopulateSCReports,
 } from "./steps";
 
 enum KEY {
@@ -29,6 +30,7 @@ enum KEY {
   SEARCH_CONSOLE_REPORT = "search-console-report",
   COMPARE_CONSOLE_REPORT = "compare-console-report",
   UPLOAD_AHREFS_REPORT = "upload-ahrefs-report",
+  POPULATE_SC_REPORTS = "populate-sc-reports",
 }
 
 const STEPS: {
@@ -80,7 +82,13 @@ const STEPS: {
     image: "/steps/ahrefs.jpeg",
   },
   {
-    title: "7. Automate Content Creation",
+    title: "7. Populate SC Reports",
+    description: `This will populate the Search Console reports for *all* the teams.`,
+    key: KEY.POPULATE_SC_REPORTS,
+    image: "/steps/search-console.svg",
+  },
+  {
+    title: "8. Automate Content Creation",
     description: `This will automate the content creation on the SEO Hub`,
     comingSoon: true,
     image: "/steps/notion.png",
@@ -145,6 +153,10 @@ export const AutomationView: React.FC = () => {
       />
       <UploadAhrefsReport
         isOpen={isOpen && activeStep === KEY.UPLOAD_AHREFS_REPORT}
+        onClose={onClose}
+      />
+      <PopulateSCReports
+        isOpen={isOpen && activeStep === KEY.POPULATE_SC_REPORTS}
         onClose={onClose}
       />
     </Box>
