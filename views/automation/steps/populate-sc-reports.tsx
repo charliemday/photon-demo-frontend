@@ -52,14 +52,20 @@ export const PopulateSCReports: React.FC<Props> = (props) => {
 
   const renderTeam = (logo: string | null, name: string) => (
     <Stack alignItems="center">
-      <Box position="relative" minH={25} w={25}>
+      <Box
+        position="relative"
+        minH={25}
+        w={25}
+        boxShadow="md"
+        borderRadius="md"
+      >
         {logo ? (
-          <Image src={logo} layout="fill" alt={name} />
+          <Image src={logo} layout="fill" alt={name} unoptimized />
         ) : (
           <BsFillPersonFill fontSize={28} />
         )}
       </Box>
-      <Text fontSize="sm" fontWeight="semibold">
+      <Text fontSize="sm" fontWeight="semibold" noOfLines={1}>
         {name}
       </Text>
     </Stack>
