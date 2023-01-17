@@ -52,8 +52,12 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
   };
 
   const handleSubmitAlsoAskedData = async () => {
-    if (!alsoAskedFile) return;
-    await uploadAlsoAskedData(alsoAskedFile, language || "en");
+    if (!alsoAskedFile || !activeTeam?.id) return;
+    await uploadAlsoAskedData({
+      file: alsoAskedFile,
+      language: language || "en",
+      team: activeTeam?.id,
+    });
     setAlsoAskedFile(null);
   };
 

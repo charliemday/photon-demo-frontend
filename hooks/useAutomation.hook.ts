@@ -7,7 +7,7 @@ import { useState } from "react";
 
 interface ReturnProps {
     uploadRawData: (files: File[]) => void;
-    uploadAlsoAskedData: (file: File, language?: string) => null | any;
+    uploadAlsoAskedData: (data: { file: File, language?: string, team: string }) => null | any;
     isRawDataLoading: boolean;
     isAlsoAskedDataLoading: boolean;
 };
@@ -66,13 +66,16 @@ export const useAutomation = (): ReturnProps => {
 
     };
 
-    const uploadAlsoAskedData = async (file: File, language?: string) => {
+    const uploadAlsoAskedData = async (data: { file: File, language?: string, team: string }) => {
+
+        const { file, language, team } = data;
 
         setIsAlsoAskedDataLoading(true);
         // Call the API to upload the CSV file
         const formData = new FormData();
 
         formData.append("file", file);
+        formData.append("team", team);
 
         if (language) formData.append("language", language);
 

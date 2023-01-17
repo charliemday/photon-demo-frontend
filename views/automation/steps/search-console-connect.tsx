@@ -47,7 +47,8 @@ export const SearchConsoleConnect: React.FC<Props> = (props) => {
 
   const googleLogin = useGoogleLogin({
     flow: "auth-code",
-    scope: "https://www.googleapis.com/auth/webmasters.readonly",
+    scope:
+      "https://www.googleapis.com/auth/webmasters.readonly https://www.googleapis.com/auth/drive", // TODO: This is NOT suitable for non-admin users
     onSuccess: (response: CodeResponse) => {
       // On Success we should complete the OAuth flow by exchanging the code for an access token
       completeOauth({ code: response.code, app: "google" });
