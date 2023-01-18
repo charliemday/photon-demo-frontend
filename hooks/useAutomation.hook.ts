@@ -4,6 +4,8 @@
 import { useToast } from "@chakra-ui/react";
 import { BASE_URL, ENGINE_URL } from "config/urls";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 interface ReturnProps {
     uploadRawData: (files: File[]) => void;
@@ -16,10 +18,12 @@ export const useAutomation = (): ReturnProps => {
 
     const [isRawDataLoading, setIsRawDataLoading] = useState<boolean>(false);
     const [isAlsoAskedDataLoading, setIsAlsoAskedDataLoading] = useState<boolean>(false);
+    const activeTeam = useSelector((state: RootState) => state.team.activeTeam)
 
     const toast = useToast();
 
     const uploadRawData = (files: File[]) => {
+
 
         setIsRawDataLoading(true);
         // Call the API to upload the CSV file
@@ -29,26 +33,18 @@ export const useAutomation = (): ReturnProps => {
             formData.append("files", file);
         });
 
+        formData.append("team_id", activeTeam?.id);
+
         fetch(`${ENGINE_URL}/process-csv`, {
             method: "POST",
             body: formData,
         })
             .then((res) => res.blob())
-            .then((blob) => {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement("a");
-
-                a.href = url;
-                a.setAttribute("download", "output.xlsx");
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-
+            .then(() => {
                 setIsRawDataLoading(false);
-
                 toast({
                     title: "Success",
-                    description: "Your CSV file has been processed",
+                    description: "Your CSV file has been processed and saved to the Drive.",
                     status: "success",
                     isClosable: true,
                 });
@@ -88,7 +84,7 @@ export const useAutomation = (): ReturnProps => {
                 setIsAlsoAskedDataLoading(false);
                 toast({
                     title: "Success",
-                    description: "Your CSV file has been sent. We will send the QuestionsAsked output to your email and notify you on Slack when it's ready.",
+                    description: "Your CSV file has been sent. We will save the QuestionsAsked output to the Drive and notify you on Slack when it's ready.",
                     status: "success",
                     isClosable: true,
                 });
