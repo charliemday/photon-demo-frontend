@@ -68,8 +68,12 @@ export const AutomationCard: React.FC<Props> = ({
               }
             : {}
         }
-        cursor="pointer"
-        onClick={onClick}
+        cursor={comingSoon || isDisabled ? "not-allowed" : "pointer"}
+        onClick={() => {
+          if (!comingSoon && !isDisabled) {
+            onClick();
+          }
+        }}
         h={200}
         overflow="hidden"
         border="solid 1px lightgray"
