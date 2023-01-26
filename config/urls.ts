@@ -1,7 +1,7 @@
 // Backend Local
 let ROOT_URL = 'http://localhost:8000';
 // Backend Prod
-// let ROOT_URL = 'https://antler-backend.herokuapp.com';
+// let ROOT_URL = 'https://baser-backend.herokuapp.com';
 
 let BASE_URL = `${ROOT_URL}/api`;
 

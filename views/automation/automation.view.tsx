@@ -74,7 +74,6 @@ const STEPS: {
     specific page. The output will be an email sent to info@getbaser.com`,
     key: KEY.COMPARE_CONSOLE_REPORT,
     image: "/steps/search-console.svg",
-    isDisabled: true,
   },
   {
     title: "6. Upload Ahrefs report",

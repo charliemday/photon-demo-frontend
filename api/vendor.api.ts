@@ -18,7 +18,7 @@ export interface GetSearchConsoleData {
      */
     notify?: "true" | undefined;
     /**
-     * Team ID to save the report to. Optional, 
+     * Team ID to save the report to. Optional,
      * if omitted the report will not be saved
      */
     team?: number;
@@ -35,11 +35,8 @@ export interface SearchConsoleSitesResponse {
     siteEntry: SearchConsoleSite[];
 }
 
-export interface CompareConsoleData extends GetSearchConsoleData {
-    payload: {
-        page: string;
-        team: number;
-    };
+export interface CompareConsoleData {
+    teamIds?: number[];
 }
 
 export interface GetSearchConsolePagesRequest {
@@ -67,6 +64,7 @@ export const vendorApi = baseApi.injectEndpoints({
                 return sites;
             },
         }),
+        // TODO: DEPRECATE
         createSearchConsoleReport: builder.mutation<
             GetSearchConsoleResponse,
             GetSearchConsoleData
@@ -79,28 +77,33 @@ export const vendorApi = baseApi.injectEndpoints({
             }),
         }),
         compareSearchConsoleReport: builder.mutation<null, CompareConsoleData>({
-            query: ({ domain, startDate, endDate, dimensions, payload }) => ({
-                url: `/google/compare-data?domain=${encodeURIComponent(
-                    domain
-                )}&start_date=${startDate}&end_date=${endDate}&dimensions=${dimensions}`,
-                method: "POST",
-                body: payload,
-            }),
+            query: (data) => {
+                let url = "/missing-keywords-job";
+                if (data.teamIds) {
+                    url = url + `?team_ids=[${data.teamIds.join(",")}]`;
+                }
+
+                return {
+                    url,
+                    method: "GET",
+                };
+            },
         }),
-        getSearchConsolePages: builder.query<GetSearchConsolePagesResponse, GetSearchConsolePagesRequest>({
+        getSearchConsolePages: builder.query<
+            GetSearchConsolePagesResponse,
+            GetSearchConsolePagesRequest
+        >({
             query: ({ domain }) => ({
                 url: `/google/pages?domain=${encodeURIComponent(domain)}`,
             }),
-            transformResponse: (response: {
-                pages: string[] | string;
-            }) => {
+            transformResponse: (response: { pages: string[] | string }) => {
                 if (typeof response.pages === "string") {
                     return {
                         pages: JSON.parse(response.pages),
                     };
                 }
                 return response;
-            }
+            },
         }),
         uploadAhrefsReport: builder.mutation<null, AhrefsRequestData>({
             query: (data) => ({
@@ -110,11 +113,11 @@ export const vendorApi = baseApi.injectEndpoints({
             }),
         }),
         populateSearchConsoleReports: builder.mutation<null, null>({
-            query: () => ({
+            query: (data) => ({
                 url: "/google/populate-reports",
                 method: "POST",
-            })
-        })
+            }),
+        }),
     }),
 });
 
@@ -127,5 +130,5 @@ export const {
     useCompareSearchConsoleReportMutation,
     useGetSearchConsolePagesQuery,
     useUploadAhrefsReportMutation,
-    usePopulateSearchConsoleReportsMutation
+    usePopulateSearchConsoleReportsMutation,
 } = vendorApi;
