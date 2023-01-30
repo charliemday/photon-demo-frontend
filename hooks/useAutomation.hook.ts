@@ -7,25 +7,30 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
 
+
+interface PromptInterface {
+    classificationCategory?: string | null;
+    classificationPositivePrompts?: string[] | null;
+    classificationNegativePrompts?: string[] | null;
+}
+
 interface ReturnProps {
-    uploadRawData: (files: File[]) => void;
+    uploadRawData: (files: File[], data: PromptInterface) => void;
     uploadAlsoAskedData: (data: { file: File, language?: string, team: string }) => null | any;
-    isRawDataLoading: boolean;
+    isLoading: boolean;
     isAlsoAskedDataLoading: boolean;
 };
 
 export const useAutomation = (): ReturnProps => {
 
-    const [isRawDataLoading, setIsRawDataLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isAlsoAskedDataLoading, setIsAlsoAskedDataLoading] = useState<boolean>(false);
     const activeTeam = useSelector((state: RootState) => state.team.activeTeam)
 
     const toast = useToast();
 
-    const uploadRawData = (files: File[]) => {
-
-
-        setIsRawDataLoading(true);
+    const uploadRawData = (files: File[], data: PromptInterface) => {
+        setIsLoading(true);
         // Call the API to upload the CSV file
         const formData = new FormData();
 
@@ -35,13 +40,19 @@ export const useAutomation = (): ReturnProps => {
 
         formData.append("team_id", activeTeam?.id);
 
+        const { classificationCategory, classificationPositivePrompts, classificationNegativePrompts } = data;
+
+        if (classificationCategory) formData.append("classification_category", classificationCategory);
+        if (classificationPositivePrompts) formData.append("classification_positive_prompts", classificationPositivePrompts.join(","));
+        if (classificationNegativePrompts) formData.append("classification_negative_prompts", classificationNegativePrompts.join(","));
+
         fetch(`${ENGINE_URL}/process-csv`, {
             method: "POST",
             body: formData,
         })
             .then((res) => res.blob())
             .then(() => {
-                setIsRawDataLoading(false);
+                setIsLoading(false);
                 toast({
                     title: "Success",
                     description: "Your CSV file has been processed and saved to the Drive.",
@@ -50,7 +61,7 @@ export const useAutomation = (): ReturnProps => {
                 });
             })
             .catch(() => {
-                setIsRawDataLoading(false);
+                setIsLoading(false);
                 toast({
                     title: "Error",
                     description: "Something went wrong",
@@ -108,7 +119,7 @@ export const useAutomation = (): ReturnProps => {
     return {
         uploadRawData,
         uploadAlsoAskedData,
-        isRawDataLoading,
+        isLoading,
         isAlsoAskedDataLoading,
     }
 };

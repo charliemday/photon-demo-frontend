@@ -7,12 +7,17 @@ import {
   Box,
   Heading,
   Input,
+  FormControl,
+  FormLabel,
+  FormHelperText,
+  Divider,
 } from "@chakra-ui/react";
 import { BarLoader } from "react-spinners";
 import { BsCheckCircle } from "react-icons/bs";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { BRAND_COLOR } from "config";
 import { useSelector } from "react-redux";
+import { Image } from "components/image";
 
 import { useAutomation } from "hooks";
 import { Button } from "components/button";
@@ -30,16 +35,39 @@ export const ProcessRawData: React.FC<Props> = (props) => {
   const rawDataInputRef = useRef<HTMLInputElement>(null);
   const activeTeam = useSelector((state: RootState) => state.team.activeTeam);
 
-  const { uploadRawData, isRawDataLoading } = useAutomation();
+  const { uploadRawData, isLoading } = useAutomation();
+
+  const [classificationCategory, setClassificationCategory] = useState("");
+  const [positive1, setPositive1] = useState("");
+  const [positive2, setPositive2] = useState("");
+  const [positive3, setPositive3] = useState("");
+  const [negative1, setNegative1] = useState("");
+  const [negative2, setNegative2] = useState("");
+  const [negative3, setNegative3] = useState("");
 
   useEffect(() => {
     if (rawDataInputRef.current) rawDataInputRef.current.value = "";
   }, [rawDataFiles]);
 
-  const handleSubmitRawData = async () => {
+  const handleSubmit = async () => {
     if (!rawDataFiles || !rawDataFiles.length) return;
 
-    await uploadRawData(rawDataFiles);
+    const positiveClassificationsExist =
+      positive1.length && positive2.length && positive3.length;
+    const negativeClassificationsExist =
+      negative1.length && negative2.length && negative3.length;
+
+    await uploadRawData(rawDataFiles, {
+      classificationCategory: classificationCategory.length
+        ? classificationCategory
+        : null,
+      classificationPositivePrompts: positiveClassificationsExist
+        ? [positive1, positive2, positive3]
+        : null,
+      classificationNegativePrompts: negativeClassificationsExist
+        ? [negative1, negative2, negative3]
+        : null,
+    });
 
     setRawDataFiles(null);
   };
@@ -81,7 +109,7 @@ export const ProcessRawData: React.FC<Props> = (props) => {
               ready for submission
             </Text>
           </HStack>
-          {isRawDataLoading && <BarLoader color={BRAND_COLOR} />}
+          {isLoading && <BarLoader color={BRAND_COLOR} />}
         </Stack>
       ) : (
         <HStack>
@@ -91,6 +119,15 @@ export const ProcessRawData: React.FC<Props> = (props) => {
       )}
     </Flex>
   );
+
+  const promptsExist =
+    classificationCategory.length &&
+    positive1.length &&
+    positive2.length &&
+    positive3.length &&
+    negative1.length &&
+    negative2.length &&
+    negative3.length;
 
   return (
     <ModalStepWrapper {...props}>
@@ -113,6 +150,22 @@ export const ProcessRawData: React.FC<Props> = (props) => {
             See the correct structure of a single input file here
           </Text>
         </a>
+
+        <Divider my={12} />
+
+        <HStack>
+          <Box
+            width={18}
+            height={18}
+            position="relative"
+            borderRadius={4}
+            overflow="hidden"
+          >
+            <Image src="steps/ahrefs.jpeg" layout="fill" alt="Ahrefs Logo" />
+          </Box>
+          <Heading fontSize="md">Ahrefs Export Data</Heading>
+        </HStack>
+
         <Input
           type="file"
           onInput={(e: any) => setRawDataFiles(Object.values(e.target.files))}
@@ -121,15 +174,95 @@ export const ProcessRawData: React.FC<Props> = (props) => {
           display="none"
         />
         {renderRawDataUploadZone()}
-        <Flex justifyContent="flex-end">
+
+        <Divider mt={12} />
+
+        <Stack spacing={12} mt={12}>
+          <Stack>
+            <HStack>
+              <Box
+                width={18}
+                height={18}
+                position="relative"
+                borderRadius={4}
+                overflow="hidden"
+              >
+                <Image
+                  src="openai-avatar.png"
+                  layout="fill"
+                  alt="OpenAI Logo"
+                />
+              </Box>
+              <Heading fontSize="md">Classification prompts (Optional)</Heading>
+            </HStack>
+
+            <Text fontSize="xs" opacity={0.75}>
+              These prompts will be used in the OpenAI API call to help classify
+              the keywords as to whether they are relevant or non-relevant.
+              Leaving this blank will still produce the CSV but without
+              relevance classification.
+            </Text>
+          </Stack>
+          <FormControl>
+            <FormLabel fontSize="sm">Classification category</FormLabel>
+            <Input
+              name="classificationCategory"
+              type="text"
+              onChange={(e) => setClassificationCategory(e.target.value)}
+            />
+            <FormHelperText fontSize="xs">e.g. Female Health</FormHelperText>
+          </FormControl>
+
+          <HStack w="full">
+            <Stack w="full">
+              <FormLabel fontSize="sm">Positive Classifications</FormLabel>
+              <Input
+                name="positive1"
+                type="text"
+                onChange={(e) => setPositive1(e.target.value)}
+              />
+              <Input
+                name="positive2"
+                onChange={(e) => setPositive2(e.target.value)}
+              />
+              <Input
+                name="positive3"
+                onChange={(e) => setPositive3(e.target.value)}
+              />
+              <Text fontSize="xs" opacity={0.5}>
+                These are the positive classifications{" "}
+              </Text>
+            </Stack>
+
+            <Stack w="full">
+              <FormLabel fontSize="sm">Negative Classifications</FormLabel>
+              <Input
+                name="negative1"
+                onChange={(e) => setNegative1(e.target.value)}
+              />
+              <Input
+                name="negative2"
+                onChange={(e) => setNegative2(e.target.value)}
+              />
+              <Input
+                name="negative3"
+                onChange={(e) => setNegative3(e.target.value)}
+              />
+              <Text fontSize="xs" opacity={0.5}>
+                These are the negative classifications{" "}
+              </Text>
+            </Stack>
+          </HStack>
+        </Stack>
+        <Flex justifyContent="flex-end" pt={12}>
           <Button size="sm" onClick={() => setRawDataFiles(null)}>
             Clear
           </Button>
           <Button
             size="sm"
-            onClick={handleSubmitRawData}
-            isDisabled={!rawDataFiles || isRawDataLoading}
-            isLoading={isRawDataLoading}
+            onClick={handleSubmit}
+            isDisabled={!rawDataFiles || isLoading}
+            isLoading={isLoading}
           >
             Upload
           </Button>

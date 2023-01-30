@@ -76,7 +76,8 @@ export const PopulateSCReports: React.FC<Props> = (props) => {
       <Stack>
         <Heading fontSize="lg">Populate Search Console Reports</Heading>
         <Text fontSize="sm">
-          This step will populate the Search Console reports for all the teams.
+          This step will populate the Search Console reports for all the teams
+          in our database (not just the ones below).
           <Grid templateColumns="repeat(6, 1fr)" gap={4} py={12}>
             {teams?.slice(0, 18)?.map((team) => (
               <GridItem key={team.id}>
