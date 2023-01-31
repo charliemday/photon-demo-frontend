@@ -23,6 +23,7 @@ import { useAutomation } from "hooks";
 import { Button } from "components/button";
 import { RootState } from "store";
 import { ModalStepWrapper } from "./modal-step-wrapper";
+import Link from "next/link";
 
 interface Props {
   isOpen: boolean;
@@ -118,6 +119,49 @@ export const ProcessRawData: React.FC<Props> = (props) => {
         </HStack>
       )}
     </Flex>
+  );
+
+  const renderExamplePrompt = () => (
+    <Stack mt={6}>
+      <Heading fontSize="md" mb={2}>
+        Example Prompt
+      </Heading>
+      <HStack opacity={0.5}>
+        <Text fontSize="xs">
+          This is the prompt that will be sent to the OpenAI API.
+        </Text>
+        <Link href="https://platform.openai.com/playground">
+          <a target="_blank">
+            <Text
+              fontSize="xs"
+              _hover={{
+                textDecoration: "underline",
+              }}
+            >
+              See OpenAI Playground.
+            </Text>
+          </a>
+        </Link>
+      </HStack>
+      <Box border="solid 1px lightgray" p={4} borderRadius="md">
+        <Text fontSize="sm">
+          {`Classify the keywords according to whether it relateds to "${classificationCategory}" or "Not ${classificationCategory}" and reset the context e.g.`}
+        </Text>
+
+        <Text fontSize="sm" mt={4}>
+          {`${classificationCategory}: ${positive1}, ${positive2}, ${positive3}`}
+        </Text>
+        <Text fontSize="sm" mt={4}>
+          {`Not ${classificationCategory}: ${negative1}, ${negative2}, ${negative3}`}
+        </Text>
+
+        <Text mt={4}>{`[KEYWORD LIST WILL BE AUTO INSERTED HERE]`}</Text>
+
+        <Text fontSize="sm" mt={4}>
+          {`The result should be two classifications with the prefix "${classificationCategory}" and "Not ${classificationCategory}" respectively.`}
+        </Text>
+      </Box>
+    </Stack>
   );
 
   const promptsExist =
@@ -233,7 +277,6 @@ export const ProcessRawData: React.FC<Props> = (props) => {
                 These are the positive classifications{" "}
               </Text>
             </Stack>
-
             <Stack w="full">
               <FormLabel fontSize="sm">Negative Classifications</FormLabel>
               <Input
@@ -254,6 +297,7 @@ export const ProcessRawData: React.FC<Props> = (props) => {
             </Stack>
           </HStack>
         </Stack>
+        {promptsExist ? renderExamplePrompt() : null}
         <Flex justifyContent="flex-end" pt={12}>
           <Button size="sm" onClick={() => setRawDataFiles(null)}>
             Clear
