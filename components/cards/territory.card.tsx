@@ -21,7 +21,7 @@ import { AddTerritoryModal, ConfirmationModal } from "components/modals";
 import {
   useDeleteTerritoryMutation,
   useListTerritoriesQuery,
-} from "api/territory.api";
+} from "api/engine.api";
 
 interface Props {}
 
@@ -40,7 +40,11 @@ export const TerritoryCard: React.FC<Props> = () => {
   const { isOpen, onClose, onToggle } = useDisclosure();
   const [territoryToDelete, setTerritoryToDelete] = useState<Territory>();
 
-  const { data, isLoading, refetch: refetchTerritories } = useListTerritoriesQuery(activeTeam?.id, {
+  const {
+    data,
+    isLoading,
+    refetch: refetchTerritories,
+  } = useListTerritoriesQuery(activeTeam?.id, {
     skip: !activeTeam,
   });
   const [

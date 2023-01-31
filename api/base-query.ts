@@ -19,7 +19,7 @@ export const baseQuery = fetchBaseQuery({
 
 export enum TAG_TYPES {
   ACCOUNTS = 'Accounts',
-  TERRITORIES = 'Territories',
+  ENGINE = 'Engine',
   OPPORTUNITIES = 'Opportunities',
   TEAMS = 'Teams',
   USERS = 'Users',

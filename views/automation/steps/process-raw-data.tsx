@@ -11,6 +11,7 @@ import {
   FormLabel,
   FormHelperText,
   Divider,
+  useToast,
 } from "@chakra-ui/react";
 import { BarLoader } from "react-spinners";
 import { BsCheckCircle } from "react-icons/bs";
@@ -19,11 +20,12 @@ import { BRAND_COLOR } from "config";
 import { useSelector } from "react-redux";
 import { Image } from "components/image";
 
-import { useAutomation } from "hooks";
+import { useProcessAhrefsDataMutation } from "api/engine.api";
 import { Button } from "components/button";
 import { RootState } from "store";
 import { ModalStepWrapper } from "./modal-step-wrapper";
 import Link from "next/link";
+import { typeCheckError } from "utils";
 
 interface Props {
   isOpen: boolean;
@@ -36,7 +38,10 @@ export const ProcessRawData: React.FC<Props> = (props) => {
   const rawDataInputRef = useRef<HTMLInputElement>(null);
   const activeTeam = useSelector((state: RootState) => state.team.activeTeam);
 
-  const { uploadRawData, isLoading } = useAutomation();
+  const [uploadRawData, { isLoading, isSuccess, error, isError }] =
+    useProcessAhrefsDataMutation();
+
+  const toast = useToast();
 
   const [classificationCategory, setClassificationCategory] = useState("");
   const [positive1, setPositive1] = useState("");
@@ -47,28 +52,59 @@ export const ProcessRawData: React.FC<Props> = (props) => {
   const [negative3, setNegative3] = useState("");
 
   useEffect(() => {
+    if (!isLoading && isSuccess) {
+      toast({
+        title: "Success",
+        description:
+          "Your CSV files are being processed and will be saved to the Drive.",
+        status: "success",
+        isClosable: true,
+      });
+    }
+
+    if (!isLoading && isError && error) {
+      toast({
+        title: "Error",
+        description: typeCheckError(error) || "Something went wrong.",
+        status: "error",
+        isClosable: true,
+      });
+    }
+  }, [isLoading, isSuccess, toast, error, isError]);
+
+  useEffect(() => {
     if (rawDataInputRef.current) rawDataInputRef.current.value = "";
   }, [rawDataFiles]);
 
   const handleSubmit = async () => {
     if (!rawDataFiles || !rawDataFiles.length) return;
 
+    let formData = new FormData();
+    formData.append("team_id", activeTeam.id);
+
+    rawDataFiles.forEach((file) => {
+      formData.append("files", file);
+    });
+
     const positiveClassificationsExist =
       positive1.length && positive2.length && positive3.length;
     const negativeClassificationsExist =
       negative1.length && negative2.length && negative3.length;
 
-    await uploadRawData(rawDataFiles, {
-      classificationCategory: classificationCategory.length
-        ? classificationCategory
-        : null,
-      classificationPositivePrompts: positiveClassificationsExist
-        ? [positive1, positive2, positive3]
-        : null,
-      classificationNegativePrompts: negativeClassificationsExist
-        ? [negative1, negative2, negative3]
-        : null,
-    });
+    if (classificationCategory)
+      formData.append("classification_category", classificationCategory);
+    if (positiveClassificationsExist)
+      formData.append(
+        "classification_positive_prompts",
+        [positive1, positive2, positive3].join(",")
+      );
+    if (negativeClassificationsExist)
+      formData.append(
+        "classification_negative_prompts",
+        [negative1, negative2, negative3].join(",")
+      );
+
+    await uploadRawData(formData);
 
     setRawDataFiles(null);
   };

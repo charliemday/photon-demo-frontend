@@ -7,6 +7,7 @@ import {
   Stack,
   Flex,
   HStack,
+  useToast,
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import ReactSelect from "react-select";
@@ -14,11 +15,12 @@ import { BsCheckCircle } from "react-icons/bs";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { BarLoader } from "react-spinners";
 
+import { usePeopleAlsoAskMutation } from "api/engine.api";
 import { Button } from "components/button";
 import { RootState } from "store";
 import { BRAND_COLOR, GOOGLE_LANGUAGES } from "config";
-import { useAutomation } from "hooks";
 import { ModalStepWrapper } from "./modal-step-wrapper";
+import { typeCheckError } from "utils";
 
 interface Props {
   isOpen: boolean;
@@ -38,7 +40,31 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
     if (alsoAskedInputRef.current) alsoAskedInputRef.current.value = "";
   }, [alsoAskedFile]);
 
-  const { uploadAlsoAskedData, isAlsoAskedDataLoading } = useAutomation();
+  const [uploadAlsoAskedData, { isLoading, isSuccess, isError, error }] =
+    usePeopleAlsoAskMutation();
+
+  const toast = useToast();
+
+  useEffect(() => {
+    if (!isLoading && isSuccess) {
+      toast({
+        title: "Success",
+        description:
+          "Your CSV file has been sent. We will save the QuestionsAsked output to the Drive and notify you on Slack when it's ready.",
+        status: "success",
+        isClosable: true,
+      });
+    }
+
+    if (!isLoading && isError && error) {
+      toast({
+        title: "Error",
+        description: typeCheckError(error) || "Something went wrong.",
+        status: "error",
+        isClosable: true,
+      });
+    }
+  }, [isLoading, isSuccess, toast, error, isError]);
 
   const langOptions = useMemo(() => {
     return GOOGLE_LANGUAGES.map(({ language_code, language_name }) => ({
@@ -53,11 +79,14 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
 
   const handleSubmitAlsoAskedData = async () => {
     if (!alsoAskedFile || !activeTeam?.id) return;
-    await uploadAlsoAskedData({
-      file: alsoAskedFile,
-      language: language || "en",
-      team: activeTeam?.id,
-    });
+
+    const formData = new FormData();
+
+    formData.append("file", alsoAskedFile);
+    formData.append("language", language || "en");
+    formData.append("team", activeTeam?.id);
+
+    await uploadAlsoAskedData(formData);
     setAlsoAskedFile(null);
   };
 
@@ -86,7 +115,7 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
               {alsoAskedFile.name} ready for submission
             </Text>
           </HStack>
-          {isAlsoAskedDataLoading && <BarLoader color={BRAND_COLOR} />}
+          {isLoading && <BarLoader color={BRAND_COLOR} />}
         </Stack>
       ) : (
         <HStack>
@@ -149,8 +178,8 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
           <Button
             size="sm"
             onClick={handleSubmitAlsoAskedData}
-            isDisabled={!alsoAskedFile || isAlsoAskedDataLoading}
-            isLoading={isAlsoAskedDataLoading}
+            isDisabled={!alsoAskedFile || isLoading}
+            isLoading={isLoading}
           >
             Upload
           </Button>
