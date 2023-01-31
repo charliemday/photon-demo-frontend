@@ -145,7 +145,7 @@ export const ProcessRawData: React.FC<Props> = (props) => {
       </HStack>
       <Box border="solid 1px lightgray" p={4} borderRadius="md">
         <Text fontSize="sm">
-          {`Classify the keywords according to whether it relateds to "${classificationCategory}" or "Not ${classificationCategory}" and reset the context e.g.`}
+          {`Classify the keywords according to whether it relates to "${classificationCategory}" or "Not ${classificationCategory}" and reset the context e.g.`}
         </Text>
 
         <Text fontSize="sm" mt={4}>
