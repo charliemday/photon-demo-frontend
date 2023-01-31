@@ -38,16 +38,16 @@ const STEPS: {
   description: string;
   key?: KEY;
   comingSoon?: boolean;
-  image?: string;
+  image?: string | string[];
   isDisabled?: boolean;
 }[] = [
   {
-    title: "1. Process CSV",
+    title: "1. Process Ahrefs Export",
     description: `This will take a group of CSV files from Ahrefs and sort them to
     exclude duplicate keywords and only show the keywords on the the
     first 2 pages`,
     key: KEY.PROCESS_RAW_DATA,
-    image: "/steps/excel.png",
+    image: ["/steps/excel.png", "/steps/ahrefs.jpeg", "/openai-avatar.png"],
   },
   {
     title: "2. People Also Asked",

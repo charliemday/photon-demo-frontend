@@ -1,4 +1,4 @@
-import { Stack, Text, Box, Flex } from "@chakra-ui/react";
+import { Stack, Text, Box, Flex, HStack } from "@chakra-ui/react";
 import { BRAND_COLOR } from "config";
 import Image from "next/image";
 import React from "react";
@@ -9,7 +9,7 @@ interface Props {
   description: string;
   onClick: () => void;
   comingSoon?: boolean;
-  image?: string;
+  image?: string | string[];
   isDisabled?: boolean;
 }
 
@@ -26,7 +26,7 @@ export const AutomationCard: React.FC<Props> = ({
       position="absolute"
       h="full"
       w="full"
-      bgColor="rgba(255,255,255,0.75)"
+      bgColor="rgba(225,225,225,0.75)"
       pointerEvents="none"
       zIndex={100}
       justifyContent="center"
@@ -41,7 +41,7 @@ export const AutomationCard: React.FC<Props> = ({
       position="absolute"
       h="full"
       w="full"
-      bgColor="rgba(255,255,255,0.75)"
+      bgColor="rgba(225,225,225,0.75)"
       pointerEvents="none"
       zIndex={100}
       justifyContent="center"
@@ -85,19 +85,36 @@ export const AutomationCard: React.FC<Props> = ({
         <Text fontSize="sm" noOfLines={3} opacity={0.75}>
           {description}
         </Text>
-        {image && (
-          <Box
-            borderRadius="sm"
-            overflow="hidden"
-            position="absolute"
-            height={25}
-            width={25}
-            bottom={5}
-            right={5}
-          >
-            <Image src={image} alt="Step Image" layout="fill" />
-          </Box>
-        )}
+        {image ? (
+          Array.isArray(image) ? (
+            <HStack position="absolute" bottom={5} right={5}>
+              {image.map((img, key) => (
+                <Box
+                  key={key}
+                  borderRadius="sm"
+                  height={22}
+                  width={22}
+                  position="relative"
+                  overflow="hidden"
+                >
+                  <Image src={img} alt="Step Image" layout="fill" />
+                </Box>
+              ))}
+            </HStack>
+          ) : (
+            <Box
+              borderRadius="sm"
+              overflow="hidden"
+              position="absolute"
+              height={22}
+              width={22}
+              bottom={5}
+              right={5}
+            >
+              <Image src={image} alt="Step Image" layout="fill" />
+            </Box>
+          )
+        ) : null}
       </Stack>
     </Box>
   );
