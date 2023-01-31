@@ -44,12 +44,8 @@ export const ProcessRawData: React.FC<Props> = (props) => {
   const toast = useToast();
 
   const [classificationCategory, setClassificationCategory] = useState("");
-  const [positive1, setPositive1] = useState("");
-  const [positive2, setPositive2] = useState("");
-  const [positive3, setPositive3] = useState("");
-  const [negative1, setNegative1] = useState("");
-  const [negative2, setNegative2] = useState("");
-  const [negative3, setNegative3] = useState("");
+  const [positivePrompts, setPositivePrompts] = useState<string[]>([]);
+  const [negativePrompts, setNegativePrompts] = useState<string[]>([]);
 
   useEffect(() => {
     if (!isLoading && isSuccess) {
@@ -78,7 +74,6 @@ export const ProcessRawData: React.FC<Props> = (props) => {
 
   const handleSubmit = async () => {
     if (!rawDataFiles || !rawDataFiles.length) return;
-
     let formData = new FormData();
     formData.append("team_id", activeTeam.id);
 
@@ -86,22 +81,20 @@ export const ProcessRawData: React.FC<Props> = (props) => {
       formData.append("files", file);
     });
 
-    const positiveClassificationsExist =
-      positive1.length && positive2.length && positive3.length;
-    const negativeClassificationsExist =
-      negative1.length && negative2.length && negative3.length;
+    const positiveClassificationsExist = positivePrompts.length > 0;
+    const negativeClassificationsExist = negativePrompts.length > 0;
 
     if (classificationCategory)
       formData.append("classification_category", classificationCategory);
     if (positiveClassificationsExist)
       formData.append(
         "classification_positive_prompts",
-        [positive1, positive2, positive3].join(",")
+        positivePrompts.join(",")
       );
     if (negativeClassificationsExist)
       formData.append(
         "classification_negative_prompts",
-        [negative1, negative2, negative3].join(",")
+        negativePrompts.join(",")
       );
 
     await uploadRawData(formData);
@@ -185,10 +178,10 @@ export const ProcessRawData: React.FC<Props> = (props) => {
         </Text>
 
         <Text fontSize="sm" mt={4}>
-          {`${classificationCategory}: ${positive1}, ${positive2}, ${positive3}`}
+          {`${classificationCategory}: ${positivePrompts.join(", ")}`}
         </Text>
         <Text fontSize="sm" mt={4}>
-          {`Not ${classificationCategory}: ${negative1}, ${negative2}, ${negative3}`}
+          {`Not ${classificationCategory}: ${negativePrompts.join(", ")}`}
         </Text>
 
         <Text mt={4}>{`[KEYWORD LIST WILL BE AUTO INSERTED HERE]`}</Text>
@@ -200,14 +193,35 @@ export const ProcessRawData: React.FC<Props> = (props) => {
     </Stack>
   );
 
+  const renderPositivePromptInput = (idx: number) => (
+    <Input
+      onChange={(e) => {
+        setPositivePrompts((prev) => {
+          prev[idx] = e.target.value;
+          return prev;
+        });
+      }}
+    />
+  );
+
+  const renderNegativePromptInput = (idx: number) => (
+    <Input
+      onChange={(e) => {
+        setNegativePrompts((prev) => {
+          prev[idx] = e.target.value;
+          return prev;
+        });
+      }}
+    />
+  );
+
   const promptsExist =
     classificationCategory.length &&
-    positive1.length &&
-    positive2.length &&
-    positive3.length &&
-    negative1.length &&
-    negative2.length &&
-    negative3.length;
+    positivePrompts.every((p) => p.length) &&
+    negativePrompts.every((p) => p.length);
+
+  const POSITIVE_PROMPTS = 10;
+  const NEGATIVE_PROMPTS = 10;
 
   return (
     <ModalStepWrapper {...props}>
@@ -296,37 +310,18 @@ export const ProcessRawData: React.FC<Props> = (props) => {
           <HStack w="full">
             <Stack w="full">
               <FormLabel fontSize="sm">Positive Classifications</FormLabel>
-              <Input
-                name="positive1"
-                type="text"
-                onChange={(e) => setPositive1(e.target.value)}
-              />
-              <Input
-                name="positive2"
-                onChange={(e) => setPositive2(e.target.value)}
-              />
-              <Input
-                name="positive3"
-                onChange={(e) => setPositive3(e.target.value)}
-              />
+              {Array.from({ length: POSITIVE_PROMPTS }).map((_, idx) => {
+                return renderPositivePromptInput(idx);
+              })}
               <Text fontSize="xs" opacity={0.5}>
                 These are the positive classifications{" "}
               </Text>
             </Stack>
             <Stack w="full">
               <FormLabel fontSize="sm">Negative Classifications</FormLabel>
-              <Input
-                name="negative1"
-                onChange={(e) => setNegative1(e.target.value)}
-              />
-              <Input
-                name="negative2"
-                onChange={(e) => setNegative2(e.target.value)}
-              />
-              <Input
-                name="negative3"
-                onChange={(e) => setNegative3(e.target.value)}
-              />
+              {Array.from({ length: NEGATIVE_PROMPTS }).map((_, idx) =>
+                renderNegativePromptInput(idx)
+              )}
               <Text fontSize="xs" opacity={0.5}>
                 These are the negative classifications{" "}
               </Text>
