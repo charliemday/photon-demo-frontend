@@ -58,10 +58,6 @@ export const Sidebar: React.FC<Props> = ({
             }}
             w="full"
             key={key}
-            onClick={() => {
-              console.log("Testing");
-              // console.log(onClick);
-            }}
           >
             {icon}
             <Text fontWeight="semibold">{label}</Text>

@@ -6,9 +6,13 @@ import {
   Grid,
   GridItem,
   useDisclosure,
+  Stack,
+  Text,
+  Divider,
 } from "@chakra-ui/react";
-import { FloatingButton } from "components/button";
+import Image from "next/image";
 
+import { FloatingButton } from "components/button";
 import { useUserDetailsQuery } from "api/user.api";
 import { useListTeamsQuery } from "api/team.api";
 
@@ -22,6 +26,11 @@ import {
   UploadAhrefsReport,
   PopulateSCReports,
 } from "./steps";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
+import { BsCheckCircleFill } from "react-icons/bs";
+import { IoIosCloseCircle } from "react-icons/io";
+import { Team } from "types";
 
 enum KEY {
   PROCESS_RAW_DATA = "process-raw-data",
@@ -101,16 +110,53 @@ export const AutomationView: React.FC = () => {
 
   const { data: user } = useUserDetailsQuery(undefined);
   const { data: teams } = useListTeamsQuery(undefined);
+  const activeTeam: Team = useSelector(
+    (state: RootState) => state.team.activeTeam
+  );
 
   return (
     <Box mt={20}>
       <HStack justifyContent="space-between" mb={10}>
-        <Heading fontSize="2xl" mb={8}>
+        <Heading fontSize="2xl">
           {`🤖 Welcome to the Automation page, ${user?.firstName || ""}`}
         </Heading>
 
         {teams && <FloatingButton teams={teams} />}
       </HStack>
+
+      <Stack my={4}>
+        <HStack>
+          <Text fontSize="sm">Current Team:</Text>
+          <Text fontSize="sm" fontWeight="bold">
+            {activeTeam?.name || ""}
+          </Text>
+          <Box
+            h={6}
+            w={6}
+            position="relative"
+            borderRadius={4}
+            overflow="hidden"
+          >
+            <Image src={activeTeam?.logo || ""} layout="fill" alt="Team Logo" />
+          </Box>
+        </HStack>
+        <HStack>
+          <Text fontSize="sm">Team Has Drive Setup:</Text>
+          {activeTeam?.driveFolderId ? (
+            <BsCheckCircleFill color="green" />
+          ) : (
+            <IoIosCloseCircle color="red" />
+          )}
+        </HStack>
+        <HStack>
+          <Text fontSize="sm">UID:</Text>
+          <Text fontSize="sm" fontWeight="bold">
+            {activeTeam?.uid || ""}
+          </Text>
+        </HStack>
+      </Stack>
+
+      <Divider my={8} />
 
       <Grid templateColumns="repeat(4, 1fr)" gap={6}>
         {STEPS.map((step, key) => (

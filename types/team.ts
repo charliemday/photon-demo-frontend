@@ -7,4 +7,6 @@ export interface Team {
   image: string | null;
   logo: string | null;
   url: string | null;
+  driveFolderId: string | null;
+  uid: string;
 }
