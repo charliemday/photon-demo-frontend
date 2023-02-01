@@ -68,24 +68,35 @@ export const FloatingButton: React.FC<Props> = ({ teams, fixed }) => {
             </Flex>
           </MenuButton>
           <MenuList>
-            {teams?.map((team) => (
-              <MenuItem key={team.id} onClick={() => onSelect(team)}>
-                <Box
-                  w={5}
-                  minH={5}
-                  mx={4}
-                  overflow="hidden"
-                  position="relative"
-                >
-                  {team?.logo ? (
-                    <Image src={team.logo} alt={team.name} layout="fill" />
-                  ) : (
-                    <AiOutlineTeam />
-                  )}
-                </Box>
-                <Text fontSize="sm">{team.name}</Text>
-              </MenuItem>
-            ))}
+            <Box py={1} px={6}>
+              <Text fontSize="sm">
+                {teams.length
+                  ? `${teams.length} team${teams.length > 1 ? "s" : ""}`
+                  : `No Teams Found`}
+              </Text>
+            </Box>
+
+            <MenuDivider />
+            <Box maxH="30vh" overflow="auto">
+              {teams?.map((team) => (
+                <MenuItem key={team.id} onClick={() => onSelect(team)}>
+                  <Box
+                    w={5}
+                    minH={5}
+                    mx={4}
+                    overflow="hidden"
+                    position="relative"
+                  >
+                    {team?.logo ? (
+                      <Image src={team.logo} alt={team.name} layout="fill" />
+                    ) : (
+                      <AiOutlineTeam />
+                    )}
+                  </Box>
+                  <Text fontSize="sm">{team.name}</Text>
+                </MenuItem>
+              ))}
+            </Box>
             <MenuDivider />
             <MenuItem onClick={onOpen}>
               <HStack>
