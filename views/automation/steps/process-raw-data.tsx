@@ -12,6 +12,7 @@ import {
   FormHelperText,
   Divider,
   useToast,
+  Checkbox,
 } from "@chakra-ui/react";
 import { BarLoader } from "react-spinners";
 import { BsCheckCircle } from "react-icons/bs";
@@ -46,6 +47,7 @@ export const ProcessRawData: React.FC<Props> = (props) => {
   const [classificationCategory, setClassificationCategory] = useState("");
   const [positivePrompts, setPositivePrompts] = useState<string[]>([]);
   const [negativePrompts, setNegativePrompts] = useState<string[]>([]);
+  const [excludeSimilarKeywords, setExcludeSimilarKeywords] = useState(false);
 
   useEffect(() => {
     if (!isLoading && isSuccess) {
@@ -96,6 +98,11 @@ export const ProcessRawData: React.FC<Props> = (props) => {
         "classification_negative_prompts",
         negativePrompts.join(",")
       );
+
+    formData.append(
+      "exclude_similar_keywords",
+      excludeSimilarKeywords.toString()
+    );
 
     await uploadRawData(formData);
 
@@ -268,6 +275,16 @@ export const ProcessRawData: React.FC<Props> = (props) => {
           display="none"
         />
         {renderRawDataUploadZone()}
+
+        <Checkbox
+          onChange={(e) => {
+            setExcludeSimilarKeywords(e.target.checked);
+          }}
+        >
+          <Text fontSize="xs" opacity={0.75}>
+            {`Exclude similar keywords e.g. "how do I buy" and "how to buy". Checking this box will increase the time it takes to process the data but remove similar sounding keywords.`}
+          </Text>
+        </Checkbox>
 
         <Divider mt={12} />
 
