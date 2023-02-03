@@ -78,7 +78,7 @@ export const vendorApi = baseApi.injectEndpoints({
         }),
         compareSearchConsoleReport: builder.mutation<null, CompareConsoleData>({
             query: (data) => {
-                let url = "/missing-keywords-job";
+                let url = "/engine/missing-keywords-job";
                 if (data.teamIds) {
                     url = url + `?team_ids=[${data.teamIds.join(",")}]`;
                 }
