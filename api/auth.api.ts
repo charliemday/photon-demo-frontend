@@ -2,6 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { LoginFormValues } from 'forms/login';
 import { SignupFormValues } from 'forms/signup';
+import { decamelizeKeys } from 'humps';
 import { baseQuery } from '.';
 
 interface LoginReturnProps {
@@ -35,7 +36,7 @@ export const authApi = createApi({
             query: (values) => ({
                 url: 'signup/',
                 method: 'POST',
-                body: { ...values },
+                body: { ...decamelizeKeys(values) },
             }),
         }),
         completeOauth: builder.mutation<OAuthReturnProps, OAuthProps>({

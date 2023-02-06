@@ -163,7 +163,7 @@ export const SearchConsoleReport: React.FC<Props> = ({
             {!isDisabled && isSiteLoading && (
               <HStack opacity={0.5}>
                 <Text fontSize="sm">
-                  Fetching the domainsyou have access to
+                  Fetching the domains you have access to
                 </Text>
                 <Spinner size="xs" />
               </HStack>
