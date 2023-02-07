@@ -1,4 +1,4 @@
-import { baseApi } from ".";
+import { baseApi, apiUrls } from ".";
 
 export interface GetAuthUrlRequest {
     appName: string | null;
@@ -54,11 +54,11 @@ export const vendorApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getAuthUrl: builder.query<GetAuthUrlResponse, GetAuthUrlRequest>({
             query: ({ appName }) => ({
-                url: appName ? `/get-auth-url?app=${appName}` : "/get-auth-url",
+                url: apiUrls.AUTH_URL(appName)
             }),
         }),
         getSearchConsoleSites: builder.query<string[], undefined>({
-            query: () => "/google/sites",
+            query: () => apiUrls.GOOGLE_SITES,
             transformResponse: (response: SearchConsoleSitesResponse) => {
                 const sites = response.siteEntry.map((site) => site.siteUrl);
                 return sites;
@@ -78,7 +78,7 @@ export const vendorApi = baseApi.injectEndpoints({
         }),
         compareSearchConsoleReport: builder.mutation<null, CompareConsoleData>({
             query: (data) => {
-                let url = "/engine/missing-keywords-job";
+                let url = apiUrls.MISSING_KEYWORDS;
                 if (data.teamIds) {
                     url = url + `?team_ids=[${data.teamIds.join(",")}]`;
                 }
@@ -89,6 +89,7 @@ export const vendorApi = baseApi.injectEndpoints({
                 };
             },
         }),
+        // TODO: DEPRECATE
         getSearchConsolePages: builder.query<
             GetSearchConsolePagesResponse,
             GetSearchConsolePagesRequest
@@ -107,14 +108,14 @@ export const vendorApi = baseApi.injectEndpoints({
         }),
         uploadAhrefsReport: builder.mutation<null, AhrefsRequestData>({
             query: (data) => ({
-                url: "/ahrefs/report/",
+                url: apiUrls.AHREFS,
                 method: "POST",
                 body: data,
             }),
         }),
         populateSearchConsoleReports: builder.mutation<null, null>({
-            query: (data) => ({
-                url: "/google/populate-reports",
+            query: () => ({
+                url: apiUrls.POPULATE_REPORTS,
                 method: "POST",
             }),
         }),

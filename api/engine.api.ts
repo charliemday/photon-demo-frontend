@@ -1,5 +1,4 @@
-import { decamelizeKeys } from "humps";
-import { baseApi } from ".";
+import { baseApi, apiUrls } from ".";
 
 interface ProcessAhrefsDataBody extends FormData { }
 
@@ -10,14 +9,14 @@ export const engineApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     processAhrefsData: builder.mutation<undefined, ProcessAhrefsDataBody>({
       query: (body) => ({
-        url: `engine/process-ahrefs-data/`,
+        url: apiUrls.PROCESS_AHREFS_DATA,
         method: "POST",
         body,
       })
     }),
     peopleAlsoAsk: builder.mutation<undefined, PeopleAlsoAskBody>({
       query: (body) => ({
-        url: `engine/people-also-ask/`,
+        url: apiUrls.PEOPLE_ALSO_ASK,
         method: "POST",
         body,
       })

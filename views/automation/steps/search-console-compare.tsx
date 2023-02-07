@@ -1,12 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Stack, Heading, Text, Flex, useToast } from "@chakra-ui/react";
 import { Button } from "components/button";
-import ReactSelect from "react-select";
-import {
-  useGetSearchConsoleSitesQuery,
-  useCompareSearchConsoleReportMutation,
-  useGetSearchConsolePagesQuery,
-} from "api/vendor.api";
+import { useCompareSearchConsoleReportMutation } from "api/vendor.api";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
 import { Team } from "types";
@@ -24,8 +19,6 @@ export const SearchConsoleCompare: React.FC<Props> = ({
   isOpen,
   onClose,
 }) => {
-  const [domain, setDomain] = useState<string | null>(null);
-
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
   );

@@ -5,6 +5,8 @@ import { SignupFormValues } from 'forms/signup';
 import { decamelizeKeys } from 'humps';
 import { baseQuery } from '.';
 
+import { apiUrls } from 'api/urls.api';
+
 interface LoginReturnProps {
     token: string;
 };
@@ -27,21 +29,21 @@ export const authApi = createApi({
     endpoints: (builder) => ({
         login: builder.mutation<LoginReturnProps, LoginFormValues>({
             query: (values) => ({
-                url: 'login/',
+                url: apiUrls.LOGIN,
                 method: 'POST',
                 body: { ...values },
             })
         }),
         signup: builder.mutation<SignupReturnProps, SignupFormValues>({
             query: (values) => ({
-                url: 'signup/',
+                url: apiUrls.SIGNUP,
                 method: 'POST',
                 body: { ...decamelizeKeys(values) },
             }),
         }),
         completeOauth: builder.mutation<OAuthReturnProps, OAuthProps>({
             query: (values) => ({
-                url: 'complete-oauth/',
+                url: apiUrls.COMPLETE_OAUTH,
                 method: 'POST',
                 body: { ...values },
             })

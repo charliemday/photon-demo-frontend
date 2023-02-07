@@ -2,6 +2,7 @@ import { camelizeKeys, decamelizeKeys } from "humps";
 import { ConvertToSnakeCase, User } from "types";
 
 import { baseApi, TAG_TYPES } from ".";
+import { apiUrls } from "api/urls.api";
 
 type UserDetailsReturnProps = ConvertToSnakeCase<User>;
 
@@ -14,7 +15,7 @@ export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     userDetails: builder.query<User, undefined>({
       query: () => ({
-        url: "user/",
+        url: apiUrls.USER,
       }),
       providesTags: [TAG_TYPES.USERS],
       transformResponse: (response: UserDetailsReturnProps) =>
@@ -22,7 +23,7 @@ export const userApi = baseApi.injectEndpoints({
     }),
     updateOnboardingStep: builder.mutation<undefined, UpdateOnboardingStepRequest>({
       query: (body) => ({
-        url: "onboarding-step/",
+        url: apiUrls.ONBOARDING_STEP,
         method: "PATCH",
         body: decamelizeKeys(body),
       }),

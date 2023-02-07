@@ -2,6 +2,8 @@ import { camelizeKeys } from "humps";
 import { APIErrorResponse, ConvertToSnakeCase, Team } from "types";
 import { baseApi, TAG_TYPES } from ".";
 
+import { apiUrls } from "api/urls.api";
+
 interface CreateTeamInterface {
   body: Partial<Team>;
 }
@@ -17,7 +19,7 @@ export const teamApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     listTeams: builder.query<Team[], undefined>({
       query: () => ({
-        url: "teams/",
+        url: apiUrls.TEAMS,
       }),
       providesTags: [TAG_TYPES.TEAMS],
       transformResponse: (response: TeamResponse[]) =>
@@ -25,7 +27,7 @@ export const teamApi = baseApi.injectEndpoints({
     }),
     createTeam: builder.mutation<Team | APIErrorResponse, CreateTeamInterface>({
       query: ({ body }) => ({
-        url: "teams/",
+        url: apiUrls.TEAMS,
         method: "POST",
         body,
       }),
@@ -35,7 +37,7 @@ export const teamApi = baseApi.injectEndpoints({
     }),
     updateTeam: builder.mutation<Team, UpdateTeamInterface>({
       query: ({ teamId, body }) => ({
-        url: `teams/${teamId}/`,
+        url: apiUrls.TEAM(teamId),
         method: "PATCH",
         body,
       }),
@@ -45,7 +47,7 @@ export const teamApi = baseApi.injectEndpoints({
     }),
     deleteTeam: builder.mutation<Team, number>({
       query: (teamId) => ({
-        url: `teams/${teamId}/`,
+        url: apiUrls.TEAM(teamId),
         method: "DELETE",
       }),
       invalidatesTags: [TAG_TYPES.TEAMS],

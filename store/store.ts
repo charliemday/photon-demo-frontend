@@ -13,7 +13,7 @@ import storage from "redux-persist/lib/storage"; // defaults to localStorage for
 import { resettableReducer } from "reduxsauce";
 
 import { authReducer, teamReducer, territoryReducer } from "./slices";
-import { authApi, baseApi, toolApi } from "api";
+import { authApi, baseApi } from "api";
 import { LOGOUT_ACTION } from "hooks/useLogout.hook";
 
 const resettable = resettableReducer(LOGOUT_ACTION);
@@ -28,7 +28,6 @@ const rootReducers: Reducer = combineReducers({
   team: resettable(teamReducer),
   territory: resettable(territoryReducer),
   [authApi.reducerPath]: authApi.reducer,
-  [toolApi.reducerPath]: toolApi.reducer,
   [baseApi.reducerPath]: baseApi.reducer,
 });
 
@@ -42,7 +41,7 @@ export const store = configureStore({
         // Ignore these action types as redux serializable check is not compatible with redux-persist
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(authApi.middleware, toolApi.middleware, baseApi.middleware),
+    }).concat(authApi.middleware, baseApi.middleware),
 });
 
 export const persistor = persistStore(store);
