@@ -16,7 +16,7 @@ export const apiUrls = {
     },
     // Google
     GOOGLE_SITES: 'google-sites/',
-    POPULATE_REPORTS: 'google/populate-reports/',
+    POPULATE_REPORTS: 'google/populate-reports',
     // Engine
     MISSING_KEYWORDS: 'engine/missing-keywords-job',
     PEOPLE_ALSO_ASK: 'engine/people-also-ask',
