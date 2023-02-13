@@ -19,7 +19,7 @@ export const apiUrls = {
     POPULATE_REPORTS: 'google/populate-reports',
     // Engine
     MISSING_KEYWORDS: 'engine/missing-keywords-job',
-    PEOPLE_ALSO_ASK: 'engine/people-also-ask',
+    PEOPLE_ALSO_ASK: 'engine/people-also-ask/',
     // Ahrefs
     AHREFS: '/ahrefs/report/',
     PROCESS_AHREFS_DATA: 'engine/process-ahrefs-data/',
