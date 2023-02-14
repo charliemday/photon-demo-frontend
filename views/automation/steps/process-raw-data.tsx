@@ -1,32 +1,33 @@
-import React, { useState, useRef, useEffect } from "react";
 import {
-  Flex,
-  Stack,
-  HStack,
-  Text,
   Box,
-  Heading,
-  Input,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  Divider,
-  useToast,
   Checkbox,
+  Divider,
+  Flex,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Heading,
+  HStack,
+  Input,
+  Stack,
+  Text,
+  useToast,
 } from "@chakra-ui/react";
-import { BarLoader } from "react-spinners";
-import { BsCheckCircle } from "react-icons/bs";
-import { AiOutlineCloudDownload } from "react-icons/ai";
-import { BRAND_COLOR } from "config";
-import { useSelector } from "react-redux";
 import { Image } from "components/image";
+import { BRAND_COLOR } from "config";
+import React, { useEffect, useRef, useState } from "react";
+import { AiOutlineCloudDownload } from "react-icons/ai";
+import { BsCheckCircle } from "react-icons/bs";
+import { FaBrain } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { BarLoader } from "react-spinners";
 
 import { useProcessAhrefsDataMutation } from "api/engine.api";
 import { Button } from "components/button";
-import { RootState } from "store";
-import { ModalStepWrapper } from "./modal-step-wrapper";
 import Link from "next/link";
+import { RootState } from "store";
 import { typeCheckError } from "utils";
+import { ModalStepWrapper } from "./modal-step-wrapper";
 
 interface Props {
   isOpen: boolean;
@@ -276,19 +277,44 @@ export const ProcessRawData: React.FC<Props> = (props) => {
         />
         {renderRawDataUploadZone()}
 
-        <Checkbox
-          onChange={(e) => {
-            setExcludeSimilarKeywords(e.target.checked);
+        <Divider my={12} />
+
+        <Stack
+          spacing={6}
+          opacity={excludeSimilarKeywords ? 1 : 0.5}
+          _hover={{
+            opacity: 1,
           }}
         >
+          <HStack>
+            <FaBrain />
+            <Heading fontSize="md">Semantic Similarity (Optional)</Heading>
+          </HStack>
+
+          <Checkbox
+            onChange={(e) => {
+              setExcludeSimilarKeywords(e.target.checked);
+            }}
+          >
+            <Text fontSize="xs" opacity={0.75}>
+              {`Enable semantic similarity check`}
+            </Text>
+          </Checkbox>
           <Text fontSize="xs" opacity={0.75}>
             {`Exclude similar keywords e.g. "how do I buy" and "how to buy". Checking this box will increase the time it takes to process the data but remove similar sounding keywords.`}
           </Text>
-        </Checkbox>
+        </Stack>
 
         <Divider mt={12} />
 
-        <Stack spacing={12} mt={12}>
+        <Stack
+          spacing={12}
+          mt={12}
+          opacity={promptsExist ? 1 : 0.5}
+          _hover={{
+            opacity: 1,
+          }}
+        >
           <Stack>
             <HStack>
               <Box
