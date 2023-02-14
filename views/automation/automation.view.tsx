@@ -1,36 +1,36 @@
-import React, { useState } from "react";
 import {
-  HStack,
-  Heading,
   Box,
+  Divider,
   Grid,
   GridItem,
-  useDisclosure,
+  Heading,
+  HStack,
   Stack,
   Text,
-  Divider,
+  useDisclosure,
 } from "@chakra-ui/react";
 import Image from "next/image";
+import React, { useState } from "react";
 
-import { FloatingButton } from "components/button";
-import { useUserDetailsQuery } from "api/user.api";
 import { useListTeamsQuery } from "api/team.api";
+import { useUserDetailsQuery } from "api/user.api";
+import { FloatingButton } from "components/button";
 
 import { AutomationCard } from "components/cards";
+import { BsCheckCircleFill } from "react-icons/bs";
+import { IoIosCloseCircle } from "react-icons/io";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
+import { Team } from "types";
 import {
   PeopleAlsoAsked,
+  PopulateSCReports,
   ProcessRawData,
   SearchConsoleCompare,
   SearchConsoleConnect,
   SearchConsoleReport,
   UploadAhrefsReport,
-  PopulateSCReports,
 } from "./steps";
-import { useSelector } from "react-redux";
-import { RootState } from "store";
-import { BsCheckCircleFill } from "react-icons/bs";
-import { IoIosCloseCircle } from "react-icons/io";
-import { Team } from "types";
 
 enum KEY {
   PROCESS_RAW_DATA = "process-raw-data",

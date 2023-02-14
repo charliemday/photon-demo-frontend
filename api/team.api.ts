@@ -12,6 +12,19 @@ interface UpdateTeamInterface extends CreateTeamInterface {
   teamId: number;
 }
 
+interface TeamClassification {
+  id: number;
+  created: string;
+  modified: string;
+  targetKeywords: string | null;
+  avoidanceKeywords: string | null;
+  category: string | null;
+  geography: string | null;
+  language: string | null;
+  autoClassify: boolean;
+  team: number;
+}
+
 type TeamResponse = ConvertToSnakeCase<Team>;
 
 // Define a service using a base URL and expected endpoints
@@ -52,6 +65,15 @@ export const teamApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [TAG_TYPES.TEAMS],
     }),
+    retrieveClassification: builder.query<TeamClassification, string>({
+      query: (teamId) => ({
+        url: apiUrls.TEAM_CLASSIFICATION(teamId),
+      }),
+      transformResponse: (response: ConvertToSnakeCase<TeamClassification>) => {
+        console.log('response', response)
+        return camelizeKeys(response) as TeamClassification;
+      }
+    })
   }),
 });
 
@@ -62,4 +84,5 @@ export const {
   useUpdateTeamMutation,
   useDeleteTeamMutation,
   useCreateTeamMutation,
+  useRetrieveClassificationQuery,
 } = teamApi;

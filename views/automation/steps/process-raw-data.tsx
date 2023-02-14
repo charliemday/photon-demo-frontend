@@ -23,9 +23,11 @@ import { useSelector } from "react-redux";
 import { BarLoader } from "react-spinners";
 
 import { useProcessAhrefsDataMutation } from "api/engine.api";
+import { useRetrieveClassificationQuery } from "api/team.api";
 import { Button } from "components/button";
 import Link from "next/link";
 import { RootState } from "store";
+import { Team } from "types";
 import { typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
 
@@ -38,16 +40,48 @@ export const ProcessRawData: React.FC<Props> = (props) => {
   const [rawDataFiles, setRawDataFiles] = useState<File[] | null>(null);
 
   const rawDataInputRef = useRef<HTMLInputElement>(null);
-  const activeTeam = useSelector((state: RootState) => state.team.activeTeam);
+  const activeTeam: Team = useSelector(
+    (state: RootState) => state.team.activeTeam
+  );
+
+  const { data: teamClassifications } = useRetrieveClassificationQuery(
+    activeTeam?.uid,
+    {
+      skip: !activeTeam?.uid,
+    }
+  );
 
   const [uploadRawData, { isLoading, isSuccess, error, isError }] =
     useProcessAhrefsDataMutation();
 
   const toast = useToast();
 
-  const [classificationCategory, setClassificationCategory] = useState("");
-  const [positivePrompts, setPositivePrompts] = useState<string[]>([]);
-  const [negativePrompts, setNegativePrompts] = useState<string[]>([]);
+  const promptCategory = teamClassifications && teamClassifications.category;
+  const promptsPositive =
+    teamClassifications?.targetKeywords &&
+    teamClassifications.targetKeywords
+      .split(",")
+      .map((keyword) => keyword.trim());
+  const promptsNegative =
+    teamClassifications?.avoidanceKeywords &&
+    teamClassifications.avoidanceKeywords
+      .split(",")
+      .map((keyword) => keyword.trim());
+
+  const [classificationCategory, setClassificationCategory] = useState(
+    promptCategory || ""
+  );
+  const [positivePrompts, setPositivePrompts] = useState<string[]>(
+    promptsPositive || []
+  );
+  const [negativePrompts, setNegativePrompts] = useState<string[]>(
+    promptsNegative || []
+  );
+
+  const [autoClassify, setAutoClassify] = useState(
+    teamClassifications?.autoClassify
+  );
+
   const [excludeSimilarKeywords, setExcludeSimilarKeywords] = useState(false);
 
   useEffect(() => {
@@ -78,7 +112,7 @@ export const ProcessRawData: React.FC<Props> = (props) => {
   const handleSubmit = async () => {
     if (!rawDataFiles || !rawDataFiles.length) return;
     let formData = new FormData();
-    formData.append("team_id", activeTeam.id);
+    formData.append("team_id", activeTeam.id.toString());
 
     rawDataFiles.forEach((file) => {
       formData.append("files", file);
@@ -209,6 +243,7 @@ export const ProcessRawData: React.FC<Props> = (props) => {
           return prev;
         });
       }}
+      value={positivePrompts[idx]}
     />
   );
 
@@ -220,16 +255,23 @@ export const ProcessRawData: React.FC<Props> = (props) => {
           return prev;
         });
       }}
+      value={negativePrompts[idx]}
     />
   );
 
   const promptsExist =
     classificationCategory.length &&
     positivePrompts.every((p) => p.length) &&
-    negativePrompts.every((p) => p.length);
+    negativePrompts.every((p) => p.length) &&
+    autoClassify;
 
-  const POSITIVE_PROMPTS = 10;
-  const NEGATIVE_PROMPTS = 10;
+  const minPrompts =
+    positivePrompts.length || negativePrompts?.length
+      ? Math.min(positivePrompts.length, negativePrompts.length)
+      : 0;
+
+  const POSITIVE_PROMPTS = minPrompts || 10;
+  const NEGATIVE_PROMPTS = minPrompts || 10;
 
   return (
     <ModalStepWrapper {...props}>
@@ -333,6 +375,18 @@ export const ProcessRawData: React.FC<Props> = (props) => {
               <Heading fontSize="md">Classification prompts (Optional)</Heading>
             </HStack>
 
+            <Checkbox
+              py={6}
+              defaultChecked={autoClassify}
+              onChange={(e) => {
+                setAutoClassify(e.target.checked);
+              }}
+            >
+              <Text fontSize="xs" opacity={0.75}>
+                Enable classification
+              </Text>
+            </Checkbox>
+
             <Text fontSize="xs" opacity={0.75}>
               These prompts will be used in the OpenAI API call to help classify
               the keywords as to whether they are relevant or non-relevant.
@@ -346,6 +400,7 @@ export const ProcessRawData: React.FC<Props> = (props) => {
               name="classificationCategory"
               type="text"
               onChange={(e) => setClassificationCategory(e.target.value)}
+              value={classificationCategory}
             />
             <FormHelperText fontSize="xs">e.g. Female Health</FormHelperText>
           </FormControl>
@@ -353,9 +408,9 @@ export const ProcessRawData: React.FC<Props> = (props) => {
           <HStack w="full">
             <Stack w="full">
               <FormLabel fontSize="sm">Positive Classifications</FormLabel>
-              {Array.from({ length: POSITIVE_PROMPTS }).map((_, idx) => {
-                return renderPositivePromptInput(idx);
-              })}
+              {Array.from({ length: POSITIVE_PROMPTS }).map((_, idx) =>
+                renderPositivePromptInput(idx)
+              )}
               <Text fontSize="xs" opacity={0.5}>
                 These are the positive classifications{" "}
               </Text>
