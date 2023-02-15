@@ -121,18 +121,20 @@ export const ProcessRawData: React.FC<Props> = (props) => {
     const positiveClassificationsExist = positivePrompts.length > 0;
     const negativeClassificationsExist = negativePrompts.length > 0;
 
-    if (classificationCategory)
-      formData.append("classification_category", classificationCategory);
-    if (positiveClassificationsExist)
-      formData.append(
-        "classification_positive_prompts",
-        positivePrompts.join(",")
-      );
-    if (negativeClassificationsExist)
-      formData.append(
-        "classification_negative_prompts",
-        negativePrompts.join(",")
-      );
+    if (autoClassify) {
+      if (classificationCategory)
+        formData.append("classification_category", classificationCategory);
+      if (positiveClassificationsExist)
+        formData.append(
+          "classification_positive_prompts",
+          positivePrompts.join(",")
+        );
+      if (negativeClassificationsExist)
+        formData.append(
+          "classification_negative_prompts",
+          negativePrompts.join(",")
+        );
+    }
 
     formData.append(
       "exclude_similar_keywords",
