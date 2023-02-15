@@ -1,26 +1,27 @@
 import {
+  Box,
+  Button,
   Flex,
+  HStack,
   Menu,
   MenuButton,
-  Button,
-  MenuList,
-  MenuItem,
-  Text,
-  Box,
-  Stack,
   MenuDivider,
-  HStack,
+  MenuItem,
+  MenuList,
+  Stack,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { BsChevronDown as ChevronDownIcon } from "react-icons/bs";
-import { setActiveTeam } from "store/slices";
-import { useDispatch } from "react-redux";
-import { Team } from "types";
 import { Image } from "components/image";
-import { AiOutlineTeam } from "react-icons/ai";
-import { GrAdd } from "react-icons/gr";
 import { AddTeamModal } from "components/modals";
+import React, { useState } from "react";
+import { AiOutlineTeam } from "react-icons/ai";
+import { BsChevronDown as ChevronDownIcon } from "react-icons/bs";
+import { GrAdd } from "react-icons/gr";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store";
+import { setActiveTeam } from "store/slices";
+import { Team } from "types";
 
 interface Props {
   teams: Team[];
@@ -28,8 +29,11 @@ interface Props {
 }
 
 export const FloatingButton: React.FC<Props> = ({ teams, fixed }) => {
+  const activeTeam: Team = useSelector(
+    (state: RootState) => state.team.activeTeam
+  );
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(
-    teams?.[0] || null
+    activeTeam || teams?.[0] || null
   );
   const { isOpen, onClose, onOpen } = useDisclosure();
   const dispatch = useDispatch();
