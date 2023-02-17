@@ -70,7 +70,6 @@ export const teamApi = baseApi.injectEndpoints({
         url: apiUrls.TEAM_CLASSIFICATION(teamId),
       }),
       transformResponse: (response: ConvertToSnakeCase<TeamClassification>) => {
-        console.log('response', response)
         return camelizeKeys(response) as TeamClassification;
       }
     })
