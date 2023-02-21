@@ -1,23 +1,15 @@
-import React, { useState, useEffect } from "react";
 import {
-  Stack,
-  Heading,
-  Text,
-  HStack,
+  Checkbox, Flex, Heading, HStack,
   Input,
-  Select,
-  Flex,
-  useToast,
-  Spinner,
-  Checkbox,
+  Select, Spinner, Stack, Text, useToast
 } from "@chakra-ui/react";
-import { Button } from "components/button";
 import {
-  useGetSearchConsoleSitesQuery,
-  useCreateSearchConsoleReportMutation,
+  useCreateSearchConsoleReportMutation, useGetSearchConsoleSitesQuery
 } from "api/vendor.api";
-import { RootState } from "store";
+import { Button } from "components/button";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { RootState } from "store";
 import { Team } from "types";
 import { typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
@@ -45,7 +37,9 @@ export const SearchConsoleReport: React.FC<Props> = ({
   ) as Team | null;
 
   const { isLoading: isSiteLoading, data: sites } =
-    useGetSearchConsoleSitesQuery(undefined);
+    useGetSearchConsoleSitesQuery(undefined, {
+      skip: !isOpen
+    });
 
   const [
     createReport,
