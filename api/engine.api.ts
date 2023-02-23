@@ -1,8 +1,18 @@
-import { baseApi, apiUrls } from ".";
+import { CompetitorInterface } from "forms/competitors/competitors.form";
+import { decamelizeKeys } from "humps";
+import { apiUrls, baseApi } from ".";
 
 interface ProcessAhrefsDataBody extends FormData { }
 
 interface PeopleAlsoAskBody extends FormData { }
+
+export interface SeedKeywordsBody {
+  teamId: string;
+  competitors: CompetitorInterface[];
+  classificationCategory?: string;
+  positivePrompts?: string[];
+  negativePrompts?: string[];
+}
 
 // Define a service using a base URL and expected endpoints
 export const engineApi = baseApi.injectEndpoints({
@@ -12,6 +22,13 @@ export const engineApi = baseApi.injectEndpoints({
         url: apiUrls.PROCESS_AHREFS_DATA,
         method: "POST",
         body,
+      })
+    }),
+    seedKeywords: builder.mutation<undefined, SeedKeywordsBody>({
+      query: (body) => ({
+        url: apiUrls.SEED_KEYWORDS,
+        method: "POST",
+        body: decamelizeKeys(body),
       })
     }),
     peopleAlsoAsk: builder.mutation<undefined, PeopleAlsoAskBody>({
@@ -29,5 +46,6 @@ export const engineApi = baseApi.injectEndpoints({
 
 export const {
   useProcessAhrefsDataMutation,
-  usePeopleAlsoAskMutation
+  usePeopleAlsoAskMutation,
+  useSeedKeywordsMutation,
 } = engineApi;

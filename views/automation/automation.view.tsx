@@ -29,6 +29,7 @@ import {
   SearchConsoleCompare,
   SearchConsoleConnect,
   SearchConsoleReport,
+  SeedKeywords,
   UploadAhrefsReport,
 } from "./steps";
 
@@ -56,7 +57,12 @@ const STEPS: {
     exclude duplicate keywords and only show the keywords on the the
     first 2 pages`,
     key: KEY.PROCESS_RAW_DATA,
-    image: ["/steps/excel.png", "/steps/ahrefs.jpeg", "/openai-avatar.png"],
+    image: [
+      "/steps/excel.png",
+      "/openai-avatar.png",
+      "/steps/ahrefs.jpeg",
+      "/steps/semrush.jpeg",
+    ],
   },
   {
     title: "2. People Also Asked",
@@ -107,6 +113,7 @@ const STEPS: {
 export const AutomationView: React.FC = () => {
   const [activeStep, setActiveStep] = useState<KEY>(KEY.COMPARE_CONSOLE_REPORT);
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const [useNewStep1, setUserNewStep1] = useState<boolean>(false);
 
   const { data: user } = useUserDetailsQuery(undefined);
   const { data: teams } = useListTeamsQuery(undefined);
@@ -177,10 +184,19 @@ export const AutomationView: React.FC = () => {
       </Grid>
 
       {/* STEPS */}
-      <ProcessRawData
-        isOpen={isOpen && activeStep === KEY.PROCESS_RAW_DATA}
-        onClose={onClose}
-      />
+      {useNewStep1 ? (
+        <SeedKeywords
+          isOpen={isOpen && activeStep === KEY.PROCESS_RAW_DATA}
+          onClose={onClose}
+          onSwitch={() => setUserNewStep1(false)}
+        />
+      ) : (
+        <ProcessRawData
+          isOpen={isOpen && activeStep === KEY.PROCESS_RAW_DATA}
+          onClose={onClose}
+          onSwitch={() => setUserNewStep1(true)}
+        />
+      )}
       <PeopleAlsoAsked
         isOpen={isOpen && activeStep === KEY.PEOPLE_ALSO_ASKED}
         onClose={onClose}
