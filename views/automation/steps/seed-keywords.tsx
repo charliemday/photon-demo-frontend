@@ -4,6 +4,7 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
+  Badge,
   Box,
   Checkbox,
   Divider,
@@ -20,18 +21,14 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Image } from "components/image";
-import { BRAND_COLOR } from "config";
-import React, { useEffect, useRef, useState } from "react";
-import { AiOutlineCloudDownload } from "react-icons/ai";
-import { BsCheckCircle } from "react-icons/bs";
-import { FaBrain } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { BarLoader } from "react-spinners";
 
-import { useProcessAhrefsDataMutation } from "api/engine.api";
+import { SeedKeywordsBody, useSeedKeywordsMutation } from "api/engine.api";
 import { useRetrieveClassificationQuery } from "api/team.api";
 import { Button } from "components/button";
-import JSZip from "jszip";
+import { CompetitorsForm } from "forms/competitors";
+import { CompetitorInterface } from "forms/competitors/competitors.form";
 import Link from "next/link";
 import { RootState } from "store";
 import { Team } from "types";
@@ -44,10 +41,8 @@ interface Props {
   onSwitch: () => void;
 }
 
-export const ProcessRawData: React.FC<Props> = (props) => {
-  const [rawDataFiles, setRawDataFiles] = useState<File[] | null>(null);
-
-  const rawDataInputRef = useRef<HTMLInputElement>(null);
+export const SeedKeywords: React.FC<Props> = (props) => {
+  const [competitors, setCompetitors] = useState<CompetitorInterface[]>([]);
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
   );
@@ -57,6 +52,9 @@ export const ProcessRawData: React.FC<Props> = (props) => {
       skip: !activeTeam?.uid,
     });
 
+  const [generateSeedKeywords, { isLoading, isSuccess, isError, error }] =
+    useSeedKeywordsMutation();
+
   useEffect(() => {
     /**
      * If the user changes the active team, we need to refetch the
@@ -64,9 +62,6 @@ export const ProcessRawData: React.FC<Props> = (props) => {
      */
     refetchTeamClassification();
   }, [activeTeam, refetchTeamClassification]);
-
-  const [uploadRawData, { isLoading, isSuccess, error, isError }] =
-    useProcessAhrefsDataMutation();
 
   const toast = useToast();
 
@@ -97,14 +92,12 @@ export const ProcessRawData: React.FC<Props> = (props) => {
     teamClassifications?.autoClassify
   );
 
-  const [excludeSimilarKeywords, setExcludeSimilarKeywords] = useState(false);
-
   useEffect(() => {
     if (!isLoading && isSuccess) {
       toast({
         title: "Success",
         description:
-          "Your CSV files are being processed and will be saved to the Drive.",
+          "Seed keywords are being generated and will be saved to the Drive.",
         status: "success",
         isClosable: true,
       });
@@ -120,114 +113,26 @@ export const ProcessRawData: React.FC<Props> = (props) => {
     }
   }, [isLoading, isSuccess, toast, error, isError]);
 
-  useEffect(() => {
-    if (rawDataInputRef.current) rawDataInputRef.current.value = "";
-  }, [rawDataFiles]);
-
   const handleSubmit = async () => {
-    if (!rawDataFiles || !rawDataFiles.length) return;
-    let formData = new FormData();
-    formData.append("team_id", activeTeam.id.toString());
-
-    /**
-     * We want to compress the files into a zip file
-     * before uploading them to the server as we may be
-     * limited by
-     */
-    const zip = new JSZip();
-    const zipFile = zip.folder("raw_data") as JSZip;
-
-    rawDataFiles.forEach(async (file) => {
-      // For each file add it to the zip file
-      if (zipFile) {
-        await zipFile.file(file.name, file);
-      }
-    });
-
-    const content = await zip.generateAsync({
-      type: "blob",
-      compression: "DEFLATE",
-    });
-
-    const fileToUpload = new File([content], "raw_data.zip");
-
-    formData.append("zip_file", fileToUpload);
+    const body: SeedKeywordsBody = {
+      teamId: activeTeam.id.toString(),
+      competitors,
+    };
 
     const positiveClassificationsExist = positivePrompts.length > 0;
     const negativeClassificationsExist = negativePrompts.length > 0;
 
     if (autoClassify) {
       if (classificationCategory)
-        formData.append("classification_category", classificationCategory);
+        body["classificationCategory"] = classificationCategory;
       if (positiveClassificationsExist)
-        formData.append(
-          "classification_positive_prompts",
-          positivePrompts.join(",")
-        );
+        body["positivePrompts"] = positivePrompts;
       if (negativeClassificationsExist)
-        formData.append(
-          "classification_negative_prompts",
-          negativePrompts.join(",")
-        );
+        body["negativePrompts"] = negativePrompts;
     }
 
-    formData.append(
-      "exclude_similar_keywords",
-      excludeSimilarKeywords.toString()
-    );
-
-    await uploadRawData(formData);
-
-    setRawDataFiles(null);
+    await generateSeedKeywords(body);
   };
-
-  const handleUploadClick = () => {
-    rawDataInputRef.current?.click();
-  };
-
-  const renderRawDataUploadZone = () => (
-    <Flex
-      w="full"
-      h={200}
-      border={`solid 1px ${rawDataFiles?.length ? "green" : "lightgray"}`}
-      justifyContent="center"
-      alignItems="center"
-      my={6}
-      borderRadius={4}
-      cursor="pointer"
-      opacity={0.5}
-      _hover={{
-        opacity: 1,
-      }}
-      onClick={handleUploadClick}
-      bgColor="white"
-    >
-      {rawDataFiles && rawDataFiles.length ? (
-        <Stack alignItems="center" spacing={6}>
-          <HStack>
-            <BsCheckCircle fontSize={18} color="green" />
-            <Text fontSize="sm" color="green.500">
-              {rawDataFiles[0].name}{" "}
-              {rawDataFiles.length > 1
-                ? `and ${
-                    rawDataFiles.length - 1 > 2
-                      ? `${rawDataFiles.length - 1} others`
-                      : `${rawDataFiles.length - 1} other`
-                  }`
-                : ``}{" "}
-              ready for submission
-            </Text>
-          </HStack>
-          {isLoading && <BarLoader color={BRAND_COLOR} />}
-        </Stack>
-      ) : (
-        <HStack>
-          <AiOutlineCloudDownload fontSize={18} />
-          <Text fontSize="sm">Click here to upload the raw keyword data</Text>
-        </HStack>
-      )}
-    </Flex>
-  );
 
   const renderExamplePrompt = () => (
     <Stack mt={6}>
@@ -320,92 +225,50 @@ export const ProcessRawData: React.FC<Props> = (props) => {
             onChange={(e) => {
               props.onSwitch();
             }}
+            isChecked
           >
             Switch for new step 1 automation
           </Switch>
         </HStack>
+        <Badge colorScheme="green" mb={2}>
+          New!
+        </Badge>
         <Heading fontSize="lg">
-          1. (Old) Upload raw CSV {activeTeam?.name}
+          1. Generate Seed Keywords for {activeTeam?.name}
         </Heading>
         <Text fontSize="xs" my={6} opacity={0.75}>
-          This will take a group of CSV files from Ahrefs and sort them to
-          exclude duplicate keywords and only show the keywords on the the first
-          2 pages
+          {`This automates the Ahref's step. This will take a list of competitors
+          and generate a list of seed keywords from SEMRush to use for the next
+          step. We can optionally classify the keywords into categories for
+          deeper analysis.`}
         </Text>
-        <a download href="/demo/process-raw-data/demo.csv">
-          <Text
-            opacity={0.75}
-            fontSize="xs"
-            cursor="pointer"
-            _hover={{
-              textDecoration: "underline",
-            }}
-          >
-            See the correct structure of a single input file here
+
+        <Divider my={6} />
+
+        <Stack mb={6}>
+          <HStack>
+            <Box
+              width={18}
+              height={18}
+              position="relative"
+              borderRadius={4}
+              overflow="hidden"
+            >
+              <Image
+                src="steps/semrush.jpeg"
+                layout="fill"
+                alt="Semrush Logo"
+              />
+            </Box>
+            <Heading fontSize="md">Competitors</Heading>
+          </HStack>
+          <Text fontSize="xs" opacity={0.75} py={3}>
+            List the competitor names and urls you want to compare against via
+            SEMRush
           </Text>
-        </a>
 
-        <Divider my={12} />
-
-        <HStack>
-          <Box
-            width={18}
-            height={18}
-            position="relative"
-            borderRadius={4}
-            overflow="hidden"
-          >
-            <Image src="steps/ahrefs.jpeg" layout="fill" alt="Ahrefs Logo" />
-          </Box>
-          <Heading fontSize="md">Ahrefs Export Data</Heading>
-        </HStack>
-
-        <Input
-          type="file"
-          onInput={(e: any) => setRawDataFiles(Object.values(e.target.files))}
-          multiple
-          ref={rawDataInputRef}
-          display="none"
-        />
-        {renderRawDataUploadZone()}
-
-        <Accordion allowMultiple defaultIndex={[0]}>
-          <AccordionItem>
-            <AccordionButton py={6}>
-              <Flex justifyContent="space-between" w="full">
-                <HStack>
-                  <FaBrain />
-                  <Heading fontSize="md">
-                    Semantic Similarity (Optional)
-                  </Heading>
-                </HStack>
-                <AccordionIcon />
-              </Flex>
-            </AccordionButton>
-            <AccordionPanel>
-              <Stack
-                spacing={6}
-                opacity={excludeSimilarKeywords ? 1 : 0.5}
-                _hover={{
-                  opacity: 1,
-                }}
-              >
-                <Checkbox
-                  onChange={(e) => {
-                    setExcludeSimilarKeywords(e.target.checked);
-                  }}
-                >
-                  <Text fontSize="xs" opacity={0.75}>
-                    {`Enable semantic similarity check`}
-                  </Text>
-                </Checkbox>
-                <Text fontSize="xs" opacity={0.75}>
-                  {`Exclude similar keywords e.g. "how do I buy" and "how to buy". Checking this box will increase the time it takes to process the data but remove similar sounding keywords.`}
-                </Text>
-              </Stack>
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
+          <CompetitorsForm onChange={setCompetitors} />
+        </Stack>
 
         <Accordion allowMultiple defaultIndex={[0]}>
           <AccordionItem>
@@ -503,13 +366,10 @@ export const ProcessRawData: React.FC<Props> = (props) => {
         </Accordion>
         {promptsExist ? renderExamplePrompt() : null}
         <Flex justifyContent="flex-end" pt={12}>
-          <Button size="sm" onClick={() => setRawDataFiles(null)}>
-            Clear
-          </Button>
           <Button
             size="sm"
             onClick={handleSubmit}
-            isDisabled={!rawDataFiles || isLoading}
+            isDisabled={competitors.length == 0 || isLoading}
             isLoading={isLoading}
           >
             Upload
