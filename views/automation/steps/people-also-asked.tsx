@@ -1,26 +1,28 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
 import {
   Box,
+  Divider,
+  Flex,
   Heading,
-  Text,
+  HStack,
   Input,
   Stack,
-  Flex,
-  HStack,
+  Text,
   useToast,
 } from "@chakra-ui/react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { AiOutlineCloudDownload } from "react-icons/ai";
+import { BsCheckCircle } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import ReactSelect from "react-select";
-import { BsCheckCircle } from "react-icons/bs";
-import { AiOutlineCloudDownload } from "react-icons/ai";
 import { BarLoader } from "react-spinners";
 
 import { usePeopleAlsoAskMutation } from "api/engine.api";
 import { Button } from "components/button";
-import { RootState } from "store";
 import { BRAND_COLOR, GOOGLE_LANGUAGES } from "config";
-import { ModalStepWrapper } from "./modal-step-wrapper";
+import { GridInputForm } from "forms/grid-input";
+import { RootState } from "store";
 import { typeCheckError } from "utils";
+import { ModalStepWrapper } from "./modal-step-wrapper";
 
 interface Props {
   isOpen: boolean;
@@ -29,6 +31,8 @@ interface Props {
 
 export const PeopleAlsoAsked: React.FC<Props> = (props) => {
   const activeTeam = useSelector((state: RootState) => state.team.activeTeam);
+
+  const [exclusionKeywords, setExclusionKeywords] = useState<string[]>([]);
 
   const alsoAskedInputRef = useRef<HTMLInputElement>(null);
   const [alsoAskedFile, setAlsoAskedFile] = useState<File | null | undefined>(
@@ -85,6 +89,10 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
     formData.append("file", alsoAskedFile);
     formData.append("language", language || "en");
     formData.append("team", activeTeam?.id);
+
+    if (exclusionKeywords.length > 0) {
+      formData.append("exclusion_keywords", exclusionKeywords.join(","));
+    }
 
     await uploadAlsoAskedData(formData);
     setAlsoAskedFile(null);
@@ -154,6 +162,9 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
           display="none"
         />
         {renderAlsoAskedUploadZone()}
+
+        <Divider my={6} />
+
         <Stack>
           <Text fontSize="sm" fontWeight="semibold">
             Language to use in Google Search:
@@ -171,6 +182,26 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
             options={langOptions as any}
           />
         </Stack>
+
+        <Divider my={6} />
+
+        <Stack mb={6}>
+          <Stack mb={6}>
+            <Text fontSize="sm" fontWeight="semibold">
+              Keywords to Exclude (Optional)
+            </Text>
+            <Text fontSize="xs" opacity={0.75}>
+              {`Optionally add some target keywords you want to remove from the PAA output. For example if you
+            add "mint" to the list, all the PAA questions that contain the word "mint" will be
+            set as "Non-relevant" e.g. "How do you mint an NFT?" would be labeled "Non-relevant".`}
+            </Text>
+          </Stack>
+          <GridInputForm
+            onChange={(e) => setExclusionKeywords(e.filter((f) => f.length))}
+            buttonLabel="Add a new exclusion keyword"
+          />
+        </Stack>
+
         <Flex justifyContent="flex-end" pt={6}>
           <Button size="sm" onClick={() => setAlsoAskedFile(null)}>
             Clear
