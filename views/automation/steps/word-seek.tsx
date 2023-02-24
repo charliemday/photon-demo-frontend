@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-import { Stack, Heading, Text, Flex, useToast } from "@chakra-ui/react";
-import { Button } from "components/button";
+import { Flex, Heading, Stack, Text, useToast } from "@chakra-ui/react";
 import { useCompareSearchConsoleReportMutation } from "api/vendor.api";
+import { Button } from "components/button";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
 import { Team } from "types";
@@ -14,11 +14,7 @@ interface Props {
   onClose: () => void;
 }
 
-export const SearchConsoleCompare: React.FC<Props> = ({
-  isDisabled,
-  isOpen,
-  onClose,
-}) => {
+export const WordSeek: React.FC<Props> = ({ isDisabled, isOpen, onClose }) => {
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
   );
@@ -65,9 +61,7 @@ export const SearchConsoleCompare: React.FC<Props> = ({
   return (
     <ModalStepWrapper isOpen={isOpen} onClose={onClose}>
       <Stack spacing={6} pointerEvents={isDisabled ? "none" : "auto"}>
-        <Heading fontSize="lg">
-          5. Compare Console Report for {activeTeam?.name}
-        </Heading>
+        <Heading fontSize="lg">5. Run WordSeek for {activeTeam?.name}</Heading>
         <Text fontSize="xs" opacity={0.5}>
           {isDisabled
             ? `You need to connect to Google Search Console to use this automation`

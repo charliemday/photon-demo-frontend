@@ -3,6 +3,7 @@ import {
   Button,
   Flex,
   HStack,
+  Input,
   Menu,
   MenuButton,
   MenuDivider,
@@ -17,6 +18,8 @@ import { useListTeamsQuery } from "api/team.api";
 import { Image } from "components/image";
 import { AddTeamModal } from "components/modals";
 import { motion } from "framer-motion";
+import FuseJS from "fuse.js";
+import debounce from "lodash/debounce";
 import React, { useEffect, useState } from "react";
 import { AiOutlineTeam } from "react-icons/ai";
 import { BiRefresh } from "react-icons/bi";
@@ -40,12 +43,28 @@ export const FloatingButton: React.FC<Props> = ({ teams, fixed }) => {
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(
     activeTeam || teams?.[0] || null
   );
+
+  const [searchResults, setSearchResults] = useState<Team[]>(teams || []);
+
   const { isOpen, onClose, onOpen } = useDisclosure();
   const dispatch = useDispatch();
   const onSelect = (team: Team) => {
     setSelectedTeam(team);
     dispatch(setActiveTeam(team));
   };
+
+  const fuse = new FuseJS(teams, {
+    keys: ["name"],
+  });
+
+  const handleSearch = debounce((value: string) => {
+    if (value) {
+      const results = fuse.search(value);
+      setSearchResults(results.map((result) => result.item));
+    } else {
+      setSearchResults(teams);
+    }
+  }, 500);
 
   const toast = useToast();
 
@@ -108,17 +127,24 @@ export const FloatingButton: React.FC<Props> = ({ teams, fixed }) => {
               </Flex>
             </MenuButton>
             <MenuList>
-              <Box py={1} px={6}>
-                <Text fontSize="sm">
-                  {teams.length
-                    ? `${teams.length} team${teams.length > 1 ? "s" : ""}`
-                    : `No Teams Found`}
-                </Text>
-              </Box>
+              <HStack px={2}>
+                <Box opacity={0.5}>🔍</Box>
+                <Input
+                  fontSize="sm"
+                  placeholder={
+                    teams.length
+                      ? `${teams.length} team${
+                          teams.length > 1 ? "s..." : "..."
+                        }`
+                      : `No Teams Found`
+                  }
+                  onChange={(e) => handleSearch(e.target.value)}
+                />
+              </HStack>
 
               <MenuDivider />
               <Box maxH="30vh" overflow="auto">
-                {teams?.map((team) => (
+                {searchResults?.map((team) => (
                   <MenuItem key={team.id} onClick={() => onSelect(team)}>
                     <Box
                       w={5}

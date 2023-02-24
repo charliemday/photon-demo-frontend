@@ -26,11 +26,11 @@ import {
   PeopleAlsoAsked,
   PopulateSCReports,
   ProcessRawData,
-  SearchConsoleCompare,
   SearchConsoleConnect,
   SearchConsoleReport,
   SeedKeywords,
   UploadAhrefsReport,
+  WordSeek,
 } from "./steps";
 
 enum KEY {
@@ -84,9 +84,9 @@ const STEPS: {
     isDisabled: true,
   },
   {
-    title: "5. Compare Console Report",
-    description: `Compare the Search Console Results whether the keywords exist on a
-    specific page. The output will be an email sent to info@getbaser.com`,
+    title: "5. WordSeek",
+    description: `Take the GSC keywords and check whether they exist on the
+    pages they're associated with. The output will be saved to the drive.`,
     key: KEY.COMPARE_CONSOLE_REPORT,
     image: "/steps/search-console.svg",
   },
@@ -209,7 +209,7 @@ export const AutomationView: React.FC = () => {
         isOpen={isOpen && activeStep === KEY.SEARCH_CONSOLE_REPORT}
         onClose={onClose}
       />
-      <SearchConsoleCompare
+      <WordSeek
         isOpen={isOpen && activeStep === KEY.COMPARE_CONSOLE_REPORT}
         onClose={onClose}
       />
