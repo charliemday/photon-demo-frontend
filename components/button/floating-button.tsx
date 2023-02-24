@@ -11,17 +11,22 @@ import {
   Stack,
   Text,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
+import { useListTeamsQuery } from "api/team.api";
 import { Image } from "components/image";
 import { AddTeamModal } from "components/modals";
-import React, { useState } from "react";
+import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
 import { AiOutlineTeam } from "react-icons/ai";
+import { BiRefresh } from "react-icons/bi";
 import { BsChevronDown as ChevronDownIcon } from "react-icons/bs";
 import { GrAdd } from "react-icons/gr";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
 import { setActiveTeam } from "store/slices";
 import { Team } from "types";
+import { typeCheckError } from "utils";
 
 interface Props {
   teams: Team[];
@@ -42,75 +47,107 @@ export const FloatingButton: React.FC<Props> = ({ teams, fixed }) => {
     dispatch(setActiveTeam(team));
   };
 
+  const toast = useToast();
+
+  const { refetch, error, isError } = useListTeamsQuery(undefined);
+
+  useEffect(() => {
+    if (error && isError) {
+      toast({
+        title: "Error",
+        description: typeCheckError(error) || "Something went wrong",
+        status: "error",
+        isClosable: true,
+      });
+    }
+  }, [error, isError, toast]);
+
   const renderButton = () => (
     <>
       <AddTeamModal isOpen={isOpen} onClose={onClose} />
-      <Stack zIndex={101}>
-        <Text fontWeight="semibold" fontSize="sm">
-          Select a Team to Work on:
-        </Text>
-        <Menu>
-          <MenuButton
-            as={Button}
-            rightIcon={<ChevronDownIcon color="black" />}
-            size="sm"
-            border="solid 1px black"
-          >
-            <Flex alignItems="center">
-              <Box w={5} minH={5} m={2} overflow="hidden" position="relative">
-                {selectedTeam?.logo ? (
-                  <Image
-                    src={selectedTeam.logo}
-                    alt={selectedTeam.name}
-                    layout="fill"
-                  />
-                ) : (
-                  <AiOutlineTeam />
-                )}
+      <HStack position="relative">
+        <motion.div
+          whileTap={{
+            rotate: -180,
+          }}
+          style={{
+            position: "absolute",
+            left: -20,
+            bottom: 5,
+            cursor: "pointer",
+          }}
+          onClick={refetch}
+          title="Refresh Teams"
+        >
+          <BiRefresh fontSize={18} />
+        </motion.div>
+        <Stack zIndex={101}>
+          <Text fontWeight="semibold" fontSize="sm">
+            Select a Team to Work on:
+          </Text>
+          <Menu>
+            <MenuButton
+              as={Button}
+              rightIcon={<ChevronDownIcon color="black" />}
+              size="sm"
+              border="solid 1px black"
+            >
+              <Flex alignItems="center">
+                <Box w={5} minH={5} m={2} overflow="hidden" position="relative">
+                  {selectedTeam?.logo ? (
+                    <Image
+                      src={selectedTeam.logo}
+                      alt={selectedTeam.name}
+                      layout="fill"
+                    />
+                  ) : (
+                    <AiOutlineTeam />
+                  )}
+                </Box>
+                <Text color="black">{selectedTeam?.name}</Text>
+              </Flex>
+            </MenuButton>
+            <MenuList>
+              <Box py={1} px={6}>
+                <Text fontSize="sm">
+                  {teams.length
+                    ? `${teams.length} team${teams.length > 1 ? "s" : ""}`
+                    : `No Teams Found`}
+                </Text>
               </Box>
-              <Text color="black">{selectedTeam?.name}</Text>
-            </Flex>
-          </MenuButton>
-          <MenuList>
-            <Box py={1} px={6}>
-              <Text fontSize="sm">
-                {teams.length
-                  ? `${teams.length} team${teams.length > 1 ? "s" : ""}`
-                  : `No Teams Found`}
-              </Text>
-            </Box>
 
-            <MenuDivider />
-            <Box maxH="30vh" overflow="auto">
-              {teams?.map((team) => (
-                <MenuItem key={team.id} onClick={() => onSelect(team)}>
-                  <Box
-                    w={5}
-                    minH={5}
-                    mx={4}
-                    overflow="hidden"
-                    position="relative"
-                  >
-                    {team?.logo ? (
-                      <Image src={team.logo} alt={team.name} layout="fill" />
-                    ) : (
-                      <AiOutlineTeam />
-                    )}
-                  </Box>
-                  <Text fontSize="sm">{team.name}</Text>
-                </MenuItem>
-              ))}
-            </Box>
-            <MenuDivider />
-            <MenuItem onClick={onOpen}>
-              <HStack>
-                <GrAdd />
-                <Text fontSize="sm">Add a Team</Text>
-              </HStack>
-            </MenuItem>
-          </MenuList>
-        </Menu>
-      </Stack>
+              <MenuDivider />
+              <Box maxH="30vh" overflow="auto">
+                {teams?.map((team) => (
+                  <MenuItem key={team.id} onClick={() => onSelect(team)}>
+                    <Box
+                      w={5}
+                      minH={5}
+                      mx={4}
+                      overflow="hidden"
+                      position="relative"
+                    >
+                      {team?.logo ? (
+                        <Image src={team.logo} alt={team.name} layout="fill" />
+                      ) : (
+                        <AiOutlineTeam />
+                      )}
+                    </Box>
+                    <Text fontSize="sm">{team.name}</Text>
+                  </MenuItem>
+                ))}
+              </Box>
+              <MenuDivider />
+              <MenuItem onClick={onOpen}>
+                <HStack>
+                  <GrAdd />
+                  <Text fontSize="sm">Add a Team</Text>
+                </HStack>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Stack>
+      </HStack>
     </>
   );
 
