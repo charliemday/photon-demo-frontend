@@ -31,7 +31,6 @@ import { BarLoader } from "react-spinners";
 import { useProcessAhrefsDataMutation } from "api/engine.api";
 import { useRetrieveClassificationQuery } from "api/team.api";
 import { Button } from "components/button";
-import JSZip from "jszip";
 import Link from "next/link";
 import { RootState } from "store";
 import { Team } from "types";
@@ -129,29 +128,35 @@ export const ProcessRawData: React.FC<Props> = (props) => {
     let formData = new FormData();
     formData.append("team_id", activeTeam.id.toString());
 
-    /**
-     * We want to compress the files into a zip file
-     * before uploading them to the server as we may be
-     * limited by
-     */
-    const zip = new JSZip();
-    const zipFile = zip.folder("raw_data") as JSZip;
+    // TODO: Currently we have an issue with the JSZip library
+    // on the backend however temp fix is to upload the files unzipped
+    // /**
+    //  * We want to compress the files into a zip file
+    //  * before uploading them to the server as we may be
+    //  * limited by
+    //  */
+    // const zip = new JSZip();
+    // const zipFile = zip.folder("raw_data") as JSZip;
 
-    rawDataFiles.forEach(async (file) => {
-      // For each file add it to the zip file
-      if (zipFile) {
-        await zipFile.file(file.name, file);
-      }
+    // rawDataFiles.forEach(async (file) => {
+    //   // For each file add it to the zip file
+    //   if (zipFile) {
+    //     await zipFile.file(file.name, file);
+    //   }
+    // });
+
+    // const content = await zip.generateAsync({
+    //   type: "blob",
+    //   compression: "DEFLATE",
+    // });
+
+    // const fileToUpload = new File([content], "raw_data.zip");
+
+    // formData.append("zip_file", fileToUpload);
+
+    rawDataFiles.forEach((file) => {
+      formData.append("files", file);
     });
-
-    const content = await zip.generateAsync({
-      type: "blob",
-      compression: "DEFLATE",
-    });
-
-    const fileToUpload = new File([content], "raw_data.zip");
-
-    formData.append("zip_file", fileToUpload);
 
     const positiveClassificationsExist = positivePrompts.length > 0;
     const negativeClassificationsExist = negativePrompts.length > 0;
