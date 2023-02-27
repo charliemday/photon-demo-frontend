@@ -267,7 +267,7 @@ export const SeedKeywords: React.FC<Props> = (props) => {
             SEMRush
           </Text>
 
-          <CompetitorsForm onChange={setCompetitors} />
+          <CompetitorsForm onChange={setCompetitors} team={activeTeam} />
         </Stack>
 
         <Accordion allowMultiple defaultIndex={[0]}>

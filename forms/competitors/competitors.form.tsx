@@ -1,8 +1,10 @@
 import { Box, FormControl, HStack, Input, Stack } from "@chakra-ui/react";
+import { useTeamCompetitorsQuery } from "api/team.api";
 import { Button } from "components/button";
 import { useEffect, useState } from "react";
 import { BiMinusCircle } from "react-icons/bi";
 import uuid from "react-uuid";
+import { Team } from "types";
 
 export interface CompetitorInterface {
   name: string;
@@ -11,9 +13,10 @@ export interface CompetitorInterface {
 
 interface Props {
   onChange?: (competitors: CompetitorInterface[]) => void;
+  team: Team;
 }
 
-const CompetitorsForm: React.FC<Props> = ({ onChange }) => {
+const CompetitorsForm: React.FC<Props> = ({ onChange, team }) => {
   const [inputs, setInputs] = useState<{
     [key: string]: CompetitorInterface;
   }>({
@@ -22,6 +25,41 @@ const CompetitorsForm: React.FC<Props> = ({ onChange }) => {
       url: "",
     },
   });
+
+  const { data: competitorData, isSuccess } = useTeamCompetitorsQuery(team.uid);
+
+  useEffect(() => {
+    if (team) {
+      /**
+       * Reset the team inputs
+       */
+      setInputs({
+        [uuid()]: {
+          name: "",
+          url: "",
+        },
+      });
+    }
+  }, [team]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      if (competitorData?.length) {
+        const initialCompetitors: {
+          [key: string]: CompetitorInterface;
+        } = {};
+
+        competitorData.forEach((competitor) => {
+          initialCompetitors[uuid()] = {
+            name: competitor.competitorName,
+            url: competitor.competitorUrl,
+          };
+        });
+
+        setInputs(initialCompetitors);
+      }
+    }
+  }, [isSuccess, competitorData]);
 
   useEffect(() => {
     if (onChange) {
@@ -50,7 +88,7 @@ const CompetitorsForm: React.FC<Props> = ({ onChange }) => {
       </FormControl>
       <FormControl isRequired>
         <Input
-          placeholder="Competitor URL"
+          placeholder={`Competitor URL ${inputs[key].url}`}
           type="url"
           value={inputs[key].url}
           onChange={(e) => {

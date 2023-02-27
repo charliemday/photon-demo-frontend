@@ -25,6 +25,11 @@ interface TeamClassification {
   team: number;
 }
 
+interface CompetitorResponse {
+  competitorName: string;
+  competitorUrl: string;
+}
+
 type TeamResponse = ConvertToSnakeCase<Team>;
 
 // Define a service using a base URL and expected endpoints
@@ -72,6 +77,12 @@ export const teamApi = baseApi.injectEndpoints({
       transformResponse: (response: ConvertToSnakeCase<TeamClassification>) => {
         return camelizeKeys(response) as TeamClassification;
       }
+    }),
+    teamCompetitors: builder.query<CompetitorResponse[], string>({
+      query: (teamId) => ({
+        url: apiUrls.TEAM_COMPETITORS(teamId),
+      }),
+      transformResponse: (response: ConvertToSnakeCase<CompetitorResponse>[]) => response.map((c) => camelizeKeys(c) as CompetitorResponse),
     })
   }),
 });
@@ -84,4 +95,5 @@ export const {
   useDeleteTeamMutation,
   useCreateTeamMutation,
   useRetrieveClassificationQuery,
+  useTeamCompetitorsQuery
 } = teamApi;

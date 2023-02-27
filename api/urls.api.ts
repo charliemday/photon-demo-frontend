@@ -7,6 +7,7 @@ export const apiUrls = {
     TEAMS: 'teams/',
     TEAM: (id: number) => `teams/${id}/`,
     TEAM_CLASSIFICATION: (teamUid: string) => `teams/team/${teamUid}/classifications`,
+    TEAM_COMPETITORS: (teamUid: string) => `teams/team/competitors?team_uid=${teamUid}`,
     // User
     USER: 'user/',
     ONBOARDING_STEP: 'onboarding-step/',
