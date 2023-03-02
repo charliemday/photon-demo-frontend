@@ -27,6 +27,7 @@ import { useSelector } from "react-redux";
 import { SeedKeywordsBody, useSeedKeywordsMutation } from "api/engine.api";
 import { useRetrieveClassificationQuery } from "api/team.api";
 import { Button } from "components/button";
+import { SemrushDatabaseMenu } from "components/menus";
 import { CompetitorsForm } from "forms/competitors";
 import { CompetitorInterface } from "forms/competitors/competitors.form";
 import Link from "next/link";
@@ -35,14 +36,21 @@ import { Team } from "types";
 import { typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
 
+import { SEMRUSH_DATABASES } from "config";
+
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSwitch: () => void;
 }
 
+type SemrushDatabaseKeys = keyof typeof SEMRUSH_DATABASES;
+type SemrushDatabase = typeof SEMRUSH_DATABASES[SemrushDatabaseKeys];
+
 export const SeedKeywords: React.FC<Props> = (props) => {
   const [competitors, setCompetitors] = useState<CompetitorInterface[]>([]);
+  const [database, setDatabase] = useState<SemrushDatabase>("uk");
+
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
   );
@@ -116,6 +124,7 @@ export const SeedKeywords: React.FC<Props> = (props) => {
   const handleSubmit = async () => {
     const body: SeedKeywordsBody = {
       teamId: activeTeam.id.toString(),
+      database,
       competitors,
     };
 
@@ -267,7 +276,16 @@ export const SeedKeywords: React.FC<Props> = (props) => {
             SEMRush
           </Text>
 
-          <CompetitorsForm onChange={setCompetitors} team={activeTeam} />
+          <HStack position="relative">
+            <Text opacity={0.75}>SEMRush Database:</Text>
+            <SemrushDatabaseMenu onChange={setDatabase} />
+          </HStack>
+
+          <Divider pb={3} />
+
+          <Box pt={6}>
+            <CompetitorsForm onChange={setCompetitors} team={activeTeam} />
+          </Box>
         </Stack>
 
         <Accordion allowMultiple defaultIndex={[0]}>

@@ -12,6 +12,7 @@ export interface SeedKeywordsBody {
   classificationCategory?: string;
   positivePrompts?: string[];
   negativePrompts?: string[];
+  database?: string; // TODO: Type this to the SEMRUSH_DATABASES
 }
 
 // Define a service using a base URL and expected endpoints

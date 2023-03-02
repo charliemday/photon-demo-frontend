@@ -1,34 +1,36 @@
-import React from "react";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalCloseButton,
   Box,
   Divider,
+  Modal,
+  ModalCloseButton,
+  ModalContent,
+  ModalOverlay,
 } from "@chakra-ui/react";
+import Image from "next/image";
+import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
 import { Team } from "types";
-import Image from "next/image";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  size?: string;
 }
 
 export const ModalStepWrapper: React.FC<Props> = ({
   isOpen,
   onClose,
   children,
+  size = "2xl",
 }) => {
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+    <Modal isOpen={isOpen} onClose={onClose} size={size}>
       <ModalOverlay />
       <ModalContent p={12}>
         <ModalCloseButton />
