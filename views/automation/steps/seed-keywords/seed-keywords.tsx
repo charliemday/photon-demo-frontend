@@ -28,6 +28,8 @@ import { Team } from "types";
 import { typeCheckError } from "utils";
 import { ModalStepWrapper } from "../modal-step-wrapper";
 
+import { HiArrowLeft } from "react-icons/hi";
+
 import { SEMRUSH_DATABASES } from "config";
 
 import { CompetitorInterface } from "forms/competitors";
@@ -235,24 +237,16 @@ export const SeedKeywords: React.FC<Props> = (props) => {
       : targetKeywords.length === 0;
 
   const switchLabel2 =
-    drive === "competitorDriven"
-      ? "Switch to Keyword Driven"
-      : "Switch to Competitor Driven";
+    drive === "competitorDriven" ? "Competitor Driven" : "Keyword Driven";
 
   return (
     <ModalStepWrapper {...props} size="6xl">
       <Box>
         <HStack alignItems="center" mb={6}>
-          <Switch
-            fontSize="sm"
-            justifyContent="center"
-            onChange={(e) => {
-              props.onSwitch();
-            }}
-            isChecked
-          >
-            {props.switchLabel}
-          </Switch>
+          <HStack cursor="pointer" onClick={() => props.onSwitch()}>
+            <HiArrowLeft />
+            <Text fontSize="sm">{props.switchLabel}</Text>
+          </HStack>
         </HStack>
         <Badge colorScheme="green" mb={2}>
           New!

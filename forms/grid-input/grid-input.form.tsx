@@ -83,7 +83,6 @@ const GridInputForm: React.FC<Props> = ({
       </Grid>
       <Box>
         <Button
-          size="sm"
           mt={3}
           onClick={() => {
             setInputs((s) => {

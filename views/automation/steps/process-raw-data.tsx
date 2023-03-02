@@ -15,7 +15,6 @@ import {
   HStack,
   Input,
   Stack,
-  Switch,
   Text,
   useToast,
 } from "@chakra-ui/react";
@@ -25,6 +24,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { BsCheckCircle } from "react-icons/bs";
 import { FaBrain } from "react-icons/fa";
+import { HiArrowRight } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { BarLoader } from "react-spinners";
 
@@ -320,15 +320,10 @@ export const ProcessRawData: React.FC<Props> = (props) => {
     <ModalStepWrapper {...props}>
       <Box>
         <HStack alignItems="center" mb={6}>
-          <Switch
-            fontSize="sm"
-            justifyContent="center"
-            onChange={(e) => {
-              props.onSwitch();
-            }}
-          >
-            {props.switchLabel}
-          </Switch>
+          <HStack cursor="pointer" onClick={() => props.onSwitch()}>
+            <Text fontSize="sm">{props.switchLabel}</Text>
+            <HiArrowRight />
+          </HStack>
         </HStack>
         <Heading fontSize="lg">1. Upload raw CSV {activeTeam?.name}</Heading>
         <Text fontSize="xs" my={6} opacity={0.75}>
