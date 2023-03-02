@@ -189,12 +189,14 @@ export const AutomationView: React.FC = () => {
           isOpen={isOpen && activeStep === KEY.PROCESS_RAW_DATA}
           onClose={onClose}
           onSwitch={() => setUserNewStep1(false)}
+          switchLabel="Switch back to using Ahrefs Data"
         />
       ) : (
         <ProcessRawData
           isOpen={isOpen && activeStep === KEY.PROCESS_RAW_DATA}
           onClose={onClose}
           onSwitch={() => setUserNewStep1(true)}
+          switchLabel="Switch to using the new SEMRush process"
         />
       )}
       <PeopleAlsoAsked

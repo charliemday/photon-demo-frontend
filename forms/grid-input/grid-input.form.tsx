@@ -13,13 +13,13 @@ import { BiMinusCircle } from "react-icons/bi";
 import uuid from "react-uuid";
 
 interface Props {
-  onChange?: (competitors: string[]) => void;
+  onChange?: (items: string[]) => void;
   buttonLabel?: string;
 }
 
 const GridInputForm: React.FC<Props> = ({
   onChange,
-  buttonLabel = "Submit",
+  buttonLabel = "Add Keyword",
 }) => {
   const [inputs, setInputs] = useState<{
     [key: string]: string;
@@ -29,7 +29,10 @@ const GridInputForm: React.FC<Props> = ({
 
   useEffect(() => {
     if (onChange) {
-      onChange(Object.values(inputs));
+      const nonEmptyInputs =
+        Object.values(inputs).filter((i) => i !== "") || [];
+
+      onChange(Object.values(nonEmptyInputs));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputs]);

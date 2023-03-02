@@ -5,6 +5,7 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalOverlay,
+  Text,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import React from "react";
@@ -49,6 +50,13 @@ export const ModalStepWrapper: React.FC<Props> = ({
             layout="fill"
           />
         </Box>
+
+        <Box position="absolute" left={20} top={7}>
+          <Text fontSize="lg" fontWeight="bold">
+            {activeTeam?.name}
+          </Text>
+        </Box>
+
         <Divider my={6} />
         {children}
       </ModalContent>

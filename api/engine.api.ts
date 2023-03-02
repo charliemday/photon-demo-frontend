@@ -1,4 +1,4 @@
-import { CompetitorInterface } from "forms/competitors/competitors.form";
+import { CompetitorInterface } from "forms/competitors";
 import { decamelizeKeys } from "humps";
 import { apiUrls, baseApi } from ".";
 
@@ -8,7 +8,8 @@ interface PeopleAlsoAskBody extends FormData { }
 
 export interface SeedKeywordsBody {
   teamId: string;
-  competitors: CompetitorInterface[];
+  competitors?: CompetitorInterface[];
+  keywords: string[];
   classificationCategory?: string;
   positivePrompts?: string[];
   negativePrompts?: string[];

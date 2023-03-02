@@ -1,9 +1,4 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   Badge,
   Box,
   Checkbox,
@@ -27,29 +22,38 @@ import { useSelector } from "react-redux";
 import { SeedKeywordsBody, useSeedKeywordsMutation } from "api/engine.api";
 import { useRetrieveClassificationQuery } from "api/team.api";
 import { Button } from "components/button";
-import { SemrushDatabaseMenu } from "components/menus";
-import { CompetitorsForm } from "forms/competitors";
-import { CompetitorInterface } from "forms/competitors/competitors.form";
 import Link from "next/link";
 import { RootState } from "store";
 import { Team } from "types";
 import { typeCheckError } from "utils";
-import { ModalStepWrapper } from "./modal-step-wrapper";
+import { ModalStepWrapper } from "../modal-step-wrapper";
 
 import { SEMRUSH_DATABASES } from "config";
+
+import { CompetitorInterface } from "forms/competitors";
+import {
+  CompetitorsSection,
+  TargetKeywordsSection,
+} from "views/automation/steps/seed-keywords";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSwitch: () => void;
+  switchLabel: string;
 }
 
 type SemrushDatabaseKeys = keyof typeof SEMRUSH_DATABASES;
 type SemrushDatabase = typeof SEMRUSH_DATABASES[SemrushDatabaseKeys];
 
 export const SeedKeywords: React.FC<Props> = (props) => {
-  const [competitors, setCompetitors] = useState<CompetitorInterface[]>([]);
   const [database, setDatabase] = useState<SemrushDatabase>("uk");
+  const [targetKeywords, setTargetKeywords] = useState<string[]>([]);
+  const [competitors, setCompetitors] = useState<CompetitorInterface[]>([]);
+
+  const [drive, setDrive] = useState<"competitorDriven" | "keywordDriven">(
+    "competitorDriven"
+  );
 
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
@@ -124,6 +128,7 @@ export const SeedKeywords: React.FC<Props> = (props) => {
   const handleSubmit = async () => {
     const body: SeedKeywordsBody = {
       teamId: activeTeam.id.toString(),
+      keywords: targetKeywords,
       database,
       competitors,
     };
@@ -211,9 +216,9 @@ export const SeedKeywords: React.FC<Props> = (props) => {
   );
 
   const promptsExist =
-    (classificationCategory.length &&
-      positivePrompts.every((p) => p.length) &&
-      negativePrompts.every((p) => p.length)) ||
+    classificationCategory.length &&
+    positivePrompts.every((p) => p.length) &&
+    negativePrompts.every((p) => p.length) &&
     autoClassify;
 
   const minPrompts =
@@ -224,8 +229,13 @@ export const SeedKeywords: React.FC<Props> = (props) => {
   const POSITIVE_PROMPTS = minPrompts || 10;
   const NEGATIVE_PROMPTS = minPrompts || 10;
 
+  const isSubmitButtonDisabled =
+    drive === "competitorDriven"
+      ? competitors.length === 0
+      : targetKeywords.length === 0;
+
   return (
-    <ModalStepWrapper {...props}>
+    <ModalStepWrapper {...props} size="6xl">
       <Box>
         <HStack alignItems="center" mb={6}>
           <Switch
@@ -236,7 +246,7 @@ export const SeedKeywords: React.FC<Props> = (props) => {
             }}
             isChecked
           >
-            Switch for new step 1 automation
+            {props.switchLabel}
           </Switch>
         </HStack>
         <Badge colorScheme="green" mb={2}>
@@ -245,52 +255,39 @@ export const SeedKeywords: React.FC<Props> = (props) => {
         <Heading fontSize="lg">
           1. Generate Seed Keywords for {activeTeam?.name}
         </Heading>
-        <Text fontSize="xs" my={6} opacity={0.75}>
-          {`This automates the Ahref's step. This will take a list of competitors
-          and generate a list of seed keywords from SEMRush to use for the next
+        <Text fontSize="xs" my={6} opacity={0.75} w="75%">
+          {`This automates the original Ahref's step. This will take a list of competitors
+          and generate a list of seed keywords from the SEMRush API to use for the next
           step. We can optionally classify the keywords into categories for
           deeper analysis.`}
         </Text>
 
         <Divider my={6} />
 
-        <Stack mb={6}>
-          <HStack>
-            <Box
-              width={18}
-              height={18}
-              position="relative"
-              borderRadius={4}
-              overflow="hidden"
-            >
-              <Image
-                src="steps/semrush.jpeg"
-                layout="fill"
-                alt="Semrush Logo"
+        <HStack alignItems="flex-start" spacing={12}>
+          <Stack mb={6} flex={1}>
+            {drive === "competitorDriven" ? (
+              <CompetitorsSection
+                onChangeCompetitors={setCompetitors}
+                onChangeDb={setDatabase}
+                activeTeam={activeTeam}
               />
-            </Box>
-            <Heading fontSize="md">Competitors</Heading>
-          </HStack>
-          <Text fontSize="xs" opacity={0.75} py={3}>
-            List the competitor names and urls you want to compare against via
-            SEMRush
-          </Text>
+            ) : (
+              <TargetKeywordsSection
+                onChangeKeywords={setTargetKeywords}
+                activeTeam={activeTeam}
+                onChangeDb={setDatabase}
+              />
+            )}
+          </Stack>
 
-          <HStack position="relative">
-            <Text opacity={0.75}>SEMRush Database:</Text>
-            <SemrushDatabaseMenu onChange={setDatabase} />
-          </HStack>
-
-          <Divider pb={3} />
-
-          <Box pt={6}>
-            <CompetitorsForm onChange={setCompetitors} team={activeTeam} />
-          </Box>
-        </Stack>
-
-        <Accordion allowMultiple defaultIndex={[0]}>
-          <AccordionItem>
-            <AccordionButton py={6}>
+          <Box flex={1}>
+            <Stack
+              opacity={promptsExist ? 1 : 0.5}
+              _hover={{
+                opacity: 1,
+              }}
+            >
               <Flex justifyContent="space-between" w="full">
                 <HStack>
                   <Box
@@ -310,87 +307,72 @@ export const SeedKeywords: React.FC<Props> = (props) => {
                     Classification prompts (Optional)
                   </Heading>
                 </HStack>
-                <AccordionIcon />
               </Flex>
-            </AccordionButton>
-            <AccordionPanel>
-              <Stack
-                spacing={12}
-                opacity={promptsExist ? 1 : 0.5}
-                _hover={{
-                  opacity: 1,
-                }}
-              >
-                <Stack>
-                  <Checkbox
-                    py={6}
-                    defaultChecked={autoClassify}
-                    onChange={(e) => {
-                      setAutoClassify(e.target.checked);
-                    }}
-                  >
-                    <Text fontSize="xs" opacity={0.75}>
-                      Enable classification
-                    </Text>
-                  </Checkbox>
-
+              <Stack>
+                <Checkbox
+                  py={6}
+                  defaultChecked={autoClassify}
+                  onChange={(e) => {
+                    setAutoClassify(e.target.checked);
+                  }}
+                >
                   <Text fontSize="xs" opacity={0.75}>
-                    These prompts will be used in the OpenAI API call to help
-                    classify the keywords as to whether they are relevant or
-                    non-relevant. Leaving this blank will still produce the CSV
-                    but without relevance classification.
+                    Enable classification
+                  </Text>
+                </Checkbox>
+
+                <Text fontSize="xs" opacity={0.75}>
+                  These prompts will be used in the OpenAI API call to help
+                  classify the keywords as to whether they are relevant or
+                  non-relevant. Leaving this blank will still produce the CSV
+                  but without relevance classification.
+                </Text>
+              </Stack>
+              <FormControl>
+                <FormLabel fontSize="sm">Classification category</FormLabel>
+                <Input
+                  name="classificationCategory"
+                  type="text"
+                  onChange={(e) => setClassificationCategory(e.target.value)}
+                  value={classificationCategory}
+                />
+                <FormHelperText fontSize="xs">
+                  e.g. Female Health
+                </FormHelperText>
+              </FormControl>
+
+              <HStack w="full">
+                <Stack w="full">
+                  <FormLabel fontSize="sm">Positive Classifications</FormLabel>
+                  {Array.from({ length: POSITIVE_PROMPTS }).map((_, idx) =>
+                    renderPositivePromptInput(idx)
+                  )}
+                  <Text fontSize="xs" opacity={0.5}>
+                    These are the positive classifications{" "}
                   </Text>
                 </Stack>
-                <FormControl>
-                  <FormLabel fontSize="sm">Classification category</FormLabel>
-                  <Input
-                    name="classificationCategory"
-                    type="text"
-                    onChange={(e) => setClassificationCategory(e.target.value)}
-                    value={classificationCategory}
-                  />
-                  <FormHelperText fontSize="xs">
-                    e.g. Female Health
-                  </FormHelperText>
-                </FormControl>
-
-                <HStack w="full">
-                  <Stack w="full">
-                    <FormLabel fontSize="sm">
-                      Positive Classifications
-                    </FormLabel>
-                    {Array.from({ length: POSITIVE_PROMPTS }).map((_, idx) =>
-                      renderPositivePromptInput(idx)
-                    )}
-                    <Text fontSize="xs" opacity={0.5}>
-                      These are the positive classifications{" "}
-                    </Text>
-                  </Stack>
-                  <Stack w="full">
-                    <FormLabel fontSize="sm">
-                      Negative Classifications
-                    </FormLabel>
-                    {Array.from({ length: NEGATIVE_PROMPTS }).map((_, idx) =>
-                      renderNegativePromptInput(idx)
-                    )}
-                    <Text fontSize="xs" opacity={0.5}>
-                      These are the negative classifications{" "}
-                    </Text>
-                  </Stack>
-                </HStack>
-              </Stack>
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
-        {promptsExist ? renderExamplePrompt() : null}
+                <Stack w="full">
+                  <FormLabel fontSize="sm">Negative Classifications</FormLabel>
+                  {Array.from({ length: NEGATIVE_PROMPTS }).map((_, idx) =>
+                    renderNegativePromptInput(idx)
+                  )}
+                  <Text fontSize="xs" opacity={0.5}>
+                    These are the negative classifications{" "}
+                  </Text>
+                </Stack>
+              </HStack>
+            </Stack>
+            {promptsExist ? renderExamplePrompt() : null}
+          </Box>
+        </HStack>
         <Flex justifyContent="flex-end" pt={12}>
           <Button
-            size="sm"
+            size="lg"
             onClick={handleSubmit}
-            isDisabled={competitors.length == 0 || isLoading}
+            isDisabled={isSubmitButtonDisabled || isLoading}
             isLoading={isLoading}
           >
-            Upload
+            Run Step 1 🚀
           </Button>
         </Flex>
       </Box>

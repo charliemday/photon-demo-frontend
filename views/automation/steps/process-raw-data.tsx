@@ -41,6 +41,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSwitch: () => void;
+  switchLabel: string;
 }
 
 export const ProcessRawData: React.FC<Props> = (props) => {
@@ -326,12 +327,10 @@ export const ProcessRawData: React.FC<Props> = (props) => {
               props.onSwitch();
             }}
           >
-            Switch for new step 1 automation
+            {props.switchLabel}
           </Switch>
         </HStack>
-        <Heading fontSize="lg">
-          1. (Old) Upload raw CSV {activeTeam?.name}
-        </Heading>
+        <Heading fontSize="lg">1. Upload raw CSV {activeTeam?.name}</Heading>
         <Text fontSize="xs" my={6} opacity={0.75}>
           This will take a group of CSV files from Ahrefs and sort them to
           exclude duplicate keywords and only show the keywords on the the first
