@@ -52,7 +52,7 @@ export const SeedKeywords: React.FC<Props> = (props) => {
   const [competitors, setCompetitors] = useState<CompetitorInterface[]>([]);
 
   const [drive, setDrive] = useState<"competitorDriven" | "keywordDriven">(
-    "competitorDriven"
+    "keywordDriven"
   );
 
   const activeTeam: Team = useSelector(
@@ -234,6 +234,11 @@ export const SeedKeywords: React.FC<Props> = (props) => {
       ? competitors.length === 0
       : targetKeywords.length === 0;
 
+  const switchLabel2 =
+    drive === "competitorDriven"
+      ? "Switch to Keyword Driven"
+      : "Switch to Competitor Driven";
+
   return (
     <ModalStepWrapper {...props} size="6xl">
       <Box>
@@ -266,6 +271,21 @@ export const SeedKeywords: React.FC<Props> = (props) => {
 
         <HStack alignItems="flex-start" spacing={12}>
           <Stack mb={6} flex={1}>
+            <Switch
+              fontSize="sm"
+              alignItems="center"
+              mb={6}
+              onChange={(e) => {
+                if (drive === "competitorDriven") {
+                  setDrive("keywordDriven");
+                } else {
+                  setDrive("competitorDriven");
+                }
+              }}
+              isChecked={drive === "keywordDriven"}
+            >
+              {switchLabel2}
+            </Switch>
             {drive === "competitorDriven" ? (
               <CompetitorsSection
                 onChangeCompetitors={setCompetitors}
@@ -280,7 +300,6 @@ export const SeedKeywords: React.FC<Props> = (props) => {
               />
             )}
           </Stack>
-
           <Box flex={1}>
             <Stack
               opacity={promptsExist ? 1 : 0.5}
