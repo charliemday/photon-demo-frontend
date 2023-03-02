@@ -130,10 +130,16 @@ export const SeedKeywords: React.FC<Props> = (props) => {
   const handleSubmit = async () => {
     const body: SeedKeywordsBody = {
       teamId: activeTeam.id.toString(),
-      keywords: targetKeywords,
       database,
-      competitors,
     };
+
+    if (drive === "keywordDriven") {
+      body["keywords"] = targetKeywords;
+    } else if (drive === "competitorDriven") {
+      body["competitors"] = competitors;
+    }
+
+    console.log("Body", body);
 
     const positiveClassificationsExist = positivePrompts.length > 0;
     const negativeClassificationsExist = negativePrompts.length > 0;

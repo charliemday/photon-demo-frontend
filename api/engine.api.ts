@@ -9,7 +9,7 @@ interface PeopleAlsoAskBody extends FormData { }
 export interface SeedKeywordsBody {
   teamId: string;
   competitors?: CompetitorInterface[];
-  keywords: string[];
+  keywords?: string[];
   classificationCategory?: string;
   positivePrompts?: string[];
   negativePrompts?: string[];
