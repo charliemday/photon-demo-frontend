@@ -155,6 +155,25 @@ export const ProcessRawData: React.FC<Props> = (props) => {
 
     // formData.append("zip_file", fileToUpload);
 
+    let allCsvFiles = true;
+
+    for (let index in rawDataFiles as File[]) {
+      if (!rawDataFiles[index].name.endsWith(".csv")) {
+        allCsvFiles = false;
+        break;
+      }
+    }
+
+    if (!allCsvFiles) {
+      toast({
+        title: "Error",
+        description: "Only CSV files are allowed.",
+        status: "error",
+        isClosable: true,
+      });
+      return;
+    }
+
     rawDataFiles.forEach((file) => {
       formData.append("files", file);
     });
@@ -319,7 +338,15 @@ export const ProcessRawData: React.FC<Props> = (props) => {
   return (
     <ModalStepWrapper {...props}>
       <Box>
-        <HStack alignItems="center" mb={6}>
+        <HStack
+          alignItems="center"
+          mb={6}
+          opacity={0.75}
+          _hover={{
+            opacity: 1,
+            textDecoration: "underline",
+          }}
+        >
           <HStack cursor="pointer" onClick={() => props.onSwitch()}>
             <Text fontSize="sm">{props.switchLabel}</Text>
             <HiArrowRight />

@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Text } from "@chakra-ui/react";
+import { Flex, HStack, Text } from "@chakra-ui/react";
 import { Button } from "components/button";
 import { BRAND_NAME, LANDING_PAGE } from "config";
 import { useLogout } from "hooks";
@@ -9,7 +9,6 @@ interface Props {}
 
 export const Topbar: React.FC<Props> = () => {
   const { logout } = useLogout();
-
   return (
     <Flex
       w="full"
@@ -30,14 +29,14 @@ export const Topbar: React.FC<Props> = () => {
       >
         {BRAND_NAME}
       </Text>
-      <Box>
+      <HStack spacing={12}>
         <Button onClick={logout} size="sm">
           <HStack>
             <BiExit />
             <Text>Logout</Text>
           </HStack>
         </Button>
-      </Box>
+      </HStack>
     </Flex>
   );
 };

@@ -13,4 +13,5 @@ export enum ROUTES {
     SETTINGS = '/settings',
     KEYWORDS = '/keywords',
     REPORTS = '/reports',
+    DEVELOPER = '/developer',
 }

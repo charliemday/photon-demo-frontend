@@ -248,7 +248,15 @@ export const SeedKeywords: React.FC<Props> = (props) => {
   return (
     <ModalStepWrapper {...props} size="6xl">
       <Box>
-        <HStack alignItems="center" mb={6}>
+        <HStack
+          alignItems="center"
+          mb={6}
+          opacity={0.75}
+          _hover={{
+            opacity: 1,
+            textDecoration: "underline",
+          }}
+        >
           <HStack cursor="pointer" onClick={() => props.onSwitch()}>
             <HiArrowLeft />
             <Text fontSize="sm">{props.switchLabel}</Text>
