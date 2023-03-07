@@ -32,6 +32,15 @@ interface CompetitorResponse {
 
 type TeamResponse = ConvertToSnakeCase<Team>;
 
+interface SeedKeywords {
+  id: number;
+  created: string;
+  modified: string;
+  keyword: string;
+  searchVolume: number;
+  team: number
+}
+
 // Define a service using a base URL and expected endpoints
 export const teamApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -83,6 +92,12 @@ export const teamApi = baseApi.injectEndpoints({
         url: apiUrls.TEAM_COMPETITORS(teamId),
       }),
       transformResponse: (response: ConvertToSnakeCase<CompetitorResponse>[]) => response.map((c) => camelizeKeys(c) as CompetitorResponse),
+    }),
+    teamSeedKeywords: builder.query<SeedKeywords[], string>({
+      query: (teamId) => ({
+        url: apiUrls.TEAM_SEED_KEYWORDS(teamId),
+      }),
+      transformResponse: (response: ConvertToSnakeCase<SeedKeywords>[]) => response.map((c) => camelizeKeys(c) as SeedKeywords),
     })
   }),
 });
@@ -95,5 +110,6 @@ export const {
   useDeleteTeamMutation,
   useCreateTeamMutation,
   useRetrieveClassificationQuery,
-  useTeamCompetitorsQuery
+  useTeamCompetitorsQuery,
+  useTeamSeedKeywordsQuery
 } = teamApi;

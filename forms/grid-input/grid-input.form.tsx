@@ -15,17 +15,17 @@ import uuid from "react-uuid";
 interface Props {
   onChange?: (items: string[]) => void;
   buttonLabel?: string;
+  defaultValues?: { [key: string]: string };
 }
 
 const GridInputForm: React.FC<Props> = ({
   onChange,
   buttonLabel = "Add Keyword",
+  defaultValues = { [uuid()]: "" },
 }) => {
   const [inputs, setInputs] = useState<{
     [key: string]: string;
-  }>({
-    [uuid()]: "",
-  });
+  }>(defaultValues);
 
   useEffect(() => {
     if (onChange) {

@@ -5,8 +5,11 @@ import { GridInputForm } from "forms/grid-input";
 import { SEMRUSH_DATABASES } from "config";
 
 import { Image } from "components/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Team } from "types";
+
+import { useTeamSeedKeywordsQuery } from "api/team.api";
+import uuid from "react-uuid";
 
 interface Props {
   onChangeKeywords: (keywords: string[]) => void;
@@ -25,6 +28,19 @@ const TargetKeywordsSection: React.FC<Props> = ({
   const [keywords, setTargetKeywords] = useState<string[]>([]);
   const [database, setDatabase] = useState<SemrushDatabase>("uk");
 
+  const { data: teamSeedKeywords, refetch } = useTeamSeedKeywordsQuery(
+    activeTeam?.uid,
+    {
+      skip: !activeTeam?.uid,
+    }
+  );
+
+  console.log("Active Team", activeTeam);
+
+  useEffect(() => {
+    refetch();
+  }, [activeTeam, refetch]);
+
   useEffect(() => {
     onChangeKeywords(keywords);
   }, [keywords, onChangeKeywords]);
@@ -32,6 +48,26 @@ const TargetKeywordsSection: React.FC<Props> = ({
   useEffect(() => {
     onChangeDb(database);
   }, [database, onChangeDb]);
+
+  const buildDefaultKeywords = useMemo(
+    () => () => {
+      const defaultKeywords: {
+        [key: string]: string;
+      } = {};
+      if (teamSeedKeywords) {
+        teamSeedKeywords.forEach(({ keyword }) => {
+          defaultKeywords[uuid()] = keyword;
+        });
+      }
+
+      if (Object.keys(defaultKeywords).length === 0) {
+        defaultKeywords[uuid()] = "";
+      }
+
+      return defaultKeywords;
+    },
+    [teamSeedKeywords]
+  );
 
   return (
     <Box>
@@ -61,7 +97,10 @@ const TargetKeywordsSection: React.FC<Props> = ({
       <Divider pb={3} />
 
       <Box pt={6}>
-        <GridInputForm onChange={setTargetKeywords} />
+        <GridInputForm
+          onChange={setTargetKeywords}
+          defaultValues={buildDefaultKeywords()}
+        />
       </Box>
     </Box>
   );
