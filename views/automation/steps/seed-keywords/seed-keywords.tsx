@@ -13,7 +13,7 @@ import {
   Stack,
   Switch,
   Text,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import { Image } from "components/image";
 import React, { useEffect, useState } from "react";
@@ -35,7 +35,7 @@ import { SEMRUSH_DATABASES } from "config";
 import { CompetitorInterface } from "forms/competitors";
 import {
   CompetitorsSection,
-  TargetKeywordsSection
+  TargetKeywordsSection,
 } from "views/automation/steps/seed-keywords";
 
 interface Props {
@@ -68,10 +68,6 @@ export const SeedKeywords: React.FC<Props> = (props) => {
 
   const [generateSeedKeywords, { isLoading, isSuccess, isError, error }] =
     useSeedKeywordsMutation();
-
-  const { data: teamSeedKeywords } = useSeedKeywordsMutation(activeTeam?.uid, {
-    skip: !activeTeam?.uid,
-  });
 
   useEffect(() => {
     /**
