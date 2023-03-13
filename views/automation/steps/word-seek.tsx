@@ -19,6 +19,10 @@ export const WordSeek: React.FC<Props> = ({ isDisabled, isOpen, onClose }) => {
     (state: RootState) => state.team.activeTeam
   );
 
+  const [wordseekType, setWordseekType] = React.useState<"team" | "all">(
+    "team"
+  );
+
   const toast = useToast();
 
   const [
@@ -52,24 +56,41 @@ export const WordSeek: React.FC<Props> = ({ isDisabled, isOpen, onClose }) => {
     }
   }, [isComparing, hasComparedSuccessfully, toast, error, isError]);
 
-  const handleGetReport = () => {
+  const handleRunWorkSeekTeamOnly = () => {
+    setWordseekType("team");
     compareReport({
       teamIds: [activeTeam.id],
     });
   };
 
+  const handleRunWordSeekAll = () => {
+    setWordseekType("all");
+    compareReport({});
+  };
+
   return (
     <ModalStepWrapper isOpen={isOpen} onClose={onClose}>
       <Stack spacing={6} pointerEvents={isDisabled ? "none" : "auto"}>
-        <Heading fontSize="lg">5. Run WordSeek for {activeTeam?.name}</Heading>
+        <Heading fontSize="lg">5. Run WordSeek</Heading>
         <Text fontSize="xs" opacity={0.5}>
           {isDisabled
             ? `You need to connect to Google Search Console to use this automation`
             : `Compare the Search Console Results to see if they exist on specific pages, the engine will extract the latest pages that have not been checked. The output will be saved on the drive.`}
         </Text>
-        <Flex justifyContent="flex-end">
-          <Button size="sm" onClick={handleGetReport} isLoading={isComparing}>
-            Run Compare Report
+        <Flex justifyContent="space-between">
+          <Button
+            size="sm"
+            onClick={handleRunWorkSeekTeamOnly}
+            isLoading={isComparing && wordseekType === "team"}
+          >
+            Run WordSeek for {activeTeam?.name} only
+          </Button>
+          <Button
+            size="sm"
+            onClick={handleRunWordSeekAll}
+            isLoading={isComparing && wordseekType === "all"}
+          >
+            Run WordSeek for all teams
           </Button>
         </Flex>
       </Stack>

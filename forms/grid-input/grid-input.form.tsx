@@ -22,14 +22,12 @@ interface Props {
 
 const GridInputForm: React.FC<Props> = ({
   onChange,
-  defaultValues,
   buttonLabel = "Add Keyword",
+  defaultValues = { [uuid()]: "" },
 }) => {
   const [inputs, setInputs] = useState<{
     [key: string]: string;
-  }>({
-    [uuid()]: "",
-  });
+  }>(defaultValues);
 
   useEffect(() => {
     /**

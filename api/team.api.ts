@@ -30,11 +30,16 @@ interface CompetitorResponse {
   competitorUrl: string;
 }
 
-export interface SeedKeywords {
-  keyword: string;
-}
-
 type TeamResponse = ConvertToSnakeCase<Team>;
+
+export interface SeedKeywords {
+  id: number;
+  created: string;
+  modified: string;
+  keyword: string;
+  searchVolume: number;
+  team: number
+}
 
 // Define a service using a base URL and expected endpoints
 export const teamApi = baseApi.injectEndpoints({

@@ -14,15 +14,25 @@ interface Props {
 
 const TargetKeywordsSection: React.FC<Props> = ({ onChangeKeywords }) => {
   const [keywords, setTargetKeywords] = useState<string[]>([]);
-  useEffect(() => {
-    onChangeKeywords(keywords);
-  }, [keywords, onChangeKeywords]);
 
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
   );
 
-  const { data: seedKeywords } = useListSeedKeywordsQuery(activeTeam?.uid);
+  const { data: seedKeywords, refetch } = useListSeedKeywordsQuery(
+    activeTeam?.uid,
+    {
+      skip: !activeTeam?.uid,
+    }
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [activeTeam, refetch]);
+
+  useEffect(() => {
+    onChangeKeywords(keywords);
+  }, [keywords, onChangeKeywords]);
 
   const buildDefaultValues = useMemo(() => {
     if (seedKeywords) {
