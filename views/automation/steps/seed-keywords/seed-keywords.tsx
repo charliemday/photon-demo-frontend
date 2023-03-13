@@ -207,7 +207,7 @@ export const SeedKeywords: React.FC<Props> = (props) => {
           return prev;
         });
       }}
-      value={positivePrompts[idx]}
+      defaultValue={positivePrompts[idx]}
     />
   );
 
@@ -219,7 +219,7 @@ export const SeedKeywords: React.FC<Props> = (props) => {
           return prev;
         });
       }}
-      value={negativePrompts[idx]}
+      defaultValue={negativePrompts[idx]}
     />
   );
 
