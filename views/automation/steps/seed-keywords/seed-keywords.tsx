@@ -1,122 +1,117 @@
 import {
-  Badge,
   Box,
-  Checkbox,
   Divider,
-  Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
   Heading,
   HStack,
-  Input,
   Stack,
-  Switch,
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { Image } from "components/image";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { SeedKeywordsBody, useSeedKeywordsMutation } from "api/engine.api";
-import { useRetrieveClassificationQuery } from "api/team.api";
+import {
+  SeedKeywordsBody,
+  useClusterKeywordsMutation,
+  useGenerateSeedKeywordsMutation,
+  useSeedKeywordsMutation,
+} from "api/engine.api";
+import { useUpdateClassificationsMutation } from "api/team.api";
 import { Button } from "components/button";
-import Link from "next/link";
 import { RootState } from "store";
-import { Team } from "types";
-import { typeCheckError } from "utils";
+import { SemrushDatabase, Team } from "types";
 import { ModalStepWrapper } from "../modal-step-wrapper";
 
-import { HiArrowLeft } from "react-icons/hi";
-
-import { SEMRUSH_DATABASES } from "config";
-
+import { TeamClassification } from "api/team.api";
 import { CompetitorInterface } from "forms/competitors";
+import { calculateSemrushCost, typeCheckError } from "utils";
 import {
+  ClassificationSection,
   CompetitorsSection,
+  DatabaseSection,
+  InputSection,
+  KeywordThemeSection,
+  NavTab,
   TargetKeywordsSection,
 } from "views/automation/steps/seed-keywords";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onSwitch: () => void;
-  switchLabel: string;
 }
-
-type SemrushDatabaseKeys = keyof typeof SEMRUSH_DATABASES;
-type SemrushDatabase = typeof SEMRUSH_DATABASES[SemrushDatabaseKeys];
 
 export const SeedKeywords: React.FC<Props> = (props) => {
   const [database, setDatabase] = useState<SemrushDatabase>("uk");
   const [targetKeywords, setTargetKeywords] = useState<string[]>([]);
   const [competitors, setCompetitors] = useState<CompetitorInterface[]>([]);
+  const [checkClustering, setCheckClustering] = useState<boolean>(false);
+  const [broadKeywordsCount, setBroadKeywordsCount] = useState<number>(10);
+  const [maxOrganicResults, setMaxOrganicResults] = useState<number>(300);
+  const [maxPosition, setMaxPosition] = useState<number>(30);
+  const [useCompetitors, setUseCompetitors] = useState<boolean>(true);
 
-  const [drive, setDrive] = useState<"competitorDriven" | "keywordDriven">(
-    "keywordDriven"
-  );
+  const [step, setStep] = useState<number>(1);
+
+  const [keywordThemes, setKeywordThemes] = useState<string[]>([]);
+
+  const [classify, setClassify] = useState<boolean>(true);
+  const [classificationCategory, setClassificationCategory] = useState<
+    string | null
+  >(null);
+  const [positivePrompts, setPositivePrompts] = useState<string[]>([]);
+  const [negativePrompts, setNegativePrompts] = useState<string[]>([]);
 
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
   );
 
-  const { data: teamClassifications, refetch: refetchTeamClassification } =
-    useRetrieveClassificationQuery(activeTeam?.uid, {
-      skip: !activeTeam?.uid,
-    });
-
-  const [generateSeedKeywords, { isLoading, isSuccess, isError, error }] =
+  const [generateSeedKeywords, { isLoading, isError, error }] =
     useSeedKeywordsMutation();
 
-  useEffect(() => {
-    /**
-     * If the user changes the active team, we need to refetch the
-     * team classification data
-     */
-    refetchTeamClassification();
-  }, [activeTeam, refetchTeamClassification]);
+  const [
+    generateSeedKeywordsv2,
+    {
+      isLoading: isGeneratingSeedKeywords,
+      isError: hasErrorGeneratingSeedKeywords,
+      error: generateSeedKeywordsError,
+    },
+  ] = useGenerateSeedKeywordsMutation();
+
+  const [
+    updateClassifications,
+    {
+      isLoading: isUpdatingClassifications,
+      isError: hasErrorUpdatingClassifications,
+      error: updateClassificationsError,
+    },
+  ] = useUpdateClassificationsMutation();
+
+  // TODO: Uncomment when the API is ready
+  // const [
+  //   createKeywordThemes,
+  //   {
+  //     isLoading: isCreatingKeywordThemes,
+  //     isError: hasErrorCreatingKeywordThemes,
+  //     error: createKeywordThemesError,
+  //   },
+  // ] = useCreateKeywordThemesMutation();
+
+  const [
+    runClustering,
+    {
+      isLoading: isClustering,
+      isError: isClusteringError,
+      error: clusteringError,
+    },
+  ] = useClusterKeywordsMutation();
 
   const toast = useToast();
 
-  const promptCategory = teamClassifications && teamClassifications.category;
-  const promptsPositive =
-    teamClassifications?.targetKeywords &&
-    teamClassifications.targetKeywords
-      .split(",")
-      .map((keyword) => keyword.trim());
-  const promptsNegative =
-    teamClassifications?.avoidanceKeywords &&
-    teamClassifications.avoidanceKeywords
-      .split(",")
-      .map((keyword) => keyword.trim());
-
-  const [classificationCategory, setClassificationCategory] = useState(
-    promptCategory || ""
-  );
-
-  const [positivePrompts, setPositivePrompts] = useState<string[]>(
-    promptsPositive || []
-  );
-  const [negativePrompts, setNegativePrompts] = useState<string[]>(
-    promptsNegative || []
-  );
-
-  const [autoClassify, setAutoClassify] = useState(
-    teamClassifications?.autoClassify
-  );
+  useEffect(() => {
+    setStep(0);
+  }, [props.isOpen]);
 
   useEffect(() => {
-    if (!isLoading && isSuccess) {
-      toast({
-        title: "Success",
-        description:
-          "Seed keywords are being generated and will be saved to the Drive.",
-        status: "success",
-        isClosable: true,
-      });
-    }
-
     if (!isLoading && isError && error) {
       toast({
         title: "Error",
@@ -125,148 +120,262 @@ export const SeedKeywords: React.FC<Props> = (props) => {
         isClosable: true,
       });
     }
-  }, [isLoading, isSuccess, toast, error, isError]);
+
+    if (!isClustering && isClusteringError && clusteringError) {
+      toast({
+        title: "Error",
+        description:
+          typeCheckError(clusteringError) ||
+          "Something went wrong with the Clustering.",
+        status: "error",
+        isClosable: true,
+      });
+    }
+
+    if (
+      !isGeneratingSeedKeywords &&
+      hasErrorGeneratingSeedKeywords &&
+      generateSeedKeywordsError
+    ) {
+      toast({
+        title: "Error",
+        description:
+          typeCheckError(generateSeedKeywordsError) ||
+          "Something went wrong with generating the seed keywords.",
+        status: "error",
+        isClosable: true,
+      });
+    }
+  }, [
+    isError,
+    error,
+    isClustering,
+    isClusteringError,
+    clusteringError,
+    isGeneratingSeedKeywords,
+    hasErrorGeneratingSeedKeywords,
+    generateSeedKeywordsError,
+    isLoading,
+    toast,
+  ]);
+
+  useEffect(
+    () => {
+      if (
+        !isUpdatingClassifications &&
+        hasErrorUpdatingClassifications &&
+        updateClassificationsError
+      ) {
+        toast({
+          title: "Error",
+          description:
+            typeCheckError(updateClassificationsError) ||
+            "Something went wrong with updating the classifications.",
+          status: "error",
+          isClosable: true,
+        });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      isUpdatingClassifications,
+      hasErrorUpdatingClassifications,
+      updateClassificationsError,
+    ]
+  );
 
   const handleSubmit = async () => {
+    if (classify) {
+      const body: TeamClassification = {
+        teamUid: activeTeam.uid,
+        targetKeywords: positivePrompts.join(","),
+        avoidanceKeywords: negativePrompts.join(","),
+        category: classificationCategory,
+      };
+      const response = await updateClassifications(body);
+      if ("error" in response) {
+        return;
+      }
+    }
+
+    const generateSeedKeywordsResponse = await generateSeedKeywordsv2({
+      teamId: activeTeam.id.toString(),
+      maxOrganicResults,
+      maxPosition,
+      classify,
+      database,
+      useCompetitors,
+    });
+
+    if ("data" in generateSeedKeywordsResponse) {
+      toast({
+        title: "Success",
+        description: "Seed keywords are being generated.",
+        status: "success",
+        isClosable: true,
+      });
+      props.onClose();
+    }
+  };
+
+  // TODO: Uncomment this when the API is ready
+  // const handleSaveThemes = async () => {
+  //   const body: CreateKeywordsThemesBody = {
+  //     teamId: activeTeam.id.toString(),
+  //     themes: keywordThemes,
+  //   };
+  //   const response = await createKeywordThemes(body);
+
+  //   if ("data" in response) {
+  //     setStep((s) => s + 1);
+  //   }
+  // };
+
+  const handleSetup = async () => {
     const body: SeedKeywordsBody = {
       teamId: activeTeam.id.toString(),
+      keywords: targetKeywords,
       database,
+      maxPosition,
+      maxOrganicResults,
     };
 
-    if (drive === "keywordDriven") {
-      body["keywords"] = targetKeywords;
-    } else if (drive === "competitorDriven") {
+    if (useCompetitors) {
       body["competitors"] = competitors;
     }
 
-    console.log("Body", body);
+    if (checkClustering) {
+      // If the "Run Clustering Checkbox" is checked then we
+      // will run the clustering algorithm on the generated keywords
 
-    const positiveClassificationsExist = positivePrompts.length > 0;
-    const negativeClassificationsExist = negativePrompts.length > 0;
+      body["limit"] = broadKeywordsCount;
+      const response = await runClustering(body);
 
-    if (autoClassify) {
-      if (classificationCategory)
-        body["classificationCategory"] = classificationCategory;
-      if (positiveClassificationsExist)
-        body["positivePrompts"] = positivePrompts;
-      if (negativeClassificationsExist)
-        body["negativePrompts"] = negativePrompts;
+      if ("data" in response) {
+        // The clustering is complete so we can now show the clustering results
+        // to the user
+        setStep((s) => s + 1);
+      }
+    } else {
+      setStep((s) => s + 1);
     }
-
-    await generateSeedKeywords(body);
   };
 
-  const renderExamplePrompt = () => (
-    <Stack mt={6}>
-      <Heading fontSize="md" mb={2}>
-        Example Prompt
-      </Heading>
-      <HStack opacity={0.5}>
-        <Text fontSize="xs">
-          This is the prompt that will be sent to the OpenAI API.
-        </Text>
-        <Link href="https://platform.openai.com/playground">
-          <a target="_blank">
-            <Text
-              fontSize="xs"
-              _hover={{
-                textDecoration: "underline",
-              }}
-            >
-              See OpenAI Playground.
-            </Text>
-          </a>
-        </Link>
-      </HStack>
-      <Box border="solid 1px lightgray" p={4} borderRadius="md">
-        <Text fontSize="sm">
-          {`Classify the keywords according to whether it relates to "${classificationCategory}" or "Not ${classificationCategory}" and reset the context e.g.`}
-        </Text>
-
-        <Text fontSize="sm" mt={4}>
-          {`${classificationCategory}: ${positivePrompts.join(", ")}`}
-        </Text>
-        <Text fontSize="sm" mt={4}>
-          {`Not ${classificationCategory}: ${negativePrompts.join(", ")}`}
-        </Text>
-
-        <Text mt={4}>{`[KEYWORD LIST WILL BE AUTO INSERTED HERE]`}</Text>
-
-        <Text fontSize="sm" mt={4}>
-          {`The result should be two classifications with the prefix "${classificationCategory}" and "Not ${classificationCategory}" respectively.`}
-        </Text>
-      </Box>
-    </Stack>
+  const renderSeedKeywordSection = () => (
+    <HStack alignItems="flex-start" spacing={12}>
+      <Stack flex={1} spacing={12}>
+        <TargetKeywordsSection onChangeKeywords={setTargetKeywords} />
+        <Divider />
+        <InputSection
+          title={`Max Organic Results (Est. max cost: $${calculateSemrushCost({
+            costPerLine: 10,
+            noOfLines: maxOrganicResults,
+            noOfRequests: useCompetitors
+              ? (competitors.length + 15) * targetKeywords.length
+              : 15 * targetKeywords.length,
+          })})`}
+          onChange={(value) => setMaxOrganicResults(value as number)}
+          defaultValue={maxOrganicResults}
+          helperText={`This is the number of organic results to return for each of the keywords. Note: the Max Cost is only if we use all of the competitors (some will be removed as they're duplicates and some may not return anything). For each keyword we will generate 15 competitors and add any custom competitors.`}
+          label="Max Organic Results:"
+        />
+        <Divider />
+        <InputSection
+          title="Max Position"
+          onChange={(value) => setMaxPosition(value as number)}
+          defaultValue={maxPosition}
+          helperText={`e.g. For a value of 20, we would only get the top 20 results`}
+          label="Max Position:"
+        />
+        {/* <Divider />
+        <InputSection
+          title={`Max Organic Results (Max Cost: $${calculateSemrushCost({
+            costPerLine: 20,
+            noOfLines: broadKeywordsCount,
+            noOfRequests: 4,
+          })})`}
+          subtitle="Run the each of the target keywords through the Broad Keywords API to return a list of themes to manually select from"
+          onChange={(value) => setBroadKeywordsCount(value as number)}
+          defaultValue={broadKeywordsCount}
+          helperText={`This is the number of Broad Keywords to return for each of the
+          Target Keywords in the "Expanding Broad Keywords" section of the flow`}
+          label="Broad Keywords Count:"
+          checkLabel="Generate Themes?"
+          isChecked={checkClustering}
+          onCheck={setCheckClustering}
+        /> */}
+      </Stack>
+      <Stack flex={1} spacing={12}>
+        <CompetitorsSection
+          onChangeCompetitors={setCompetitors}
+          activeTeam={activeTeam}
+          onToggle={setUseCompetitors}
+          defaultChecked={useCompetitors}
+        />
+        <Divider />
+        <DatabaseSection onChange={setDatabase} />
+        <Divider />
+      </Stack>
+    </HStack>
   );
 
-  const renderPositivePromptInput = (idx: number) => (
-    <Input
-      onChange={(e) => {
-        setPositivePrompts((prev) => {
-          prev[idx] = e.target.value;
-          return prev;
-        });
-      }}
-      defaultValue={positivePrompts[idx]}
-    />
+  const renderThemeSection = () => (
+    <HStack>
+      <KeywordThemeSection onSelectTheme={setKeywordThemes} />
+    </HStack>
   );
 
-  const renderNegativePromptInput = (idx: number) => (
-    <Input
-      onChange={(e) => {
-        setNegativePrompts((prev) => {
-          prev[idx] = e.target.value;
-          return prev;
-        });
-      }}
-      defaultValue={negativePrompts[idx]}
-    />
+  const renderClassificationSection = () => (
+    <HStack w="50%">
+      <ClassificationSection
+        onAutoClassifyChange={setClassify}
+        onClassificationCategoryChange={setClassificationCategory}
+        onPositivePromptsChange={setPositivePrompts}
+        onNegativePromptsChange={setNegativePrompts}
+      />
+    </HStack>
   );
 
-  const promptsExist =
-    classificationCategory.length &&
-    positivePrompts.every((p) => p.length) &&
-    negativePrompts.every((p) => p.length) &&
-    autoClassify;
+  const STEPS = [
+    {
+      title: "Seed Keywords",
+      content: renderSeedKeywordSection(),
+      onClick: handleSetup,
+      buttonLabel: "Continue 👉",
+      buttonDisabled:
+        (!targetKeywords.length && !competitors.length) || !database,
+      isButtonLoading: false,
+    },
+    // {
+    //   title: "Keyword Themes",
+    //   content: renderThemeSection(),
+    //   onClick: handleSaveThemes,
+    //   buttonLabel: "Setup Step 2 👉",
+    //   buttonDisabled: !keywordThemes.length,
+    // },
+    {
+      title: "Classifications",
+      content: renderClassificationSection(),
+      onClick: handleSubmit,
+      buttonLabel: "Run Step 1 🚀",
+      buttonDisabled: false,
+      isButtonLoading:
+        isUpdatingClassifications || isGeneratingSeedKeywords || isLoading,
+    },
+  ];
 
-  const minPrompts =
-    positivePrompts.length || negativePrompts?.length
-      ? Math.min(positivePrompts.length, negativePrompts.length)
-      : 0;
-
-  const POSITIVE_PROMPTS = minPrompts || 10;
-  const NEGATIVE_PROMPTS = minPrompts || 10;
-
-  const isSubmitButtonDisabled =
-    drive === "competitorDriven"
-      ? competitors.length === 0
-      : targetKeywords.length === 0;
-
-  const switchLabel2 =
-    drive === "competitorDriven" ? "Competitor Driven" : "Keyword Driven";
+  const navItems = STEPS.map(({ title, content }, index) => ({
+    label: title,
+    onClick: () => setStep(index),
+    isActive: step === index,
+    content,
+  }));
 
   return (
-    <ModalStepWrapper {...props} size="6xl">
+    <ModalStepWrapper {...props} size={"6xl"}>
       <Box>
-        <HStack
-          alignItems="center"
-          mb={6}
-          opacity={0.75}
-          _hover={{
-            opacity: 1,
-            textDecoration: "underline",
-          }}
-        >
-          <HStack cursor="pointer" onClick={() => props.onSwitch()}>
-            <HiArrowLeft />
-            <Text fontSize="sm">{props.switchLabel}</Text>
-          </HStack>
-        </HStack>
-        <Badge colorScheme="green" mb={2}>
-          New!
-        </Badge>
         <Heading fontSize="lg">
-          1. Generate Seed Keywords for {activeTeam?.name}
+          1. 🌱 Generate Seed Keywords through SEMRush
         </Heading>
         <Text fontSize="xs" my={6} opacity={0.75} w="75%">
           {`This automates the original Ahref's step. This will take a list of competitors
@@ -278,130 +387,26 @@ export const SeedKeywords: React.FC<Props> = (props) => {
         <Divider my={6} />
 
         <HStack alignItems="flex-start" spacing={12}>
-          <Stack mb={6} flex={1}>
-            <Switch
-              fontSize="sm"
-              alignItems="center"
-              mb={6}
-              onChange={(e) => {
-                if (drive === "competitorDriven") {
-                  setDrive("keywordDriven");
-                } else {
-                  setDrive("competitorDriven");
-                }
-              }}
-              isChecked={drive === "keywordDriven"}
-            >
-              {switchLabel2}
-            </Switch>
-            {drive === "competitorDriven" ? (
-              <CompetitorsSection
-                onChangeCompetitors={setCompetitors}
-                onChangeDb={setDatabase}
-                activeTeam={activeTeam}
-              />
-            ) : (
-              <TargetKeywordsSection
-                onChangeKeywords={setTargetKeywords}
-                activeTeam={activeTeam}
-                onChangeDb={setDatabase}
-              />
-            )}
+          <Stack mb={6} flex={1} spacing={12}>
+            <NavTab items={navItems} />
+            {STEPS[step].content}
           </Stack>
-          <Box flex={1}>
-            <Stack
-              opacity={promptsExist ? 1 : 0.5}
-              _hover={{
-                opacity: 1,
-              }}
-            >
-              <Flex justifyContent="space-between" w="full">
-                <HStack>
-                  <Box
-                    width={18}
-                    height={18}
-                    position="relative"
-                    borderRadius={4}
-                    overflow="hidden"
-                  >
-                    <Image
-                      src="openai-avatar.png"
-                      layout="fill"
-                      alt="OpenAI Logo"
-                    />
-                  </Box>
-                  <Heading fontSize="md">
-                    Classification prompts (Optional)
-                  </Heading>
-                </HStack>
-              </Flex>
-              <Stack>
-                <Checkbox
-                  py={6}
-                  defaultChecked={autoClassify}
-                  onChange={(e) => {
-                    setAutoClassify(e.target.checked);
-                  }}
-                >
-                  <Text fontSize="xs" opacity={0.75}>
-                    Enable classification
-                  </Text>
-                </Checkbox>
-
-                <Text fontSize="xs" opacity={0.75}>
-                  These prompts will be used in the OpenAI API call to help
-                  classify the keywords as to whether they are relevant or
-                  non-relevant. Leaving this blank will still produce the CSV
-                  but without relevance classification.
-                </Text>
-              </Stack>
-              <FormControl>
-                <FormLabel fontSize="sm">Classification category</FormLabel>
-                <Input
-                  name="classificationCategory"
-                  type="text"
-                  onChange={(e) => setClassificationCategory(e.target.value)}
-                  value={classificationCategory}
-                />
-                <FormHelperText fontSize="xs">
-                  e.g. Female Health
-                </FormHelperText>
-              </FormControl>
-
-              <HStack w="full">
-                <Stack w="full">
-                  <FormLabel fontSize="sm">Positive Classifications</FormLabel>
-                  {Array.from({ length: POSITIVE_PROMPTS }).map((_, idx) =>
-                    renderPositivePromptInput(idx)
-                  )}
-                  <Text fontSize="xs" opacity={0.5}>
-                    These are the positive classifications{" "}
-                  </Text>
-                </Stack>
-                <Stack w="full">
-                  <FormLabel fontSize="sm">Negative Classifications</FormLabel>
-                  {Array.from({ length: NEGATIVE_PROMPTS }).map((_, idx) =>
-                    renderNegativePromptInput(idx)
-                  )}
-                  <Text fontSize="xs" opacity={0.5}>
-                    These are the negative classifications{" "}
-                  </Text>
-                </Stack>
-              </HStack>
-            </Stack>
-            {promptsExist ? renderExamplePrompt() : null}
-          </Box>
         </HStack>
-        <Flex justifyContent="flex-end" pt={12}>
+        <HStack justifyContent="flex-end" pt={12}>
+          {step > 0 && (
+            <Button size="lg" onClick={() => setStep((s) => s - 1)}>
+              👈 Back
+            </Button>
+          )}
           <Button
             size="lg"
-            onClick={handleSubmit}
-            isDisabled={isSubmitButtonDisabled || isLoading}
-            isLoading={isLoading}
+            onClick={STEPS[step].onClick}
+            isDisabled={STEPS[step].buttonDisabled}
+            isLoading={STEPS[step].isButtonLoading}
           >
-            Run Step 1 🚀
+            {STEPS[step].buttonLabel}
           </Button>
-        </Flex>
+        </HStack>
       </Box>
     </ModalStepWrapper>
   );

@@ -1,3 +1,5 @@
+import { SEMRUSH_DATABASES } from "config";
+
 export interface Team {
   id: number;
   created: string;
@@ -10,3 +12,7 @@ export interface Team {
   driveFolderId: string | null;
   uid: string;
 }
+
+
+export type SemrushDatabaseKeys = keyof typeof SEMRUSH_DATABASES;
+export type SemrushDatabase = typeof SEMRUSH_DATABASES[SemrushDatabaseKeys];

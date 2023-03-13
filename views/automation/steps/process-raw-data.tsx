@@ -24,7 +24,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { BsCheckCircle } from "react-icons/bs";
 import { FaBrain } from "react-icons/fa";
-import { HiArrowRight } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { BarLoader } from "react-spinners";
 
@@ -40,8 +39,6 @@ import { ModalStepWrapper } from "./modal-step-wrapper";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onSwitch: () => void;
-  switchLabel: string;
 }
 
 export const ProcessRawData: React.FC<Props> = (props) => {
@@ -338,20 +335,6 @@ export const ProcessRawData: React.FC<Props> = (props) => {
   return (
     <ModalStepWrapper {...props}>
       <Box>
-        <HStack
-          alignItems="center"
-          mb={6}
-          opacity={0.75}
-          _hover={{
-            opacity: 1,
-            textDecoration: "underline",
-          }}
-        >
-          <HStack cursor="pointer" onClick={() => props.onSwitch()}>
-            <Text fontSize="sm">{props.switchLabel}</Text>
-            <HiArrowRight />
-          </HStack>
-        </HStack>
         <Heading fontSize="lg">1. Upload raw CSV {activeTeam?.name}</Heading>
         <Text fontSize="xs" my={6} opacity={0.75}>
           This will take a group of CSV files from Ahrefs and sort them to

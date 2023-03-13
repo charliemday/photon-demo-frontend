@@ -1,6 +1,13 @@
 export const typeCheckError = (error: any): boolean | string => {
     /**
-     * This function is used to check if an error is an API error.
+     * This function is used to check if an error is an API error and if
+     * so does follow the standard type:
+     * 
+     * "error": {
+     *   "status_code": 0,
+     *   "message": "",
+     *   "details": [],
+     * }
      */
     if (error instanceof Error) {
         return error.message;

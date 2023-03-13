@@ -24,6 +24,9 @@ export const apiUrls = {
     MISSING_KEYWORDS: 'engine/missing-keywords-job',
     PEOPLE_ALSO_ASK: 'engine/people-also-ask/',
     SEED_KEYWORDS: 'engine/keyword-research/',
+    CLUSTER_KEYWORDS: 'engine/cluster-keywords/',
+    KEYWORD_THEMES: (teamUid?: string) => `engine/keyword-themes${teamUid ? `?team_uid=${teamUid}` : '/'}`,
+    GENERATE_SEED_KEYWORDS: 'engine/generate-seed-keywords/',
     // Ahrefs
     AHREFS: '/ahrefs/report/',
     PROCESS_AHREFS_DATA: 'engine/process-ahrefs-data/',

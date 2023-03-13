@@ -1,8 +1,5 @@
-import { Box, Divider, Heading, HStack, Text } from "@chakra-ui/react";
-import { SemrushDatabaseMenu } from "components/menus";
+import { Box, Heading, HStack, Switch, Text } from "@chakra-ui/react";
 import { CompetitorInterface, CompetitorsForm } from "forms/competitors";
-
-import { SEMRUSH_DATABASES } from "config";
 
 import { Image } from "components/image";
 import React, { useEffect, useState } from "react";
@@ -10,33 +7,39 @@ import { Team } from "types";
 
 interface Props {
   onChangeCompetitors: (competitors: CompetitorInterface[]) => void;
-  onChangeDb: (database: SemrushDatabase) => void;
   activeTeam?: Team;
+  onToggle?: (isToggled: boolean) => void;
+  defaultChecked?: boolean;
 }
-
-type SemrushDatabaseKeys = keyof typeof SEMRUSH_DATABASES;
-type SemrushDatabase = typeof SEMRUSH_DATABASES[SemrushDatabaseKeys];
-
 const CompetitorsSection: React.FC<Props> = ({
   onChangeCompetitors,
-  onChangeDb,
   activeTeam,
+  onToggle,
+  defaultChecked = false,
 }) => {
   const [competitors, setCompetitors] = useState<CompetitorInterface[]>([]);
-  const [database, setDatabase] = useState<SemrushDatabase>("uk");
+  const [isToggled, setIsToggled] = useState(defaultChecked);
 
   useEffect(() => {
     onChangeCompetitors(competitors);
   }, [competitors, onChangeCompetitors]);
 
   useEffect(() => {
-    onChangeDb(database);
-  }, [database, onChangeDb]);
+    onToggle && onToggle(isToggled);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isToggled]);
 
   if (!activeTeam) return null;
 
   return (
-    <Box>
+    <Box
+      opacity={{
+        base: isToggled ? 1 : 0.25,
+      }}
+      _hover={{
+        opacity: 1,
+      }}
+    >
       <HStack>
         <Box
           width={18}
@@ -49,18 +52,21 @@ const CompetitorsSection: React.FC<Props> = ({
         </Box>
         <Heading fontSize="md">Competitors</Heading>
       </HStack>
+      {onToggle && (
+        <Switch
+          fontSize="sm"
+          size="sm"
+          py={4}
+          onChange={(e) => setIsToggled(e.target.checked)}
+          isChecked={isToggled}
+        >
+          Use Custom Competitors
+        </Switch>
+      )}
       <Text fontSize="xs" opacity={0.75} py={3}>
         List the competitor names and urls you want to compare against via
         SEMRush
       </Text>
-
-      <HStack position="relative">
-        <Text opacity={0.75}>SEMRush Database:</Text>
-        <SemrushDatabaseMenu onChange={setDatabase} />
-      </HStack>
-
-      <Divider pb={3} />
-
       <Box pt={6}>
         <CompetitorsForm onChange={setCompetitors} team={activeTeam} />
       </Box>

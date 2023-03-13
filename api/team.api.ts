@@ -1,4 +1,4 @@
-import { camelizeKeys } from "humps";
+import { camelizeKeys, decamelizeKeys } from "humps";
 import { APIErrorResponse, ConvertToSnakeCase, Team } from "types";
 import { baseApi, TAG_TYPES } from ".";
 
@@ -12,17 +12,17 @@ interface UpdateTeamInterface extends CreateTeamInterface {
   teamId: number;
 }
 
-interface TeamClassification {
-  id: number;
-  created: string;
-  modified: string;
-  targetKeywords: string | null;
-  avoidanceKeywords: string | null;
-  category: string | null;
-  geography: string | null;
-  language: string | null;
-  autoClassify: boolean;
-  team: number;
+export interface TeamClassification {
+  id?: number;
+  created?: string;
+  modified?: string;
+  targetKeywords?: string | null;
+  avoidanceKeywords?: string | null;
+  category?: string | null;
+  geography?: string | null;
+  language?: string | null;
+  autoClassify?: boolean;
+  teamUid: string;
 }
 
 interface CompetitorResponse {
@@ -32,7 +32,7 @@ interface CompetitorResponse {
 
 type TeamResponse = ConvertToSnakeCase<Team>;
 
-interface SeedKeywords {
+export interface SeedKeywords {
   id: number;
   created: string;
   modified: string;
@@ -80,12 +80,19 @@ export const teamApi = baseApi.injectEndpoints({
       invalidatesTags: [TAG_TYPES.TEAMS],
     }),
     retrieveClassification: builder.query<TeamClassification, string>({
-      query: (teamId) => ({
-        url: apiUrls.TEAM_CLASSIFICATION(teamId),
+      query: (teamUid) => ({
+        url: apiUrls.TEAM_CLASSIFICATION(teamUid),
       }),
       transformResponse: (response: ConvertToSnakeCase<TeamClassification>) => {
         return camelizeKeys(response) as TeamClassification;
       }
+    }),
+    updateClassifications: builder.mutation<TeamClassification, TeamClassification>({
+      query: (body) => ({
+        url: apiUrls.TEAM_CLASSIFICATION(body.teamUid),
+        method: "PATCH",
+        body: decamelizeKeys(body),
+      })
     }),
     teamCompetitors: builder.query<CompetitorResponse[], string>({
       query: (teamId) => ({
@@ -93,12 +100,12 @@ export const teamApi = baseApi.injectEndpoints({
       }),
       transformResponse: (response: ConvertToSnakeCase<CompetitorResponse>[]) => response.map((c) => camelizeKeys(c) as CompetitorResponse),
     }),
-    teamSeedKeywords: builder.query<SeedKeywords[], string>({
-      query: (teamId) => ({
-        url: apiUrls.TEAM_SEED_KEYWORDS(teamId),
+    listSeedKeywords: builder.query<SeedKeywords[], string>({
+      query: (teamUid) => ({
+        url: apiUrls.TEAM_SEED_KEYWORDS(teamUid),
       }),
       transformResponse: (response: ConvertToSnakeCase<SeedKeywords>[]) => response.map((c) => camelizeKeys(c) as SeedKeywords),
-    })
+    }),
   }),
 });
 
@@ -111,5 +118,6 @@ export const {
   useCreateTeamMutation,
   useRetrieveClassificationQuery,
   useTeamCompetitorsQuery,
-  useTeamSeedKeywordsQuery
+  useUpdateClassificationsMutation,
+  useListSeedKeywordsQuery,
 } = teamApi;

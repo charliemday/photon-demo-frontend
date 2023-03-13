@@ -34,7 +34,8 @@ import {
 } from "./steps";
 
 enum KEY {
-  PROCESS_RAW_DATA = "process-raw-data",
+  AHREFS_STEP_1 = "ahrefs-step-1",
+  SEMRUSH_STEP_1 = "semrush-step-1",
   PEOPLE_ALSO_ASKED = "people-also-asked",
   SEARCH_CONSOLE_CONNECT = "search-console-connect",
   SEARCH_CONSOLE_REPORT = "search-console-report",
@@ -52,17 +53,20 @@ const STEPS: {
   isDisabled?: boolean;
 }[] = [
   {
-    title: "1. Process Ahrefs Export",
+    title: "1. Ahrefs Step 1",
     description: `This will take a group of CSV files from Ahrefs and sort them to
     exclude duplicate keywords and only show the keywords on the the
     first 2 pages`,
-    key: KEY.PROCESS_RAW_DATA,
-    image: [
-      "/steps/excel.png",
-      "/openai-avatar.png",
-      "/steps/ahrefs.jpeg",
-      "/steps/semrush.jpeg",
-    ],
+    key: KEY.AHREFS_STEP_1,
+    image: ["/steps/excel.png", "/openai-avatar.png", "/steps/ahrefs.jpeg"],
+  },
+  {
+    title: "1. SEMRush Step 1",
+    description: `This will take a group of CSV files from Ahrefs and sort them to
+    exclude duplicate keywords and only show the keywords on the the
+    first 2 pages`,
+    key: KEY.SEMRUSH_STEP_1,
+    image: ["/openai-avatar.png", "/steps/semrush.jpeg"],
   },
   {
     title: "2. People Also Asked",
@@ -77,33 +81,26 @@ const STEPS: {
     image: "/steps/google.jpeg",
   },
   {
-    title: "4. Google Search Console Report",
-    description: "Get the search console report sent to info@getbaser.com",
-    key: KEY.SEARCH_CONSOLE_REPORT,
-    image: "/steps/search-console.svg",
-    isDisabled: true,
-  },
-  {
-    title: "5. WordSeek",
+    title: "4. WordSeek",
     description: `Take the GSC keywords and check whether they exist on the
     pages they're associated with. The output will be saved to the drive.`,
     key: KEY.COMPARE_CONSOLE_REPORT,
     image: "/steps/search-console.svg",
   },
   {
-    title: "6. Upload Ahrefs report",
+    title: "5. Upload Ahrefs report",
     description: "Upload the Ahrefs report.",
     key: KEY.UPLOAD_AHREFS_REPORT,
     image: "/steps/ahrefs.jpeg",
   },
   {
-    title: "7. Populate SC Reports",
+    title: "6. Populate SC Reports",
     description: `This will populate the Search Console reports for *all* the teams.`,
     key: KEY.POPULATE_SC_REPORTS,
     image: "/steps/search-console.svg",
   },
   {
-    title: "8. Automate Content Creation",
+    title: "7. Automate Content Creation",
     description: `This will automate the content creation on the SEO Hub`,
     comingSoon: true,
     image: "/steps/notion.png",
@@ -113,7 +110,7 @@ const STEPS: {
 export const AutomationView: React.FC = () => {
   const [activeStep, setActiveStep] = useState<KEY>(KEY.COMPARE_CONSOLE_REPORT);
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const [useNewStep1, setUserNewStep1] = useState<boolean>(false);
+  // const [useNewStep1, setUserNewStep1] = useState<boolean>(false);
 
   const { data: user } = useUserDetailsQuery(undefined);
   const { data: teams } = useListTeamsQuery(undefined);
@@ -184,21 +181,21 @@ export const AutomationView: React.FC = () => {
       </Grid>
 
       {/* STEPS */}
-      {useNewStep1 ? (
-        <SeedKeywords
-          isOpen={isOpen && activeStep === KEY.PROCESS_RAW_DATA}
-          onClose={onClose}
-          onSwitch={() => setUserNewStep1(false)}
-          switchLabel="Switch back to using Ahrefs Data"
-        />
-      ) : (
-        <ProcessRawData
-          isOpen={isOpen && activeStep === KEY.PROCESS_RAW_DATA}
-          onClose={onClose}
-          onSwitch={() => setUserNewStep1(true)}
-          switchLabel="Switch to using the new SEMRush process"
-        />
-      )}
+
+      <SeedKeywords
+        isOpen={isOpen && activeStep === KEY.SEMRUSH_STEP_1}
+        onClose={onClose}
+        // onSwitch={() => setUserNewStep1(false)}
+        // switchLabel="Switch back to using Ahrefs Data"
+      />
+
+      <ProcessRawData
+        isOpen={isOpen && activeStep === KEY.AHREFS_STEP_1}
+        onClose={onClose}
+        // onSwitch={() => setUserNewStep1(true)}
+        // switchLabel="Switch to using the new SEMRush process"
+      />
+
       <PeopleAlsoAsked
         isOpen={isOpen && activeStep === KEY.PEOPLE_ALSO_ASKED}
         onClose={onClose}

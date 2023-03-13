@@ -130,7 +130,6 @@ const CompetitorsForm: React.FC<Props> = ({ onChange, team }) => {
       )}
       <Box>
         <Button
-          size="sm"
           mt={3}
           onClick={() => {
             setInputs((s) => {

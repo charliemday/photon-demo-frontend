@@ -1,41 +1,30 @@
-import { Box, Divider, Heading, HStack, Text } from "@chakra-ui/react";
-import { SemrushDatabaseMenu } from "components/menus";
+import { Box, Heading, HStack, Text } from "@chakra-ui/react";
 import { GridInputForm } from "forms/grid-input";
 
-import { SEMRUSH_DATABASES } from "config";
-
+import { useListSeedKeywordsQuery } from "api/team.api";
 import { Image } from "components/image";
 import React, { useEffect, useMemo, useState } from "react";
-import { Team } from "types";
-
-import { useTeamSeedKeywordsQuery } from "api/team.api";
+import { useSelector } from "react-redux";
 import uuid from "react-uuid";
+import { RootState, Team } from "types";
 
 interface Props {
   onChangeKeywords: (keywords: string[]) => void;
-  onChangeDb: (database: SemrushDatabase) => void;
-  activeTeam: Team;
 }
 
-type SemrushDatabaseKeys = keyof typeof SEMRUSH_DATABASES;
-type SemrushDatabase = typeof SEMRUSH_DATABASES[SemrushDatabaseKeys];
-
-const TargetKeywordsSection: React.FC<Props> = ({
-  onChangeKeywords,
-  onChangeDb,
-  activeTeam,
-}) => {
+const TargetKeywordsSection: React.FC<Props> = ({ onChangeKeywords }) => {
   const [keywords, setTargetKeywords] = useState<string[]>([]);
-  const [database, setDatabase] = useState<SemrushDatabase>("uk");
 
-  const { data: teamSeedKeywords, refetch } = useTeamSeedKeywordsQuery(
+  const activeTeam: Team = useSelector(
+    (state: RootState) => state.team.activeTeam
+  );
+
+  const { data: seedKeywords, refetch } = useListSeedKeywordsQuery(
     activeTeam?.uid,
     {
       skip: !activeTeam?.uid,
     }
   );
-
-  console.log("Active Team", activeTeam);
 
   useEffect(() => {
     refetch();
@@ -45,29 +34,19 @@ const TargetKeywordsSection: React.FC<Props> = ({
     onChangeKeywords(keywords);
   }, [keywords, onChangeKeywords]);
 
-  useEffect(() => {
-    onChangeDb(database);
-  }, [database, onChangeDb]);
-
-  const buildDefaultKeywords = useMemo(
-    () => () => {
-      const defaultKeywords: {
+  const buildDefaultValues = useMemo(() => {
+    if (seedKeywords) {
+      const defaultValues: {
         [key: string]: string;
       } = {};
-      if (teamSeedKeywords) {
-        teamSeedKeywords.forEach(({ keyword }) => {
-          defaultKeywords[uuid()] = keyword;
-        });
-      }
 
-      if (Object.keys(defaultKeywords).length === 0) {
-        defaultKeywords[uuid()] = "";
-      }
+      seedKeywords.forEach(({ keyword }) => {
+        defaultValues[uuid()] = keyword;
+      });
 
-      return defaultKeywords;
-    },
-    [teamSeedKeywords]
-  );
+      return defaultValues;
+    }
+  }, [seedKeywords]);
 
   return (
     <Box>
@@ -88,18 +67,10 @@ const TargetKeywordsSection: React.FC<Props> = ({
         extract a list of URLs that are ranking for these keywords and use them
         to generate a list of seed keywords.
       </Text>
-
-      <HStack position="relative">
-        <Text opacity={0.75}>SEMRush Database:</Text>
-        <SemrushDatabaseMenu onChange={setDatabase} />
-      </HStack>
-
-      <Divider pb={3} />
-
       <Box pt={6}>
         <GridInputForm
           onChange={setTargetKeywords}
-          defaultValues={buildDefaultKeywords()}
+          defaultValues={buildDefaultValues}
         />
       </Box>
     </Box>
