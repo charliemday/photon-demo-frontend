@@ -1,37 +1,42 @@
-import { Box, Divider, Heading, HStack, Text } from "@chakra-ui/react";
-import { SemrushDatabaseMenu } from "components/menus";
+import { Box, Heading, HStack, Text } from "@chakra-ui/react";
 import { GridInputForm } from "forms/grid-input";
 
-import { SEMRUSH_DATABASES } from "config";
-
+import { useListSeedKeywordsQuery } from "api/team.api";
 import { Image } from "components/image";
-import React, { useEffect, useState } from "react";
-import { Team } from "types";
+import React, { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import uuid from "react-uuid";
+import { RootState, Team } from "types";
 
 interface Props {
   onChangeKeywords: (keywords: string[]) => void;
-  onChangeDb: (database: SemrushDatabase) => void;
-  activeTeam: Team;
 }
 
-type SemrushDatabaseKeys = keyof typeof SEMRUSH_DATABASES;
-type SemrushDatabase = typeof SEMRUSH_DATABASES[SemrushDatabaseKeys];
-
-const TargetKeywordsSection: React.FC<Props> = ({
-  onChangeKeywords,
-  onChangeDb,
-  activeTeam,
-}) => {
+const TargetKeywordsSection: React.FC<Props> = ({ onChangeKeywords }) => {
   const [keywords, setTargetKeywords] = useState<string[]>([]);
-  const [database, setDatabase] = useState<SemrushDatabase>("uk");
-
   useEffect(() => {
     onChangeKeywords(keywords);
   }, [keywords, onChangeKeywords]);
 
-  useEffect(() => {
-    onChangeDb(database);
-  }, [database, onChangeDb]);
+  const activeTeam: Team = useSelector(
+    (state: RootState) => state.team.activeTeam
+  );
+
+  const { data: seedKeywords } = useListSeedKeywordsQuery(activeTeam?.uid);
+
+  const buildDefaultValues = useMemo(() => {
+    if (seedKeywords) {
+      const defaultValues: {
+        [key: string]: string;
+      } = {};
+
+      seedKeywords.forEach(({ keyword }) => {
+        defaultValues[uuid()] = keyword;
+      });
+
+      return defaultValues;
+    }
+  }, [seedKeywords]);
 
   return (
     <Box>
@@ -52,16 +57,11 @@ const TargetKeywordsSection: React.FC<Props> = ({
         extract a list of URLs that are ranking for these keywords and use them
         to generate a list of seed keywords.
       </Text>
-
-      <HStack position="relative">
-        <Text opacity={0.75}>SEMRush Database:</Text>
-        <SemrushDatabaseMenu onChange={setDatabase} />
-      </HStack>
-
-      <Divider pb={3} />
-
       <Box pt={6}>
-        <GridInputForm onChange={setTargetKeywords} />
+        <GridInputForm
+          onChange={setTargetKeywords}
+          defaultValues={buildDefaultValues}
+        />
       </Box>
     </Box>
   );
