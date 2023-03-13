@@ -1,4 +1,4 @@
-import { Box, Divider, Heading, HStack, Text } from "@chakra-ui/react";
+import { Box, Heading, HStack, Text } from "@chakra-ui/react";
 import { CompetitorInterface } from "forms/competitors";
 
 import { Image } from "components/image";
@@ -35,7 +35,6 @@ const DatabaseSection: React.FC<Props> = ({ onChange }) => {
       <Text fontSize="xs" opacity={0.75} py={3}>
         Determine the SEMRush database to use for the keyword research.
       </Text>
-      <Divider pb={3} />
       <HStack position="relative" py={3}>
         <Text opacity={0.75} fontSize="sm">
           SEMRush Database:

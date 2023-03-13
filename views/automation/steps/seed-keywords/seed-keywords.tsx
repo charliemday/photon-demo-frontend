@@ -46,8 +46,8 @@ export const SeedKeywords: React.FC<Props> = (props) => {
   const [competitors, setCompetitors] = useState<CompetitorInterface[]>([]);
   const [checkClustering, setCheckClustering] = useState<boolean>(false);
   const [broadKeywordsCount, setBroadKeywordsCount] = useState<number>(10);
-  const [maxOrganicResults, setMaxOrganicResults] = useState<number>(10);
-  const [maxPosition, setMaxPosition] = useState<number>(10);
+  const [maxOrganicResults, setMaxOrganicResults] = useState<number>(300);
+  const [maxPosition, setMaxPosition] = useState<number>(30);
   const [useCompetitors, setUseCompetitors] = useState<boolean>(true);
 
   const [step, setStep] = useState<number>(1);
@@ -270,11 +270,13 @@ export const SeedKeywords: React.FC<Props> = (props) => {
           title={`Max Organic Results (Est. max cost: $${calculateSemrushCost({
             costPerLine: 10,
             noOfLines: maxOrganicResults,
-            noOfRequests: competitors.length + 48,
+            noOfRequests: useCompetitors
+              ? (competitors.length + 15) * targetKeywords.length
+              : 15 * targetKeywords.length,
           })})`}
           onChange={(value) => setMaxOrganicResults(value as number)}
           defaultValue={maxOrganicResults}
-          helperText={`This is the number of organic results to return for each of the keywords. Note: the Max Cost is only if we use all of the competitors (some will be removed as they're duplicates and some may not return anything)`}
+          helperText={`This is the number of organic results to return for each of the keywords. Note: the Max Cost is only if we use all of the competitors (some will be removed as they're duplicates and some may not return anything). For each keyword we will generate 15 competitors and add any custom competitors.`}
           label="Max Organic Results:"
         />
         <Divider />
