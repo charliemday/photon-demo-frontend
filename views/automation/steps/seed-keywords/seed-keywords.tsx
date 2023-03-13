@@ -339,7 +339,7 @@ export const SeedKeywords: React.FC<Props> = (props) => {
       title: "Seed Keywords",
       content: renderSeedKeywordSection(),
       onClick: handleSetup,
-      buttonLabel: "Setup Step 1 👉",
+      buttonLabel: "Continue 👉",
       buttonDisabled:
         (!targetKeywords.length && !competitors.length) || !database,
       isButtonLoading: false,
