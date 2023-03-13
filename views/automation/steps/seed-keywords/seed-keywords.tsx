@@ -16,7 +16,11 @@ import {
   useGenerateSeedKeywordsMutation,
   useSeedKeywordsMutation,
 } from "api/engine.api";
-import { useUpdateClassificationsMutation } from "api/team.api";
+import {
+  useBulkCreateSeedKeywordsMutation,
+  useCreateCompetitorsMutation,
+  useUpdateClassificationsMutation,
+} from "api/team.api";
 import { Button } from "components/button";
 import { RootState } from "store";
 import { SemrushDatabase, Team } from "types";
@@ -76,6 +80,24 @@ export const SeedKeywords: React.FC<Props> = (props) => {
       error: generateSeedKeywordsError,
     },
   ] = useGenerateSeedKeywordsMutation();
+
+  const [
+    bulkCreateSeedKeywords,
+    {
+      isLoading: isBulkCreatingSeedKeywords,
+      isError: hasErrorBulkCreatingSeedKeywords,
+      error: bulkCreateSeedKeywordsError,
+    },
+  ] = useBulkCreateSeedKeywordsMutation();
+
+  const [
+    createCompetitors,
+    {
+      isLoading: isCreatingCompetitors,
+      isError: hasErrorCreatingCompetitors,
+      error: createCompetitorsError,
+    },
+  ] = useCreateCompetitorsMutation();
 
   const [
     updateClassifications,
@@ -184,6 +206,52 @@ export const SeedKeywords: React.FC<Props> = (props) => {
     ]
   );
 
+  useEffect(
+    () => {
+      if (
+        !isBulkCreatingSeedKeywords &&
+        hasErrorBulkCreatingSeedKeywords &&
+        bulkCreateSeedKeywordsError
+      ) {
+        toast({
+          title: "Error",
+          description:
+            typeCheckError(bulkCreateSeedKeywordsError) ||
+            "Something went wrong with creating the seed keywords.",
+          status: "error",
+          isClosable: true,
+        });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      isBulkCreatingSeedKeywords,
+      hasErrorBulkCreatingSeedKeywords,
+      bulkCreateSeedKeywordsError,
+    ]
+  );
+
+  useEffect(
+    () => {
+      if (
+        !isCreatingCompetitors &&
+        hasErrorCreatingCompetitors &&
+        createCompetitorsError
+      ) {
+        toast({
+          title: "Error",
+          description:
+            typeCheckError(createCompetitorsError) ||
+            "Something went wrong with creating the competitors.",
+          status: "error",
+          isClosable: true,
+        });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isCreatingCompetitors, hasErrorCreatingCompetitors, createCompetitorsError]
+  );
+
   const handleSubmit = async () => {
     if (classify) {
       const body: TeamClassification = {
@@ -257,7 +325,31 @@ export const SeedKeywords: React.FC<Props> = (props) => {
         setStep((s) => s + 1);
       }
     } else {
-      setStep((s) => s + 1);
+      let proceed = true;
+
+      // Save the seed keywords
+      const createSeedKeywordsResponse = await bulkCreateSeedKeywords({
+        teamUid: activeTeam.uid,
+        keywords: targetKeywords,
+      });
+
+      if ("error" in createSeedKeywordsResponse) proceed = false;
+
+      // Save the competitors
+      if (useCompetitors) {
+        const createCompetitorsResponse = await createCompetitors(
+          competitors.map((c) => ({
+            competitorName: c.name,
+            competitorUrl: c.url,
+            team: activeTeam.id,
+          }))
+        );
+        if ("error" in createCompetitorsResponse) proceed = false;
+      }
+
+      if (proceed) {
+        setStep((s) => s + 1);
+      }
     }
   };
 
@@ -344,7 +436,7 @@ export const SeedKeywords: React.FC<Props> = (props) => {
       buttonLabel: "Continue 👉",
       buttonDisabled:
         (!targetKeywords.length && !competitors.length) || !database,
-      isButtonLoading: false,
+      isButtonLoading: isBulkCreatingSeedKeywords || isCreatingCompetitors,
     },
     // {
     //   title: "Keyword Themes",

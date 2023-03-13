@@ -7,7 +7,7 @@ export const apiUrls = {
     TEAMS: 'teams/',
     TEAM: (id: number) => `teams/${id}/`,
     TEAM_CLASSIFICATION: (teamUid: string) => `teams/team/${teamUid}/classifications`,
-    TEAM_COMPETITORS: (teamUid: string) => `teams/team/competitors?team_uid=${teamUid}`,
+    TEAM_COMPETITORS: (teamUid?: string) => `teams/team/competitors${teamUid ? `?team_uid=${teamUid}` : ''}`,
     TEAM_SEED_KEYWORDS: (teamUid: string) => `teams/team/${teamUid}/seed-keywords`,
     // User
     USER: 'user/',
@@ -27,6 +27,7 @@ export const apiUrls = {
     CLUSTER_KEYWORDS: 'engine/cluster-keywords/',
     KEYWORD_THEMES: (teamUid?: string) => `engine/keyword-themes${teamUid ? `?team_uid=${teamUid}` : '/'}`,
     GENERATE_SEED_KEYWORDS: 'engine/generate-seed-keywords/',
+    BULK_CREATE_SEED_KEYWORDS: 'engine/bulk-create-seed-keywords/',
     // Ahrefs
     AHREFS: '/ahrefs/report/',
     PROCESS_AHREFS_DATA: 'engine/process-ahrefs-data/',

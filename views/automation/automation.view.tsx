@@ -62,9 +62,7 @@ const STEPS: {
   },
   {
     title: "1. SEMRush Step 1",
-    description: `This will take a group of CSV files from Ahrefs and sort them to
-    exclude duplicate keywords and only show the keywords on the the
-    first 2 pages`,
+    description: `This will run Target Keywords and Competitors through the SEMRush API`,
     key: KEY.SEMRUSH_STEP_1,
     image: ["/openai-avatar.png", "/steps/semrush.jpeg"],
   },
