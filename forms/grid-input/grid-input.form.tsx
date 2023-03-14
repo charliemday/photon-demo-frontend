@@ -30,13 +30,9 @@ const GridInputForm: React.FC<Props> = ({
   }>(defaultValues);
 
   useEffect(() => {
-    /**
-     * On load populate the inputs
-     */
-    if (defaultValues) {
-      setInputs(defaultValues);
-    }
-  }, [defaultValues]);
+    setInputs(defaultValues);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (onChange) {
