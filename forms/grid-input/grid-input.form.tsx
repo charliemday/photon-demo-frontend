@@ -5,6 +5,7 @@ import {
   GridItem,
   HStack,
   Input,
+  Skeleton,
   Stack,
 } from "@chakra-ui/react";
 import { Button } from "components/button";
@@ -18,12 +19,14 @@ interface Props {
   defaultValues?: {
     [key: string]: string;
   };
+  isLoading?: boolean;
 }
 
 const GridInputForm: React.FC<Props> = ({
   onChange,
   buttonLabel = "Add Keyword",
   defaultValues = { [uuid()]: "" },
+  isLoading = true,
 }) => {
   const [inputs, setInputs] = useState<{
     [key: string]: string;
@@ -80,6 +83,18 @@ const GridInputForm: React.FC<Props> = ({
       </HStack>
     </GridItem>
   );
+
+  if (isLoading) {
+    return (
+      <Stack w="full">
+        <Grid templateColumns="repeat(2, 1fr)" gap={3}>
+          {Object.keys(inputs).map((inputKey, key) => (
+            <Skeleton key={key} height="40px" borderRadius="md" />
+          ))}
+        </Grid>
+      </Stack>
+    );
+  }
 
   return (
     <Stack w="full">

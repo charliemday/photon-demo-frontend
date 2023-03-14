@@ -1,4 +1,11 @@
-import { Box, FormControl, HStack, Input, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  FormControl,
+  HStack,
+  Input,
+  Skeleton,
+  Stack,
+} from "@chakra-ui/react";
 import { useTeamCompetitorsQuery } from "api/team.api";
 import { Button } from "components/button";
 import { useEffect, useState } from "react";
@@ -26,7 +33,12 @@ const CompetitorsForm: React.FC<Props> = ({ onChange, team }) => {
     },
   });
 
-  const { data: competitorData, isSuccess } = useTeamCompetitorsQuery(team.uid);
+  const {
+    data: competitorData,
+    refetch,
+    isSuccess,
+    isLoading,
+  } = useTeamCompetitorsQuery(team.uid);
 
   useEffect(() => {
     if (team) {
@@ -41,6 +53,13 @@ const CompetitorsForm: React.FC<Props> = ({ onChange, team }) => {
       });
     }
   }, [team]);
+
+  useEffect(() => {
+    if (team) {
+      refetch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (isSuccess) {
@@ -122,6 +141,21 @@ const CompetitorsForm: React.FC<Props> = ({ onChange, team }) => {
       </Box>
     </HStack>
   );
+
+  if (isLoading) {
+    return (
+      <Stack>
+        <HStack>
+          <Skeleton borderRadius="md" height="40px" width="200px" />
+          <Skeleton borderRadius="md" height="40px" width="200px" />
+        </HStack>
+        <HStack>
+          <Skeleton borderRadius="md" height="40px" width="200px" />
+          <Skeleton borderRadius="md" height="40px" width="200px" />
+        </HStack>
+      </Stack>
+    );
+  }
 
   return (
     <Stack>

@@ -19,12 +19,13 @@ const TargetKeywordsSection: React.FC<Props> = ({ onChangeKeywords }) => {
     (state: RootState) => state.team.activeTeam
   );
 
-  const { data: seedKeywords, refetch } = useListSeedKeywordsQuery(
-    activeTeam?.uid,
-    {
-      skip: !activeTeam?.uid,
-    }
-  );
+  const {
+    data: seedKeywords,
+    refetch,
+    isLoading,
+  } = useListSeedKeywordsQuery(activeTeam?.uid, {
+    skip: !activeTeam?.uid,
+  });
 
   useEffect(() => {
     refetch();
@@ -71,6 +72,7 @@ const TargetKeywordsSection: React.FC<Props> = ({ onChangeKeywords }) => {
         <GridInputForm
           onChange={setTargetKeywords}
           defaultValues={buildDefaultValues}
+          isLoading={isLoading}
         />
       </Box>
     </Box>

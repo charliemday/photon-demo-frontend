@@ -30,6 +30,14 @@ interface CompetitorResponse {
   competitorUrl: string;
 }
 
+export interface BulkUpdateCompetitorsInterface {
+  competitors: {
+    name: string;
+    url: string;
+  }[];
+  teamUid: string;
+}
+
 type TeamResponse = ConvertToSnakeCase<Team>;
 
 export interface SeedKeywords {
@@ -169,6 +177,16 @@ export const teamApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [TAG_TYPES.TEAMS],
     }),
+    /**
+     * Bulk Update the team's competitors
+     */
+    bulkUpdateCompetitors: builder.mutation<CompetitorResponse[], BulkUpdateCompetitorsInterface>({
+      query: (body) => ({
+        url: apiUrls.TEAM_COMPETITORS_BULK,
+        method: "PATCH",
+        body: decamelizeKeys(body)
+      }),
+    })
   }),
 });
 
@@ -185,4 +203,5 @@ export const {
   useListSeedKeywordsQuery,
   useBulkCreateSeedKeywordsMutation,
   useCreateCompetitorsMutation,
+  useBulkUpdateCompetitorsMutation
 } = teamApi;

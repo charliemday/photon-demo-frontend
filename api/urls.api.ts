@@ -8,6 +8,7 @@ export const apiUrls = {
     TEAM: (id: number) => `teams/${id}/`,
     TEAM_CLASSIFICATION: (teamUid: string) => `teams/team/${teamUid}/classifications`,
     TEAM_COMPETITORS: (teamUid?: string) => `teams/team/competitors${teamUid ? `?team_uid=${teamUid}` : ''}`,
+    TEAM_COMPETITORS_BULK: "teams/team/competitors/bulk-update",
     TEAM_SEED_KEYWORDS: (teamUid: string) => `teams/team/${teamUid}/seed-keywords`,
     // User
     USER: 'user/',

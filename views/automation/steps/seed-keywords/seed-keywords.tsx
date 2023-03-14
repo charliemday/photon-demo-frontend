@@ -18,6 +18,7 @@ import {
 } from "api/engine.api";
 import {
   useBulkCreateSeedKeywordsMutation,
+  useBulkUpdateCompetitorsMutation,
   useCreateCompetitorsMutation,
   useUpdateClassificationsMutation,
 } from "api/team.api";
@@ -98,6 +99,15 @@ export const SeedKeywords: React.FC<Props> = (props) => {
       error: createCompetitorsError,
     },
   ] = useCreateCompetitorsMutation();
+
+  const [
+    bulkUpdateCompetitors,
+    {
+      isLoading: isBulkUpdatingCompetitors,
+      isError: hasErrorBulkUpdatingCompetitors,
+      error: bulkUpdateCompetitorsError,
+    },
+  ] = useBulkUpdateCompetitorsMutation();
 
   const [
     updateClassifications,
@@ -234,22 +244,26 @@ export const SeedKeywords: React.FC<Props> = (props) => {
   useEffect(
     () => {
       if (
-        !isCreatingCompetitors &&
-        hasErrorCreatingCompetitors &&
-        createCompetitorsError
+        !isBulkUpdatingCompetitors &&
+        hasErrorBulkUpdatingCompetitors &&
+        bulkUpdateCompetitorsError
       ) {
         toast({
           title: "Error",
           description:
-            typeCheckError(createCompetitorsError) ||
-            "Something went wrong with creating the competitors.",
+            typeCheckError(bulkUpdateCompetitorsError) ||
+            "Something went wrong with updating the competitors.",
           status: "error",
           isClosable: true,
         });
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isCreatingCompetitors, hasErrorCreatingCompetitors, createCompetitorsError]
+    [
+      isBulkUpdatingCompetitors,
+      hasErrorBulkUpdatingCompetitors,
+      bulkUpdateCompetitorsError,
+    ]
   );
 
   const handleSubmit = async () => {
@@ -337,13 +351,13 @@ export const SeedKeywords: React.FC<Props> = (props) => {
 
       // Save the competitors
       if (useCompetitors) {
-        const createCompetitorsResponse = await createCompetitors(
-          competitors.map((c) => ({
-            competitorName: c.name,
-            competitorUrl: c.url,
-            team: activeTeam.id,
-          }))
-        );
+        const createCompetitorsResponse = await bulkUpdateCompetitors({
+          teamUid: activeTeam.uid,
+          competitors: competitors.map(({ name, url }) => ({
+            name,
+            url,
+          })),
+        });
         if ("error" in createCompetitorsResponse) proceed = false;
       }
 
