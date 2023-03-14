@@ -29,11 +29,14 @@ const KeywordThemeSection: React.FC<Props> = ({ onSelectTheme }) => {
 
   useEffect(() => {
     refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!keywordThemesData)
+  if (!keywordThemesData || keywordThemesData.length === 0)
     return (
-      <Box>{`No Themes Found yet. Try running the "Seed Keywords" section first.`}</Box>
+      <Box>
+        <Text fontSize="sm">{`No Themes Found yet. Try running the "Seed Keywords" section first.`}</Text>
+      </Box>
     );
 
   return (

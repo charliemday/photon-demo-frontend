@@ -11,8 +11,10 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import {
+  CreateKeywordsThemesBody,
   SeedKeywordsBody,
   useClusterKeywordsMutation,
+  useCreateKeywordThemesMutation,
   useGenerateSeedKeywordsMutation,
   useSeedKeywordsMutation,
 } from "api/engine.api";
@@ -119,14 +121,14 @@ export const SeedKeywords: React.FC<Props> = (props) => {
   ] = useUpdateClassificationsMutation();
 
   // TODO: Uncomment when the API is ready
-  // const [
-  //   createKeywordThemes,
-  //   {
-  //     isLoading: isCreatingKeywordThemes,
-  //     isError: hasErrorCreatingKeywordThemes,
-  //     error: createKeywordThemesError,
-  //   },
-  // ] = useCreateKeywordThemesMutation();
+  const [
+    createKeywordThemes,
+    {
+      isLoading: isCreatingKeywordThemes,
+      isError: hasErrorCreatingKeywordThemes,
+      error: createKeywordThemesError,
+    },
+  ] = useCreateKeywordThemesMutation();
 
   const [
     runClustering,
@@ -301,17 +303,17 @@ export const SeedKeywords: React.FC<Props> = (props) => {
   };
 
   // TODO: Uncomment this when the API is ready
-  // const handleSaveThemes = async () => {
-  //   const body: CreateKeywordsThemesBody = {
-  //     teamId: activeTeam.id.toString(),
-  //     themes: keywordThemes,
-  //   };
-  //   const response = await createKeywordThemes(body);
+  const handleSaveThemes = async () => {
+    const body: CreateKeywordsThemesBody = {
+      teamId: activeTeam.id.toString(),
+      themes: keywordThemes,
+    };
+    const response = await createKeywordThemes(body);
 
-  //   if ("data" in response) {
-  //     setStep((s) => s + 1);
-  //   }
-  // };
+    if ("data" in response) {
+      setStep((s) => s + 1);
+    }
+  };
 
   const handleSetup = async () => {
     const body: SeedKeywordsBody = {
@@ -447,7 +449,7 @@ export const SeedKeywords: React.FC<Props> = (props) => {
       title: "Seed Keywords",
       content: renderSeedKeywordSection(),
       onClick: handleSetup,
-      buttonLabel: "Continue 👉",
+      buttonLabel: "Next Step",
       buttonDisabled:
         (!targetKeywords.length && !competitors.length) || !database,
       isButtonLoading: isBulkCreatingSeedKeywords || isCreatingCompetitors,
@@ -501,7 +503,7 @@ export const SeedKeywords: React.FC<Props> = (props) => {
         <HStack justifyContent="flex-end" pt={12}>
           {step > 0 && (
             <Button size="lg" onClick={() => setStep((s) => s - 1)}>
-              👈 Back
+              Back
             </Button>
           )}
           <Button

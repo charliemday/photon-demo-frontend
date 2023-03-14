@@ -28,6 +28,7 @@ export interface TeamClassification {
 interface CompetitorResponse {
   competitorName: string;
   competitorUrl: string;
+  active?: boolean;
 }
 
 export interface BulkUpdateCompetitorsInterface {
@@ -132,7 +133,7 @@ export const teamApi = baseApi.injectEndpoints({
       }),
       providesTags: [TAG_TYPES.TEAMS],
       transformResponse: (response: ConvertToSnakeCase<CompetitorResponse>[]) =>
-        response.map((c) => camelizeKeys(c) as CompetitorResponse),
+        response.map((c) => camelizeKeys(c) as CompetitorResponse).filter((c) => c.active),
     }),
     /**
      * List seed keywords for a team
