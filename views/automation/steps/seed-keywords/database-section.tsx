@@ -1,5 +1,4 @@
 import { Box, Heading, HStack, Text } from "@chakra-ui/react";
-import { CompetitorInterface } from "forms/competitors";
 
 import { Image } from "components/image";
 import { SemrushDatabaseMenu } from "components/menus";
@@ -11,11 +10,12 @@ interface Props {
 }
 
 const DatabaseSection: React.FC<Props> = ({ onChange }) => {
-  const [competitors, setCompetitors] = useState<CompetitorInterface[]>([]);
   const [database, setDatabase] = useState<SemrushDatabase>("uk");
 
   useEffect(() => {
-    onChange(database);
+    if (onChange) {
+      onChange(database);
+    }
   }, [database, onChange]);
 
   return (

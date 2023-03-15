@@ -50,6 +50,13 @@ export interface SeedKeywords {
   team: number;
 }
 
+interface BroadKeywordBody {
+  keywords: string[];
+  teamId: number;
+  database: string;
+  limit: number;
+}
+
 // Define a service using a base URL and expected endpoints
 export const teamApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -187,6 +194,16 @@ export const teamApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: decamelizeKeys(body)
       }),
+    }),
+    /**
+     * Run keywords through Broad Keyword API
+     */
+    generateBroadKeywords: builder.mutation<undefined, BroadKeywordBody>({
+      query: (body) => ({
+        url: apiUrls.BROAD_KEYWORD_API,
+        method: "POST",
+        body: decamelizeKeys(body),
+      }),
     })
   }),
 });
@@ -204,5 +221,6 @@ export const {
   useListSeedKeywordsQuery,
   useBulkCreateSeedKeywordsMutation,
   useCreateCompetitorsMutation,
-  useBulkUpdateCompetitorsMutation
+  useBulkUpdateCompetitorsMutation,
+  useGenerateBroadKeywordsMutation
 } = teamApi;

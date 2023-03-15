@@ -1,8 +1,7 @@
-import { Stack, Text, Box, Flex, HStack } from "@chakra-ui/react";
+import { Badge, Box, Flex, HStack, Stack, Text } from "@chakra-ui/react";
 import { BRAND_COLOR } from "config";
 import Image from "next/image";
 import React from "react";
-import { BsCheckCircle } from "react-icons/bs";
 
 interface Props {
   title: string;
@@ -11,6 +10,8 @@ interface Props {
   comingSoon?: boolean;
   image?: string | string[];
   isDisabled?: boolean;
+  badgeLabel?: string;
+  badgeColor?: string;
 }
 
 export const AutomationCard: React.FC<Props> = ({
@@ -20,6 +21,8 @@ export const AutomationCard: React.FC<Props> = ({
   comingSoon,
   image,
   isDisabled,
+  badgeLabel,
+  badgeColor,
 }) => {
   const renderComingSoon = () => (
     <Flex
@@ -79,6 +82,11 @@ export const AutomationCard: React.FC<Props> = ({
         border="solid 1px lightgray"
         position="relative"
       >
+        {badgeLabel && (
+          <Box position="absolute" right={4} top={3}>
+            <Badge colorScheme={badgeColor}>{badgeLabel}</Badge>
+          </Box>
+        )}
         <Text fontWeight="semibold" noOfLines={1}>
           {title}
         </Text>

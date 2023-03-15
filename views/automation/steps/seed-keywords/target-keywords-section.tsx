@@ -32,7 +32,9 @@ const TargetKeywordsSection: React.FC<Props> = ({ onChangeKeywords }) => {
   }, [activeTeam, refetch]);
 
   useEffect(() => {
-    onChangeKeywords(keywords);
+    if (onChangeKeywords) {
+      onChangeKeywords(keywords);
+    }
   }, [keywords, onChangeKeywords]);
 
   const buildDefaultValues = useMemo(() => {

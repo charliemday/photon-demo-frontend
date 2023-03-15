@@ -29,6 +29,7 @@ export const apiUrls = {
     KEYWORD_THEMES: (teamUid?: string) => `engine/keyword-themes${teamUid ? `?team_uid=${teamUid}` : '/'}`,
     GENERATE_SEED_KEYWORDS: 'engine/generate-seed-keywords/',
     BULK_CREATE_SEED_KEYWORDS: 'engine/bulk-create-seed-keywords/',
+    BROAD_KEYWORD_API: 'engine/generate-broad-keywords/',
     // Ahrefs
     AHREFS: '/ahrefs/report/',
     PROCESS_AHREFS_DATA: 'engine/process-ahrefs-data/',
