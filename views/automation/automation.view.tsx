@@ -56,64 +56,89 @@ interface STEP {
   isNew?: boolean;
 }
 
-const STEPS: STEP[] = [
+const STEPS: { title: string; steps: STEP[] }[] = [
   {
-    title: "Ahrefs Seed Keywords",
-    description: `This will take a group of CSV files from Ahrefs and sort them to
-    exclude duplicate keywords and only show the keywords on the the
-    first 2 pages`,
-    key: KEY.AHREFS_STEP_1,
-    image: ["/steps/excel.png", "/openai-avatar.png", "/steps/ahrefs.jpeg"],
+    title: "Step 1",
+    steps: [
+      {
+        title: "Ahrefs Seed Keywords",
+        description: `This will take a group of CSV files from Ahrefs and sort them to
+        exclude duplicate keywords and only show the keywords on the the
+        first 2 pages`,
+        key: KEY.AHREFS_STEP_1,
+        image: ["/steps/excel.png", "/openai-avatar.png", "/steps/ahrefs.jpeg"],
+      },
+      {
+        title: "SEMRush Seed Keywords",
+        description: `This will run Target Keywords and Competitors through the SEMRush API`,
+        key: KEY.SEMRUSH_STEP_1,
+        image: ["/openai-avatar.png", "/steps/semrush.jpeg"],
+      },
+      {
+        title: "Broad Seed Keywords",
+        description: `This will run Target Keywords through the SEMRush API`,
+        key: KEY.SEMRUSH_BROAD_SEED_KEYWORDS,
+        image: ["/steps/semrush.jpeg"],
+        isNew: true,
+      },
+    ],
   },
   {
-    title: "SEMRush Seed Keywords",
-    description: `This will run Target Keywords and Competitors through the SEMRush API`,
-    key: KEY.SEMRUSH_STEP_1,
-    image: ["/openai-avatar.png", "/steps/semrush.jpeg"],
+    title: "Step 2",
+    steps: [
+      {
+        title: "People Also Asked",
+        description: `This will take a CSV file with the first column of sorted keywords and get the "People Also Asked" questions for each keyword`,
+        key: KEY.PEOPLE_ALSO_ASKED,
+        image: "/steps/google.jpeg",
+      },
+    ],
   },
   {
-    title: "Broad Seed Keywords",
-    description: `This will run Target Keywords through the SEMRush API`,
-    key: KEY.SEMRUSH_BROAD_SEED_KEYWORDS,
-    image: ["/steps/semrush.jpeg"],
-    isNew: true,
+    title: "Step 3",
+    steps: [
+      {
+        title: "Automate Content Creation",
+        description: `This will automate the content creation on the SEO Hub`,
+        comingSoon: true,
+        image: "/steps/notion.png",
+      },
+    ],
   },
   {
-    title: "People Also Asked",
-    description: `This will take a CSV file with the first column of sorted keywords and get the "People Also Asked" questions for each keyword`,
-    key: KEY.PEOPLE_ALSO_ASKED,
-    image: "/steps/google.jpeg",
+    title: "Reporting",
+    steps: [
+      {
+        title: "Upload Ahrefs report",
+        description: "Upload the Ahrefs report.",
+        key: KEY.UPLOAD_AHREFS_REPORT,
+        image: "/steps/ahrefs.jpeg",
+      },
+      {
+        title: "Populate SC Reports",
+        description: `This will populate the Search Console reports for *all* the teams.`,
+        key: KEY.POPULATE_SC_REPORTS,
+        image: "/steps/search-console.svg",
+      },
+    ],
   },
   {
-    title: "Connect up your Google Search Console",
-    description: `This will allow Baser to access your Google Search Console data through Google's API so we can show your site metrics on your SEO hub.`,
-    key: KEY.SEARCH_CONSOLE_CONNECT,
-    image: "/steps/google.jpeg",
-  },
-  {
-    title: "WordSeek",
-    description: `Take the GSC keywords and check whether they exist on the
-    pages they're associated with. The output will be saved to the drive.`,
-    key: KEY.COMPARE_CONSOLE_REPORT,
-    image: "/steps/search-console.svg",
-  },
-  {
-    title: "Upload Ahrefs report",
-    description: "Upload the Ahrefs report.",
-    key: KEY.UPLOAD_AHREFS_REPORT,
-    image: "/steps/ahrefs.jpeg",
-  },
-  {
-    title: "Populate SC Reports",
-    description: `This will populate the Search Console reports for *all* the teams.`,
-    key: KEY.POPULATE_SC_REPORTS,
-    image: "/steps/search-console.svg",
-  },
-  {
-    title: "Automate Content Creation",
-    description: `This will automate the content creation on the SEO Hub`,
-    comingSoon: true,
-    image: "/steps/notion.png",
+    title: "SEO Tools",
+    steps: [
+      {
+        title: "Connect up your Google Search Console",
+        description: `This will allow Baser to access your Google Search Console data through Google's API so we can show your site metrics on your SEO hub.`,
+        key: KEY.SEARCH_CONSOLE_CONNECT,
+        image: "/steps/google.jpeg",
+      },
+      {
+        title: "WordSeek",
+        description: `Take the GSC keywords and check whether they exist on the
+        pages they're associated with. The output will be saved to the drive.`,
+        key: KEY.COMPARE_CONSOLE_REPORT,
+        image: "/steps/search-console.svg",
+      },
+    ],
   },
 ];
 
@@ -172,7 +197,36 @@ export const AutomationView: React.FC = () => {
 
       <Divider my={8} />
 
-      <Grid templateColumns="repeat(4, 1fr)" gap={6}>
+      <Stack spacing={12} pb={32}>
+        {STEPS.map(({ title, steps }, key) => (
+          <Stack key={key} spacing={8}>
+            <Text fontSize="lg" fontWeight="semibold">
+              {title}
+            </Text>
+            <Grid templateColumns="repeat(4, 1fr)" gap={6}>
+              {steps.map((step, key) => (
+                <GridItem key={key} w="100%">
+                  <AutomationCard
+                    title={step.title}
+                    description={step.description}
+                    onClick={() => {
+                      setActiveStep(step.key as KEY);
+                      onOpen();
+                    }}
+                    comingSoon={step.comingSoon}
+                    image={step.image}
+                    isDisabled={step.isDisabled}
+                    badgeLabel={step.isNew ? "New" : undefined}
+                    badgeColor={step.isNew ? "green" : undefined}
+                  />
+                </GridItem>
+              ))}
+            </Grid>
+          </Stack>
+        ))}
+      </Stack>
+
+      {/* <Grid templateColumns="repeat(4, 1fr)" gap={6}>
         {STEPS.map((step, key) => (
           <GridItem key={key} w="100%">
             <AutomationCard
@@ -190,7 +244,7 @@ export const AutomationView: React.FC = () => {
             />
           </GridItem>
         ))}
-      </Grid>
+      </Grid> */}
 
       {/* STEPS */}
 
