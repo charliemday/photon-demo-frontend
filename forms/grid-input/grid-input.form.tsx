@@ -26,7 +26,7 @@ const GridInputForm: React.FC<Props> = ({
   onChange,
   buttonLabel = "Add Keyword",
   defaultValues = { [uuid()]: "" },
-  isLoading = true,
+  isLoading = false,
 }) => {
   const [inputs, setInputs] = useState<{
     [key: string]: string;
