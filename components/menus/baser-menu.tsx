@@ -24,12 +24,17 @@ interface Data {
 interface Props {
   onChange: (value: string) => void;
   data: Data[];
+  defaultValue?: Data;
 }
 
-export const BaserMenu: React.FC<Props> = ({ onChange, data }) => {
+export const BaserMenu: React.FC<Props> = ({
+  onChange,
+  data,
+  defaultValue,
+}) => {
   const [searchResults, setSearchResults] = useState<Data[]>(data);
   const [selectedItem, setSelectedItem] = useState<Data | null>(
-    data?.[0] || null
+    defaultValue || data?.[0] || null
   );
 
   useEffect(() => {
@@ -40,8 +45,8 @@ export const BaserMenu: React.FC<Props> = ({ onChange, data }) => {
 
   useEffect(() => {
     setSearchResults(data);
-    setSelectedItem(data?.[0] || null);
-  }, [data]);
+    setSelectedItem(defaultValue || data?.[0] || null);
+  }, [data, defaultValue]);
 
   const fuse = new FuseJS(data, {
     keys: ["label"],

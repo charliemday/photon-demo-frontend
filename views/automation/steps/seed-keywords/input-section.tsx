@@ -6,13 +6,14 @@ interface Props {
   title: string;
   subtitle?: string;
   label: string;
-  helperText: string;
+  helperText?: string;
   onChange: (value: string | number) => void;
   defaultValue: string | number;
   inputType?: "number" | "text";
   onCheck?: (value: boolean) => void;
   isChecked?: boolean;
   checkLabel?: string;
+  imageSrc?: string;
 }
 
 const InputSection: FC<Props> = ({
@@ -26,6 +27,7 @@ const InputSection: FC<Props> = ({
   isChecked,
   checkLabel,
   inputType = "number",
+  imageSrc = "steps/semrush.jpeg",
 }) => {
   const [input, setInput] = useState<string | number>(defaultValue);
   useEffect(() => {
@@ -35,7 +37,7 @@ const InputSection: FC<Props> = ({
   }, [input, onChange]);
 
   return (
-    <Stack spacing={6}>
+    <Stack spacing={6} w="full">
       <HStack>
         <Box
           width={18}
@@ -44,7 +46,9 @@ const InputSection: FC<Props> = ({
           borderRadius={4}
           overflow="hidden"
         >
-          <Image src="steps/semrush.jpeg" layout="fill" alt="Semrush Logo" />
+          {imageSrc && (
+            <Image src={imageSrc} layout="fill" alt="Semrush Logo" />
+          )}
         </Box>
         <Text fontWeight="bold" fontSize="md">
           {title}
@@ -80,14 +84,17 @@ const InputSection: FC<Props> = ({
               setInput(e.target.value);
             }}
             type={inputType}
-            w="15%"
+            minW="15%"
+            w="auto"
             px={2}
             fontSize="sm"
           />
         </HStack>
-        <Text fontSize="xs" opacity={0.75}>
-          {helperText}
-        </Text>
+        {helperText && (
+          <Text fontSize="xs" opacity={0.75}>
+            {helperText}
+          </Text>
+        )}
       </Stack>
     </Stack>
   );

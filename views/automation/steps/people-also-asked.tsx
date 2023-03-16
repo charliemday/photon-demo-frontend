@@ -13,16 +13,17 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { BsCheckCircle } from "react-icons/bs";
 import { useSelector } from "react-redux";
-import ReactSelect from "react-select";
 import { BarLoader } from "react-spinners";
 
 import { usePeopleAlsoAskMutation } from "api/engine.api";
 import { Button } from "components/button";
+import { BaserMenu } from "components/menus";
 import { BRAND_COLOR, GOOGLE_LANGUAGES } from "config";
 import { GridInputForm } from "forms/grid-input";
 import { RootState } from "store";
 import { typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
+import { InputSection } from "./seed-keywords";
 
 interface Props {
   isOpen: boolean;
@@ -33,6 +34,8 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
   const activeTeam = useSelector((state: RootState) => state.team.activeTeam);
 
   const [exclusionKeywords, setExclusionKeywords] = useState<string[]>([]);
+  const [volumeThreshold, setVolumeThreshold] = useState<number>(1e3);
+  const [useVolumeThreshold, setUseVolumeThreshold] = useState<boolean>(false);
 
   const alsoAskedInputRef = useRef<HTMLInputElement>(null);
   const [alsoAskedFile, setAlsoAskedFile] = useState<File | null | undefined>(
@@ -90,6 +93,10 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
     formData.append("language", language || "en");
     formData.append("team", activeTeam?.id);
 
+    if (useVolumeThreshold) {
+      formData.append("volume_threshold", volumeThreshold.toString());
+    }
+
     if (exclusionKeywords.length > 0) {
       formData.append("exclusion_keywords", exclusionKeywords.join(","));
     }
@@ -135,7 +142,7 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
   );
 
   return (
-    <ModalStepWrapper {...props}>
+    <ModalStepWrapper {...props} size="6xl">
       <Box>
         <Heading fontSize="lg">
           2. Questions Asked for {activeTeam?.name}
@@ -165,49 +172,72 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
 
         <Divider my={6} />
 
-        <Stack>
-          <Text fontSize="sm" fontWeight="semibold">
-            Language to use in Google Search:
-          </Text>
+        <HStack alignItems="flex-start">
+          <Flex flex={1}>
+            <InputSection
+              title="Volume Threshold"
+              subtitle="Exclude running keywords through PAA with less than this volume"
+              label="Volume"
+              defaultValue={volumeThreshold}
+              onChange={(e) => setVolumeThreshold(e as number)}
+              onCheck={setUseVolumeThreshold}
+              checkLabel="Use Volume Threshold"
+              inputType="number"
+              imageSrc={undefined}
+            />
+          </Flex>
 
-          <ReactSelect
-            className="basic-single"
-            classNamePrefix="select"
-            isSearchable
-            name="color"
-            defaultValue={
-              langOptions[langOptions.findIndex(({ value }) => value === "en")]
-            }
-            onChange={(e: any) => setLanguage(e.value)}
-            options={langOptions as any}
-          />
-        </Stack>
+          <Stack flex={1}>
+            <Text fontSize="md" fontWeight="bold">
+              🌍 Language to use in Google Search
+            </Text>
+
+            <Box>
+              <BaserMenu
+                defaultValue={
+                  langOptions[
+                    langOptions.findIndex(({ value }) => value === "en")
+                  ]
+                }
+                onChange={(e: any) => setLanguage(e.value)}
+                data={langOptions as any}
+              />
+            </Box>
+          </Stack>
+        </HStack>
 
         <Divider my={6} />
 
-        <Stack mb={6}>
-          <Stack mb={6}>
-            <Text fontSize="sm" fontWeight="semibold">
-              Keywords to Exclude (Optional)
-            </Text>
-            <Text fontSize="xs" opacity={0.75}>
-              {`Optionally add some target keywords you want to remove from the PAA output. For example if you
+        <HStack>
+          <Stack mb={6} flex={1}>
+            <Stack mb={6}>
+              <Text fontSize="md" fontWeight="bold">
+                ✂️ Keywords to Exclude (Optional)
+              </Text>
+              <Text fontSize="xs" opacity={0.75}>
+                {`Optionally add some target keywords you want to remove from the PAA output. For example if you
             add "mint" to the list, all the PAA questions that contain the word "mint" will be
             set as "Non-relevant" e.g. "How do you mint an NFT?" would be labeled "Non-relevant".`}
-            </Text>
+              </Text>
+            </Stack>
+            <GridInputForm
+              onChange={(e) => setExclusionKeywords(e.filter((f) => f.length))}
+              buttonLabel="Add a new exclusion keyword"
+            />
           </Stack>
-          <GridInputForm
-            onChange={(e) => setExclusionKeywords(e.filter((f) => f.length))}
-            buttonLabel="Add a new exclusion keyword"
-          />
-        </Stack>
+          <Flex flex={1} />
+        </HStack>
 
         <Flex justifyContent="flex-end" pt={6}>
-          <Button size="sm" onClick={() => setAlsoAskedFile(null)}>
+          <Button
+            size="lg"
+            onClick={() => setAlsoAskedFile(null)}
+            color="white"
+          >
             Clear
           </Button>
           <Button
-            size="sm"
+            size="lg"
             onClick={handleSubmitAlsoAskedData}
             isDisabled={!alsoAskedFile || isLoading}
             isLoading={isLoading}
