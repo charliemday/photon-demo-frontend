@@ -54,6 +54,7 @@ const InputSection: FC<Props> = ({
           {title}
         </Text>
       </HStack>
+
       {onCheck && (
         <Stack spacing={6}>
           <Checkbox
@@ -61,8 +62,11 @@ const InputSection: FC<Props> = ({
               onCheck(checked);
             }}
             defaultChecked={isChecked}
+            size="lg"
           >
-            <Text fontSize="sm">{checkLabel}</Text>
+            <Text fontSize="md" fontWeight="semibold">
+              {checkLabel}
+            </Text>
           </Checkbox>
 
           {subtitle && (

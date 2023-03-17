@@ -47,6 +47,10 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
     if (alsoAskedInputRef.current) alsoAskedInputRef.current.value = "";
   }, [alsoAskedFile]);
 
+  useEffect(() => {
+    setUseVolumeThreshold(false);
+  }, [props.isOpen]);
+
   const [uploadAlsoAskedData, { isLoading, isSuccess, isError, error }] =
     usePeopleAlsoAskMutation();
 
