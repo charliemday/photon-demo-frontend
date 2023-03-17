@@ -33,10 +33,12 @@ import {
   UploadAhrefsReport,
   WordSeek,
 } from "./steps";
+import { GenerateKIInput } from "./steps/seed-keywords";
 
 enum KEY {
   AHREFS_STEP_1 = "ahrefs-step-1",
   SEMRUSH_STEP_1 = "semrush-step-1",
+  COMBINED_STEPS = "combined-steps",
   SEMRUSH_BROAD_SEED_KEYWORDS = "semrush-broad-seed-keywords",
   PEOPLE_ALSO_ASKED = "people-also-asked",
   SEARCH_CONSOLE_CONNECT = "search-console-connect",
@@ -79,6 +81,18 @@ const STEPS: { title: string; steps: STEP[] }[] = [
         description: `This will run Target Keywords through the SEMRush API`,
         key: KEY.SEMRUSH_BROAD_SEED_KEYWORDS,
         image: ["/steps/semrush.jpeg"],
+        isNew: true,
+      },
+      {
+        title: "Combined Steps",
+        description: `This will run both Step 1 and Step 2`,
+        key: KEY.COMBINED_STEPS,
+        image: [
+          "/steps/excel.png",
+          "/openai-avatar.png",
+          "/steps/ahrefs.jpeg",
+          "/steps/semrush.jpeg",
+        ],
         isNew: true,
       },
     ],
@@ -285,6 +299,10 @@ export const AutomationView: React.FC = () => {
       />
       <PopulateSCReports
         isOpen={isOpen && activeStep === KEY.POPULATE_SC_REPORTS}
+        onClose={onClose}
+      />
+      <GenerateKIInput
+        isOpen={isOpen && activeStep === KEY.COMBINED_STEPS}
         onClose={onClose}
       />
     </Box>

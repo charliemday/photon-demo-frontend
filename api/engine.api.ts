@@ -44,6 +44,15 @@ export interface SeedKeywordsBody {
   maxOrganicResults?: number;
 }
 
+
+export interface GenerateKIInputBody {
+  teamId: number;
+  keywords: string[];
+  limit?: number;
+  topPercentage?: number;
+  database?: string; // TODO: Type this to the SEMRUSH_DATABASES
+}
+
 export interface GenerateSeedKeywordsBody {
   teamId: string;
   classify?: boolean;
@@ -117,6 +126,16 @@ export const engineApi = baseApi.injectEndpoints({
         body: decamelizeKeys({ themes, teamId }),
       })
     }),
+    /**
+     * Runs both the Seed Keywords and PAA steps
+     */
+    generateKIInput: builder.mutation<undefined, GenerateKIInputBody>({
+      query: (body) => ({
+        url: apiUrls.GENERATE_KI_INPUT,
+        method: "POST",
+        body: decamelizeKeys(body),
+      })
+    }),
   }),
 });
 
@@ -131,4 +150,5 @@ export const {
   useCreateKeywordThemesMutation,
   useSeedKeywordsMutation,
   useGenerateSeedKeywordsMutation,
+  useGenerateKIInputMutation
 } = engineApi;

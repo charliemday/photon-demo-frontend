@@ -30,6 +30,7 @@ export const apiUrls = {
     GENERATE_SEED_KEYWORDS: 'engine/generate-seed-keywords/',
     BULK_CREATE_SEED_KEYWORDS: 'engine/bulk-create-seed-keywords/',
     BROAD_KEYWORD_API: 'engine/generate-broad-keywords/',
+    GENERATE_KI_INPUT: 'engine/generate-ki-input/',
     // Ahrefs
     AHREFS: '/ahrefs/report/',
     PROCESS_AHREFS_DATA: 'engine/process-ahrefs-data/',
