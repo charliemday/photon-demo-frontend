@@ -1,6 +1,6 @@
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BASE_URL } from "config";
 import { RootState } from "store/store";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 
 export const baseQuery = fetchBaseQuery({
@@ -24,8 +24,10 @@ export enum TAG_TYPES {
   TEAMS = 'Teams',
   USERS = 'Users',
   TOOLS = 'Tools',
-  USER_TOOLS = 'UserTools'
+  USER_TOOLS = 'UserTools',
+  GOOGLE = 'Google'
 }
+
 
 
 export const baseApi = createApi({

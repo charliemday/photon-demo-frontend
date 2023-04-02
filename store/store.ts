@@ -1,20 +1,15 @@
-import { configureStore, combineReducers, Reducer } from "@reduxjs/toolkit";
+import { combineReducers, configureStore, Reducer } from "@reduxjs/toolkit";
 import {
-  persistStore,
-  persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
+  FLUSH, PAUSE,
+  PERSIST, persistReducer, persistStore, PURGE,
+  REGISTER, REHYDRATE
 } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 import { resettableReducer } from "reduxsauce";
 
-import { authReducer, teamReducer, territoryReducer } from "./slices";
 import { authApi, baseApi } from "api";
 import { LOGOUT_ACTION } from "hooks/useLogout.hook";
+import { authReducer, teamReducer, territoryReducer } from "./slices";
 
 const resettable = resettableReducer(LOGOUT_ACTION);
 
@@ -27,7 +22,6 @@ const rootReducers: Reducer = combineReducers({
   auth: resettable(authReducer),
   team: resettable(teamReducer),
   territory: resettable(territoryReducer),
-  [authApi.reducerPath]: authApi.reducer,
   [baseApi.reducerPath]: baseApi.reducer,
 });
 

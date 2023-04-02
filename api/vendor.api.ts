@@ -1,4 +1,4 @@
-import { baseApi, apiUrls } from ".";
+import { apiUrls, baseApi, TAG_TYPES } from ".";
 
 export interface GetAuthUrlRequest {
     appName: string | null;
@@ -89,7 +89,9 @@ export const vendorApi = baseApi.injectEndpoints({
                 };
             },
         }),
-        // TODO: DEPRECATE
+        /**
+         * Gets the pages for a given domain
+         */
         getSearchConsolePages: builder.query<
             GetSearchConsolePagesResponse,
             GetSearchConsolePagesRequest
@@ -97,6 +99,7 @@ export const vendorApi = baseApi.injectEndpoints({
             query: ({ domain }) => ({
                 url: `/google/pages?domain=${encodeURIComponent(domain)}`,
             }),
+            providesTags: [TAG_TYPES.GOOGLE],
             transformResponse: (response: { pages: string[] | string }) => {
                 if (typeof response.pages === "string") {
                     return {
@@ -106,6 +109,9 @@ export const vendorApi = baseApi.injectEndpoints({
                 return response;
             },
         }),
+        /**
+         * Uploads ahrefs report to the server
+         */
         uploadAhrefsReport: builder.mutation<null, AhrefsRequestData>({
             query: (data) => ({
                 url: apiUrls.AHREFS,
@@ -113,6 +119,9 @@ export const vendorApi = baseApi.injectEndpoints({
                 body: data,
             }),
         }),
+        /**
+         * Populates search console reports for all sites
+         */
         populateSearchConsoleReports: builder.mutation<null, null>({
             query: () => ({
                 url: apiUrls.POPULATE_REPORTS,

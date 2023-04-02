@@ -9,6 +9,7 @@ export const typeCheckError = (error: any): boolean | string => {
      *   "details": [],
      * }
      */
+
     if (error instanceof Error) {
         return error.message;
     }
@@ -24,6 +25,25 @@ export const typeCheckError = (error: any): boolean | string => {
                 if ("error" in data) {
                     const { error: errorData } = data;
                     if (typeof errorData === "object" && errorData !== null) {
+
+                        if ("details" in errorData) {
+                            const { details } = errorData;
+                            if (Array.isArray(details) && details.length > 0 && typeof details[0] === "string") {
+                                return details[0];
+                            }
+
+                            if (typeof details === "object" && details !== null) {
+                                const detailValues = Object.values(details)
+                                if (detailValues.length > 0) {
+                                    const firstErrorArr = detailValues[0];
+                                    if (Array.isArray(firstErrorArr) && firstErrorArr.length > 0) {
+                                        return firstErrorArr[0];
+                                    }
+                                }
+                            }
+                        }
+
+
                         if ("message" in errorData) {
                             const { message } = errorData;
                             if (typeof message === "string") {

@@ -19,8 +19,11 @@ export const apiUrls = {
         return 'get-auth-url/';
     },
     // Google
-    GOOGLE_SITES: 'google-sites/',
+    GOOGLE_SITES: 'google/sites',
     POPULATE_REPORTS: 'google/populate-reports',
+    // WordSeek
+    WORD_SEEK: 'engine/word-seek/',
+    WORD_SEEK_RESULTS: (teamUid: string) => `/engine/word-seek/results?team_uid=${teamUid}`,
     // Engine
     MISSING_KEYWORDS: 'engine/missing-keywords-job',
     PEOPLE_ALSO_ASK: 'engine/people-also-ask/',
@@ -34,5 +37,8 @@ export const apiUrls = {
     // Ahrefs
     AHREFS: '/ahrefs/report/',
     PROCESS_AHREFS_DATA: 'engine/process-ahrefs-data/',
-
-}
+    // Payment
+    STRIPE_CHECKOUT_URL: 'payments/stripe/checkout-url',
+    VERIFY: 'payments/stripe/verify',
+    CUSTOMER_PORTAL: 'payments/stripe/customer-portal',
+};
