@@ -1,19 +1,19 @@
-import React from "react";
-import { useFormik } from "formik";
 import {
-  FormControl,
-  Input,
-  FormLabel,
-  Stack,
-  Heading,
-  Link,
   Flex,
+  FormControl,
   FormErrorMessage,
+  FormLabel,
+  Heading,
+  Input,
+  Link,
+  Stack,
   Text,
 } from "@chakra-ui/react";
-import * as Yup from "yup";
-import { PasswordInput } from "components/inputs";
 import { Button } from "components/button";
+import { PasswordInput } from "components/inputs";
+import { useFormik } from "formik";
+import React from "react";
+import * as Yup from "yup";
 
 export interface LoginFormValues {
   email: string;
@@ -65,7 +65,9 @@ export const LoginForm: React.FC<Props> = ({
             placeholder="your@email.com"
             onChange={formik.handleChange}
           />
-          <FormErrorMessage>{formik.errors?.email}</FormErrorMessage>
+          <FormErrorMessage>
+            {formik.errors?.email && formik.dirty.valueOf()}
+          </FormErrorMessage>
         </FormControl>
 
         <FormControl isInvalid={!!formik.errors?.password}>

@@ -14,4 +14,5 @@ export enum ROUTES {
     KEYWORDS = '/keywords',
     REPORTS = '/reports',
     DEVELOPER = '/developer',
+    FAQS = '/faqs',
 }

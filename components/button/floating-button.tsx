@@ -34,9 +34,18 @@ import { typeCheckError } from "utils";
 interface Props {
   teams: Team[];
   fixed?: boolean;
+  enableAddTeam?: boolean;
+  showRefresh?: boolean;
+  title?: string;
 }
 
-export const FloatingButton: React.FC<Props> = ({ teams, fixed }) => {
+export const FloatingButton: React.FC<Props> = ({
+  teams,
+  fixed,
+  enableAddTeam,
+  showRefresh,
+  title = "Select a Team",
+}) => {
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
   );
@@ -85,31 +94,33 @@ export const FloatingButton: React.FC<Props> = ({ teams, fixed }) => {
     <>
       <AddTeamModal isOpen={isOpen} onClose={onClose} />
       <HStack position="relative">
-        <motion.div
-          whileTap={{
-            rotate: -180,
-          }}
-          style={{
-            position: "absolute",
-            left: -20,
-            bottom: 5,
-            cursor: "pointer",
-          }}
-          onClick={refetch}
-          title="Refresh Teams"
-        >
-          <BiRefresh fontSize={18} />
-        </motion.div>
+        {showRefresh && (
+          <motion.div
+            whileTap={{
+              rotate: -180,
+            }}
+            style={{
+              position: "absolute",
+              left: -20,
+              bottom: 5,
+              cursor: "pointer",
+            }}
+            onClick={refetch}
+            title="Refresh Teams"
+          >
+            <BiRefresh fontSize={18} />
+          </motion.div>
+        )}
         <Stack zIndex={101}>
           <Text fontWeight="semibold" fontSize="sm">
-            Select a Team to Work on:
+            {title}
           </Text>
           <Menu>
             <MenuButton
               as={Button}
               rightIcon={<ChevronDownIcon color="black" />}
               size="sm"
-              border="solid 1px black"
+              border="solid 2px black"
             >
               <Flex alignItems="center">
                 <Box w={5} minH={5} m={2} overflow="hidden" position="relative">
@@ -118,6 +129,7 @@ export const FloatingButton: React.FC<Props> = ({ teams, fixed }) => {
                       src={selectedTeam.logo}
                       alt={selectedTeam.name}
                       layout="fill"
+                      fallbackComponent={<AiOutlineTeam />}
                     />
                   ) : (
                     <AiOutlineTeam />
@@ -154,7 +166,12 @@ export const FloatingButton: React.FC<Props> = ({ teams, fixed }) => {
                       position="relative"
                     >
                       {team?.logo ? (
-                        <Image src={team.logo} alt={team.name} layout="fill" />
+                        <Image
+                          src={team.logo}
+                          alt={team.name}
+                          layout="fill"
+                          fallbackComponent={<AiOutlineTeam />}
+                        />
                       ) : (
                         <AiOutlineTeam />
                       )}
@@ -163,13 +180,17 @@ export const FloatingButton: React.FC<Props> = ({ teams, fixed }) => {
                   </MenuItem>
                 ))}
               </Box>
-              <MenuDivider />
-              <MenuItem onClick={onOpen}>
-                <HStack>
-                  <GrAdd />
-                  <Text fontSize="sm">Add a Team</Text>
-                </HStack>
-              </MenuItem>
+              {enableAddTeam && (
+                <>
+                  <MenuDivider />
+                  <MenuItem onClick={onOpen}>
+                    <HStack>
+                      <GrAdd />
+                      <Text fontSize="sm">Add a Team</Text>
+                    </HStack>
+                  </MenuItem>
+                </>
+              )}
             </MenuList>
           </Menu>
         </Stack>

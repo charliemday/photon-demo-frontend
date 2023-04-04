@@ -1,9 +1,8 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
 
+import { baseApi } from 'api/base-query';
 import { LoginFormValues } from 'forms/login';
 import { SignupFormValues } from 'forms/signup';
 import { decamelizeKeys } from 'humps';
-import { baseQuery } from '.';
 
 import { apiUrls } from 'api/urls.api';
 
@@ -23,9 +22,7 @@ interface OAuthProps {
 }
 
 // Define a service using a base URL and expected endpoints
-export const authApi = createApi({
-    reducerPath: 'authApi',
-    baseQuery,
+export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         login: builder.mutation<LoginReturnProps, LoginFormValues>({
             query: (values) => ({

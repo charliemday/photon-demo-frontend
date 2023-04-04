@@ -1,8 +1,8 @@
-import React from "react";
-import { Button as ChakraButton } from "@chakra-ui/react";
+import { Button as ChakraButton, ButtonProps } from "@chakra-ui/react";
 import { BRAND_COLOR } from "config";
+import React from "react";
 
-interface Props extends React.ComponentProps<typeof ChakraButton> {
+interface Props extends ButtonProps {
   children: React.ReactNode;
 }
 

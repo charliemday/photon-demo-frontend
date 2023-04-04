@@ -16,4 +16,14 @@ export interface User {
      * Whether they have connected their search console
      */
     connectedSearchConsole?: boolean;
+    /**
+     * Is the user a member of staff?
+     */
+    isStaff?: boolean;
+    /**
+     * Products the user has access to
+     */
+    products: {
+        [key: string]: string[];
+    }
 }

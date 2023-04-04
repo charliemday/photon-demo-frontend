@@ -1,49 +1,61 @@
-import { Flex, Box, Text } from "@chakra-ui/react";
+import { Badge, Box, Flex, Text } from "@chakra-ui/react";
+import { Avatar } from "components/avatar";
 import { Sidebar } from "components/sidebar";
-import React from "react";
-import { RiDashboard3Line } from "react-icons/ri";
-import { FiLogOut, FiSettings } from "react-icons/fi";
-import { VscGraph } from "react-icons/vsc";
-import { IoNewspaperOutline } from "react-icons/io5";
-import { useRouter } from "next/router";
 import { ROUTES } from "config";
 import { useLogout } from "hooks";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import React from "react";
+import { FiLogOut } from "react-icons/fi";
 
 interface Props {
   children: React.ReactNode;
   title?: string;
+  headerTitle?: string;
 }
 
-const SIDEBAR_WIDTH = "225px";
+const SIDEBAR_WIDTH = "15%";
 
-export const SidebarLayout: React.FC<Props> = ({ children, title }) => {
+export const SidebarLayout: React.FC<Props> = ({
+  children,
+  title,
+  headerTitle,
+}) => {
   const router = useRouter();
   const { logout } = useLogout();
 
   const SIDEBAR_ITEMS = [
     {
-      label: "Dashboard",
-      isActive: true,
-      icon: <RiDashboard3Line />,
+      label: "Word Seek",
+      isActive: router.route === ROUTES.DASHBOARD,
+      icon: <Text fontSize="sm">🚀</Text>,
       onClick: () => router.push(ROUTES.DASHBOARD),
+      badge: (
+        <Badge color="white" variant="solid">
+          Beta
+        </Badge>
+      ),
     },
+    // {
+    //   label: "Performance",
+    //   isActive: router.route === ROUTES.KEYWORDS,
+    //   onClick: () => router.push(ROUTES.KEYWORDS),
+    //   icon: <Text fontSize="sm">🔥</Text>,
+    // },
     {
-      label: "Keywords",
-      onClick: () => router.push(ROUTES.KEYWORDS),
-      icon: <IoNewspaperOutline />,
-    },
-    {
-      label: "Report",
-      onClick: () => router.push(ROUTES.REPORTS),
-      icon: <VscGraph />,
+      label: "FAQs",
+      isActive: router.route === ROUTES.FAQS,
+      onClick: () => router.push(ROUTES.FAQS),
+      icon: <Text fontSize="sm">🧠</Text>,
     },
   ];
 
   const FOOTER_ITEMS = [
     {
       label: "Settings",
-      onClick: () => router.push(ROUTES.DASHBOARD),
-      icon: <FiSettings />,
+      isActive: router.route === ROUTES.SETTINGS,
+      onClick: () => router.push(ROUTES.SETTINGS),
+      icon: <Text fontSize="sm">⚙️</Text>,
     },
     {
       label: "Logout",
@@ -54,6 +66,14 @@ export const SidebarLayout: React.FC<Props> = ({ children, title }) => {
 
   return (
     <Flex>
+      <Box position="absolute" right={5} top={5}>
+        <Avatar />
+      </Box>
+      {headerTitle && (
+        <Head>
+          <title>{headerTitle}</title>
+        </Head>
+      )}
       <Sidebar
         width={SIDEBAR_WIDTH}
         items={SIDEBAR_ITEMS}

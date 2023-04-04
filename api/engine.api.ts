@@ -1,5 +1,6 @@
 import { CompetitorInterface } from "forms/competitors";
-import { decamelizeKeys } from "humps";
+import { camelizeKeys, decamelizeKeys } from "humps";
+import { ConvertToSnakeCase, WordSeekItem } from "types";
 import { apiUrls, baseApi } from ".";
 
 interface ProcessAhrefsDataBody extends FormData { }
@@ -75,9 +76,32 @@ export interface KeywordTheme {
   volume: number;
 }
 
+export interface WordSeekBody {
+  /**
+   * The ID of the team to which the keywords belong
+   */
+  teamId: number;
+  /**
+   * The page to run the WordSeek process on
+   */
+  pages: string[];
+  /**
+   * The site to run the WordSeek process on
+   */
+  site: string;
+}
+
+export interface WordSeekResultsResponse {
+  success?: boolean;
+  data: WordSeekItem[];
+}
+
 // Define a service using a base URL and expected endpoints
 export const engineApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    /**
+     * API for uploading the Ahrefs CSV
+     */
     processAhrefsData: builder.mutation<undefined, ProcessAhrefsDataBody>({
       query: (body) => ({
         url: apiUrls.PROCESS_AHREFS_DATA,
@@ -136,6 +160,30 @@ export const engineApi = baseApi.injectEndpoints({
         body: decamelizeKeys(body),
       })
     }),
+    /**
+     * Runs the WordSeek process
+     */
+    wordSeek: builder.mutation<undefined, WordSeekBody>({
+      query: (body) => ({
+        url: apiUrls.WORD_SEEK,
+        method: "POST",
+        body: decamelizeKeys(body),
+      })
+    }),
+    /**
+     * Fetches the WordSeek results
+     */
+    wordSeekResults: builder.query<WordSeekItem[], string>({
+      query: (teamUid) => ({
+        url: apiUrls.WORD_SEEK_RESULTS(teamUid),
+      }),
+      transformResponse: (response: ConvertToSnakeCase<WordSeekResultsResponse>) => {
+        if (response.success) {
+          return camelizeKeys(response.data) as WordSeekItem[];
+        }
+        return [];
+      }
+    }),
   }),
 });
 
@@ -150,5 +198,7 @@ export const {
   useCreateKeywordThemesMutation,
   useSeedKeywordsMutation,
   useGenerateSeedKeywordsMutation,
-  useGenerateKIInputMutation
+  useGenerateKIInputMutation,
+  useWordSeekMutation,
+  useWordSeekResultsQuery,
 } = engineApi;

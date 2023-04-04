@@ -1,4 +1,4 @@
-import { Stack, Flex, Text, HStack, Box } from "@chakra-ui/react";
+import { Flex, HStack, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 
 interface ItemInterface {
@@ -6,6 +6,7 @@ interface ItemInterface {
   onClick: () => void;
   isActive?: boolean;
   icon?: React.ReactNode;
+  badge?: React.ReactNode;
 }
 
 interface Props {
@@ -15,7 +16,7 @@ interface Props {
 }
 
 export const Sidebar: React.FC<Props> = ({
-  width = "20%",
+  width = "50%",
   items = [],
   footerItems = [],
 }) => (
@@ -26,10 +27,12 @@ export const Sidebar: React.FC<Props> = ({
     position="fixed"
     bgColor="#FAF7F3"
   >
-    <Box h={50} border="solid 1px gray" w={50} m="auto" mt={12} />
-    <Stack py={6} position="relative" overflow="hidden" flex={1}>
+    <Text p={6} px={8} fontWeight="bold" fontSize="lg">
+      baser
+    </Text>
+    <Stack position="relative" overflow="hidden" flex={1}>
       {items?.length > 0 &&
-        items.map(({ label, onClick, icon }, key) => (
+        items.map(({ label, onClick, icon, isActive, badge }, key) => (
           <HStack
             cursor="pointer"
             _hover={{
@@ -40,14 +43,27 @@ export const Sidebar: React.FC<Props> = ({
             py={2}
             onClick={onClick}
           >
-            {icon}
-            <Text fontWeight="semibold">{label}</Text>
+            <Flex
+              border={isActive ? "solid 1px black" : "none"}
+              p={1}
+              borderRadius="md"
+              w={8}
+              h={8}
+              alignItems="center"
+              justifyContent="center"
+              bgColor={isActive ? "purple.500" : "gray.200"}
+              boxShadow="xl"
+            >
+              {icon}
+            </Flex>
+            <Text fontWeight={isActive ? "bold" : "semibold"}>{label}</Text>
+            {badge}
           </HStack>
         ))}
     </Stack>
     <Stack h="full" flex={1} justifyContent="flex-end" pb={12}>
       {footerItems.length > 0 &&
-        footerItems.map(({ label, onClick, icon }, key) => (
+        footerItems.map(({ label, onClick, icon, isActive }, key) => (
           <HStack
             px={6}
             py={2}
@@ -58,9 +74,22 @@ export const Sidebar: React.FC<Props> = ({
             }}
             w="full"
             key={key}
+            onClick={onClick}
           >
-            {icon}
-            <Text fontWeight="semibold">{label}</Text>
+            <Flex
+              border={isActive ? "solid 1px black" : "none"}
+              p={1}
+              borderRadius="md"
+              w={8}
+              h={8}
+              alignItems="center"
+              justifyContent="center"
+              bgColor={isActive ? "purple.500" : "gray.200"}
+              boxShadow="xl"
+            >
+              {icon}
+            </Flex>
+            <Text fontWeight={isActive ? "bold" : "semibold"}>{label}</Text>
           </HStack>
         ))}
     </Stack>
