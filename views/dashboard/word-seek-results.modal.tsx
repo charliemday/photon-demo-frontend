@@ -23,6 +23,7 @@ import { Image } from "components/image";
 import { Modal } from "components/modals";
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { CSVLink } from "react-csv";
+import { AiOutlineTeam } from "react-icons/ai";
 import { BsDownload } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { RootState, Team } from "types";
@@ -116,6 +117,7 @@ export const WordSeekResultsModal: FC<Props> = ({
                 src={activeTeam?.logo || ""}
                 alt={activeTeam?.name}
                 layout="fill"
+                fallbackComponent={<AiOutlineTeam fontSize={32} />}
               />
             </Box>
             <Box>

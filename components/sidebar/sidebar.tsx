@@ -6,6 +6,7 @@ interface ItemInterface {
   onClick: () => void;
   isActive?: boolean;
   icon?: React.ReactNode;
+  badge?: React.ReactNode;
 }
 
 interface Props {
@@ -31,7 +32,7 @@ export const Sidebar: React.FC<Props> = ({
     </Text>
     <Stack position="relative" overflow="hidden" flex={1}>
       {items?.length > 0 &&
-        items.map(({ label, onClick, icon, isActive }, key) => (
+        items.map(({ label, onClick, icon, isActive, badge }, key) => (
           <HStack
             cursor="pointer"
             _hover={{
@@ -56,6 +57,7 @@ export const Sidebar: React.FC<Props> = ({
               {icon}
             </Flex>
             <Text fontWeight={isActive ? "bold" : "semibold"}>{label}</Text>
+            {badge}
           </HStack>
         ))}
     </Stack>

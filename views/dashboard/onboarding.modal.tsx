@@ -106,14 +106,8 @@ const OnboardingStep2: FC<Step2Props> = (props) => {
   const handleSubmit = async () => {
     // Regex remove all https:// or http:// from the url
     const cleanUrl = `https://${formik.values.url.replace(/https?:\/\//g, "")}`;
-
-    console.log(cleanUrl);
-
     // Prefix the url with https://
     formik.setFieldValue("url", cleanUrl);
-
-    console.log(formik.values.url);
-
     await formik.handleSubmit();
   };
 

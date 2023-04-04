@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Badge, Box, Flex, Text } from "@chakra-ui/react";
 import { Avatar } from "components/avatar";
 import { Sidebar } from "components/sidebar";
 import { ROUTES } from "config";
@@ -30,6 +30,11 @@ export const SidebarLayout: React.FC<Props> = ({
       isActive: router.route === ROUTES.DASHBOARD,
       icon: <Text fontSize="sm">🚀</Text>,
       onClick: () => router.push(ROUTES.DASHBOARD),
+      badge: (
+        <Badge color="white" variant="solid">
+          Beta
+        </Badge>
+      ),
     },
     // {
     //   label: "Performance",

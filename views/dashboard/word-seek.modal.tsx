@@ -7,6 +7,7 @@ import {
   ModalHeader,
   Select,
   Skeleton,
+  Stack,
   Text,
   useToast,
 } from "@chakra-ui/react";
@@ -16,9 +17,13 @@ import {
   useGetSearchConsoleSitesQuery,
 } from "api/vendor.api";
 import { Button } from "components/button";
+import { Image } from "components/image";
 import { Modal } from "components/modals";
+import { SECONDARY_COLOR } from "config/brand";
+import { useHasProductAccess } from "hooks";
 import { FC, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import { BarLoader } from "react-spinners";
 import { RootState, Team } from "types";
 import { typeCheckError } from "utils";
 
@@ -35,6 +40,18 @@ export const WordSeekModal: FC<Props> = ({
 }) => {
   const [selectedSite, setSelectedSite] = useState<string | null>(null);
   const [selectedPage, setSelectedPage] = useState<string | null>(null);
+
+  const [wordSeekRunType, setWordSeekRunType] = useState<"page" | "all">(
+    "page"
+  );
+
+  const [showAwaitEmail, setShowAwaitEmail] = useState(false);
+
+  const { hasAccess } = useHasProductAccess();
+
+  useEffect(() => {
+    setShowAwaitEmail(false);
+  }, [isOpen]);
 
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
@@ -71,15 +88,24 @@ export const WordSeekModal: FC<Props> = ({
   }, [selectedSite]);
 
   useEffect(() => {
-    if (!isLoading && isSuccess) {
+    if (!isLoading && isSuccess && wordSeekRunType === "page") {
       toast({
         title: "Success",
-        description: "WordSeek is running",
+        description: "WordSeek run successfully",
         status: "success",
       });
       refetchResult();
       onShowResults(selectedPage || "");
       onClose();
+    }
+
+    if (!isLoading && isSuccess && wordSeekRunType === "all") {
+      toast({
+        title: "Success",
+        description: "WordSeek has started",
+        status: "success",
+      });
+      setShowAwaitEmail(true);
     }
 
     if (!isLoading && isError) {
@@ -93,10 +119,23 @@ export const WordSeekModal: FC<Props> = ({
   }, [isSuccess, isError, error, isLoading, toast]);
 
   const handleRunWordSeek = () => {
+    setWordSeekRunType("page");
     if (!activeTeam?.id || !selectedSite || !selectedPage) return;
     const data = {
       site: selectedSite,
       pages: [selectedPage],
+      teamId: activeTeam?.id,
+    };
+    runWordSeek(data);
+  };
+
+  const handleRunWordSeekAll = () => {
+    setWordSeekRunType("all");
+
+    if (!activeTeam?.id || !selectedSite) return;
+    const data = {
+      site: selectedSite,
+      pages: pagesData?.pages || [],
       teamId: activeTeam?.id,
     };
     runWordSeek(data);
@@ -118,12 +157,52 @@ export const WordSeekModal: FC<Props> = ({
     [pagesData]
   );
 
+  if (showAwaitEmail) {
+    return (
+      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+        <ModalHeader>
+          <HStack>
+            <Text>👀</Text>
+            <Text>WordSeek: Missing Keywords Report</Text>
+          </HStack>
+        </ModalHeader>
+        <ModalBody pt={6}>
+          <Stack>
+            <Text fontWeight="medium" mb={3}>
+              WordSeek is running and the result will be sent to your email
+              address in a couple of minutes
+            </Text>
+
+            <HStack justifyContent="center" spacing={24}>
+              <Box
+                w={16}
+                h={16}
+                borderRadius="md"
+                overflow="hidden"
+                position="relative"
+              >
+                <Image src="/logos/baser.png" alt="Baser Logo" layout="fill" />
+              </Box>
+              <BarLoader color={SECONDARY_COLOR} />
+              <Box>
+                <Text fontSize="4xl">📩</Text>
+              </Box>
+            </HStack>
+          </Stack>
+        </ModalBody>
+        <ModalFooter>
+          <Button onClick={onClose}>Close</Button>
+        </ModalFooter>
+      </Modal>
+    );
+  }
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="2xl">
       <ModalHeader>
         <HStack>
           <Text>👀</Text>
-          <Text>Missing Keyword Report</Text>
+          <Text>WordSeek: Missing Keywords Report</Text>
         </HStack>
       </ModalHeader>
       <ModalBody>
@@ -176,9 +255,16 @@ export const WordSeekModal: FC<Props> = ({
         <Button
           onClick={handleRunWordSeek}
           isDisabled={isButtonDisabled}
-          isLoading={isLoading}
+          isLoading={isLoading && wordSeekRunType === "page"}
         >
-          Run WordSeek
+          Run for single page
+        </Button>
+        <Button
+          onClick={handleRunWordSeekAll}
+          isDisabled={!selectedSite || !hasAccess}
+          isLoading={isLoading && wordSeekRunType === "all"}
+        >
+          {hasAccess ? "Run for all pages" : "Upgrade to run for all pages"}
         </Button>
       </ModalFooter>
     </Modal>

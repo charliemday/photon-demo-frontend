@@ -1,27 +1,27 @@
-import React, { useEffect } from "react";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Stack,
+  Flex,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
-  FormErrorMessage,
-  Flex,
-  Text,
+  InputGroup,
+  InputLeftAddon,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Stack,
   useToast,
-  FormHelperText,
 } from "@chakra-ui/react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import { useCreateTeamMutation, useListTeamsQuery } from "api/team.api";
 import { Button } from "components/button";
+import { useFormik } from "formik";
+import React, { useEffect } from "react";
 import { typeCheckError } from "utils";
+import * as Yup from "yup";
 
 interface Props {
   isOpen: boolean;
@@ -87,43 +87,50 @@ export const AddTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
     },
   });
 
+  const handleSubmit = async () => {
+    // Regex remove all https:// or http:// from the url
+    const cleanUrl = `https://${formik.values.url.replace(/https?:\/\//g, "")}`;
+    // Prefix the url with https://
+    formik.setFieldValue("url", cleanUrl);
+    await formik.handleSubmit();
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Create a new team</ModalHeader>
         <ModalCloseButton />
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <ModalBody>
             <Stack spacing={6} mb={4}>
               <FormControl isInvalid={!!formik.errors?.name}>
                 <FormLabel fontSize="sm">Team Name</FormLabel>
                 <Input
                   name="name"
-                  placeholder="Insert the team name here"
+                  placeholder="Team Name"
                   onChange={formik.handleChange}
                 />
                 <FormErrorMessage>{formik.errors?.name}</FormErrorMessage>
               </FormControl>
               <FormControl isInvalid={!!formik.errors?.url}>
                 <FormLabel fontSize="sm">Team URL</FormLabel>
-                <Input
-                  name="url"
-                  placeholder="Insert their URL here"
-                  onChange={formik.handleChange}
-                />
+                <InputGroup>
+                  <InputLeftAddon>{`https://`}</InputLeftAddon>
+                  <Input
+                    name="url"
+                    placeholder="Team URL"
+                    onChange={formik.handleChange}
+                  />
+                </InputGroup>
                 <FormErrorMessage>{formik.errors?.url}</FormErrorMessage>
-                <FormHelperText
-                  fontSize="xs"
-                  pl={2}
-                >{`We'll get their logo from the URL provided`}</FormHelperText>
               </FormControl>
             </Stack>
           </ModalBody>
           <ModalFooter>
             <Flex alignItems="center" justifyContent="flex-end">
-              <Button size="sm" type="submit" isLoading={isLoading}>
-                Create
+              <Button type="submit" isLoading={isLoading}>
+                Create Team
               </Button>
             </Flex>
           </ModalFooter>
