@@ -7,6 +7,11 @@ export const Avatar: FC = () => {
 
   const fullName = `${userDetails?.firstName} ${userDetails?.lastName}`;
   const initials = `${userDetails?.firstName[0]}${userDetails?.lastName[0]}`;
+
+  if (!userDetails) {
+    return null;
+  }
+
   return (
     <HStack>
       <Text fontSize="lg">{fullName}</Text>

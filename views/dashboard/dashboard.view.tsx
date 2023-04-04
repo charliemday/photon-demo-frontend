@@ -5,7 +5,7 @@ import {
   DashboardCard,
   GscConnectModal,
   OnboardingModal,
-  StripeRedirectModal,
+  PricingModal,
   WordSeekModal,
   WordSeekResultsModal,
 } from ".";
@@ -13,6 +13,7 @@ import {
 import { useWordSeekResultsQuery } from "api/engine.api";
 import { useUserDetailsQuery } from "api/user.api";
 import { FloatingButton } from "components/button";
+import { useHasProductAccess } from "hooks";
 import { useSelector } from "react-redux";
 import { RootState, Team } from "types";
 
@@ -25,6 +26,8 @@ export const DashboardView: FC<Props> = () => {
   const { data: userDetails } = useUserDetailsQuery(undefined);
   const [defaultPage, setDefaultPage] = useState<string | null>(null);
 
+  const { hasAccess: hasWordSeekAccess } = useHasProductAccess();
+
   const {
     isOpen: isWordSeekOpen,
     onClose: onWordSeekClose,
@@ -36,14 +39,14 @@ export const DashboardView: FC<Props> = () => {
     onToggle: onWordSeekResultsToggle,
   } = useDisclosure();
   const {
-    isOpen: isPaymentRedirectOpen,
-    onClose: onPaymentRedirectClose,
-    onToggle: onPaymentRedirectToggle,
-  } = useDisclosure();
-  const {
     isOpen: isOnboardingModalOpen,
     onClose: onOnboardingModalClose,
     onToggle: onOnboardingModalToggle,
+  } = useDisclosure();
+  const {
+    isOpen: isPricingModalOpen,
+    onClose: onPricingModalClose,
+    onToggle: onPricingModalToggle,
   } = useDisclosure();
 
   useEffect(() => {
@@ -82,7 +85,6 @@ export const DashboardView: FC<Props> = () => {
           buttonLabel="Get Started"
           emoji="👀"
         />
-        {/* <GscConnectCard /> */}
         {wordSeekResults && wordSeekResults.length > 0 && (
           <DashboardCard
             onClick={onWordSeekResultsToggle}
@@ -92,13 +94,15 @@ export const DashboardView: FC<Props> = () => {
             emoji="🏁"
           />
         )}
-        <DashboardCard
-          onClick={onPaymentRedirectToggle}
-          title={"Upgrade"}
-          description="You can do one free page per month and one free team. Upgrade to get unlimited pages and unlimited teams."
-          buttonLabel="Upgrade"
-          emoji="💰"
-        />
+        {!hasWordSeekAccess && (
+          <DashboardCard
+            onClick={onPricingModalToggle}
+            title={"Upgrade"}
+            description="You can do one free page per month and one free team. Upgrade to get unlimited pages and unlimited teams."
+            buttonLabel="Upgrade"
+            emoji="💰"
+          />
+        )}
       </Grid>
       {userDetails?.connectedSearchConsole ? (
         <WordSeekModal
@@ -115,14 +119,11 @@ export const DashboardView: FC<Props> = () => {
         onClose={onWordSeekResultsClose}
         defaultPage={defaultPage}
       />
-      <StripeRedirectModal
-        isOpen={isPaymentRedirectOpen}
-        onClose={onPaymentRedirectClose}
-      />
       <OnboardingModal
         isOpen={isOnboardingModalOpen}
         onClose={onOnboardingModalClose}
       />
+      <PricingModal isOpen={isPricingModalOpen} onClose={onPricingModalClose} />
     </Stack>
   );
 };

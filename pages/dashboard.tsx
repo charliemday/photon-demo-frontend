@@ -11,12 +11,13 @@ const Dashboard: React.FC<Props> = () => {
   const firstName = user?.firstName;
   const lastName = user?.lastName;
 
+  const fullName = user ? `${firstName} ${lastName}` : "";
+
   return (
     <SidebarLayout
       headerTitle="Baser | Dashboard"
-      title={`Welcome your SEO Dashboard, ${firstName} ${lastName}`}
+      title={`Welcome your SEO Dashboard, ${fullName}`}
     >
-      {" "}
        
       <DashboardView />
     </SidebarLayout>

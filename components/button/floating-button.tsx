@@ -120,7 +120,7 @@ export const FloatingButton: React.FC<Props> = ({
               as={Button}
               rightIcon={<ChevronDownIcon color="black" />}
               size="sm"
-              border="solid 1.5px black"
+              border="solid 2px black"
             >
               <Flex alignItems="center">
                 <Box w={5} minH={5} m={2} overflow="hidden" position="relative">
@@ -129,6 +129,7 @@ export const FloatingButton: React.FC<Props> = ({
                       src={selectedTeam.logo}
                       alt={selectedTeam.name}
                       layout="fill"
+                      fallbackComponent={<AiOutlineTeam />}
                     />
                   ) : (
                     <AiOutlineTeam />
@@ -165,7 +166,12 @@ export const FloatingButton: React.FC<Props> = ({
                       position="relative"
                     >
                       {team?.logo ? (
-                        <Image src={team.logo} alt={team.name} layout="fill" />
+                        <Image
+                          src={team.logo}
+                          alt={team.name}
+                          layout="fill"
+                          fallbackComponent={<AiOutlineTeam />}
+                        />
                       ) : (
                         <AiOutlineTeam />
                       )}

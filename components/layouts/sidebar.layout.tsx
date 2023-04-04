@@ -26,21 +26,21 @@ export const SidebarLayout: React.FC<Props> = ({
 
   const SIDEBAR_ITEMS = [
     {
-      label: "Dashboard",
+      label: "Word Seek",
       isActive: router.route === ROUTES.DASHBOARD,
       icon: <Text fontSize="sm">🚀</Text>,
       onClick: () => router.push(ROUTES.DASHBOARD),
     },
-    {
-      label: "Performance",
-      isActive: router.route === ROUTES.KEYWORDS,
-      onClick: () => router.push(ROUTES.KEYWORDS),
-      icon: <Text fontSize="sm">🔥</Text>,
-    },
+    // {
+    //   label: "Performance",
+    //   isActive: router.route === ROUTES.KEYWORDS,
+    //   onClick: () => router.push(ROUTES.KEYWORDS),
+    //   icon: <Text fontSize="sm">🔥</Text>,
+    // },
     {
       label: "FAQs",
-      isActive: router.route === ROUTES.REPORTS,
-      onClick: () => router.push(ROUTES.REPORTS),
+      isActive: router.route === ROUTES.FAQS,
+      onClick: () => router.push(ROUTES.FAQS),
       icon: <Text fontSize="sm">🧠</Text>,
     },
   ];

@@ -20,4 +20,10 @@ export interface User {
      * Is the user a member of staff?
      */
     isStaff?: boolean;
+    /**
+     * Products the user has access to
+     */
+    products: {
+        [key: string]: string[];
+    }
 }

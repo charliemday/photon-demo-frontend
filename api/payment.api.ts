@@ -25,7 +25,7 @@ export interface CreateCustomerPortalBody {
 export const paymentApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         /**
-         * Get checkout url
+         * Get checkout url (unused for now as we used the Stripe embedded checkout)
          */
         getCheckoutUrl: builder.mutation<CheckoutResponse, CheckoutQueryParams>({
             query: (body) => ({

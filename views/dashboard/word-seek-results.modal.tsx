@@ -1,5 +1,6 @@
 import {
   Box,
+  Divider,
   Flex,
   HStack,
   ModalBody,
@@ -17,9 +18,12 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useWordSeekResultsQuery } from "api/engine.api";
+import { Button } from "components/button";
+import { Image } from "components/image";
 import { Modal } from "components/modals";
-import { FC, useEffect, useMemo, useState } from "react";
-import { AiOutlineCopy } from "react-icons/ai";
+import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { CSVLink } from "react-csv";
+import { BsDownload } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { RootState, Team } from "types";
 
@@ -36,6 +40,7 @@ export const WordSeekResultsModal: FC<Props> = ({
 }) => {
   const [selectedPage, setSelectedPage] = useState<string | null>(defaultPage);
 
+  const csvData = useRef<any>([]);
   const toast = useToast();
 
   const activeTeam: Team = useSelector(
@@ -65,18 +70,6 @@ export const WordSeekResultsModal: FC<Props> = ({
     }
   }, [wordSeekResults, selectedPage]);
 
-  const copyPageToClipboard = () => {
-    if (selectedPage) {
-      navigator.clipboard.writeText(selectedPage);
-      toast({
-        title: "Copied to clipboard",
-        status: "info",
-        duration: 2000,
-        isClosable: true,
-      });
-    }
-  };
-
   const pages = wordSeekResults?.map((res) => res.page);
 
   const tableData = useMemo(() => {
@@ -89,26 +82,49 @@ export const WordSeekResultsModal: FC<Props> = ({
     return [];
   }, [wordSeekResults, selectedPage]);
 
+  const buildExportData = (): string[][] => {
+    const results = [["Page", "Keyword", "Clicks", "Impressions"]];
+    if (wordSeekResults?.length) {
+      wordSeekResults.forEach((page) => {
+        page.missingKeywords.forEach((keyword) => {
+          results.push([
+            page.page,
+            keyword.keyword,
+            keyword.clicks.toString(),
+            keyword.impressions.toString(),
+          ]);
+        });
+      });
+    }
+
+    return results;
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl">
       <ModalHeader>
-        <HStack>
-          <Text>🏁</Text>
-          <Text>Your Word Seek Results</Text>
-        </HStack>
-      </ModalHeader>
-      <ModalBody>
-        <TableContainer h="50vh" overflowY="auto">
-          <Flex alignItems="center" justifyContent="space-between" pb={6}>
-            <Text fontSize="sm" fontWeight="bold">{`${
-              tableData.length
-            } missing keyword${
-              tableData.length > 1 ? "s" : ""
-            } found for this page`}</Text>
-            <HStack>
+        <HStack justifyContent="space-between" alignItems="flex-end">
+          <HStack spacing={4}>
+            <Box
+              w={12}
+              h={12}
+              position="relative"
+              borderRadius="md"
+              overflow="hidden"
+            >
+              <Image
+                src={activeTeam?.logo || ""}
+                alt={activeTeam?.name}
+                layout="fill"
+              />
+            </Box>
+            <Box>
+              <Text>{activeTeam?.name}</Text>
               <Select
                 size="sm"
                 onChange={(e) => setSelectedPage(e.target.value)}
+                p={0}
+                cursor="pointer"
               >
                 {pages?.map((page, index) => (
                   <option key={index} value={page}>
@@ -116,19 +132,37 @@ export const WordSeekResultsModal: FC<Props> = ({
                   </option>
                 ))}
               </Select>
-              <Box
-                cursor="pointer"
-                opacity={selectedPage ? 0.75 : 0}
-                _hover={{
-                  opacity: selectedPage ? 1 : 0,
-                  color: "blue.500",
-                }}
-                title="Copy to clipboard"
-                onClick={copyPageToClipboard}
-              >
-                <AiOutlineCopy fontSize={18} />
+            </Box>
+          </HStack>
+          <HStack>
+            <CSVLink
+              data={buildExportData()}
+              filename="word-seek-results.csv"
+              ref={(r: any) => (csvData.current = r)}
+            />
+            <Button
+              onClick={() => {
+                csvData.current.link.click();
+              }}
+              size="sm"
+            >
+              CSV{" "}
+              <Box ml={2}>
+                <BsDownload />
               </Box>
-            </HStack>
+            </Button>
+          </HStack>
+        </HStack>
+      </ModalHeader>
+      <ModalBody>
+        <Divider mb={6} />
+        <TableContainer h="50vh" overflowY="auto">
+          <Flex alignItems="center" justifyContent="space-between" pb={6}>
+            <Text fontSize="sm" fontWeight="bold">{`${
+              tableData.length
+            } missing keyword${
+              tableData.length > 1 ? "s" : ""
+            } found for this page`}</Text>
           </Flex>
           <Table variant="striped" size="sm">
             <Thead>

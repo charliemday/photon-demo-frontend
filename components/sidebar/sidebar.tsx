@@ -26,10 +26,10 @@ export const Sidebar: React.FC<Props> = ({
     position="fixed"
     bgColor="#FAF7F3"
   >
-    <Text p={6} fontWeight="semibold">
+    <Text p={6} px={8} fontWeight="bold" fontSize="lg">
       baser
     </Text>
-    <Stack py={6} position="relative" overflow="hidden" flex={1}>
+    <Stack position="relative" overflow="hidden" flex={1}>
       {items?.length > 0 &&
         items.map(({ label, onClick, icon, isActive }, key) => (
           <HStack
@@ -55,7 +55,7 @@ export const Sidebar: React.FC<Props> = ({
             >
               {icon}
             </Flex>
-            <Text fontWeight={isActive ? "semibold" : "normal"}>{label}</Text>
+            <Text fontWeight={isActive ? "bold" : "semibold"}>{label}</Text>
           </HStack>
         ))}
     </Stack>
@@ -87,7 +87,7 @@ export const Sidebar: React.FC<Props> = ({
             >
               {icon}
             </Flex>
-            <Text fontWeight={isActive ? "semibold" : "normal"}>{label}</Text>
+            <Text fontWeight={isActive ? "bold" : "semibold"}>{label}</Text>
           </HStack>
         ))}
     </Stack>

@@ -1,10 +1,12 @@
 import {
+  Box,
+  Flex,
   HStack,
   ModalBody,
   ModalFooter,
   ModalHeader,
   Select,
-  Stack,
+  Skeleton,
   Text,
   useToast,
 } from "@chakra-ui/react";
@@ -15,7 +17,7 @@ import {
 } from "api/vendor.api";
 import { Button } from "components/button";
 import { Modal } from "components/modals";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, Team } from "types";
 import { typeCheckError } from "utils";
@@ -44,17 +46,21 @@ export const WordSeekModal: FC<Props> = ({
 
   const toast = useToast();
 
-  const { data: sites } = useGetSearchConsoleSitesQuery(undefined);
+  const { data: sites, isLoading: isSitesLoading } =
+    useGetSearchConsoleSitesQuery(undefined);
 
-  const { data: pagesData, refetch: refetchPages } =
-    useGetSearchConsolePagesQuery(
-      {
-        domain: selectedSite || "",
-      },
-      {
-        skip: !selectedSite,
-      }
-    );
+  const {
+    data: pagesData,
+    refetch: refetchPages,
+    isLoading: isPagesLoading,
+  } = useGetSearchConsolePagesQuery(
+    {
+      domain: selectedSite || "",
+    },
+    {
+      skip: !selectedSite,
+    }
+  );
 
   const [runWordSeek, { isLoading, isSuccess, isError, error }] =
     useWordSeekMutation();
@@ -98,6 +104,20 @@ export const WordSeekModal: FC<Props> = ({
 
   const isButtonDisabled = !selectedSite || !selectedPage;
 
+  const siteOptionData = useMemo(
+    () => sites?.map((site) => ({ value: site, label: site })) || [],
+    [sites]
+  );
+
+  const pagesOptionData = useMemo(
+    () =>
+      pagesData?.pages?.map((page) => ({
+        value: page,
+        label: page,
+      })) || [],
+    [pagesData]
+  );
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="2xl">
       <ModalHeader>
@@ -107,31 +127,50 @@ export const WordSeekModal: FC<Props> = ({
         </HStack>
       </ModalHeader>
       <ModalBody>
-        <Stack>
-          <Text fontWeight="medium">Select a website</Text>
-          <Select
-            placeholder="Select option"
-            onChange={(e) => setSelectedSite(e.target.value)}
-          >
-            {sites?.map((site, idx) => (
-              <option value={site} key={idx}>
-                {site}
-              </option>
-            ))}
-          </Select>
+        <Box w="full">
+          <Text fontWeight="medium" mb={3}>
+            Select a website
+          </Text>
+          <Box mb={6}>
+            {isSitesLoading ? (
+              <Flex justifyContent="center" w="full">
+                <Skeleton w="full" h={8} borderRadius="md" />
+              </Flex>
+            ) : (
+              <Select
+                onChange={(e) => setSelectedSite(e.target.value)}
+                placeholder="Select a site"
+              >
+                {siteOptionData.map((site) => (
+                  <option key={site.value} value={site.value}>
+                    {site.label}
+                  </option>
+                ))}
+              </Select>
+            )}
+          </Box>
 
-          <Text fontWeight="medium">Select a page on the website</Text>
-          <Select
-            placeholder="Select option"
-            onChange={(e) => setSelectedPage(e.target.value)}
-          >
-            {pagesData?.pages?.map((page, idx) => (
-              <option value={page} key={idx}>
-                {page}
-              </option>
-            ))}
-          </Select>
-        </Stack>
+          <Text fontWeight="medium" mb={3}>
+            Select a page on the website
+          </Text>
+
+          {isPagesLoading ? (
+            <Flex justifyContent="center" w="full">
+              <Skeleton w="full" h={8} borderRadius="md" />
+            </Flex>
+          ) : (
+            <Select
+              placeholder="Select a page"
+              onChange={(e) => setSelectedPage(e.target.value)}
+            >
+              {pagesOptionData.map((page) => (
+                <option key={page.value} value={page.value}>
+                  {page.label}
+                </option>
+              ))}
+            </Select>
+          )}
+        </Box>
       </ModalBody>
       <ModalFooter>
         <Button

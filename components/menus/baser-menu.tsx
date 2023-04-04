@@ -10,6 +10,7 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Text,
 } from "@chakra-ui/react";
 import { BsChevronDown as ChevronDownIcon } from "react-icons/bs";
 
@@ -24,13 +25,15 @@ interface Data {
 interface Props {
   onChange: (value: string) => void;
   data: Data[];
-  defaultValue?: Data;
+  defaultValue?: Data | null;
+  searchPlaceholder?: string;
 }
 
 export const BaserMenu: React.FC<Props> = ({
   onChange,
   data,
   defaultValue,
+  searchPlaceholder,
 }) => {
   const [searchResults, setSearchResults] = useState<Data[]>(data);
   const [selectedItem, setSelectedItem] = useState<Data | null>(
@@ -62,24 +65,27 @@ export const BaserMenu: React.FC<Props> = ({
   }, 500);
 
   return (
-    <Menu size="sm">
+    <Menu size="sm" matchWidth>
       <MenuButton
         size="sm"
         as={ChakraButton}
         rightIcon={<ChevronDownIcon />}
         variant="outline"
+        w="full"
       >
-        {selectedItem?.label || "Select Item"}
+        <Text overflow="hidden" textOverflow="ellipsis">
+          {selectedItem?.label || "Select Item"}
+        </Text>
       </MenuButton>
       <MenuList fontSize="sm">
         <HStack px={2}>
-          <Box opacity={0.5}>🔍</Box>
           <Input
             fontSize="sm"
             placeholder={
-              data.length
+              searchPlaceholder ||
+              (data.length
                 ? `${data.length} item${data.length > 1 ? "s..." : "..."}`
-                : `No data Found`
+                : `No data Found`)
             }
             onChange={(e) => handleSearch(e.target.value)}
           />
