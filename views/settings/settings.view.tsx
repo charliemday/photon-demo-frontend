@@ -11,6 +11,7 @@ import {
 import { useCreateCustomerPortalMutation } from "api/payment.api";
 import { useDeleteAccountMutation, useUserDetailsQuery } from "api/user.api";
 import { ConfirmationModal } from "components/modals";
+import { BRAND_COLOR, SUPPORT_EMAIL } from "config";
 import { BASE_FRONTEND_URL } from "config/urls";
 import { useLogout } from "hooks";
 import React from "react";
@@ -89,7 +90,7 @@ export const SettingsView: React.FC<Props> = () => {
 
   return (
     <>
-      <Stack spacing={12} minW="50vw" py={6}>
+      <Stack spacing={16} minW="50vw" py={6}>
         <Stack spacing={6}>
           {renderHeading("📝 Account Details")}
           {renderLabelValue("Name", fullName || "")}
@@ -100,9 +101,10 @@ export const SettingsView: React.FC<Props> = () => {
           {renderHeading("💸 Subscription Settings")}
           <Box>
             <Button
-              variant="outline"
-              colorScheme="purple"
-              size="sm"
+              variant="solid"
+              color="white"
+              bgColor={BRAND_COLOR}
+              _hover={{ bgColor: BRAND_COLOR, boxShadow: "lg" }}
               onClick={handleCreateCustomerPortal}
               isLoading={isCreatingCustomerPortal}
             >
@@ -111,13 +113,28 @@ export const SettingsView: React.FC<Props> = () => {
           </Box>
         </Stack>
         <Stack spacing={6}>
+          {renderHeading("📨 Contact Us")}
+          <Box>
+            <Button
+              color={BRAND_COLOR}
+              _hover={{ color: BRAND_COLOR, boxShadow: "lg" }}
+              borderColor={BRAND_COLOR}
+              borderWidth="2px"
+              variant="outline"
+              onClick={() => window.open(`mailto:${SUPPORT_EMAIL}`)}
+            >
+              Contact Us
+            </Button>
+          </Box>
+        </Stack>
+        <Stack spacing={6} border="solid 2px red" p={4} borderRadius="xl">
           {renderHeading("☢️ Danger Zone")}
           <Box>
             <Button
               colorScheme="red"
-              size="sm"
               variant="outline"
               onClick={onOpen}
+              borderWidth="2px"
             >
               Delete Account
             </Button>

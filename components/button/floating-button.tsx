@@ -123,7 +123,14 @@ export const FloatingButton: React.FC<Props> = ({
               border="solid 2px black"
             >
               <Flex alignItems="center">
-                <Box w={5} minH={5} m={2} overflow="hidden" position="relative">
+                <Box
+                  w={5}
+                  minH={5}
+                  m={2}
+                  overflow="hidden"
+                  position="relative"
+                  borderRadius="sm"
+                >
                   {selectedTeam?.logo ? (
                     <Image
                       src={selectedTeam.logo}
@@ -164,6 +171,7 @@ export const FloatingButton: React.FC<Props> = ({
                       mx={4}
                       overflow="hidden"
                       position="relative"
+                      borderRadius="sm"
                     >
                       {team?.logo ? (
                         <Image

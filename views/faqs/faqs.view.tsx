@@ -8,6 +8,8 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { PRIVACY_POLICY_URL, SUPPORT_EMAIL } from "config";
+import Link from "next/link";
 import React from "react";
 
 interface Props {}
@@ -16,14 +18,27 @@ const faqs = [
   {
     question: "What is WordSeek?",
     answer:
-      "WordSeek is a tool that helps you find the keywords that your page is ranking for but do not appear on your site",
+      "WordSeek is a tool that helps you find the keywords that your page is ranking for but do not appear on the page",
   },
   {
     question: "Who are we?",
     answer: (
       <Text>
-        {`We're baser, we automate your SEO - check us out at `}
-        <a href="https://getbaser.com">https://getbaser.com</a>
+        {`We're Gigi, Mark, and Charlie and we're Baser, we automate your SEO - check us out at `}
+        <Link href="https://getbaser.com">https://getbaser.com</Link>
+      </Text>
+    ),
+  },
+  {
+    question: "How do I get in contact?",
+    answer: `Contact us at ${SUPPORT_EMAIL}`,
+  },
+  {
+    question: "Where is your privacy policy?",
+    answer: (
+      <Text>
+        {`You can find our privacy policy at `}
+        <a href={PRIVACY_POLICY_URL}>{PRIVACY_POLICY_URL}</a>
       </Text>
     ),
   },

@@ -9,7 +9,7 @@ import React from "react";
 import { FiLogOut } from "react-icons/fi";
 
 interface Props {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   title?: string;
   headerTitle?: string;
 }
@@ -36,12 +36,6 @@ export const SidebarLayout: React.FC<Props> = ({
         </Badge>
       ),
     },
-    // {
-    //   label: "Performance",
-    //   isActive: router.route === ROUTES.KEYWORDS,
-    //   onClick: () => router.push(ROUTES.KEYWORDS),
-    //   icon: <Text fontSize="sm">🔥</Text>,
-    // },
     {
       label: "FAQs",
       isActive: router.route === ROUTES.FAQS,

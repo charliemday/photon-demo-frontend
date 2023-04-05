@@ -1,20 +1,22 @@
-import React from "react";
-import { useFormik } from "formik";
 import {
-  FormControl,
-  Input,
-  FormLabel,
-  Stack,
-  Heading,
-  Link,
+  Checkbox,
   Flex,
-  HStack,
+  FormControl,
   FormErrorMessage,
+  FormLabel,
+  Heading,
+  HStack,
+  Input,
+  Link,
+  Stack,
   Text,
 } from "@chakra-ui/react";
-import * as Yup from "yup";
-import { PasswordInput } from "components/inputs";
 import { Button } from "components/button";
+import { PasswordInput } from "components/inputs";
+import { PRIVACY_POLICY_URL, TERMS_OF_SERVICE_URL } from "config";
+import { useFormik } from "formik";
+import { FC, useState } from "react";
+import * as Yup from "yup";
 
 export interface SignupFormValues {
   firstName: string;
@@ -43,12 +45,14 @@ const SignupSchema = Yup.object().shape({
     .required("Confirm Password Required"),
 });
 
-export const SignupForm: React.FC<Props> = ({
+export const SignupForm: FC<Props> = ({
   onLinkClick,
   handleSignup,
   isLoading,
   formErrorMsg,
 }) => {
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
+
   const formik = useFormik<SignupFormValues>({
     initialValues: {
       firstName: "",
@@ -66,6 +70,8 @@ export const SignupForm: React.FC<Props> = ({
       }
     },
   });
+
+  const isButtonDisabled = !hasAcceptedTerms || !formik.isValid;
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -124,6 +130,17 @@ export const SignupForm: React.FC<Props> = ({
           />
           <FormErrorMessage>{formik.errors?.confirmPassword}</FormErrorMessage>
         </FormControl>
+        <HStack>
+          <Checkbox
+            isChecked={hasAcceptedTerms}
+            onChange={(e) => setHasAcceptedTerms(e.target.checked)}
+          />
+          <Text>
+            I agree to the{" "}
+            <Link href={TERMS_OF_SERVICE_URL}>Terms of Service</Link> and the{" "}
+            <Link href={PRIVACY_POLICY_URL}>Privacy Policy</Link>
+          </Text>
+        </HStack>
       </Stack>
 
       {formErrorMsg && (
@@ -135,7 +152,12 @@ export const SignupForm: React.FC<Props> = ({
       )}
 
       <Flex alignItems="center" justifyContent="space-between">
-        <Button colorScheme="purple" type="submit" isLoading={isLoading}>
+        <Button
+          colorScheme="purple"
+          type="submit"
+          isLoading={isLoading}
+          isDisabled={isButtonDisabled}
+        >
           Signup
         </Button>
         <Link textColor="blue.400" onClick={onLinkClick}>

@@ -1,55 +1,33 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { Image } from "components/image";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { useLoginMutation, useSignupMutation } from "api/auth.api";
-import { useUserDetailsQuery } from "api/user.api";
 import { LoginForm, LoginFormValues } from "forms/login";
 import { SignupForm, SignupFormValues } from "forms/signup";
 
-import { ROUTES } from "config/routes";
+import { BackgroundView } from "views/background";
 
 const IMAGE_RATIO = 1210 / 870;
 const IMAGE_WIDTH = 400;
 const IMAGE_HEIGHT = IMAGE_WIDTH * IMAGE_RATIO;
 
 export const WelcomeView: React.FC = () => {
-  const router = useRouter();
-
   const [authView, setAuthView] = useState<"login" | "signup">("login");
 
   const [loginError, setLoginError] = useState<string | null>(null);
   const [signupError, setSignupError] = useState<string | null>(null);
 
-  const [fetchUserDetails, setFetchUserDetails] = useState(false);
+  const [showBackground, setShowBackground] = useState(false);
 
   const [login, { isLoading: isLoginLoading }] = useLoginMutation();
   const [signup, { isLoading: isSignupLoading }] = useSignupMutation();
-  const {
-    data: userDetails,
-    isLoading: isFetchingUserDetails,
-    isSuccess,
-  } = useUserDetailsQuery(undefined, {
-    skip: !fetchUserDetails,
-  });
-
-  useEffect(() => {
-    if (isSuccess && userDetails) {
-      if (userDetails.isStaff) {
-        router.push(ROUTES.AUTOMATION);
-      } else {
-        router.push(ROUTES.DASHBOARD);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccess]);
 
   const handleSignup = async (values: SignupFormValues) => {
     await signup(values)
       .unwrap()
       .then(() => {
-        setFetchUserDetails(true);
+        setShowBackground(true);
       })
       .catch(() => setSignupError("Unable to signup with details"));
   };
@@ -57,11 +35,15 @@ export const WelcomeView: React.FC = () => {
   const handleLogin = async (values: LoginFormValues) => {
     await login(values)
       .unwrap()
-      .then((res) => {
-        setFetchUserDetails(true);
+      .then(() => {
+        setShowBackground(true);
       })
       .catch(() => setLoginError("Unable to login with credentials"));
   };
+
+  if (showBackground) {
+    return <BackgroundView />;
+  }
 
   return (
     <Flex h="100vh">
@@ -78,14 +60,14 @@ export const WelcomeView: React.FC = () => {
               <LoginForm
                 onLinkClick={() => setAuthView("signup")}
                 handleLogin={handleLogin}
-                isLoading={isLoginLoading || isFetchingUserDetails}
+                isLoading={isLoginLoading}
                 formErrorMsg={loginError}
               />
             ) : (
               <SignupForm
                 onLinkClick={() => setAuthView("login")}
                 handleSignup={handleSignup}
-                isLoading={isSignupLoading || isFetchingUserDetails}
+                isLoading={isSignupLoading}
                 formErrorMsg={signupError}
               />
             )}

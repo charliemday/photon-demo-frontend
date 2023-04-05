@@ -70,6 +70,8 @@ export const WordSeekModal: FC<Props> = ({
     data: pagesData,
     refetch: refetchPages,
     isLoading: isPagesLoading,
+    isError: isPagesError,
+    error: pagesError,
   } = useGetSearchConsolePagesQuery(
     {
       domain: selectedSite || "",
@@ -115,8 +117,26 @@ export const WordSeekModal: FC<Props> = ({
         status: "error",
       });
     }
+
+    if (!isPagesLoading && isPagesError) {
+      toast({
+        title: "Error",
+        description: typeCheckError(pagesError) || "Something went wrong",
+        status: "error",
+      });
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccess, isError, error, isLoading, toast]);
+  }, [
+    isSuccess,
+    isError,
+    error,
+    isLoading,
+    toast,
+    isPagesError,
+    pagesError,
+    isPagesLoading,
+  ]);
 
   const handleRunWordSeek = () => {
     setWordSeekRunType("page");
