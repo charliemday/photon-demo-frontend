@@ -109,6 +109,10 @@ export const DashboardView: FC<Props> = () => {
           isOpen={isWordSeekOpen}
           onClose={onWordSeekClose}
           onShowResults={handleShowResults}
+          onUpgrade={() => {
+            onWordSeekClose();
+            onPricingModalToggle();
+          }}
         />
       ) : (
         <GscConnectModal isOpen={isWordSeekOpen} onClose={onWordSeekClose} />

@@ -31,12 +31,14 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onShowResults: (page: string) => void;
+  onUpgrade?: () => void;
 }
 
 export const WordSeekModal: FC<Props> = ({
   isOpen,
   onClose,
   onShowResults,
+  onUpgrade,
 }) => {
   const [selectedSite, setSelectedSite] = useState<string | null>(null);
   const [selectedPage, setSelectedPage] = useState<string | null>(null);
@@ -150,15 +152,20 @@ export const WordSeekModal: FC<Props> = ({
   };
 
   const handleRunWordSeekAll = () => {
-    setWordSeekRunType("all");
+    if (!hasAccess) {
+      // If the user doesn't have access we should direct them to the Upgrade modal
+      if (onUpgrade) onUpgrade();
+    } else {
+      setWordSeekRunType("all");
 
-    if (!activeTeam?.id || !selectedSite) return;
-    const data = {
-      site: selectedSite,
-      pages: pagesData?.pages || [],
-      teamId: activeTeam?.id,
-    };
-    runWordSeek(data);
+      if (!activeTeam?.id || !selectedSite) return;
+      const data = {
+        site: selectedSite,
+        pages: pagesData?.pages || [],
+        teamId: activeTeam?.id,
+      };
+      runWordSeek(data);
+    }
   };
 
   const isButtonDisabled = !selectedSite || !selectedPage;
@@ -281,7 +288,7 @@ export const WordSeekModal: FC<Props> = ({
         </Button>
         <Button
           onClick={handleRunWordSeekAll}
-          isDisabled={!selectedSite || !hasAccess}
+          isDisabled={!selectedPage}
           isLoading={isLoading && wordSeekRunType === "all"}
         >
           {hasAccess ? "Run for all pages" : "Upgrade to run for all pages"}

@@ -117,7 +117,9 @@ const OnboardingStep2: FC<Step2Props> = (props) => {
       <ModalCloseButton />
       <ModalBody>
         <Stack>
-          <FormControl isInvalid={!!formik.errors?.name}>
+          <FormControl
+            isInvalid={!!formik.errors?.name && formik.touched?.name}
+          >
             <Input
               name="name"
               placeholder="Site Name"
@@ -125,7 +127,7 @@ const OnboardingStep2: FC<Step2Props> = (props) => {
             />
             <FormErrorMessage>{formik.errors?.name}</FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={!!formik.errors?.url}>
+          <FormControl isInvalid={!!formik.errors?.url && formik.touched?.url}>
             <InputGroup>
               <InputLeftAddon>{`https://`}</InputLeftAddon>
               <Input

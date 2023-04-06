@@ -79,7 +79,9 @@ export const SignupForm: FC<Props> = ({
         <Heading as="h2">Signup</Heading>
 
         <HStack spacing={6}>
-          <FormControl isInvalid={!!formik.errors?.firstName}>
+          <FormControl
+            isInvalid={!!formik.errors?.firstName && formik.touched.firstName}
+          >
             <FormLabel>First Name</FormLabel>
             <Input
               placeholder="Steve"
@@ -89,7 +91,9 @@ export const SignupForm: FC<Props> = ({
             <FormErrorMessage>{formik.errors?.firstName}</FormErrorMessage>
           </FormControl>
 
-          <FormControl isInvalid={!!formik.errors?.lastName}>
+          <FormControl
+            isInvalid={!!formik.errors?.lastName && formik.touched.lastName}
+          >
             <FormLabel>Last Name</FormLabel>
             <Input
               placeholder="McQueen"
@@ -100,7 +104,7 @@ export const SignupForm: FC<Props> = ({
           </FormControl>
         </HStack>
 
-        <FormControl isInvalid={!!formik.errors?.email}>
+        <FormControl isInvalid={!!formik.errors?.email && formik.touched.email}>
           <FormLabel>Email address</FormLabel>
           <Input
             type="email"
@@ -111,7 +115,9 @@ export const SignupForm: FC<Props> = ({
           <FormErrorMessage>{formik.errors?.email}</FormErrorMessage>
         </FormControl>
 
-        <FormControl isInvalid={!!formik.errors?.password}>
+        <FormControl
+          isInvalid={!!formik.errors?.password && formik.touched.password}
+        >
           <FormLabel>Password</FormLabel>
           <PasswordInput
             name="password"
@@ -121,7 +127,11 @@ export const SignupForm: FC<Props> = ({
           <FormErrorMessage>{formik.errors?.password}</FormErrorMessage>
         </FormControl>
 
-        <FormControl isInvalid={!!formik.errors?.confirmPassword}>
+        <FormControl
+          isInvalid={
+            !!formik.errors?.confirmPassword && formik.touched.confirmPassword
+          }
+        >
           <FormLabel>Confirm Password</FormLabel>
           <PasswordInput
             name="confirmPassword"

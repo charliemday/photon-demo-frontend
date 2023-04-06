@@ -57,7 +57,7 @@ export const LoginForm: React.FC<Props> = ({
     <form onSubmit={formik.handleSubmit}>
       <Stack spacing={6} mb={12}>
         <Heading as="h2">Login</Heading>
-        <FormControl isInvalid={!!formik.errors?.email}>
+        <FormControl isInvalid={!!formik.errors?.email && formik.touched.email}>
           <FormLabel>Email address</FormLabel>
           <Input
             type="email"
@@ -70,7 +70,9 @@ export const LoginForm: React.FC<Props> = ({
           </FormErrorMessage>
         </FormControl>
 
-        <FormControl isInvalid={!!formik.errors?.password}>
+        <FormControl
+          isInvalid={!!formik.errors?.password && formik.touched.password}
+        >
           <FormLabel>Password</FormLabel>
           <PasswordInput
             name="password"
