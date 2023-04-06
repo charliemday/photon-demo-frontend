@@ -18,6 +18,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const PRIVACY_POLICY_URL = `${MARKETING_SITE_URL}/privacy-policy`;
-const TERMS_OF_SERVICE_URL = `${MARKETING_SITE_URL}/terms-of-service`;
+const TERMS_OF_SERVICE_URL = `${MARKETING_SITE_URL}/terms-and-conditions`;
 
 export { BASE_URL, ROOT_URL, ENGINE_URL, BASE_FRONTEND_URL, PRIVACY_POLICY_URL, TERMS_OF_SERVICE_URL, MARKETING_SITE_URL };
