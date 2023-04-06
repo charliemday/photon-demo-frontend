@@ -16,7 +16,7 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react";
-import { useCreateTeamMutation, useListTeamsQuery } from "api/team.api";
+import { useCreateTeamMutation } from "api/team.api";
 import { Button } from "components/button";
 import { useFormik } from "formik";
 import React, { useEffect } from "react";
@@ -42,7 +42,6 @@ export const AddTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const [createTeam, { isLoading, isSuccess, error, isError }] =
     useCreateTeamMutation();
   const toast = useToast();
-  const { refetch: refetchTeams } = useListTeamsQuery(undefined);
 
   useEffect(() => {
     if (!isLoading) {
@@ -54,7 +53,6 @@ export const AddTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
           duration: 9000,
           isClosable: true,
         });
-        refetchTeams();
         onClose();
       }
 
@@ -68,7 +66,7 @@ export const AddTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
         });
       }
     }
-  }, [isSuccess, toast, onClose, refetchTeams, error, isLoading, isError]);
+  }, [isSuccess, toast, onClose, error, isLoading, isError]);
 
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -77,23 +75,15 @@ export const AddTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
     },
     validationSchema: FormSchema,
     onSubmit: (values) => {
-      // Create the team here
+      const url = `https://${values.url.replace(/https?:\/\//g, "")}`;
       createTeam({
         body: {
           name: values.name,
-          url: values.url,
+          url,
         },
       });
     },
   });
-
-  const handleSubmit = async () => {
-    // Regex remove all https:// or http:// from the url
-    const cleanUrl = `https://${formik.values.url.replace(/https?:\/\//g, "")}`;
-    // Prefix the url with https://
-    formik.setFieldValue("url", cleanUrl);
-    await formik.handleSubmit();
-  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -101,7 +91,7 @@ export const AddTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
       <ModalContent>
         <ModalHeader>Create a new team</ModalHeader>
         <ModalCloseButton />
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <ModalBody>
             <Stack spacing={6} mb={4}>
               <FormControl isInvalid={!!formik.errors?.name}>

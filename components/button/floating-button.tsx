@@ -55,6 +55,11 @@ export const FloatingButton: React.FC<Props> = ({
 
   const [searchResults, setSearchResults] = useState<Team[]>(teams || []);
 
+  useEffect(() => {
+    setSearchResults(teams);
+    setSelectedTeam(activeTeam || teams?.[0] || null);
+  }, [teams, activeTeam]);
+
   const { isOpen, onClose, onOpen } = useDisclosure();
   const dispatch = useDispatch();
   const onSelect = (team: Team) => {
