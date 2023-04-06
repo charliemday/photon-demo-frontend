@@ -75,7 +75,7 @@ export const DashboardView: FC<Props> = () => {
 
   return (
     <Stack py={6} spacing={12}>
-      {teams && <FloatingButton teams={teams} enableAddTeam />}
+      {teams?.length && <FloatingButton teams={teams} enableAddTeam />}
       <Grid templateColumns="repeat(5, 1fr)" gap={6}>
         <DashboardCard
           onClick={onWordSeekToggle}

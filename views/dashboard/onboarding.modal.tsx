@@ -163,9 +163,7 @@ const OnboardingStep2: FC<Step2Props> = (props) => {
 };
 
 export const OnboardingModal: FC<Props> = ({ isOpen, onClose }) => {
-  const [updateOnboardingStep, { isLoading: isUpdatingOnboardingStep }] =
-    useUpdateOnboardingStepMutation();
-
+  const [updateOnboardingStep] = useUpdateOnboardingStepMutation();
   const toast = useToast();
 
   const handleCompleteOnboarding = async () => {
