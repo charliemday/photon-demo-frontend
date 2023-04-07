@@ -1,5 +1,6 @@
 import { Box, HStack, ModalBody, Spinner, Stack, Text } from "@chakra-ui/react";
 import { useVerifyPaymentMutation } from "api/payment.api";
+import { useUserDetailsQuery } from "api/user.api";
 import { Button } from "components/button";
 import { Modal } from "components/modals";
 import { ROUTES } from "config";
@@ -16,6 +17,8 @@ export const PaymentSuccessModal: FC<Props> = () => {
 
   const [verifyPayment, { isLoading, isSuccess, isError, error }] =
     useVerifyPaymentMutation();
+  const { refetch: refetchUserDetails, isLoading: isLoadingUserDetails } =
+    useUserDetailsQuery(undefined);
 
   useEffect(() => {
     // Wait 5 seconds before verifying payment
@@ -69,7 +72,14 @@ export const PaymentSuccessModal: FC<Props> = () => {
               Retry Verification
             </Button>
 
-            <Button onClick={() => router.push(ROUTES.DASHBOARD)}>
+            <Button
+              onClick={async () => {
+                refetchUserDetails();
+                router.push(ROUTES.DASHBOARD);
+              }}
+              isDisabled={isLoadingUserDetails}
+              isLoading={isLoadingUserDetails}
+            >
               Back to Dashboard
             </Button>
           </HStack>

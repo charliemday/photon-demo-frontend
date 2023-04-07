@@ -122,18 +122,20 @@ export const WordSeekResultsModal: FC<Props> = ({
             </Box>
             <Box>
               <Text>{activeTeam?.name}</Text>
-              <Select
-                size="sm"
-                onChange={(e) => setSelectedPage(e.target.value)}
-                p={0}
-                cursor="pointer"
-              >
-                {pages?.map((page, index) => (
-                  <option key={index} value={page}>
-                    {page}
-                  </option>
-                ))}
-              </Select>
+              {pages && pages?.length > 1 && (
+                <Select
+                  size="sm"
+                  onChange={(e) => setSelectedPage(e.target.value)}
+                  p={0}
+                  cursor="pointer"
+                >
+                  {pages?.map((page, index) => (
+                    <option key={index} value={page}>
+                      {page}
+                    </option>
+                  ))}
+                </Select>
+              )}
             </Box>
           </HStack>
           <HStack>
@@ -158,33 +160,41 @@ export const WordSeekResultsModal: FC<Props> = ({
       </ModalHeader>
       <ModalBody>
         <Divider mb={6} />
-        <TableContainer h="50vh" overflowY="auto">
-          <Flex alignItems="center" justifyContent="space-between" pb={6}>
-            <Text fontSize="sm" fontWeight="bold">{`${
-              tableData.length
-            } missing keyword${
-              tableData.length > 1 ? "s" : ""
-            } found for this page`}</Text>
+        {tableData.length === 0 ? (
+          <Flex alignItems="center" justifyContent="center" h="50vh">
+            <Text fontSize="xl">
+              🎉 No missing keywords found for this page
+            </Text>
           </Flex>
-          <Table variant="striped" size="sm">
-            <Thead>
-              <Tr>
-                <Th>Keyword</Th>
-                <Th>Clicks</Th>
-                <Th>Impressions</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {tableData.map((i, index) => (
-                <Tr key={index}>
-                  <Td>{i.keyword}</Td>
-                  <Td>{i.clicks}</Td>
-                  <Td>{i.impressions}</Td>
+        ) : (
+          <TableContainer h="50vh" overflowY="auto">
+            <Flex alignItems="center" justifyContent="space-between" pb={6}>
+              <Text fontSize="sm" fontWeight="bold">{`${
+                tableData.length
+              } missing keyword${
+                tableData.length > 1 ? "s" : ""
+              } found for this page`}</Text>
+            </Flex>
+            <Table variant="striped" size="sm">
+              <Thead>
+                <Tr>
+                  <Th>Keyword</Th>
+                  <Th>Clicks</Th>
+                  <Th>Impressions</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
+              </Thead>
+              <Tbody>
+                {tableData.map((i, index) => (
+                  <Tr key={index}>
+                    <Td>{i.keyword}</Td>
+                    <Td>{i.clicks}</Td>
+                    <Td>{i.impressions}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        )}
       </ModalBody>
       <ModalFooter></ModalFooter>
     </Modal>
