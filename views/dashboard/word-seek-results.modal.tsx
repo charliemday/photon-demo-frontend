@@ -122,7 +122,7 @@ export const WordSeekResultsModal: FC<Props> = ({
             </Box>
             <Box>
               <Text>{activeTeam?.name}</Text>
-              {pages && pages?.length > 1 && (
+              {pages && pages?.length > 0 && (
                 <Select
                   size="sm"
                   onChange={(e) => setSelectedPage(e.target.value)}
