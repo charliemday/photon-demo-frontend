@@ -11,11 +11,16 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { CodeResponse, useGoogleLogin } from "@react-oauth/google";
+import {
+  CodeResponse,
+  GoogleOAuthProvider,
+  useGoogleLogin,
+} from "@react-oauth/google";
 import { useCompleteOauthMutation } from "api/auth.api";
 import { useUserDetailsQuery } from "api/user.api";
 import { Button } from "components/button";
 import { Image } from "components/image";
+import { GOOGLE_EXTERNAL_CLIENT_ID } from "config";
 import { FC, useEffect } from "react";
 
 interface Props {
@@ -23,7 +28,7 @@ interface Props {
   onClose: () => void;
 }
 
-export const GscConnectModal: FC<Props> = ({ isOpen, onClose }) => {
+const GscConnect: FC<Props> = ({ isOpen, onClose }) => {
   const [completeOauth, { isLoading, isSuccess, isError }] =
     useCompleteOauthMutation();
 
@@ -131,3 +136,9 @@ export const GscConnectModal: FC<Props> = ({ isOpen, onClose }) => {
     </Modal>
   );
 };
+
+export const GscConnectModal: FC<Props> = (props) => (
+  <GoogleOAuthProvider clientId={GOOGLE_EXTERNAL_CLIENT_ID}>
+    <GscConnect {...props} />
+  </GoogleOAuthProvider>
+);

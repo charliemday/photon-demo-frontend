@@ -1,10 +1,16 @@
-import { Box, Heading, Text, HStack, useToast } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import { Box, Heading, HStack, Text, useToast } from "@chakra-ui/react";
+import {
+  CodeResponse,
+  GoogleOAuthProvider,
+  useGoogleLogin,
+} from "@react-oauth/google";
+import { useCompleteOauthMutation } from "api/auth.api";
+import { useUserDetailsQuery } from "api/user.api";
+import { GOOGLE_INTERNAL_CLIENT_ID } from "config";
+import { FC, useEffect } from "react";
 import { BsCheckCircle } from "react-icons/bs";
 import { GoogleLoginButton } from "react-social-login-buttons";
-import { useUserDetailsQuery } from "api/user.api";
-import { CodeResponse, useGoogleLogin } from "@react-oauth/google";
-import { useCompleteOauthMutation } from "api/auth.api";
+import { typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
 
 interface Props {
@@ -12,10 +18,10 @@ interface Props {
   onClose: () => void;
 }
 
-export const SearchConsoleConnect: React.FC<Props> = (props) => {
+const SearchConsoleConnectModal: FC<Props> = (props) => {
   const { data: user, refetch: refetchUserDetails } =
     useUserDetailsQuery(undefined);
-  const [completeOauth, { isLoading, isSuccess, isError }] =
+  const [completeOauth, { isLoading, isSuccess, isError, error }] =
     useCompleteOauthMutation();
 
   const toast = useToast();
@@ -34,24 +40,24 @@ export const SearchConsoleConnect: React.FC<Props> = (props) => {
         refetchUserDetails();
       }
 
-      if (isError) {
+      if (isError && error) {
         toast({
           title: "Error",
-          description: "Could not connect to Google Search Console",
+          description: typeCheckError(error) || "Something went wrong",
           status: "error",
           isClosable: true,
         });
       }
     }
-  }, [isLoading, isSuccess, isError, toast, refetchUserDetails]);
+  }, [isLoading, isSuccess, isError, toast, refetchUserDetails, error]);
 
   const googleLogin = useGoogleLogin({
     flow: "auth-code",
     scope:
-      "https://www.googleapis.com/auth/webmasters.readonly https://www.googleapis.com/auth/drive", // TODO: This is NOT suitable for non-admin users
+      "https://www.googleapis.com/auth/webmasters.readonly https://www.googleapis.com/auth/drive",
     onSuccess: (response: CodeResponse) => {
       // On Success we should complete the OAuth flow by exchanging the code for an access token
-      completeOauth({ code: response.code, app: "google" });
+      completeOauth({ code: response.code, app: "google_internal" });
     },
   });
 
@@ -86,3 +92,9 @@ export const SearchConsoleConnect: React.FC<Props> = (props) => {
     </ModalStepWrapper>
   );
 };
+
+export const SearchConsoleConnect: FC<Props> = (props) => (
+  <GoogleOAuthProvider clientId={GOOGLE_INTERNAL_CLIENT_ID}>
+    <SearchConsoleConnectModal {...props} />
+  </GoogleOAuthProvider>
+);

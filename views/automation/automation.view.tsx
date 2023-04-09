@@ -240,26 +240,6 @@ export const AutomationView: React.FC = () => {
         ))}
       </Stack>
 
-      {/* <Grid templateColumns="repeat(4, 1fr)" gap={6}>
-        {STEPS.map((step, key) => (
-          <GridItem key={key} w="100%">
-            <AutomationCard
-              title={step.title}
-              description={step.description}
-              onClick={() => {
-                setActiveStep(step.key as KEY);
-                onOpen();
-              }}
-              comingSoon={step.comingSoon}
-              image={step.image}
-              isDisabled={step.isDisabled}
-              badgeLabel={step.isNew ? "New" : undefined}
-              badgeColor={step.isNew ? "green" : undefined}
-            />
-          </GridItem>
-        ))}
-      </Grid> */}
-
       {/* STEPS */}
 
       <SeedKeywords
