@@ -66,7 +66,7 @@ const GscConnect: FC<Props> = ({ isOpen, onClose }) => {
     scope: "https://www.googleapis.com/auth/webmasters.readonly",
     onSuccess: (response: CodeResponse) => {
       // On Success we should complete the OAuth flow by exchanging the code for an access token
-      completeOauth({ code: response.code, app: "google" });
+      completeOauth({ code: response.code, app: "google_external" });
     },
   });
 
