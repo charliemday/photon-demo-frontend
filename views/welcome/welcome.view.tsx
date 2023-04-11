@@ -6,6 +6,8 @@ import { useLoginMutation, useSignupMutation } from "api/auth.api";
 import { LoginForm, LoginFormValues } from "forms/login";
 import { SignupForm, SignupFormValues } from "forms/signup";
 
+import { FATHOM_EVENTS } from "config";
+import { useFathom } from "hooks";
 import { BackgroundView } from "views/background";
 
 const IMAGE_RATIO = 1210 / 870;
@@ -23,10 +25,13 @@ export const WelcomeView: React.FC = () => {
   const [login, { isLoading: isLoginLoading }] = useLoginMutation();
   const [signup, { isLoading: isSignupLoading }] = useSignupMutation();
 
+  const fathom = useFathom();
+
   const handleSignup = async (values: SignupFormValues) => {
     await signup(values)
       .unwrap()
       .then(() => {
+        fathom.trackEvent(FATHOM_EVENTS.SIGNUP);
         setShowBackground(true);
       })
       .catch(() => setSignupError("Unable to signup with details"));

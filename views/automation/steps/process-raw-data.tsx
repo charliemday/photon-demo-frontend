@@ -16,7 +16,7 @@ import {
   Input,
   Stack,
   Text,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import { Image } from "components/image";
 import { BRAND_COLOR } from "config";
@@ -315,6 +315,7 @@ export const ProcessRawData: React.FC<Props> = (props) => {
         });
       }}
       value={negativePrompts[idx]}
+      key={idx}
     />
   );
 

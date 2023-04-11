@@ -1,3 +1,6 @@
+
+import { IS_PROD } from './core';
+
 // Local Development
 let ROOT_URL = 'http://localhost:8000';
 let BASE_FRONTEND_URL = 'http://localhost:3000';
@@ -9,7 +12,7 @@ let MARKETING_SITE_URL = 'https://getbaser.com';
 // Production Development
 // let ROOT_URL = 'https://baser-backend.herokuapp.com';
 
-if (process.env.NODE_ENV === 'production') {
+if (IS_PROD) {
     BASE_URL = process.env.NEXT_PUBLIC_PROD_API_URL || ''
     ROOT_URL = process.env.NEXT_PUBLIC_PROD_URL || ''
     ENGINE_URL = process.env.NEXT_PUBLIC_PROD_ENGINE_URL || ''

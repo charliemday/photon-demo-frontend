@@ -16,7 +16,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       {/* Stripe Pricing Table */}
       <Script src="https://js.stripe.com/v3/pricing-table.js" />
       {/* Fathom Analytics */}
-      {}
       <Script
         src="https://cdn.usefathom.com/script.js"
         data-site={process.env.NEXT_PUBLIC_FATHOM_SITE_ID}

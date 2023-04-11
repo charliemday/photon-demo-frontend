@@ -1,5 +1,6 @@
 import { Grid, Stack, useDisclosure } from "@chakra-ui/react";
 import { useListTeamsQuery } from "api/team.api";
+import { useFathom } from "hooks";
 import { FC, useEffect, useState } from "react";
 import {
   DashboardCard,
@@ -13,6 +14,7 @@ import {
 import { useWordSeekResultsQuery } from "api/engine.api";
 import { useUserDetailsQuery } from "api/user.api";
 import { FloatingButton } from "components/button";
+import { FATHOM_EVENTS } from "config";
 import { useHasProductAccess } from "hooks";
 import { useSelector } from "react-redux";
 import { RootState, Team } from "types";
@@ -73,12 +75,17 @@ export const DashboardView: FC<Props> = () => {
     onWordSeekResultsToggle();
   };
 
+  const fathom = useFathom();
+
   return (
     <Stack py={6} spacing={12}>
       {teams?.length && <FloatingButton teams={teams} enableAddTeam />}
       <Grid templateColumns="repeat(5, 1fr)" gap={6}>
         <DashboardCard
-          onClick={onWordSeekToggle}
+          onClick={() => {
+            onWordSeekToggle();
+            fathom.trackEvent(FATHOM_EVENTS.WORD_SEEK_CLICK);
+          }}
           title={"WordSeek: Missing Keyword Report"}
           description="Automatically identify missing keywords based on your query data from
         Google Search Console"
@@ -87,7 +94,10 @@ export const DashboardView: FC<Props> = () => {
         />
         {wordSeekResults && wordSeekResults.length > 0 && (
           <DashboardCard
-            onClick={onWordSeekResultsToggle}
+            onClick={() => {
+              onWordSeekResultsToggle();
+              fathom.trackEvent(FATHOM_EVENTS.WORD_SEEK_RESULTS_OPENED);
+            }}
             title={"WordSeek: Results"}
             description="View the results of your WordSeek report"
             buttonLabel="View Results"
@@ -96,7 +106,10 @@ export const DashboardView: FC<Props> = () => {
         )}
         {!hasWordSeekAccess && (
           <DashboardCard
-            onClick={onPricingModalToggle}
+            onClick={() => {
+              onPricingModalToggle();
+              fathom.trackEvent(FATHOM_EVENTS.PAYMENT_CLICKED);
+            }}
             title={"Upgrade"}
             description="You can do one free page per month and one free team. Upgrade to get unlimited pages and unlimited teams."
             buttonLabel="Upgrade"
