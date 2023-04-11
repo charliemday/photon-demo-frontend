@@ -25,7 +25,7 @@ import { FC, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { BarLoader } from "react-spinners";
 import { RootState, Team } from "types";
-import { typeCheckError } from "utils";
+import { cleanUrl, typeCheckError } from "utils";
 
 interface Props {
   isOpen: boolean;
@@ -171,18 +171,33 @@ export const WordSeekModal: FC<Props> = ({
   const isButtonDisabled = !selectedSite || !selectedPage;
 
   const siteOptionData = useMemo(
-    () => sites?.map((site) => ({ value: site, label: site })) || [],
-    [sites]
+    () =>
+      sites
+        ?.filter((p) => cleanUrl(p) === cleanUrl(activeTeam?.url || ""))
+        .map((site) => ({ value: site, label: site })) || [],
+    [sites, activeTeam]
   );
 
   const pagesOptionData = useMemo(
     () =>
-      pagesData?.pages?.map((page) => ({
+      pagesData?.pages.map((page) => ({
         value: page,
         label: page,
       })) || [],
     [pagesData]
   );
+
+  useEffect(() => {
+    if (siteOptionData.length) {
+      setSelectedSite(siteOptionData[0]?.value || null);
+    }
+  }, [siteOptionData]);
+
+  useEffect(() => {
+    if (pagesOptionData.length) {
+      setSelectedPage(pagesOptionData[0]?.value || null);
+    }
+  }, [pagesOptionData]);
 
   if (showAwaitEmail) {
     return (
@@ -246,6 +261,7 @@ export const WordSeekModal: FC<Props> = ({
               <Select
                 onChange={(e) => setSelectedSite(e.target.value)}
                 placeholder="Select a site"
+                {...(selectedSite && { value: selectedSite })}
               >
                 {siteOptionData.map((site) => (
                   <option key={site.value} value={site.value}>
@@ -268,6 +284,7 @@ export const WordSeekModal: FC<Props> = ({
             <Select
               placeholder="Select a page"
               onChange={(e) => setSelectedPage(e.target.value)}
+              {...(selectedPage && { value: selectedPage })}
             >
               {pagesOptionData.map((page) => (
                 <option key={page.value} value={page.value}>
