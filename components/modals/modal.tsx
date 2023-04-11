@@ -13,6 +13,8 @@ interface Props extends ModalProps {
   onClose: () => void;
   contentPadding?: number | string;
   contentRadius?: number | string;
+  contentProps?: Record<string, unknown>;
+  showCloseButton?: boolean;
 }
 
 export const Modal: React.FC<Props> = ({
@@ -21,12 +23,18 @@ export const Modal: React.FC<Props> = ({
   onClose,
   contentPadding = 6,
   contentRadius = "2xl",
+  contentProps = {},
   size = "2xl",
+  showCloseButton = true,
 }) => (
   <ChakraModal isOpen={isOpen} onClose={onClose} size={size}>
     <ModalOverlay />
-    <ModalContent p={contentPadding} borderRadius={contentRadius}>
-      <ModalCloseButton />
+    <ModalContent
+      p={contentPadding}
+      borderRadius={contentRadius}
+      {...contentProps}
+    >
+      {showCloseButton && <ModalCloseButton />}
       {children}
     </ModalContent>
   </ChakraModal>

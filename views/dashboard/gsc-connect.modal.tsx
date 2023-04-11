@@ -1,12 +1,9 @@
 import {
   Box,
   HStack,
-  Modal,
   ModalBody,
-  ModalContent,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,
   Stack,
   Text,
   useToast,
@@ -20,6 +17,7 @@ import { useCompleteOauthMutation } from "api/auth.api";
 import { useUserDetailsQuery } from "api/user.api";
 import { Button } from "components/button";
 import { Image } from "components/image";
+import { Modal } from "components/modals";
 import { GOOGLE_EXTERNAL_CLIENT_ID } from "config";
 import { FC, useEffect } from "react";
 
@@ -71,67 +69,62 @@ const GscConnect: FC<Props> = ({ isOpen, onClose }) => {
 
   const userIsConnected = () => (
     <>
-      <ModalContent p={6} borderRadius="2xl">
-        <ModalHeader>
-          <HStack>
-            <Box position="relative" h={8} w={8}>
-              <Image
-                src="/steps/search-console.svg"
-                alt="Search Console"
-                layout="fill"
-              />
-            </Box>
-            <Text>GSC Connection</Text>
-          </HStack>
-        </ModalHeader>
-        <ModalBody>
-          <Text>You are already connected to GSC</Text>
-        </ModalBody>
-        <ModalFooter>
-          <Button onClick={googleLogin} isLoading={isLoading}>
-            Refresh Connection
-          </Button>
-          <Button onClick={onClose}>Close</Button>
-        </ModalFooter>
-      </ModalContent>
+      <ModalHeader>
+        <HStack>
+          <Box position="relative" h={8} w={8}>
+            <Image
+              src="/steps/search-console.svg"
+              alt="Search Console"
+              layout="fill"
+            />
+          </Box>
+          <Text>GSC Connection</Text>
+        </HStack>
+      </ModalHeader>
+      <ModalBody>
+        <Text>You are already connected to GSC</Text>
+      </ModalBody>
+      <ModalFooter>
+        <Button onClick={googleLogin} isLoading={isLoading}>
+          Refresh Connection
+        </Button>
+        <Button onClick={onClose}>Close</Button>
+      </ModalFooter>
     </>
   );
 
   const userIsNotConnected = () => (
     <>
-      <ModalContent p={6} borderRadius="2xl">
-        <ModalHeader>
-          <HStack spacing={6}>
-            <Box position="relative" h={8} w={8}>
-              <Image
-                src="/steps/search-console.svg"
-                alt="Search Console"
-                layout="fill"
-              />
-            </Box>
-            <Text>Word Seek: Missing Keyword Report</Text>
-          </HStack>
-        </ModalHeader>
-        <ModalBody>
-          <Stack>
-            <Text>
-              Connect your Google Search Console Account so we can find the
-              pages most important to you!
-            </Text>
-          </Stack>
-        </ModalBody>
-        <ModalFooter>
-          <Button onClick={googleLogin} isLoading={isLoading}>
-            Connect with GSC
-          </Button>
-        </ModalFooter>
-      </ModalContent>
+      <ModalHeader>
+        <HStack spacing={6}>
+          <Box position="relative" h={8} w={8}>
+            <Image
+              src="/steps/search-console.svg"
+              alt="Search Console"
+              layout="fill"
+            />
+          </Box>
+          <Text>Word Seek: Missing Keyword Report</Text>
+        </HStack>
+      </ModalHeader>
+      <ModalBody>
+        <Stack>
+          <Text>
+            Connect your Google Search Console Account so we can find the pages
+            most important to you!
+          </Text>
+        </Stack>
+      </ModalBody>
+      <ModalFooter>
+        <Button onClick={googleLogin} isLoading={isLoading}>
+          Connect with GSC
+        </Button>
+      </ModalFooter>
     </>
   );
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="2xl">
-      <ModalOverlay />
       {userDetails?.connectedSearchConsole
         ? userIsConnected()
         : userIsNotConnected()}
@@ -139,8 +132,10 @@ const GscConnect: FC<Props> = ({ isOpen, onClose }) => {
   );
 };
 
-export const GscConnectModal: FC<Props> = (props) => (
-  <GoogleOAuthProvider clientId={GOOGLE_EXTERNAL_CLIENT_ID}>
-    <GscConnect {...props} />
-  </GoogleOAuthProvider>
-);
+export const GscConnectModal: FC<Props> = (props) => {
+  return (
+    <GoogleOAuthProvider clientId={GOOGLE_EXTERNAL_CLIENT_ID}>
+      <GscConnect {...props} />
+    </GoogleOAuthProvider>
+  );
+};

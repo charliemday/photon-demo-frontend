@@ -1,3 +1,5 @@
+import { camelizeKeys } from "humps";
+import { ConvertToSnakeCase } from "types";
 import { apiUrls, baseApi, TAG_TYPES } from ".";
 
 export interface GetAuthUrlRequest {
@@ -48,6 +50,12 @@ export interface GetSearchConsolePagesResponse {
 }
 
 export interface AhrefsRequestData extends FormData { }
+
+export interface GoogleClientResponse {
+    name: string;
+    slug: string;
+    clientId: string;
+}
 
 // Define a service using a base URL and expected endpoints
 export const vendorApi = baseApi.injectEndpoints({
@@ -128,6 +136,26 @@ export const vendorApi = baseApi.injectEndpoints({
                 method: "POST",
             }),
         }),
+        /**
+         * Gets the Google External Client
+         */
+        getGoogleExternalClient: builder.query<GoogleClientResponse, null>({
+            query: () => ({
+                url: apiUrls.GOOGLE_EXTERNAL_CLIENT,
+                method: "GET",
+            }),
+            transformResponse: (response: ConvertToSnakeCase<GoogleClientResponse>) => camelizeKeys(response) as GoogleClientResponse,
+        }),
+        /**
+         * Gets the Google Internal Client
+         */
+        getGoogleInternalClient: builder.query<GoogleClientResponse, null>({
+            query: () => ({
+                url: apiUrls.GOOGLE_INTERNAL_CLIENT,
+                method: "GET",
+            }),
+            transformResponse: (response: ConvertToSnakeCase<GoogleClientResponse>) => camelizeKeys(response) as GoogleClientResponse,
+        })
     }),
 });
 
@@ -141,4 +169,6 @@ export const {
     useGetSearchConsolePagesQuery,
     useUploadAhrefsReportMutation,
     usePopulateSearchConsoleReportsMutation,
+    useGetGoogleExternalClientQuery,
+    useGetGoogleInternalClientQuery,
 } = vendorApi;

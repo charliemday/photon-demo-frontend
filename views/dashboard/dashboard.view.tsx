@@ -66,6 +66,10 @@ export const DashboardView: FC<Props> = () => {
     (state: RootState) => state.team.activeTeam
   );
 
+  const { refetch: refetchResult } = useWordSeekResultsQuery(activeTeam?.uid, {
+    skip: !activeTeam?.uid,
+  });
+
   const { data: wordSeekResults } = useWordSeekResultsQuery(activeTeam?.uid, {
     skip: !activeTeam?.uid,
   });
@@ -74,6 +78,11 @@ export const DashboardView: FC<Props> = () => {
     setDefaultPage(page);
     onWordSeekResultsToggle();
   };
+
+  useEffect(() => {
+    refetchResult();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const fathom = useFathom();
 
