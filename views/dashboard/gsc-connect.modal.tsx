@@ -41,8 +41,7 @@ const GscConnect: FC<Props> = ({ isOpen, onClose }) => {
       if (isSuccess) {
         toast({
           title: "Success",
-          description:
-            "Connected to Google Search Console successfully. We'll start processing your data shortly.",
+          description: "Connected to Google Search Console successfully 🎉",
           status: "success",
           isClosable: true,
         });
@@ -89,6 +88,9 @@ const GscConnect: FC<Props> = ({ isOpen, onClose }) => {
           <Text>You are already connected to GSC</Text>
         </ModalBody>
         <ModalFooter>
+          <Button onClick={googleLogin} isLoading={isLoading}>
+            Refresh Connection
+          </Button>
           <Button onClick={onClose}>Close</Button>
         </ModalFooter>
       </ModalContent>

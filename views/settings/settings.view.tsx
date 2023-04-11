@@ -10,12 +10,14 @@ import {
 } from "@chakra-ui/react";
 import { useCreateCustomerPortalMutation } from "api/payment.api";
 import { useDeleteAccountMutation, useUserDetailsQuery } from "api/user.api";
+import { Image } from "components/image";
 import { ConfirmationModal } from "components/modals";
 import { BRAND_COLOR, SUPPORT_EMAIL } from "config";
 import { BASE_FRONTEND_URL } from "config/urls";
 import { useLogout } from "hooks";
 import React from "react";
 import { typeCheckError } from "utils";
+import { GscConnectModal } from "views/dashboard";
 
 interface Props {}
 
@@ -30,12 +32,29 @@ export const SettingsView: React.FC<Props> = () => {
   const toast = useToast();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isGscModalOpen,
+    onOpen: onGscModalOpen,
+    onClose: onGscModalClose,
+  } = useDisclosure();
 
-  const renderHeading = (heading: string) => (
+  const renderHeading = (heading: string, imgSrc?: string) => (
     <Stack w="full">
-      <Text fontSize="lg" fontWeight="semibold">
-        {heading}
-      </Text>
+      <HStack>
+        {imgSrc && (
+          <Box h={6} w={6} position="relative">
+            <Image
+              layout="fill"
+              objectFit="contain"
+              src={imgSrc}
+              alt="Button Image"
+            />
+          </Box>
+        )}
+        <Text fontSize="lg" fontWeight="semibold">
+          {heading}
+        </Text>
+      </HStack>
       <Divider />
     </Stack>
   );
@@ -98,6 +117,24 @@ export const SettingsView: React.FC<Props> = () => {
         </Stack>
 
         <Stack spacing={6}>
+          {renderHeading("GSC Connection", "/steps/search-console.svg")}
+          <Box>
+            <Button
+              variant="solid"
+              color="white"
+              bgColor={BRAND_COLOR}
+              _hover={{ bgColor: BRAND_COLOR, boxShadow: "lg" }}
+              onClick={onGscModalOpen}
+              isLoading={isCreatingCustomerPortal}
+            >
+              Refresh GSC Connection
+            </Button>
+          </Box>
+        </Stack>
+
+        <GscConnectModal isOpen={isGscModalOpen} onClose={onGscModalClose} />
+
+        <Stack spacing={6}>
           {renderHeading("💸 Subscription Settings")}
           <Box>
             <Button
@@ -107,6 +144,13 @@ export const SettingsView: React.FC<Props> = () => {
               _hover={{ bgColor: BRAND_COLOR, boxShadow: "lg" }}
               onClick={handleCreateCustomerPortal}
               isLoading={isCreatingCustomerPortal}
+              isDisabled={
+                userDetails?.products
+                  ? Object.values(userDetails?.products).length
+                    ? false
+                    : true
+                  : true
+              }
             >
               Manage Subscription
             </Button>
