@@ -171,11 +171,8 @@ export const WordSeekModal: FC<Props> = ({
   const isButtonDisabled = !selectedSite || !selectedPage;
 
   const siteOptionData = useMemo(
-    () =>
-      sites
-        ?.filter((p) => cleanUrl(p) === cleanUrl(activeTeam?.url || ""))
-        .map((site) => ({ value: site, label: site })) || [],
-    [sites, activeTeam]
+    () => sites?.map((site) => ({ value: site, label: site })) || [],
+    [sites]
   );
 
   const pagesOptionData = useMemo(
@@ -189,9 +186,15 @@ export const WordSeekModal: FC<Props> = ({
 
   useEffect(() => {
     if (siteOptionData.length) {
-      setSelectedSite(siteOptionData[0]?.value || null);
+      const activeTeamSite = siteOptionData.find(
+        (site) => cleanUrl(site.value) === cleanUrl(activeTeam?.url || "")
+      );
+
+      if (activeTeamSite) {
+        setSelectedSite(activeTeamSite.value);
+      }
     }
-  }, [siteOptionData]);
+  }, [siteOptionData, activeTeam]);
 
   useEffect(() => {
     if (pagesOptionData.length) {
