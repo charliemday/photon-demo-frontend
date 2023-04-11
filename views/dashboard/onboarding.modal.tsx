@@ -1,16 +1,13 @@
 import {
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   Input,
   InputGroup,
   InputLeftAddon,
-  Modal,
   ModalBody,
-  ModalCloseButton,
-  ModalContent,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,
   Stack,
   Text,
   useToast,
@@ -21,6 +18,7 @@ import StepWizard, { StepWizardChildProps } from "react-step-wizard";
 
 import { useCreateTeamMutation } from "api/team.api";
 import { useUpdateOnboardingStepMutation } from "api/user.api";
+import { Modal } from "components/modals";
 import { useFormik } from "formik";
 import { typeCheckError } from "utils";
 import * as Yup from "yup";
@@ -39,10 +37,11 @@ interface Step2Props extends Partial<StepWizardChildProps> {
   onCompleted: () => void;
 }
 
+const urlPrefix = "https://";
+
 const OnboardingStep1: FC<Partial<StepWizardChildProps>> = (props) => (
   <>
     <ModalHeader>Welcome to Baser 👋</ModalHeader>
-    <ModalCloseButton />
     <ModalBody>
       <Text>
         {`To get started let's create a team you can run the word seek on`}
@@ -63,7 +62,6 @@ const OnboardingStep2: FC<Step2Props> = (props) => {
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required("Name Required"),
-    url: Yup.string().required("URL Required"),
   });
 
   const formik = useFormik<FormValues>({
@@ -76,8 +74,7 @@ const OnboardingStep2: FC<Step2Props> = (props) => {
       // Create the team here
       createTeam({
         body: {
-          name: values.name,
-          url: values.url,
+          ...values,
         },
       })
         .unwrap()
@@ -104,38 +101,53 @@ const OnboardingStep2: FC<Step2Props> = (props) => {
   });
 
   const handleSubmit = async () => {
-    // Regex remove all https:// or http:// from the url
-    const cleanUrl = `https://${formik.values.url.replace(/https?:\/\//g, "")}`;
-    // Prefix the url with https://
-    formik.setFieldValue("url", cleanUrl);
+    console.log("URL", formik.values.url);
+
+    if (formik.values.url) {
+      // Regex remove all https:// or http:// from the url
+      const cleanUrl = `https://${formik.values.url.replace(
+        /https?:\/\//g,
+        ""
+      )}`;
+      // Prefix the url with https://
+      formik.setFieldValue("url", cleanUrl);
+    }
+
+    if (formik.values.url === urlPrefix) {
+      formik.setFieldValue("url", "");
+    }
+
     await formik.handleSubmit();
   };
 
   return (
     <>
-      <ModalHeader>Add your site ➕</ModalHeader>
-      <ModalCloseButton />
+      <ModalHeader>Add your first team ➕</ModalHeader>
+      <Text ml={6} fontSize="sm" opacity={0.75}>
+        A Team could be a client, customer, or even your own company.
+      </Text>
       <ModalBody>
-        <Stack>
+        <Stack spacing={6}>
           <FormControl
             isInvalid={!!formik.errors?.name && formik.touched?.name}
           >
             <Input
               name="name"
-              placeholder="Site Name"
+              placeholder="Team Name"
               onChange={formik.handleChange}
             />
             <FormErrorMessage>{formik.errors?.name}</FormErrorMessage>
           </FormControl>
           <FormControl isInvalid={!!formik.errors?.url && formik.touched?.url}>
             <InputGroup>
-              <InputLeftAddon>{`https://`}</InputLeftAddon>
+              <InputLeftAddon>{urlPrefix}</InputLeftAddon>
               <Input
                 name="url"
-                placeholder="yoursite.com"
+                placeholder="teamurl.com"
                 onChange={formik.handleChange}
               />
             </InputGroup>
+            <FormHelperText fontSize="xs">(Optional)</FormHelperText>
             <FormErrorMessage>{formik.errors?.url}</FormErrorMessage>
           </FormControl>
         </Stack>
@@ -187,14 +199,19 @@ export const OnboardingModal: FC<Props> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
-      <ModalOverlay />
-      <ModalContent overflow="hidden">
-        <StepWizard>
-          <OnboardingStep1 />
-          <OnboardingStep2 onCompleted={handleCompleteOnboarding} />
-        </StepWizard>
-      </ModalContent>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="xl"
+      contentProps={{
+        overflow: "hidden",
+      }}
+      showCloseButton={false}
+    >
+      <StepWizard>
+        <OnboardingStep1 />
+        <OnboardingStep2 onCompleted={handleCompleteOnboarding} />
+      </StepWizard>
     </Modal>
   );
 };

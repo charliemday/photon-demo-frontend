@@ -11,7 +11,8 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { useWordSeekMutation, useWordSeekResultsQuery } from "api/engine.api";
+import { useWordSeekMutation } from "api/engine.api";
+import { useUserDetailsQuery } from "api/user.api";
 import {
   useGetSearchConsolePagesQuery,
   useGetSearchConsoleSitesQuery,
@@ -34,18 +35,15 @@ interface Props {
   onUpgrade?: () => void;
 }
 
-export const WordSeekModal: FC<Props> = ({
-  isOpen,
-  onClose,
-  onShowResults,
-  onUpgrade,
-}) => {
+export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
   const [selectedSite, setSelectedSite] = useState<string | null>(null);
   const [selectedPage, setSelectedPage] = useState<string | null>(null);
 
   const [wordSeekRunType, setWordSeekRunType] = useState<"page" | "all">(
     "page"
   );
+
+  const { data: userDetails } = useUserDetailsQuery(undefined);
 
   const [showAwaitEmail, setShowAwaitEmail] = useState(false);
 
@@ -58,10 +56,6 @@ export const WordSeekModal: FC<Props> = ({
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
   );
-
-  const { refetch: refetchResult } = useWordSeekResultsQuery(activeTeam?.uid, {
-    skip: !activeTeam?.uid,
-  });
 
   const toast = useToast();
 
@@ -92,18 +86,7 @@ export const WordSeekModal: FC<Props> = ({
   }, [selectedSite]);
 
   useEffect(() => {
-    if (!isLoading && isSuccess && wordSeekRunType === "page") {
-      toast({
-        title: "Success",
-        description: "WordSeek run successfully",
-        status: "success",
-      });
-      refetchResult();
-      onShowResults(selectedPage || "");
-      onClose();
-    }
-
-    if (!isLoading && isSuccess && wordSeekRunType === "all") {
+    if (!isLoading && isSuccess) {
       toast({
         title: "Success",
         description: "WordSeek has started",
@@ -214,8 +197,7 @@ export const WordSeekModal: FC<Props> = ({
         <ModalBody pt={6}>
           <Stack>
             <Text fontWeight="medium" mb={3}>
-              WordSeek is running and the result will be sent to your email
-              address in a couple of minutes
+              {`WordSeek is running and the result will be sent to ${userDetails?.email} in a couple of minutes`}
             </Text>
 
             <HStack justifyContent="center" spacing={24}>
@@ -253,7 +235,7 @@ export const WordSeekModal: FC<Props> = ({
       <ModalBody>
         <Box w="full">
           <Text fontWeight="medium" mb={3}>
-            Select a website
+            {`Select a site (we'll try and match your site to your Team URL)`}
           </Text>
           <Box mb={6}>
             {isSitesLoading ? (
@@ -276,7 +258,7 @@ export const WordSeekModal: FC<Props> = ({
           </Box>
 
           <Text fontWeight="medium" mb={3}>
-            Select a page on the website
+            Select a page on the site
           </Text>
 
           {isPagesLoading ? (

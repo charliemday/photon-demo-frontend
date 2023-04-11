@@ -21,6 +21,8 @@ export const apiUrls = {
     // Google
     GOOGLE_SITES: 'google/sites',
     POPULATE_REPORTS: 'google/populate-reports',
+    GOOGLE_EXTERNAL_CLIENT: "google/clients/external",
+    GOOGLE_INTERNAL_CLIENT: "google/clients/internal",
     // WordSeek
     WORD_SEEK: 'engine/word-seek/',
     WORD_SEEK_RESULTS: (teamUid: string) => `/engine/word-seek/results?team_uid=${teamUid}`,
