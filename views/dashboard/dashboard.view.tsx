@@ -1,19 +1,17 @@
 import { Grid, Stack, useDisclosure } from "@chakra-ui/react";
-import { useListTeamsQuery } from "api/team.api";
 import { useFathom } from "hooks";
 import { FC, useEffect, useState } from "react";
 import {
   DashboardCard,
   GscConnectModal,
-  OnboardingModal,
   PricingModal,
   WordSeekModal,
   WordSeekResultsModal,
 } from ".";
+import { OnboardingModal } from "./onboarding";
 
 import { useWordSeekResultsQuery } from "api/engine.api";
 import { useUserDetailsQuery } from "api/user.api";
-import { FloatingButton } from "components/button";
 import { FATHOM_EVENTS } from "config";
 import { useHasProductAccess } from "hooks";
 import { useSelector } from "react-redux";
@@ -24,7 +22,6 @@ interface Props {}
 const MIN_ONBOARDING_STEP = 1;
 
 export const DashboardView: FC<Props> = () => {
-  const { data: teams } = useListTeamsQuery(undefined);
   const { data: userDetails } = useUserDetailsQuery(undefined);
   const [defaultPage, setDefaultPage] = useState<string | null>(null);
 
@@ -70,10 +67,6 @@ export const DashboardView: FC<Props> = () => {
     skip: !activeTeam?.uid,
   });
 
-  const { data: wordSeekResults } = useWordSeekResultsQuery(activeTeam?.uid, {
-    skip: !activeTeam?.uid,
-  });
-
   const handleShowResults = (page: string) => {
     setDefaultPage(page);
     onWordSeekResultsToggle();
@@ -88,12 +81,15 @@ export const DashboardView: FC<Props> = () => {
 
   return (
     <Stack py={6} spacing={12}>
-      {teams?.length && <FloatingButton teams={teams} enableAddTeam />}
       <Grid templateColumns="repeat(5, 1fr)" gap={6}>
         <DashboardCard
           onClick={() => {
-            onWordSeekToggle();
-            fathom.trackEvent(FATHOM_EVENTS.WORD_SEEK_CLICK);
+            if (activeTeam) {
+              onWordSeekToggle();
+              fathom.trackEvent(FATHOM_EVENTS.WORD_SEEK_CLICK);
+            } else {
+              onOnboardingModalToggle();
+            }
           }}
           title={"WordSeek: Missing Keyword Report"}
           description="Automatically identify missing keywords based on your query data from
@@ -101,7 +97,7 @@ export const DashboardView: FC<Props> = () => {
           buttonLabel="Get Started"
           emoji="👀"
         />
-        {wordSeekResults && wordSeekResults.length > 0 && (
+        {activeTeam && (
           <DashboardCard
             onClick={() => {
               onWordSeekResultsToggle();
@@ -148,6 +144,9 @@ export const DashboardView: FC<Props> = () => {
       <OnboardingModal
         isOpen={isOnboardingModalOpen}
         onClose={onOnboardingModalClose}
+        onComplete={() => {
+          onWordSeekToggle();
+        }}
       />
       <PricingModal isOpen={isPricingModalOpen} onClose={onPricingModalClose} />
     </Stack>

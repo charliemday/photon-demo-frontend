@@ -22,7 +22,7 @@ export const Modal: React.FC<Props> = ({
   isOpen,
   onClose,
   contentPadding = 6,
-  contentRadius = "2xl",
+  contentRadius = "lg",
   contentProps = {},
   size = "2xl",
   showCloseButton = true,

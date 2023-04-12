@@ -7,6 +7,7 @@ import {
   ModalFooter,
   ModalHeader,
   Select,
+  Spinner,
   Table,
   TableContainer,
   Tbody,
@@ -48,12 +49,13 @@ export const WordSeekResultsModal: FC<Props> = ({
     (state: RootState) => state.team.activeTeam
   );
 
-  const { data: wordSeekResults, refetch } = useWordSeekResultsQuery(
-    activeTeam?.uid,
-    {
-      skip: !activeTeam?.uid,
-    }
-  );
+  const {
+    data: wordSeekResults,
+    refetch,
+    isLoading,
+  } = useWordSeekResultsQuery(activeTeam?.uid, {
+    skip: !activeTeam?.uid,
+  });
 
   useEffect(() => {
     if (isOpen) {
@@ -138,7 +140,10 @@ export const WordSeekResultsModal: FC<Props> = ({
               )}
             </Box>
           </HStack>
-          <HStack>
+          <HStack spacing={2}>
+            <Button size="sm" isLoading={isLoading} onClick={refetch}>
+              Refresh
+            </Button>
             <CSVLink
               data={buildExportData()}
               filename="word-seek-results.csv"
@@ -160,7 +165,11 @@ export const WordSeekResultsModal: FC<Props> = ({
       </ModalHeader>
       <ModalBody>
         <Divider mb={6} />
-        {tableData.length === 0 ? (
+        {isLoading ? (
+          <Flex alignItems="center" justifyContent="center" h="40vh">
+            <Spinner size="lg" />
+          </Flex>
+        ) : tableData.length === 0 ? (
           <Flex alignItems="center" justifyContent="center" h="50vh">
             <Text fontSize="xl">
               🎉 No missing keywords found for this page

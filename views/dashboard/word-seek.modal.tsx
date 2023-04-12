@@ -18,13 +18,10 @@ import {
   useGetSearchConsoleSitesQuery,
 } from "api/vendor.api";
 import { Button } from "components/button";
-import { Image } from "components/image";
 import { Modal } from "components/modals";
-import { SECONDARY_COLOR } from "config/brand";
 import { useHasProductAccess } from "hooks";
 import { FC, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { BarLoader } from "react-spinners";
 import { RootState, Team } from "types";
 import { cleanUrl, typeCheckError } from "utils";
 
@@ -190,35 +187,29 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
       <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalHeader>
           <HStack>
-            <Text>👀</Text>
-            <Text>WordSeek: Missing Keywords Report</Text>
+            <Text>WordSeek Running...</Text>
           </HStack>
         </ModalHeader>
         <ModalBody pt={6}>
-          <Stack>
-            <Text fontWeight="medium" mb={3}>
-              {`WordSeek is running and the result will be sent to ${userDetails?.email} in a couple of minutes`}
+          <Stack
+            alignItems="center"
+            textAlign="center"
+            w="70%"
+            m="auto"
+            py={12}
+            spacing={6}
+          >
+            <Text fontSize="3xl">⏳</Text>
+            <Text fontSize="lg">
+              WordSeek is running... we will email your results, but they will
+              also appear in your dashboard
             </Text>
-
-            <HStack justifyContent="center" spacing={24}>
-              <Box
-                w={16}
-                h={16}
-                borderRadius="md"
-                overflow="hidden"
-                position="relative"
-              >
-                <Image src="/logos/baser.png" alt="Baser Logo" layout="fill" />
-              </Box>
-              <BarLoader color={SECONDARY_COLOR} />
-              <Box>
-                <Text fontSize="4xl">📩</Text>
-              </Box>
-            </HStack>
           </Stack>
         </ModalBody>
         <ModalFooter>
-          <Button onClick={onClose}>Close</Button>
+          <Button w="full" onClick={onClose}>
+            Close
+          </Button>
         </ModalFooter>
       </Modal>
     );
@@ -235,7 +226,7 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
       <ModalBody>
         <Box w="full">
           <Text fontWeight="medium" mb={3}>
-            {`Select a site (we'll try and match your site to your Team URL)`}
+            {`Select a site`}
           </Text>
           <Box mb={6}>
             {isSitesLoading ? (

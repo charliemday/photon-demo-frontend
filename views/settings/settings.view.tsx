@@ -171,8 +171,8 @@ export const SettingsView: React.FC<Props> = () => {
             </Button>
           </Box>
         </Stack>
-        <Stack spacing={6} border="solid 2px red" p={4} borderRadius="xl">
-          {renderHeading("☢️ Danger Zone")}
+        <Stack spacing={6} borderRadius="xl">
+          {renderHeading("☢️ Account Removal")}
           <Box>
             <Button
               colorScheme="red"
