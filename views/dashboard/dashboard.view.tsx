@@ -11,6 +11,7 @@ import {
 import { OnboardingModal } from "./onboarding";
 
 import { useWordSeekResultsQuery } from "api/engine.api";
+import { useListTeamsQuery } from "api/team.api";
 import { useUserDetailsQuery } from "api/user.api";
 import { FATHOM_EVENTS } from "config";
 import { useHasProductAccess } from "hooks";
@@ -24,6 +25,8 @@ const MIN_ONBOARDING_STEP = 1;
 export const DashboardView: FC<Props> = () => {
   const { data: userDetails } = useUserDetailsQuery(undefined);
   const [defaultPage, setDefaultPage] = useState<string | null>(null);
+
+  useListTeamsQuery(undefined);
 
   const { hasAccess: hasWordSeekAccess } = useHasProductAccess();
 
