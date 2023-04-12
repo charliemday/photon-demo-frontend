@@ -67,10 +67,6 @@ export const DashboardView: FC<Props> = () => {
     skip: !activeTeam?.uid,
   });
 
-  const { data: wordSeekResults } = useWordSeekResultsQuery(activeTeam?.uid, {
-    skip: !activeTeam?.uid,
-  });
-
   const handleShowResults = (page: string) => {
     setDefaultPage(page);
     onWordSeekResultsToggle();
@@ -88,8 +84,12 @@ export const DashboardView: FC<Props> = () => {
       <Grid templateColumns="repeat(5, 1fr)" gap={6}>
         <DashboardCard
           onClick={() => {
-            onWordSeekToggle();
-            fathom.trackEvent(FATHOM_EVENTS.WORD_SEEK_CLICK);
+            if (activeTeam) {
+              onWordSeekToggle();
+              fathom.trackEvent(FATHOM_EVENTS.WORD_SEEK_CLICK);
+            } else {
+              onOnboardingModalToggle();
+            }
           }}
           title={"WordSeek: Missing Keyword Report"}
           description="Automatically identify missing keywords based on your query data from
@@ -97,16 +97,18 @@ export const DashboardView: FC<Props> = () => {
           buttonLabel="Get Started"
           emoji="👀"
         />
-        <DashboardCard
-          onClick={() => {
-            onWordSeekResultsToggle();
-            fathom.trackEvent(FATHOM_EVENTS.WORD_SEEK_RESULTS_OPENED);
-          }}
-          title={"WordSeek: Results"}
-          description="View the results of your WordSeek report"
-          buttonLabel="View Results"
-          emoji="🏁"
-        />
+        {activeTeam && (
+          <DashboardCard
+            onClick={() => {
+              onWordSeekResultsToggle();
+              fathom.trackEvent(FATHOM_EVENTS.WORD_SEEK_RESULTS_OPENED);
+            }}
+            title={"WordSeek: Results"}
+            description="View the results of your WordSeek report"
+            buttonLabel="View Results"
+            emoji="🏁"
+          />
+        )}
         {!hasWordSeekAccess && (
           <DashboardCard
             onClick={() => {

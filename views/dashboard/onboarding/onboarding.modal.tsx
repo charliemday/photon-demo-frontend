@@ -39,7 +39,7 @@ export const OnboardingModal: FC<Props> = ({ isOpen, onClose, onComplete }) => {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={() => {}}
+      onClose={onClose}
       size="xl"
       contentProps={{
         overflow: "hidden",
