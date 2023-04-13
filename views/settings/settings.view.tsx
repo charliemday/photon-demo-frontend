@@ -125,7 +125,6 @@ export const SettingsView: React.FC<Props> = () => {
               bgColor={BRAND_COLOR}
               _hover={{ bgColor: BRAND_COLOR, boxShadow: "lg" }}
               onClick={onGscModalOpen}
-              isLoading={isCreatingCustomerPortal}
             >
               Refresh GSC Connection
             </Button>
