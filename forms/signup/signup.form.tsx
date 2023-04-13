@@ -3,6 +3,7 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Heading,
   HStack,
@@ -125,6 +126,9 @@ export const SignupForm: FC<Props> = ({
             onChange={formik.handleChange}
           />
           <FormErrorMessage>{formik.errors?.password}</FormErrorMessage>
+          <FormHelperText>
+            ( Must be at least 6 characters long )
+          </FormHelperText>
         </FormControl>
 
         <FormControl
@@ -147,17 +151,20 @@ export const SignupForm: FC<Props> = ({
           />
           <Text>
             I agree to the{" "}
-            <Link href={TERMS_OF_SERVICE_URL}>Terms of Service</Link> and the{" "}
-            <Link href={PRIVACY_POLICY_URL}>Privacy Policy</Link>
+            <Link target="_blank" href={TERMS_OF_SERVICE_URL}>
+              Terms of Service
+            </Link>{" "}
+            and the{" "}
+            <Link target="_blank" href={PRIVACY_POLICY_URL}>
+              Privacy Policy
+            </Link>
           </Text>
         </HStack>
       </Stack>
 
       {formErrorMsg && (
         <Flex mb={12}>
-          <Text textColor={"red.500"} fontSize="sm">
-            Could not login with credentials
-          </Text>
+          <Text textColor={"red.500"}>{formErrorMsg}</Text>
         </Flex>
       )}
 
