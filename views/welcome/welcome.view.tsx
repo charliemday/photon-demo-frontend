@@ -8,6 +8,7 @@ import { SignupForm, SignupFormValues } from "forms/signup";
 
 import { FATHOM_EVENTS } from "config";
 import { useFathom } from "hooks";
+import { typeCheckError } from "utils";
 import { BackgroundView } from "views/background";
 
 const IMAGE_RATIO = 1210 / 870;
@@ -34,7 +35,12 @@ export const WelcomeView: React.FC = () => {
         fathom.trackEvent(FATHOM_EVENTS.SIGNUP);
         setShowBackground(true);
       })
-      .catch(() => setSignupError("Unable to signup with details"));
+      .catch((e) => {
+        const error = typeCheckError(e);
+        setSignupError(
+          typeof error === "string" ? error : "Unable to signup with details"
+        );
+      });
   };
 
   const handleLogin = async (values: LoginFormValues) => {
@@ -43,7 +49,12 @@ export const WelcomeView: React.FC = () => {
       .then(() => {
         setShowBackground(true);
       })
-      .catch(() => setLoginError("Unable to login with credentials"));
+      .catch((e) => {
+        const error = typeCheckError(e);
+        setLoginError(
+          typeof error === "string" ? error : "Unable to login with credentials"
+        );
+      });
   };
 
   if (showBackground) {

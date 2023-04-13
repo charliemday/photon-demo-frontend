@@ -85,9 +85,7 @@ export const LoginForm: React.FC<Props> = ({
 
       {formErrorMsg && (
         <Flex mb={12}>
-          <Text textColor={"red.500"} fontSize="sm">
-            Could not login with credentials
-          </Text>
+          <Text textColor={"red.500"}>{formErrorMsg}</Text>
         </Flex>
       )}
 

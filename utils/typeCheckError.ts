@@ -21,6 +21,7 @@ export const typeCheckError = (error: any): boolean | string => {
     if (typeof error === "object" && error !== null) {
         if ("data" in error) {
             const { data } = error;
+
             if (typeof data === "object" && data !== null) {
                 if ("error" in data) {
                     const { error: errorData } = data;
@@ -44,6 +45,7 @@ export const typeCheckError = (error: any): boolean | string => {
                         }
 
 
+
                         if ("message" in errorData) {
                             const { message } = errorData;
                             if (typeof message === "string") {
@@ -52,6 +54,14 @@ export const typeCheckError = (error: any): boolean | string => {
                         }
                     }
                 }
+
+                if ("non_field_errors" in data) {
+                    const { non_field_errors: nonFieldErrors } = data;
+                    if (Array.isArray(nonFieldErrors) && nonFieldErrors.length > 0) {
+                        return nonFieldErrors[0];
+                    }
+                }
+
             }
         }
     }
