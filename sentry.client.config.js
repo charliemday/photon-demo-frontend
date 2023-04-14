@@ -18,5 +18,8 @@ if (process.env.NODE_ENV === "production") {
     // Note: if you want to override the automatic release value, do not set a
     // `release` value here - use the environment variable `SENTRY_RELEASE`, so
     // that it will also get attached to your source maps
+    replaysOnErrorSampleRate: 1.0,
+
+    integrations: [new Sentry.Replay()],
   });
 }
