@@ -42,6 +42,21 @@ const faqs = [
       </Text>
     ),
   },
+  {
+    question: "No pages appearing?",
+    answer: (
+      <Text>
+        {`In order for WordSeek to run properly, Google needs to have indexed your website pages. These will show on your Search Console. Still confused? Just drop us a message on`}{" "}
+        <Link href="mailto:info@getbaser.com">info@getbaser.com</Link> and we
+        will get back to you!
+      </Text>
+    ),
+  },
+  {
+    question: "No result appearing?",
+    answer:
+      "This is either a good or a bad thing! Either you are 100% optimised already… or, you do not have enough queries being associated with your page from Google.",
+  },
 ];
 
 export const FaqsView: React.FC<Props> = () => (
