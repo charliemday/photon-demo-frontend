@@ -63,6 +63,7 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
     data: pagesData,
     refetch: refetchPages,
     isLoading: isPagesLoading,
+    isFetching: isPagesFetching,
     isError: isPagesError,
     error: pagesError,
   } = useGetSearchConsolePagesQuery(
@@ -215,6 +216,8 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
     );
   }
 
+  console.log("Pages Option Data: ", pagesOptionData);
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="2xl">
       <ModalHeader>
@@ -251,11 +254,17 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
           <Text fontWeight="medium" mb={3}>
             Select a page on the site
           </Text>
-
-          {isPagesLoading ? (
+          {isPagesLoading || isPagesFetching ? (
             <Flex justifyContent="center" w="full">
               <Skeleton w="full" h={8} borderRadius="md" />
             </Flex>
+          ) : pagesOptionData.length === 0 ? (
+            <Box mb={6}>
+              <Text>
+                🤔 No pages found for this site on your Google Search Console.
+                Check out our FAQs for why this might be!
+              </Text>
+            </Box>
           ) : (
             <Select
               placeholder="Select a page"
