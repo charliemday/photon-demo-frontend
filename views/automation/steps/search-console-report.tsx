@@ -1,10 +1,18 @@
 import {
-  Checkbox, Flex, Heading, HStack,
+  Checkbox,
+  Flex,
+  Heading,
+  HStack,
   Input,
-  Select, Spinner, Stack, Text, useToast
+  Select,
+  Spinner,
+  Stack,
+  Text,
+  useToast,
 } from "@chakra-ui/react";
 import {
-  useCreateSearchConsoleReportMutation, useGetSearchConsoleSitesQuery
+  useCreateSearchConsoleReportMutation,
+  useGetSearchConsoleSitesQuery,
 } from "api/vendor.api";
 import { Button } from "components/button";
 import React, { useEffect, useState } from "react";
@@ -37,9 +45,14 @@ export const SearchConsoleReport: React.FC<Props> = ({
   ) as Team | null;
 
   const { isLoading: isSiteLoading, data: sites } =
-    useGetSearchConsoleSitesQuery(undefined, {
-      skip: !isOpen
-    });
+    useGetSearchConsoleSitesQuery(
+      {
+        teamUid: activeTeam?.uid || "",
+      },
+      {
+        skip: !isOpen || activeTeam?.uid === undefined,
+      }
+    );
 
   const [
     createReport,
