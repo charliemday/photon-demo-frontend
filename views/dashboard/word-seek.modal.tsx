@@ -257,32 +257,36 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
             )}
           </Box>
 
-          <Text fontWeight="medium" mb={3}>
-            Select a page on the site
-          </Text>
-          {isPagesLoading || isPagesFetching ? (
-            <Flex justifyContent="center" w="full">
-              <Skeleton w="full" h={8} borderRadius="md" />
-            </Flex>
-          ) : pagesOptionData.length === 0 ? (
-            <Box mb={6}>
-              <Text>
-                🤔 No pages found for this site on your Google Search Console.
-                Check out our FAQs for why this might be!
+          {selectedSite && (
+            <>
+              <Text fontWeight="medium" mb={3}>
+                Select a page on the site
               </Text>
-            </Box>
-          ) : (
-            <Select
-              placeholder="Select a page"
-              onChange={(e) => setSelectedPage(e.target.value)}
-              {...(selectedPage && { value: selectedPage })}
-            >
-              {pagesOptionData.map((page) => (
-                <option key={page.value} value={page.value}>
-                  {page.label}
-                </option>
-              ))}
-            </Select>
+              {isPagesLoading || isPagesFetching ? (
+                <Flex justifyContent="center" w="full">
+                  <Skeleton w="full" h={8} borderRadius="md" />
+                </Flex>
+              ) : pagesOptionData.length === 0 ? (
+                <Box mb={6}>
+                  <Text>
+                    🤔 No pages found for this site on your Google Search
+                    Console. Check out our FAQs for why this might be!
+                  </Text>
+                </Box>
+              ) : (
+                <Select
+                  placeholder="Select a page"
+                  onChange={(e) => setSelectedPage(e.target.value)}
+                  {...(selectedPage && { value: selectedPage })}
+                >
+                  {pagesOptionData.map((page) => (
+                    <option key={page.value} value={page.value}>
+                      {page.label}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            </>
           )}
         </Box>
       </ModalBody>
