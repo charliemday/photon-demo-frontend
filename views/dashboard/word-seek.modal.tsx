@@ -216,8 +216,6 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
     );
   }
 
-  console.log("Pages Option Data: ", pagesOptionData);
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="2xl">
       <ModalHeader>
