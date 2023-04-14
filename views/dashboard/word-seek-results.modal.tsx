@@ -8,6 +8,7 @@ import {
   ModalHeader,
   Select,
   Spinner,
+  Stack,
   Table,
   TableContainer,
   Tbody,
@@ -16,7 +17,6 @@ import {
   Th,
   Thead,
   Tr,
-  useToast,
 } from "@chakra-ui/react";
 import { useWordSeekResultsQuery } from "api/engine.api";
 import { Button } from "components/button";
@@ -25,6 +25,7 @@ import { Modal } from "components/modals";
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { CSVLink } from "react-csv";
 import { AiOutlineTeam } from "react-icons/ai";
+import { BiRefresh } from "react-icons/bi";
 import { BsDownload } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { RootState, Team } from "types";
@@ -43,8 +44,6 @@ export const WordSeekResultsModal: FC<Props> = ({
   const [selectedPage, setSelectedPage] = useState<string | null>(defaultPage);
 
   const csvData = useRef<any>([]);
-  const toast = useToast();
-
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
   );
@@ -53,6 +52,7 @@ export const WordSeekResultsModal: FC<Props> = ({
     data: wordSeekResults,
     refetch,
     isLoading,
+    isFetching,
   } = useWordSeekResultsQuery(activeTeam?.uid, {
     skip: !activeTeam?.uid,
   });
@@ -141,8 +141,9 @@ export const WordSeekResultsModal: FC<Props> = ({
             </Box>
           </HStack>
           <HStack spacing={2}>
-            <Button size="sm" isLoading={isLoading} onClick={refetch}>
-              Refresh
+            <Button size="sm" isLoading={isFetching} onClick={refetch}>
+              <Text mr={2}>Refresh</Text>
+              <BiRefresh fontSize={18} />
             </Button>
             <CSVLink
               data={buildExportData()}
@@ -171,9 +172,12 @@ export const WordSeekResultsModal: FC<Props> = ({
           </Flex>
         ) : tableData.length === 0 ? (
           <Flex alignItems="center" justifyContent="center" h="50vh">
-            <Text fontSize="xl">
-              🎉 No missing keywords found for this page
-            </Text>
+            <Stack m="auto" w="full" textAlign="center" alignItems="center">
+              <Text fontSize="xl">🎉</Text>
+              <Text fontSize="lg" w="50%">
+                {`No missing keywords found for this page. This means this page is already optimized for the keywords you are targeting.`}
+              </Text>
+            </Stack>
           </Flex>
         ) : (
           <TableContainer h="50vh" overflowY="auto">

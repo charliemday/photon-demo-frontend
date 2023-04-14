@@ -43,6 +43,7 @@ export interface CompareConsoleData {
 
 export interface GetSearchConsolePagesRequest {
     domain: string;
+    teamUid: string;
 }
 
 export interface GetSearchConsolePagesResponse {
@@ -65,8 +66,15 @@ export const vendorApi = baseApi.injectEndpoints({
                 url: apiUrls.AUTH_URL(appName)
             }),
         }),
-        getSearchConsoleSites: builder.query<string[], undefined>({
-            query: () => apiUrls.GOOGLE_SITES,
+        /**
+         * Gets the sites for a given domain
+         */
+        getSearchConsoleSites: builder.query<string[], {
+            teamUid: string
+        }>({
+            query: ({
+                teamUid
+            }) => apiUrls.GOOGLE_SITES(teamUid),
             transformResponse: (response: SearchConsoleSitesResponse) => {
                 const sites = response.siteEntry.map((site) => site.siteUrl);
                 return sites;
@@ -104,8 +112,8 @@ export const vendorApi = baseApi.injectEndpoints({
             GetSearchConsolePagesResponse,
             GetSearchConsolePagesRequest
         >({
-            query: ({ domain }) => ({
-                url: `/google/pages?domain=${encodeURIComponent(domain)}`,
+            query: ({ domain, teamUid }) => ({
+                url: `/google/pages?domain=${encodeURIComponent(domain)}&team_uid=${teamUid}`,
             }),
             providesTags: [TAG_TYPES.GOOGLE],
             transformResponse: (response: { pages: string[] | string }) => {

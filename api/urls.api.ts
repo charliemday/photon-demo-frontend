@@ -19,7 +19,7 @@ export const apiUrls = {
         return 'get-auth-url/';
     },
     // Google
-    GOOGLE_SITES: 'google/sites',
+    GOOGLE_SITES: (teamUid: string) => `google/sites?team_uid=${teamUid}`,
     POPULATE_REPORTS: 'google/populate-reports',
     GOOGLE_EXTERNAL_CLIENT: "google/clients/external",
     GOOGLE_INTERNAL_CLIENT: "google/clients/internal",

@@ -6,6 +6,11 @@ export interface MissingKeyword {
     impressions: number;
 }
 
+export interface JobInterface {
+    id: number;
+    site: string;
+}
+
 export interface WordSeekItem {
     id: number;
     missingKeywords: MissingKeyword[];
@@ -14,4 +19,5 @@ export interface WordSeekItem {
     page: string;
     team: number;
     user: number;
+    jobs: JobInterface;
 }

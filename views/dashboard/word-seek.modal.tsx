@@ -57,7 +57,14 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
   const toast = useToast();
 
   const { data: sites, isLoading: isSitesLoading } =
-    useGetSearchConsoleSitesQuery(undefined);
+    useGetSearchConsoleSitesQuery(
+      {
+        teamUid: activeTeam?.uid || "",
+      },
+      {
+        skip: !activeTeam || !isOpen,
+      }
+    );
 
   const {
     data: pagesData,
@@ -69,9 +76,10 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
   } = useGetSearchConsolePagesQuery(
     {
       domain: selectedSite || "",
+      teamUid: activeTeam?.uid || "",
     },
     {
-      skip: !selectedSite,
+      skip: !selectedSite || !activeTeam,
     }
   );
 
