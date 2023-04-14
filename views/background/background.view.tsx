@@ -43,7 +43,7 @@ export const BackgroundView: React.FC<Props> = () => {
         bottom={0}
         bgColor="rgba(255, 255, 255, 0.75)"
       >
-        <MoonLoader size="sm" />
+        <MoonLoader size={40} />
       </Flex>
     </>
   );
