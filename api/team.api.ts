@@ -1,5 +1,5 @@
 import { camelizeKeys, decamelizeKeys } from "humps";
-import { APIErrorResponse, ConvertToSnakeCase, Team } from "types";
+import { APIErrorResponse, ConvertToSnakeCase, Team, TeamType } from "types";
 import { baseApi, TAG_TYPES } from ".";
 
 import { apiUrls } from "api/urls.api";
@@ -57,15 +57,21 @@ interface BroadKeywordBody {
   limit: number;
 }
 
+interface ListTeamRequestParams {
+  teamType?: TeamType;
+}
+
 // Define a service using a base URL and expected endpoints
 export const teamApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     /**
      * List teams
      */
-    listTeams: builder.query<Team[], undefined>({
-      query: () => ({
-        url: apiUrls.TEAMS,
+    listTeams: builder.query<Team[], ListTeamRequestParams>({
+      query: ({
+        teamType
+      }) => ({
+        url: apiUrls.TEAMS(teamType),
       }),
       providesTags: [TAG_TYPES.TEAMS],
       transformResponse: (response: TeamResponse[]) =>
@@ -76,7 +82,7 @@ export const teamApi = baseApi.injectEndpoints({
      */
     createTeam: builder.mutation<Team | APIErrorResponse, CreateTeamInterface>({
       query: ({ body }) => ({
-        url: apiUrls.TEAMS,
+        url: apiUrls.TEAMS(),
         method: "POST",
         body,
       }),

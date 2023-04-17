@@ -28,7 +28,7 @@ import { GrAdd } from "react-icons/gr";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
 import { setActiveTeam } from "store/slices";
-import { Team } from "types";
+import { Team, TeamType } from "types";
 import { typeCheckError } from "utils";
 
 interface Props {
@@ -37,6 +37,7 @@ interface Props {
   enableAddTeam?: boolean;
   showRefresh?: boolean;
   title?: string;
+  teamType?: TeamType;
 }
 
 export const FloatingButton: React.FC<Props> = ({
@@ -45,6 +46,7 @@ export const FloatingButton: React.FC<Props> = ({
   enableAddTeam,
   showRefresh,
   title = "Select a Team",
+  teamType = TeamType.INTERNAL,
 }) => {
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
@@ -82,7 +84,9 @@ export const FloatingButton: React.FC<Props> = ({
 
   const toast = useToast();
 
-  const { refetch, error, isError } = useListTeamsQuery(undefined);
+  const { refetch, error, isError } = useListTeamsQuery({
+    teamType,
+  });
 
   useEffect(() => {
     if (error && isError) {

@@ -1,10 +1,12 @@
+import { TeamType } from "types";
+
 export const apiUrls = {
     // Authentication
     LOGIN: 'login/',
     SIGNUP: 'signup/',
     COMPLETE_OAUTH: 'complete-oauth/',
     // Teams
-    TEAMS: 'teams/',
+    TEAMS: (teamType?: TeamType) => `teams/${teamType ? `?team_type=${teamType}` : ''}`,
     TEAM: (id: number) => `teams/${id}/`,
     TEAM_CLASSIFICATION: (teamUid: string) => `teams/team/${teamUid}/classifications`,
     TEAM_COMPETITORS: (teamUid?: string) => `teams/team/competitors${teamUid ? `?team_uid=${teamUid}` : ''}`,

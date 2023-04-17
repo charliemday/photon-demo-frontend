@@ -26,7 +26,7 @@ export const DashboardView: FC<Props> = () => {
   const { data: userDetails } = useUserDetailsQuery(undefined);
   const [defaultPage, setDefaultPage] = useState<string | null>(null);
 
-  useListTeamsQuery(undefined);
+  useListTeamsQuery({});
 
   const { hasAccess: hasWordSeekAccess } = useHasProductAccess();
 

@@ -16,3 +16,8 @@ export interface Team {
 
 export type SemrushDatabaseKeys = keyof typeof SEMRUSH_DATABASES;
 export type SemrushDatabase = typeof SEMRUSH_DATABASES[SemrushDatabaseKeys];
+
+export enum TeamType {
+  INTERNAL = "internal",
+  EXTERNAL = "external",
+}
