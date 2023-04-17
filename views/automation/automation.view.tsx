@@ -21,7 +21,7 @@ import { BsCheckCircleFill } from "react-icons/bs";
 import { IoIosCloseCircle } from "react-icons/io";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
-import { Team } from "types";
+import { Team, TeamType } from "types";
 import {
   BroadSeedKeywords,
   PeopleAlsoAsked,
@@ -162,7 +162,9 @@ export const AutomationView: React.FC = () => {
   // const [useNewStep1, setUserNewStep1] = useState<boolean>(false);
 
   const { data: user } = useUserDetailsQuery(undefined);
-  const { data: teams } = useListTeamsQuery(undefined);
+  const { data: teams } = useListTeamsQuery({
+    teamType: TeamType.INTERNAL,
+  });
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
   );
