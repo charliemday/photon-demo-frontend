@@ -1,21 +1,21 @@
-import React, { useEffect } from "react";
-import { ModalStepWrapper } from "./modal-step-wrapper";
 import {
   Box,
+  Grid,
+  GridItem,
   Heading,
   HStack,
   Stack,
   Text,
-  Grid,
-  GridItem,
   useToast,
 } from "@chakra-ui/react";
-import { BsFillPersonFill } from "react-icons/bs";
 import Image from "next/image";
+import React, { useEffect } from "react";
+import { BsFillPersonFill } from "react-icons/bs";
+import { ModalStepWrapper } from "./modal-step-wrapper";
 
-import { Button } from "components/button";
 import { useListTeamsQuery } from "api/team.api";
 import { usePopulateSearchConsoleReportsMutation } from "api/vendor.api";
+import { Button } from "components/button";
 import { typeCheckError } from "utils";
 
 interface Props {
@@ -24,7 +24,7 @@ interface Props {
 }
 
 export const PopulateSCReports: React.FC<Props> = (props) => {
-  const { data: teams } = useListTeamsQuery(undefined);
+  const { data: teams } = useListTeamsQuery({});
   const [populateReports, { isLoading, isSuccess, isError, error }] =
     usePopulateSearchConsoleReportsMutation();
 

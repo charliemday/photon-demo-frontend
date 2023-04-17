@@ -1,13 +1,12 @@
 import {
   Avatar,
-  Text,
   HStack,
   Menu,
   MenuButton,
-  MenuList,
-  MenuItem,
   MenuDivider,
-  Box,
+  MenuItem,
+  MenuList,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import React from "react";
@@ -15,13 +14,13 @@ import { BiCheck, BiChevronDown } from "react-icons/bi";
 import { IoMdAddCircleOutline, IoMdExit } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useUserDetailsQuery } from "api/user.api";
 import { useListTeamsQuery } from "api/team.api";
-import { Team } from "types";
-import { setActiveTeam } from "store/slices";
-import { RootState } from "store";
-import { useLogout } from "hooks";
+import { useUserDetailsQuery } from "api/user.api";
 import { AddTeamModal } from "components/modals";
+import { useLogout } from "hooks";
+import { RootState } from "store";
+import { setActiveTeam } from "store/slices";
+import { Team } from "types";
 
 interface Props {}
 
@@ -38,9 +37,12 @@ export const ProfileCard: React.FC<Props> = () => {
   const { data: userData } = useUserDetailsQuery(undefined, {
     skip: !authToken,
   });
-  const { data: teamsData } = useListTeamsQuery(undefined, {
-    skip: !authToken,
-  });
+  const { data: teamsData } = useListTeamsQuery(
+    {},
+    {
+      skip: !authToken,
+    }
+  );
   const fullName = `${userData?.firstName} ${userData?.lastName}`;
 
   const handleTeamClick = (team: Team) => dispatch(setActiveTeam(team));
