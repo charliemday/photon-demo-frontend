@@ -7,6 +7,8 @@ interface ProcessAhrefsDataBody extends FormData { }
 
 interface PeopleAlsoAskBody extends FormData { }
 
+interface UploadKeywordInsightsOutputBody extends FormData { }
+
 export interface SeedKeywordsBody {
   /**
    * The ID of the team to which the keywords belong
@@ -96,6 +98,31 @@ export interface WordSeekResultsResponse {
   data: WordSeekItem[];
 }
 
+
+export interface KeywordInsightsResult {
+  id: number;
+  hub: string;
+  // TODO: Humps doesn't support depth options and we don't want to corrupt
+  // the format of the keywords
+  hub_data: {
+    [key: string]: {
+      [key: string]: string[]
+    }
+  },
+}
+
+export interface KeywordInsightsOutput {
+  id: number;
+  team: number;
+  created: string;
+}
+
+export interface KeywordInsightsResultsRequest {
+  teamId: number;
+  parentId: number;
+}
+
+
 // Define a service using a base URL and expected endpoints
 export const engineApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -184,7 +211,35 @@ export const engineApi = baseApi.injectEndpoints({
         return [];
       }
     }),
-  }),
+    /**
+     * Fetches the Keyword Insights results
+     */
+    keywordInsightsResults: builder.query<KeywordInsightsResult[], KeywordInsightsResultsRequest>({
+      query: ({ teamId, parentId }) => ({
+        url: apiUrls.KEYWORD_INSIGHTS_RESULTS(teamId, parentId),
+      }),
+      // transformResponse: (response: ConvertToSnakeCase<KeywordInsightsResult[]>) => camelizeKeys(response) as KeywordInsightsResult[]
+    }),
+    /**
+     * Uploads the Keyword Insights Output
+     */
+    uploadKeywordInsightsOutput: builder.mutation<undefined, UploadKeywordInsightsOutputBody>({
+      query: (body) => ({
+        url: apiUrls.UPLOAD_KEYWORD_INSIGHTS_OUTPUT,
+        method: "POST",
+        body
+      })
+    }),
+    /**
+     * Fetch the Keyword Insights output
+     */
+    keywordInsightsOutput: builder.query<KeywordInsightsOutput[], number>({
+      query: (teamId) => ({
+        url: apiUrls.KEYWORD_INSIGHTS_OUTPUT(teamId),
+      }),
+      transformResponse: (response: ConvertToSnakeCase<KeywordInsightsOutput[]>) => camelizeKeys(response) as KeywordInsightsOutput[]
+    })
+  })
 });
 
 // Export hooks for usage in functional components, which are
@@ -201,4 +256,7 @@ export const {
   useGenerateKIInputMutation,
   useWordSeekMutation,
   useWordSeekResultsQuery,
+  useKeywordInsightsResultsQuery,
+  useUploadKeywordInsightsOutputMutation,
+  useKeywordInsightsOutputQuery,
 } = engineApi;

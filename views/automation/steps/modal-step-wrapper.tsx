@@ -18,6 +18,9 @@ interface Props {
   onClose: () => void;
   children: React.ReactNode;
   size?: string;
+  contentProps?: {
+    [key: string]: any;
+  };
 }
 
 export const ModalStepWrapper: React.FC<Props> = ({
@@ -25,6 +28,7 @@ export const ModalStepWrapper: React.FC<Props> = ({
   onClose,
   children,
   size = "2xl",
+  contentProps,
 }) => {
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
@@ -33,7 +37,7 @@ export const ModalStepWrapper: React.FC<Props> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={size}>
       <ModalOverlay />
-      <ModalContent p={12}>
+      <ModalContent p={12} {...contentProps}>
         <ModalCloseButton />
         <Box
           h={10}

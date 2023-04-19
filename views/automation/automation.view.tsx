@@ -24,6 +24,8 @@ import { RootState } from "store";
 import { Team, TeamType } from "types";
 import {
   BroadSeedKeywords,
+  KeywordInsightsResults,
+  KeywordInsightsUpload,
   PeopleAlsoAsked,
   PopulateSCReports,
   ProcessRawData,
@@ -46,6 +48,8 @@ enum KEY {
   COMPARE_CONSOLE_REPORT = "compare-console-report",
   UPLOAD_AHREFS_REPORT = "upload-ahrefs-report",
   POPULATE_SC_REPORTS = "populate-sc-reports",
+  KEYWORD_INSIGHTS_UPLOAD = "keyword-insights-upload",
+  KEYWORD_INSIGHTS_RESULTS = "keyword-insights-results",
 }
 
 interface STEP {
@@ -56,6 +60,7 @@ interface STEP {
   image?: string | string[];
   isDisabled?: boolean;
   isNew?: boolean;
+  isDeprecated?: boolean;
 }
 
 const STEPS: { title: string; steps: STEP[] }[] = [
@@ -69,19 +74,20 @@ const STEPS: { title: string; steps: STEP[] }[] = [
         first 2 pages`,
         key: KEY.AHREFS_STEP_1,
         image: ["/steps/excel.png", "/openai-avatar.png", "/steps/ahrefs.jpeg"],
+        isDeprecated: true,
       },
       {
         title: "SEMRush Seed Keywords",
         description: `This will run Target Keywords and Competitors through the SEMRush API`,
         key: KEY.SEMRUSH_STEP_1,
         image: ["/openai-avatar.png", "/steps/semrush.jpeg"],
+        isDeprecated: true,
       },
       {
         title: "Broad Seed Keywords",
         description: `This will run Target Keywords through the SEMRush API`,
         key: KEY.SEMRUSH_BROAD_SEED_KEYWORDS,
         image: ["/steps/semrush.jpeg"],
-        isNew: true,
       },
       {
         title: "Combined Steps",
@@ -93,7 +99,6 @@ const STEPS: { title: string; steps: STEP[] }[] = [
           "/steps/ahrefs.jpeg",
           "/steps/semrush.jpeg",
         ],
-        isNew: true,
       },
     ],
   },
@@ -112,10 +117,18 @@ const STEPS: { title: string; steps: STEP[] }[] = [
     title: "Step 3",
     steps: [
       {
-        title: "Automate Content Creation",
+        title: "3.1 Upload Keyword Insights Data",
         description: `This will automate the content creation on the SEO Hub`,
-        comingSoon: true,
-        image: "/steps/notion.png",
+        image: "/openai-avatar.png",
+        key: KEY.KEYWORD_INSIGHTS_UPLOAD,
+        isNew: true,
+      },
+      {
+        title: "3.2 Generate Blog Outline",
+        description: `This will automate the content creation on the SEO Hub`,
+        image: "/openai-avatar.png",
+        key: KEY.KEYWORD_INSIGHTS_RESULTS,
+        isNew: true,
       },
     ],
   },
@@ -232,8 +245,20 @@ export const AutomationView: React.FC = () => {
                     comingSoon={step.comingSoon}
                     image={step.image}
                     isDisabled={step.isDisabled}
-                    badgeLabel={step.isNew ? "New" : undefined}
-                    badgeColor={step.isNew ? "green" : undefined}
+                    badgeLabel={
+                      step.isNew
+                        ? "New"
+                        : step.isDeprecated
+                        ? "Deprecated"
+                        : undefined
+                    }
+                    badgeColor={
+                      step.isNew
+                        ? "green"
+                        : step.isDeprecated
+                        ? "yellow"
+                        : undefined
+                    }
                   />
                 </GridItem>
               ))}
@@ -285,6 +310,14 @@ export const AutomationView: React.FC = () => {
       />
       <GenerateKIInput
         isOpen={isOpen && activeStep === KEY.COMBINED_STEPS}
+        onClose={onClose}
+      />
+      <KeywordInsightsUpload
+        isOpen={isOpen && activeStep === KEY.KEYWORD_INSIGHTS_UPLOAD}
+        onClose={onClose}
+      />
+      <KeywordInsightsResults
+        isOpen={isOpen && activeStep === KEY.KEYWORD_INSIGHTS_RESULTS}
         onClose={onClose}
       />
     </Box>
