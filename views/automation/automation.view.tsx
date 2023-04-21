@@ -74,14 +74,12 @@ const STEPS: { title: string; steps: STEP[] }[] = [
         first 2 pages`,
         key: KEY.AHREFS_STEP_1,
         image: ["/steps/excel.png", "/openai-avatar.png", "/steps/ahrefs.jpeg"],
-        isDeprecated: true,
       },
       {
         title: "SEMRush Seed Keywords",
         description: `This will run Target Keywords and Competitors through the SEMRush API`,
         key: KEY.SEMRUSH_STEP_1,
         image: ["/openai-avatar.png", "/steps/semrush.jpeg"],
-        isDeprecated: true,
       },
       {
         title: "Broad Seed Keywords",
@@ -124,8 +122,8 @@ const STEPS: { title: string; steps: STEP[] }[] = [
         isNew: true,
       },
       {
-        title: "3.2 Generate Blog Outline",
-        description: `This will automate the content creation on the SEO Hub`,
+        title: "3.2 View Themes",
+        description: `Views the keyword themes prior to blog generation`,
         image: "/openai-avatar.png",
         key: KEY.KEYWORD_INSIGHTS_RESULTS,
         isNew: true,

@@ -1,14 +1,6 @@
 import { FC, useRef, useState } from "react";
 
-import {
-  Box,
-  Flex,
-  Heading,
-  HStack,
-  Input,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Flex, Heading, HStack, Input, Stack, Text } from "@chakra-ui/react";
 import { Button } from "components/button";
 
 import { AiOutlineCloudDownload } from "react-icons/ai";
@@ -23,6 +15,8 @@ interface Props {
   uploadText: string;
   isLoading?: boolean;
   handleUpload?: (files: File[]) => void;
+  headerComponent?: JSX.Element;
+  footerComponent?: JSX.Element;
 }
 
 export const UploadZone: FC<Props> = ({
@@ -31,6 +25,8 @@ export const UploadZone: FC<Props> = ({
   uploadText,
   isLoading,
   handleUpload,
+  headerComponent,
+  footerComponent,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[] | null>(null);
@@ -90,8 +86,9 @@ export const UploadZone: FC<Props> = ({
   );
 
   return (
-    <Box>
+    <Stack spacing={6}>
       <Heading fontSize="lg">{title}</Heading>
+      {headerComponent}
       <Text fontSize="xs" my={6} opacity={0.75}>
         {subtitle}
       </Text>
@@ -103,6 +100,7 @@ export const UploadZone: FC<Props> = ({
         display="none"
       />
       {renderUploadZone()}
+      {footerComponent}
       <Flex justifyContent="flex-end">
         <Button size="sm" onClick={() => setFiles(null)}>
           Clear
@@ -116,6 +114,6 @@ export const UploadZone: FC<Props> = ({
           Upload
         </Button>
       </Flex>
-    </Box>
+    </Stack>
   );
 };

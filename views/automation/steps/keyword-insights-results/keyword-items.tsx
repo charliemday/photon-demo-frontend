@@ -1,39 +1,21 @@
 import { Box, HStack, Stack, Tag, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 
-import { useKeywordInsightsResultsQuery } from "api/engine.api";
+import { KeywordItem } from "api/engine.api";
 
-import { BsCheckCircle } from "react-icons/bs";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { useSelector } from "react-redux";
 import { StepWizardChildProps } from "react-step-wizard";
-import { RootState, Team } from "types";
 
 interface Props extends Partial<StepWizardChildProps> {
   parentId: number;
-  keywords: string[];
+  keywords: KeywordItem[];
   hub: string | null;
   spoke: string | null;
   theme: string | null;
 }
 
 export const KeywordItems: React.FC<Props> = (props) => {
-  const activeTeam: Team = useSelector(
-    (state: RootState) => state.team.activeTeam
-  );
-
   const [selectedKeywords, setSelectedKeywords] = useState<string[]>([]);
-
-  const { data: results } = useKeywordInsightsResultsQuery(
-    {
-      parentId: props.parentId,
-      teamId: activeTeam?.id,
-    },
-    {
-      skip: !props.parentId || !activeTeam?.id,
-    }
-  );
-
   const { hub, spoke, theme } = props;
 
   return (
@@ -56,13 +38,16 @@ export const KeywordItems: React.FC<Props> = (props) => {
         </Text>
 
         <Stack>
-          {props.keywords.map((keyword, index) => (
-            <HStack key={index}>
+          {props.keywords.map(({ keyword, search_volume }, index) => (
+            <HStack key={index} justifyContent="space-between">
               <Tag
                 _hover={{
                   cursor: "pointer",
                   boxShadow: "0 0 0 2px #3182ce",
                 }}
+                colorScheme={
+                  selectedKeywords.includes(keyword) ? "green" : undefined
+                }
                 onClick={() => {
                   if (selectedKeywords.includes(keyword)) {
                     setSelectedKeywords(
@@ -75,9 +60,14 @@ export const KeywordItems: React.FC<Props> = (props) => {
               >
                 {keyword}
               </Tag>
-              {selectedKeywords.includes(keyword) && (
-                <BsCheckCircle color="green" />
-              )}
+
+              <Tag
+                colorScheme={
+                  selectedKeywords?.includes(keyword) ? "green" : "gray"
+                }
+              >
+                Search Volume: {search_volume}
+              </Tag>
             </HStack>
           ))}
         </Stack>

@@ -99,6 +99,12 @@ export interface WordSeekResultsResponse {
 }
 
 
+export interface KeywordItem {
+  keyword: string;
+  search_volume: number;
+}
+
+
 export interface KeywordInsightsResult {
   id: number;
   hub: string;
@@ -106,7 +112,7 @@ export interface KeywordInsightsResult {
   // the format of the keywords
   hub_data: {
     [key: string]: {
-      [key: string]: string[]
+      [key: string]: KeywordItem[];
     }
   },
 }
@@ -115,6 +121,7 @@ export interface KeywordInsightsOutput {
   id: number;
   team: number;
   created: string;
+  name: string;
 }
 
 export interface KeywordInsightsResultsRequest {
