@@ -19,21 +19,6 @@ interface Props {
   onClose: () => void;
 }
 
-const LEGEND_DATA = [
-  {
-    label: "Hub",
-    color: "#C6F6D5",
-  },
-  {
-    label: "Spoke",
-    color: "#BEE3F8",
-  },
-  {
-    label: "Theme",
-    color: "#FEEBC8",
-  },
-];
-
 export const KeywordInsightsResults: FC<Props> = (props) => {
   const [parentId, setParentId] = useState<number | null>(null);
 

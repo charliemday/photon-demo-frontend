@@ -3,12 +3,14 @@ import { ModalStepWrapper } from "./modal-step-wrapper";
 
 import {
   Box,
+  Checkbox,
   Flex,
   HStack,
   Input,
   Select,
   Stack,
   Text,
+  Tooltip,
   useToast,
 } from "@chakra-ui/react";
 import { useUploadKeywordInsightsOutputMutation } from "api/engine.api";
@@ -32,11 +34,13 @@ const GPT_MODELS = [
   { label: "GPT-4", value: "gpt-4" },
 ];
 
+const MAX_BATCH_OUTPUTS = 10; // Store this in a config file
+
 export const KeywordInsightsUpload: FC<Props> = (props) => {
   const activeTeam = useSelector((state: RootState) => state.team.activeTeam);
 
   const [openaiModel, setOpenaiModel] = useState<string>("gpt-3.5");
-  const [batchOutputs, setBatchOutputs] = useState<number>(1);
+  const [batchOutputs, setBatchOutputs] = useState<number>(10);
   const [reportName, setReportName] = useState<string>("");
 
   const toast = useToast();
@@ -128,8 +132,24 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
             </Select>
           </Flex>
         </HStack>
-        <HStack>
-          <HStack>
+        <Stack>
+          <Checkbox
+            onChange={(e) => {
+              if (e.target.checked) {
+                setBatchOutputs(1);
+              } else {
+                setBatchOutputs(MAX_BATCH_OUTPUTS);
+              }
+            }}
+          >
+            <Tooltip
+              label="Checking this box will only run a single batch for testing purposes (so we can keep the cost down)"
+              hasArrow
+            >
+              <Text>Test Run</Text>
+            </Tooltip>
+          </Checkbox>
+          {/* <HStack>
             <Flex>
               <Text fontSize="sm">No. of Batch Outputs:</Text>
             </Flex>
@@ -146,8 +166,8 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
                 ))}
               </Select>
             </Flex>
-          </HStack>
-        </HStack>
+          </HStack> */}
+        </Stack>
       </HStack>
     </Stack>
   );
