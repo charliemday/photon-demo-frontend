@@ -11,7 +11,7 @@ import {
   Stack,
   Text,
   Tooltip,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import { useUploadKeywordInsightsOutputMutation } from "api/engine.api";
 import { useSelector } from "react-redux";
@@ -53,7 +53,7 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
 
     formData.append("file", files[0]);
     formData.append("team_id", activeTeam.id);
-    // formData.append("model", openaiModel);
+    formData.append("model", openaiModel);
     formData.append("outputs", batchOutputs.toString());
     formData.append("report_name", reportName);
 
@@ -119,7 +119,6 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
           </Flex>
           <Flex>
             <Select
-              isDisabled
               size="sm"
               value={openaiModel}
               onChange={(e) => setOpenaiModel(e.target.value)}
