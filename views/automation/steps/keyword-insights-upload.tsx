@@ -11,7 +11,7 @@ import {
   Stack,
   Text,
   Tooltip,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import { useUploadKeywordInsightsOutputMutation } from "api/engine.api";
 import { useSelector } from "react-redux";
@@ -40,10 +40,19 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
   const activeTeam = useSelector((state: RootState) => state.team.activeTeam);
 
   const [openaiModel, setOpenaiModel] = useState<string>("gpt-3.5");
-  const [batchOutputs, setBatchOutputs] = useState<number>(10);
+  const [batchOutputs, setBatchOutputs] = useState<number>(MAX_BATCH_OUTPUTS);
   const [reportName, setReportName] = useState<string>("");
 
   const toast = useToast();
+
+  useEffect(() => {
+    // Reset the state when the modal is closed
+    if (props.isOpen) {
+      setOpenaiModel("gpt-3.5");
+      setBatchOutputs(MAX_BATCH_OUTPUTS);
+      setReportName("");
+    }
+  }, [props.isOpen]);
 
   const [uploadFile, { isLoading, isSuccess, isError, error }] =
     useUploadKeywordInsightsOutputMutation();
