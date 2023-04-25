@@ -8,7 +8,7 @@ import { Spinner, Stack } from "@chakra-ui/react";
 import {
   KeywordItem,
   useKeywordInsightsOutputQuery,
-  useKeywordInsightsResultsQuery,
+  useKeywordInsightsResultsQuery
 } from "api/engine.api";
 import StepWizard from "react-step-wizard";
 import { HubItems } from "./hub-items";

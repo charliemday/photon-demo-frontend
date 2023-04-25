@@ -1,8 +1,17 @@
-import { Box, HStack, Stack, Tag, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
+import {
+  Box,
+  HStack,
+  Stack,
+  Tag,
+  Text,
+  useClipboard,
+  useToast,
+} from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
 
 import { KeywordItem } from "api/engine.api";
 
+import { Button } from "components/button";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { StepWizardChildProps } from "react-step-wizard";
 
@@ -17,6 +26,24 @@ interface Props extends Partial<StepWizardChildProps> {
 export const KeywordItems: React.FC<Props> = (props) => {
   const [selectedKeywords, setSelectedKeywords] = useState<string[]>([]);
   const { hub, spoke, theme } = props;
+
+  const { onCopy, hasCopied } = useClipboard(selectedKeywords.join("\n"));
+  const toast = useToast();
+
+  useEffect(() => {
+    if (hasCopied) {
+      toast({
+        title: "Keywords Copied",
+        status: "info",
+        duration: 1000,
+        isClosable: true,
+      });
+    }
+  }, [hasCopied, toast]);
+
+  useEffect(() => {
+    setSelectedKeywords([]);
+  }, [props]);
 
   return (
     <Stack spacing={6}>
@@ -72,6 +99,11 @@ export const KeywordItems: React.FC<Props> = (props) => {
           ))}
         </Stack>
       </Stack>
+      <HStack justifyContent="flex-end" pt={6}>
+        <Button onClick={onCopy} isDisabled={!selectedKeywords.length}>
+          {hasCopied ? "Copied!" : "Copy Keywords"}
+        </Button>
+      </HStack>
     </Stack>
   );
 };
