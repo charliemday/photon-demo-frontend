@@ -45,4 +45,8 @@ export const apiUrls = {
     STRIPE_CHECKOUT_URL: 'payments/stripe/checkout-url',
     VERIFY: 'payments/stripe/verify',
     CUSTOMER_PORTAL: 'payments/stripe/customer-portal',
+    // Keyword Insights
+    KEYWORD_INSIGHTS_RESULTS: (teamId: number, parentId: number) => `engine/keyword-insights-themes?team_id=${teamId}&parent_id=${parentId}`,
+    KEYWORD_INSIGHTS_OUTPUT: (teamId: number) => `engine/keyword-insights?team_id=${teamId}`,
+    UPLOAD_KEYWORD_INSIGHTS_OUTPUT: 'engine/keyword-insights/',
 };
