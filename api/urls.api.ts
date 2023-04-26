@@ -52,6 +52,7 @@ export const apiUrls = {
     // Blogs
     LIST_TEAM_BLOGS: (teamId: number) => `blogs?team_id=${teamId}`,
     LIST_BLOG_SECTIONS: (blogId: number) => `blogs/${blogId}/sections`,
+    UPDATE_BLOG: (blogId: number) => `blogs/${blogId}/`,
 
 
 };

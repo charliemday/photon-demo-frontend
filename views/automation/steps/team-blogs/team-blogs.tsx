@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import StepWizard from "react-step-wizard";
 import { BlogList } from "./blog-list";
 import { BlogOutline } from "./blog-outline";
+import { EditBlog } from "./edit-blog";
 
 interface Props {
   isOpen: boolean;
@@ -50,6 +51,7 @@ export const TeamBlogs: FC<Props> = (props) => {
           blogSections={selectedBlog?.sections}
           blogTitle={selectedBlog?.title}
         />
+        <EditBlog blog={selectedBlog} />
       </StepWizard>
     </ModalStepWrapper>
   );

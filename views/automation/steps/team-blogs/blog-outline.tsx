@@ -1,5 +1,6 @@
-import { HStack, Stack, Text } from "@chakra-ui/react";
+import { Divider, HStack, Stack, Text } from "@chakra-ui/react";
 import { BlogSectionItem } from "components/blog/blog-section-item";
+import { Button } from "components/button";
 import React from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { StepWizardChildProps } from "react-step-wizard";
@@ -13,6 +14,7 @@ interface Props extends Partial<StepWizardChildProps> {
 export const BlogOutline: React.FC<Props> = ({
   blogSections,
   previousStep,
+  nextStep,
   blogTitle,
 }) => {
   const renderEmptyBlogSections = () => (
@@ -43,6 +45,14 @@ export const BlogOutline: React.FC<Props> = ({
             <BlogSectionItem key={section.id} item={section} />
           ))
         : renderEmptyBlogSections()}
+      {blogSections?.length ? (
+        <>
+          <Divider />
+          <HStack justifyContent="flex-end">
+            <Button onClick={nextStep}>Edit</Button>
+          </HStack>
+        </>
+      ) : null}
     </Stack>
   );
 };

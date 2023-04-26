@@ -13,6 +13,10 @@ export interface ListBlogSectionsRequest {
     blogId: number;
 }
 
+export interface UpdateBlogBody extends Partial<Blog> {
+    id: number
+}
+
 
 // Define a service using a base URL and expected endpoints
 export const blogApi = baseApi.injectEndpoints({
@@ -34,10 +38,20 @@ export const blogApi = baseApi.injectEndpoints({
                 url: apiUrls.LIST_BLOG_SECTIONS(body.blogId),
             }),
             transformResponse: (response: ConvertToSnakeCase<BlogSection[]>) => camelizeKeys(response) as BlogSection[]
-        })
+        }),
+        /**
+         * Update the blog
+         */
+        updateBlog: builder.mutation<Blog, UpdateBlogBody>({
+            query: (body) => ({
+                url: apiUrls.UPDATE_BLOG(body.id),
+                method: "PATCH",
+                body,
+            })
+        }),
     })
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useListTeamBlogsQuery, useListBlogSectionsQuery } = blogApi;
+export const { useListTeamBlogsQuery, useListBlogSectionsQuery, useUpdateBlogMutation } = blogApi;
