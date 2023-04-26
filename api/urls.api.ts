@@ -49,4 +49,9 @@ export const apiUrls = {
     KEYWORD_INSIGHTS_RESULTS: (teamId: number, parentId: number) => `engine/keyword-insights-themes?team_id=${teamId}&parent_id=${parentId}`,
     KEYWORD_INSIGHTS_OUTPUT: (teamId: number) => `engine/keyword-insights?team_id=${teamId}`,
     UPLOAD_KEYWORD_INSIGHTS_OUTPUT: 'engine/keyword-insights/',
+    // Blogs
+    LIST_TEAM_BLOGS: (teamId: number) => `blogs?team_id=${teamId}`,
+    LIST_BLOG_SECTIONS: (blogId: number) => `blogs/${blogId}/sections`,
+
+
 };
