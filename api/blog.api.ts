@@ -1,6 +1,6 @@
 import { baseApi } from "api/base-query";
 import { apiUrls } from "api/urls.api";
-import { camelizeKeys } from "humps";
+import { camelizeKeys, decamelizeKeys } from "humps";
 import { ConvertToSnakeCase } from "types";
 import { Blog, BlogSection } from "types/blog";
 
@@ -15,6 +15,11 @@ export interface ListBlogSectionsRequest {
 
 export interface UpdateBlogBody extends Partial<Blog> {
     id: number
+}
+
+export interface GenerateBlogBody {
+    keywords: string[];
+    team: number;
 }
 
 
@@ -49,9 +54,20 @@ export const blogApi = baseApi.injectEndpoints({
                 body,
             })
         }),
+        /**
+         * Generate the blog outlines
+         */
+        generateBlogOutlines: builder.mutation<Blog, GenerateBlogBody>({
+            query: (body) => ({
+                url: apiUrls.GENERATE_BLOG_OUTLINES,
+                method: "POST",
+                body: decamelizeKeys(body),
+            }),
+        })
     })
+
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useListTeamBlogsQuery, useListBlogSectionsQuery, useUpdateBlogMutation } = blogApi;
+export const { useListTeamBlogsQuery, useListBlogSectionsQuery, useUpdateBlogMutation, useGenerateBlogOutlinesMutation } = blogApi;

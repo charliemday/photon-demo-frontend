@@ -35,10 +35,12 @@ export const BlogOutline: React.FC<Props> = ({
           }}
         >
           <FaArrowLeft fontSize={12} />
-          <Text fontSize="sm">Back to Blog</Text>
+          <Text fontSize="sm">Back to Blogs</Text>
         </HStack>
 
-        <Text fontSize="sm">Click to copy the text to your clipboard</Text>
+        <Text fontSize="lg" fontWeight="medium">
+          {blogTitle}
+        </Text>
       </HStack>
       {blogSections?.length
         ? blogSections?.map((section) => (
@@ -48,7 +50,8 @@ export const BlogOutline: React.FC<Props> = ({
       {blogSections?.length ? (
         <>
           <Divider />
-          <HStack justifyContent="flex-end">
+          <HStack justifyContent="space-between">
+            <Text fontSize="sm">Click to copy the text to your clipboard</Text>
             <Button onClick={nextStep}>Edit</Button>
           </HStack>
         </>

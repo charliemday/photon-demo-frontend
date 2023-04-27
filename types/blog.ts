@@ -6,6 +6,13 @@ export enum BlogStatus {
     Archived = "archived",
     Released = "released",
     Queued = "queued",
+    Generated = "generated",
+}
+
+
+export interface BlogKeyword {
+    id: number;
+    keyword: string;
 }
 
 
@@ -19,6 +26,7 @@ export interface Blog {
     status: BlogStatus;
     team: Partial<Team>;
     sections: BlogSection[];
+    keywords: BlogKeyword[];
 };
 
 export interface BlogSection {

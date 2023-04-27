@@ -1,4 +1,11 @@
-import { Divider, Stack, Text, useClipboard, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Divider,
+  Stack,
+  Text,
+  useClipboard,
+  useToast,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { BlogSection } from "types/blog";
 
@@ -41,7 +48,7 @@ export const BlogSectionItem: React.FC<Props> = ({ item }) => {
         {item.title}
       </Text>
       <Divider />
-      <Text
+      {/* <Text
         cursor="pointer"
         borderRadius="md"
         p={2}
@@ -52,9 +59,9 @@ export const BlogSectionItem: React.FC<Props> = ({ item }) => {
           setTextToCopy(item.content);
           onCopy();
         }}
-      >
-        {item.content}
-      </Text>
+      > */}
+      <Box>{item.content}</Box>
+      {/* </Text> */}
     </Stack>
   );
 };

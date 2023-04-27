@@ -2,16 +2,19 @@ import {
   Divider,
   FormControl,
   FormLabel,
+  Grid,
+  GridItem,
   HStack,
   Input,
   Select,
   Stack,
+  Tag,
   Text,
   useToast,
 } from "@chakra-ui/react";
 import { UpdateBlogBody, useUpdateBlogMutation } from "api/blog.api";
 import { Button } from "components/button";
-import React, { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { StepWizardChildProps } from "react-step-wizard";
 import { Blog, BlogStatus } from "types";
@@ -26,7 +29,7 @@ const mapEnum = (enumObj: any, mapper: Function) => {
     .map((key) => mapper(enumObj[key]));
 };
 
-export const EditBlog: React.FC<Props> = ({ previousStep, blog }) => {
+export const EditBlog: FC<Props> = ({ previousStep, blog }) => {
   const [status, setStatus] = useState<BlogStatus | undefined>(blog?.status);
   const [title, setTitle] = useState(blog?.title);
 
@@ -35,6 +38,15 @@ export const EditBlog: React.FC<Props> = ({ previousStep, blog }) => {
   const toast = useToast();
 
   const [updateBlog, { isLoading, isSuccess }] = useUpdateBlogMutation();
+
+  useEffect(() => {
+    if (blog) {
+      setStatus(blog.status);
+      setTitle(blog.title);
+    }
+  }, [blog]);
+
+  console.log("Blog", blog);
 
   useEffect(() => {
     if (!isLoading && isSuccess) {
@@ -85,7 +97,7 @@ export const EditBlog: React.FC<Props> = ({ previousStep, blog }) => {
         <Text fontSize="sm">Back to Blog Outline</Text>
       </HStack>
 
-      <Stack pt={6}>
+      <Stack py={6} spacing={6}>
         <FormControl>
           <FormLabel>Blog Title</FormLabel>
           <Input
@@ -97,18 +109,31 @@ export const EditBlog: React.FC<Props> = ({ previousStep, blog }) => {
         </FormControl>
 
         <FormControl>
-          <FormLabel>Blog Status</FormLabel>
+          <FormLabel>
+            Blog Status: <Tag>{status?.toUpperCase()}</Tag>
+          </FormLabel>
           <Select
-            value={status}
+            placeholder="Select option"
             onChange={(e) => setStatus(e.target.value as BlogStatus)}
           >
             {blogStatusMap.map((status) => (
               <option key={status} value={status}>
-                {status}
+                {status.toUpperCase()}
               </option>
             ))}
           </Select>
         </FormControl>
+
+        <Stack spacing={6}>
+          <Text>Keywords Associated with this Blog:</Text>
+          <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+            {blog?.keywords.map(({ keyword }, key) => (
+              <GridItem key={key}>
+                <Tag key={key}>{keyword}</Tag>
+              </GridItem>
+            ))}
+          </Grid>
+        </Stack>
       </Stack>
 
       <Divider />

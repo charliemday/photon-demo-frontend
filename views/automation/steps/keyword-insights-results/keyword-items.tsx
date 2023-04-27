@@ -9,11 +9,15 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
+import { useGenerateBlogOutlinesMutation } from "api/blog.api";
 import { KeywordItem } from "api/engine.api";
+import { RootState } from "types";
 
 import { Button } from "components/button";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import { StepWizardChildProps } from "react-step-wizard";
+import { typeCheckError } from "utils";
 
 interface Props extends Partial<StepWizardChildProps> {
   parentId: number;
@@ -27,8 +31,51 @@ export const KeywordItems: React.FC<Props> = (props) => {
   const [selectedKeywords, setSelectedKeywords] = useState<string[]>([]);
   const { hub, spoke, theme } = props;
 
+  const activeTeam = useSelector((state: RootState) => state.team.activeTeam);
+
   const { onCopy, hasCopied } = useClipboard(selectedKeywords.join("\n"));
   const toast = useToast();
+
+  const [
+    generateOutline,
+    {
+      isLoading: isGenerating,
+      isSuccess: isGenerated,
+      isError: isGenerateError,
+      error: generateError,
+    },
+  ] = useGenerateBlogOutlinesMutation();
+
+  const handleGenerateOutline = () => {
+    if (selectedKeywords.length && activeTeam) {
+      generateOutline({
+        team: activeTeam?.id,
+        keywords: selectedKeywords,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (!isGenerating && isGenerated) {
+      toast({
+        title: "Blog Outline Generated",
+        status: "success",
+        duration: 1000,
+        isClosable: true,
+      });
+    }
+
+    if (!isGenerating && isGenerateError) {
+      console.log(generateError);
+
+      toast({
+        title: typeCheckError(generateError) || "Unable to generate outline",
+        status: "error",
+        duration: 1000,
+        isClosable: true,
+      });
+    }
+  }, [isGenerating, isGenerated, isGenerateError, generateError, toast]);
 
   useEffect(() => {
     if (hasCopied) {
@@ -102,6 +149,13 @@ export const KeywordItems: React.FC<Props> = (props) => {
       <HStack justifyContent="flex-end" pt={6}>
         <Button onClick={onCopy} isDisabled={!selectedKeywords.length}>
           {hasCopied ? "Copied!" : "Copy Keywords"}
+        </Button>
+        <Button
+          isDisabled={!selectedKeywords.length}
+          onClick={handleGenerateOutline}
+          isLoading={isGenerating}
+        >
+          🤖 Generate Outline
         </Button>
       </HStack>
     </Stack>
