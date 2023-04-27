@@ -15,6 +15,7 @@ const BlogStatusColor: {
   [BlogStatus.Queued]: "orange.500",
   [BlogStatus.Archived]: "gray.500",
   [BlogStatus.Released]: "gray.500",
+  [BlogStatus.Generated]: "gray.500",
 };
 
 export const BlogItem: React.FC<Props> = ({
