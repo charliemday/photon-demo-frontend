@@ -63,7 +63,7 @@ export const KeywordItems: React.FC<Props> = (props) => {
         description:
           "Keywords have been sent and your blog outline will be generated shortly!",
         status: "success",
-        duration: 1000,
+        duration: 5000,
         isClosable: true,
       });
       props.onGenerateOutlineComplete();
