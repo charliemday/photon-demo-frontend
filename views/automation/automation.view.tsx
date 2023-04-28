@@ -32,6 +32,7 @@ import {
   SearchConsoleConnect,
   SearchConsoleReport,
   SeedKeywords,
+  TeamBlogs,
   UploadAhrefsReport,
   WordSeek,
 } from "./steps";
@@ -50,6 +51,7 @@ enum KEY {
   POPULATE_SC_REPORTS = "populate-sc-reports",
   KEYWORD_INSIGHTS_UPLOAD = "keyword-insights-upload",
   KEYWORD_INSIGHTS_RESULTS = "keyword-insights-results",
+  TEAM_BLOGS = "team-blogs",
 }
 
 interface STEP {
@@ -126,6 +128,13 @@ const STEPS: { title: string; steps: STEP[] }[] = [
         description: `Views the keyword themes prior to blog generation`,
         image: "/openai-avatar.png",
         key: KEY.KEYWORD_INSIGHTS_RESULTS,
+        isNew: true,
+      },
+      {
+        title: "3.3 Blog Outlines",
+        description: `View the team's blog outlines`,
+        image: "/openai-avatar.png",
+        key: KEY.TEAM_BLOGS,
         isNew: true,
       },
     ],
@@ -316,6 +325,10 @@ export const AutomationView: React.FC = () => {
       />
       <KeywordInsightsResults
         isOpen={isOpen && activeStep === KEY.KEYWORD_INSIGHTS_RESULTS}
+        onClose={onClose}
+      />
+      <TeamBlogs
+        isOpen={isOpen && activeStep === KEY.TEAM_BLOGS}
         onClose={onClose}
       />
     </Box>

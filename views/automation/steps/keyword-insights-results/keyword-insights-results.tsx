@@ -16,8 +16,6 @@ interface Props {
 }
 
 export const KeywordInsightsResults: FC<Props> = (props) => {
-  const [parentId, setParentId] = useState<number | null>(null);
-
   const [selectedHub, setSelectedHub] = useState<string | null>(null);
   const [selectedSpoke, setSelectedSpoke] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
@@ -35,12 +33,6 @@ export const KeywordInsightsResults: FC<Props> = (props) => {
   } = useKeywordInsightsOutputQuery(activeTeam?.id, {
     skip: !activeTeam?.id,
   });
-
-  useEffect(() => {
-    if (output && output.length) {
-      setParentId(output[0].id);
-    }
-  }, [output]);
 
   useEffect(() => {
     if (props.isOpen) {
@@ -84,6 +76,7 @@ export const KeywordInsightsResults: FC<Props> = (props) => {
           hub={selectedHub}
           theme={selectedTheme}
           spoke={selectedSpoke}
+          onGenerateOutlineComplete={props.onClose}
         />
       </StepWizard>
     </ModalStepWrapper>
