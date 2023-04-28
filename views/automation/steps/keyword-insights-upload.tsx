@@ -157,24 +157,6 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
               <Text>Test Run</Text>
             </Tooltip>
           </Checkbox>
-          {/* <HStack>
-            <Flex>
-              <Text fontSize="sm">No. of Batch Outputs:</Text>
-            </Flex>
-            <Flex>
-              <Select
-                size="sm"
-                value={batchOutputs}
-                onChange={(e) => setBatchOutputs(Number(e.target.value))}
-              >
-                {Array.from(Array(10).keys()).map((n, index) => (
-                  <option value={n + 1} key={index}>
-                    {n + 1}
-                  </option>
-                ))}
-              </Select>
-            </Flex>
-          </HStack> */}
         </Stack>
       </HStack>
     </Stack>

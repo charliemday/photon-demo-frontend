@@ -8,7 +8,7 @@ import { Spinner, Stack } from "@chakra-ui/react";
 import {
   KeywordItem,
   useKeywordInsightsOutputQuery,
-  useKeywordInsightsResultsQuery
+  useKeywordInsightsResultsQuery,
 } from "api/engine.api";
 import StepWizard from "react-step-wizard";
 import { HubItems } from "./hub-items";
@@ -94,6 +94,7 @@ export const KeywordInsightsResults: FC<Props> = (props) => {
           hub={selectedHub}
           theme={selectedTheme}
           spoke={selectedSpoke}
+          onGenerateOutlineComplete={props.onClose}
         />
       </StepWizard>
     </ModalStepWrapper>

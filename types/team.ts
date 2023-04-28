@@ -11,6 +11,7 @@ export interface Team {
   url: string | null;
   driveFolderId: string | null;
   uid: string;
+  teamType: TeamType;
 }
 
 
