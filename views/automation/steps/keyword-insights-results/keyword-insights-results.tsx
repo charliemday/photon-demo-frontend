@@ -5,11 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState, Team } from "types";
 
 import { Spinner, Stack } from "@chakra-ui/react";
-import {
-  KeywordItem,
-  useKeywordInsightsOutputQuery,
-  useKeywordInsightsResultsQuery
-} from "api/engine.api";
+import { KeywordItem, useKeywordInsightsOutputQuery } from "api/engine.api";
 import StepWizard from "react-step-wizard";
 import { HubItems } from "./hub-items";
 import { KeywordItems } from "./keyword-items";
@@ -35,6 +31,7 @@ export const KeywordInsightsResults: FC<Props> = (props) => {
     data: output,
     refetch,
     isLoading,
+    isFetching,
   } = useKeywordInsightsOutputQuery(activeTeam?.id, {
     skip: !activeTeam?.id,
   });
@@ -47,22 +44,16 @@ export const KeywordInsightsResults: FC<Props> = (props) => {
 
   useEffect(() => {
     if (props.isOpen) {
+      /**
+       * Whenever the modal is opened, we want to refetch the data to
+       * get the latest Keyword Insights output.
+       */
       refetch();
     }
-  }, [props.isOpen, refetch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.isOpen]);
 
-  useKeywordInsightsResultsQuery(
-    {
-      // @ts-ignore
-      parentId,
-      teamId: activeTeam?.id,
-    },
-    {
-      skip: parentId === null || !activeTeam?.id,
-    }
-  );
-
-  if (!parentId || isLoading)
+  if (isLoading || isFetching)
     return (
       <ModalStepWrapper {...props}>
         <Stack alignItems="center" py={12}>
@@ -89,7 +80,6 @@ export const KeywordInsightsResults: FC<Props> = (props) => {
           }}
         />
         <KeywordItems
-          parentId={parentId}
           keywords={selectedKeywords}
           hub={selectedHub}
           theme={selectedTheme}

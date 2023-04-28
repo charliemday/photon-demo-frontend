@@ -16,7 +16,6 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { StepWizardChildProps } from "react-step-wizard";
 
 interface Props extends Partial<StepWizardChildProps> {
-  parentId: number;
   keywords: KeywordItem[];
   hub: string | null;
   spoke: string | null;
