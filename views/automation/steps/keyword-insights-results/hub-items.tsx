@@ -67,24 +67,15 @@ export const HubItems: React.FC<Props> = (props) => {
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
   );
-  const { data: output, refetch } = useKeywordInsightsOutputQuery(
-    activeTeam?.id,
-    {
-      skip: !activeTeam?.id,
-    }
-  );
+  const { data: output } = useKeywordInsightsOutputQuery(activeTeam?.id, {
+    skip: !activeTeam?.id,
+  });
 
   useEffect(() => {
     if (output && output.length) {
       setParentId(output[0].id);
     }
   }, [output]);
-
-  useEffect(() => {
-    if (props.isOpen) {
-      refetch();
-    }
-  }, [props.isOpen, refetch]);
 
   const { data: results, refetch: refetchResults } =
     useKeywordInsightsResultsQuery(

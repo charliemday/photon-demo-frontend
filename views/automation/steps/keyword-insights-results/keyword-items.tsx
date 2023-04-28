@@ -20,7 +20,6 @@ import { StepWizardChildProps } from "react-step-wizard";
 import { typeCheckError } from "utils";
 
 interface Props extends Partial<StepWizardChildProps> {
-  parentId: number;
   keywords: KeywordItem[];
   hub: string | null;
   spoke: string | null;
