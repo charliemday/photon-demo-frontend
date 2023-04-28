@@ -21,7 +21,11 @@ export const TeamBlogs: FC<Props> = (props) => {
     (state: RootState) => state.team.activeTeam
   );
 
-  const { data: blogData, refetch } = useListTeamBlogsQuery(
+  const {
+    data: blogData,
+    refetch,
+    isFetching,
+  } = useListTeamBlogsQuery(
     { teamId: activeTeam?.id },
     {
       skip: !activeTeam?.id,
@@ -46,12 +50,13 @@ export const TeamBlogs: FC<Props> = (props) => {
           blogs={blogData}
           onClick={setSelectedBlog}
           teamName={activeTeam?.name}
+          isLoading={isFetching}
         />
         <BlogOutline
           blogSections={selectedBlog?.sections}
           blogTitle={selectedBlog?.title}
         />
-        <EditBlog blog={selectedBlog} />
+        <EditBlog blog={selectedBlog} handleDeleteComplete={props.onClose} />
       </StepWizard>
     </ModalStepWrapper>
   );

@@ -63,6 +63,15 @@ export const blogApi = baseApi.injectEndpoints({
                 method: "POST",
                 body: decamelizeKeys(body),
             }),
+        }),
+        /**
+         * Delete a blog outlin
+         */
+        deleteBlog: builder.mutation<Blog, { blogId: number }>({
+            query: ({ blogId }) => ({
+                url: apiUrls.DELETE_BLOG(blogId),
+                method: "DELETE",
+            }),
         })
     })
 
@@ -70,4 +79,4 @@ export const blogApi = baseApi.injectEndpoints({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useListTeamBlogsQuery, useListBlogSectionsQuery, useUpdateBlogMutation, useGenerateBlogOutlinesMutation } = blogApi;
+export const { useListTeamBlogsQuery, useListBlogSectionsQuery, useUpdateBlogMutation, useGenerateBlogOutlinesMutation, useDeleteBlogMutation } = blogApi;

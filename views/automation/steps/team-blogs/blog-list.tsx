@@ -1,4 +1,4 @@
-import { Divider, Stack, Text } from "@chakra-ui/react";
+import { Divider, Skeleton, Stack, Text } from "@chakra-ui/react";
 import { BlogItem } from "components/blog";
 import React from "react";
 import { StepWizardChildProps } from "react-step-wizard";
@@ -8,6 +8,7 @@ interface Props extends Partial<StepWizardChildProps> {
   blogs?: Blog[];
   onClick?: (blog: Blog) => void;
   teamName?: string;
+  isLoading?: boolean;
 }
 
 export const BlogList: React.FC<Props> = ({
@@ -15,6 +16,7 @@ export const BlogList: React.FC<Props> = ({
   nextStep,
   onClick,
   teamName,
+  isLoading,
 }) => {
   const handleBlogClick = (blog: Blog) => {
     if (nextStep) nextStep();
@@ -22,6 +24,20 @@ export const BlogList: React.FC<Props> = ({
       onClick(blog);
     }
   };
+
+  if (isLoading) {
+    const skeletonHeight = "40px";
+
+    return (
+      <Stack spacing={4}>
+        <Skeleton height={skeletonHeight} borderRadius="md" />
+        <Divider />
+        {Array.from({ length: 6 }).map((_, i) => (
+          <Skeleton key={i} height={skeletonHeight} borderRadius="md" />
+        ))}
+      </Stack>
+    );
+  }
 
   return (
     <Stack>

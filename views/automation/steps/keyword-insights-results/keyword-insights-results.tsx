@@ -94,6 +94,7 @@ export const KeywordInsightsResults: FC<Props> = (props) => {
           hub={selectedHub}
           theme={selectedTheme}
           spoke={selectedSpoke}
+          onGenerateOutlineComplete={props.onClose}
         />
       </StepWizard>
     </ModalStepWrapper>

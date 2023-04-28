@@ -1,5 +1,13 @@
-import { Divider, Stack, Text, useClipboard, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Divider,
+  Stack,
+  Text,
+  useClipboard,
+  useToast,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { BlogSection } from "types/blog";
 
 interface Props {
@@ -44,7 +52,7 @@ export const BlogSectionItem: React.FC<Props> = ({ item }) => {
       <Text fontSize="sm" as="i" pl={2} opacity={0.75}>
         Some ideas to write about
       </Text>
-      <Text
+      <Box
         cursor="pointer"
         borderRadius="md"
         p={2}
@@ -57,8 +65,8 @@ export const BlogSectionItem: React.FC<Props> = ({ item }) => {
         }}
         whiteSpace="pre-wrap"
       >
-        {item.content}
-      </Text>
+        <ReactMarkdown>{item.content}</ReactMarkdown>
+      </Box>
     </Stack>
   );
 };

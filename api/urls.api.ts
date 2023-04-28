@@ -54,5 +54,6 @@ export const apiUrls = {
     LIST_BLOG_SECTIONS: (blogId: number) => `blogs/${blogId}/sections`,
     UPDATE_BLOG: (blogId: number) => `blogs/${blogId}/`,
     GENERATE_BLOG_OUTLINES: `blogs/generate-sections/`,
+    DELETE_BLOG: (blogId: number) => `blogs/${blogId}/`,
 
 };

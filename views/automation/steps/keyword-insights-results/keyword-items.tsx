@@ -25,6 +25,7 @@ interface Props extends Partial<StepWizardChildProps> {
   hub: string | null;
   spoke: string | null;
   theme: string | null;
+  onGenerateOutlineComplete: () => void;
 }
 
 export const KeywordItems: React.FC<Props> = (props) => {
@@ -58,11 +59,14 @@ export const KeywordItems: React.FC<Props> = (props) => {
   useEffect(() => {
     if (!isGenerating && isGenerated) {
       toast({
-        title: "Blog Outline Generated",
+        title: "Success",
+        description:
+          "Keywords have been sent and your blog outline will be generated shortly!",
         status: "success",
         duration: 1000,
         isClosable: true,
       });
+      props.onGenerateOutlineComplete();
     }
 
     if (!isGenerating && isGenerateError) {
@@ -75,6 +79,7 @@ export const KeywordItems: React.FC<Props> = (props) => {
         isClosable: true,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isGenerating, isGenerated, isGenerateError, generateError, toast]);
 
   useEffect(() => {
