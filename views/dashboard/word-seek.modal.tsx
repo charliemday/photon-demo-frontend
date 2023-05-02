@@ -9,12 +9,12 @@ import {
   Skeleton,
   Stack,
   Text,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import { useWordSeekMutation, useWordSeekResultsQuery } from "api/engine.api";
 import {
   useGetSearchConsolePagesQuery,
-  useGetSearchConsoleSitesQuery,
+  useGetSearchConsoleSitesQuery
 } from "api/vendor.api";
 import { Button } from "components/button";
 import { Modal } from "components/modals";
@@ -302,9 +302,7 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
         {isFetching ? (
           <Skeleton height="20px" />
         ) : (
-          (hasAccess ||
-            (wordSeekResults?.length &&
-              wordSeekResults?.length < MAX_FREE_RESULTS)) && (
+          (hasAccess || (wordSeekResults && wordSeekResults?.length < MAX_FREE_RESULTS)) && (
             <Button
               onClick={handleRunWordSeek}
               isDisabled={isButtonDisabled}
