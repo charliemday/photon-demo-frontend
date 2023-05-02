@@ -44,6 +44,7 @@ export const TeamBlogs: FC<Props> = (props) => {
       contentProps={{
         overflow: "hidden",
       }}
+      size=" 4xl"
     >
       <StepWizard>
         <BlogList

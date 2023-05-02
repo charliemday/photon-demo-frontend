@@ -17,6 +17,7 @@ import { useUserDetailsQuery } from "api/user.api";
 import { FloatingButton } from "components/button";
 
 import { AutomationCard } from "components/cards";
+import { ContentStrategy } from "components/wizards";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { IoIosCloseCircle } from "react-icons/io";
 import { useSelector } from "react-redux";
@@ -191,6 +192,7 @@ export const AutomationView: React.FC = () => {
 
   return (
     <Box mt={20}>
+      <ContentStrategy isOpen onClose={() => {}} />
       <HStack justifyContent="space-between" mb={10}>
         <Heading fontSize="2xl">
           {`🤖 Welcome to the Automation page, ${user?.firstName || ""}`}

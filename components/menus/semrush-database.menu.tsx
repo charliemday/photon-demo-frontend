@@ -10,6 +10,7 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Text,
 } from "@chakra-ui/react";
 import { BsChevronDown as ChevronDownIcon } from "react-icons/bs";
 
@@ -19,6 +20,14 @@ import debounce from "lodash/debounce";
 
 interface Props {
   onChange: (value: string) => void;
+  /**
+   * For the placeholder e.g. "database"
+   */
+  itemVerboseName?: string;
+  /**
+   * For the placeholder e.g. "databases"
+   */
+  itemVerbosePluralName?: string;
 }
 
 interface Database {
@@ -26,7 +35,11 @@ interface Database {
   value: string;
 }
 
-export const SemrushDatabaseMenu: React.FC<Props> = ({ onChange }) => {
+export const SemrushDatabaseMenu: React.FC<Props> = ({
+  onChange,
+  itemVerboseName = "database",
+  itemVerbosePluralName = "databases",
+}) => {
   const buildDatabaseMenu = useMemo(
     () => () =>
       Object.keys(SEMRUSH_DATABASES).map((key) => ({
@@ -83,11 +96,14 @@ export const SemrushDatabaseMenu: React.FC<Props> = ({ onChange }) => {
           <Input
             fontSize="sm"
             placeholder={
-              databases.length
-                ? `${databases.length} database${
-                    databases.length > 1 ? "s..." : "..."
-                  }`
-                : `No databases Found`
+              databases.length > 0
+                ? `${databases.length} ${
+                    databases.length === 1
+                      ? itemVerboseName
+                      : itemVerbosePluralName
+                  }
+                  `
+                : `No ${itemVerbosePluralName} Found`
             }
             onChange={(e) => handleSearch(e.target.value)}
           />
@@ -102,6 +118,9 @@ export const SemrushDatabaseMenu: React.FC<Props> = ({ onChange }) => {
               {label}
             </MenuItem>
           ))}
+          {searchResults.length === 0 && (
+            <Text p={6}>No {itemVerbosePluralName} Found</Text>
+          )}
         </Box>
       </MenuList>
     </Menu>
