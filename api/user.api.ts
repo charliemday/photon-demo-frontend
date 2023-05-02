@@ -44,10 +44,19 @@ export const userApi = baseApi.injectEndpoints({
         method: "DELETE",
       }),
     }),
-
+    /**
+     * Submit feedback
+     */
+    submitFeedback: builder.mutation<undefined, { feedback: string }>({
+      query: (body) => ({
+        url: apiUrls.FEEDBACK,
+        method: "POST",
+        body: decamelizeKeys(body),
+      })
+    }),
   }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useUserDetailsQuery, useUpdateOnboardingStepMutation, useDeleteAccountMutation } = userApi;
+export const { useUserDetailsQuery, useUpdateOnboardingStepMutation, useDeleteAccountMutation, useSubmitFeedbackMutation } = userApi;

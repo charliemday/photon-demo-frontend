@@ -31,7 +31,7 @@ const faqs = [
   },
   {
     question: "How do I get in contact?",
-    answer: `Contact us at ${SUPPORT_EMAIL}`,
+    answer: `Contact us at ${SUPPORT_EMAIL} or send us some Feedback 😄`,
   },
   {
     question: "Where is your privacy policy?",

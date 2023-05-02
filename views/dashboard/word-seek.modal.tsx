@@ -11,14 +11,14 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { useWordSeekMutation } from "api/engine.api";
-import { useUserDetailsQuery } from "api/user.api";
+import { useWordSeekMutation, useWordSeekResultsQuery } from "api/engine.api";
 import {
   useGetSearchConsolePagesQuery,
   useGetSearchConsoleSitesQuery,
 } from "api/vendor.api";
 import { Button } from "components/button";
 import { Modal } from "components/modals";
+import { MAX_FREE_RESULTS } from "config";
 import { useHasProductAccess } from "hooks";
 import { FC, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
@@ -35,12 +35,22 @@ interface Props {
 export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
   const [selectedSite, setSelectedSite] = useState<string | null>(null);
   const [selectedPage, setSelectedPage] = useState<string | null>(null);
-
   const [wordSeekRunType, setWordSeekRunType] = useState<"page" | "all">(
     "page"
   );
 
-  const { data: userDetails } = useUserDetailsQuery(undefined);
+  const activeTeam: Team = useSelector(
+    (state: RootState) => state.team.activeTeam
+  );
+
+  const {
+    data: wordSeekResults,
+    refetch,
+    isLoading: isLoadingResults,
+    isFetching,
+  } = useWordSeekResultsQuery(activeTeam?.uid, {
+    skip: !activeTeam?.uid,
+  });
 
   const [showAwaitEmail, setShowAwaitEmail] = useState(false);
 
@@ -48,11 +58,9 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
 
   useEffect(() => {
     setShowAwaitEmail(false);
+    refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
-
-  const activeTeam: Team = useSelector(
-    (state: RootState) => state.team.activeTeam
-  );
 
   const toast = useToast();
 
@@ -291,13 +299,21 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
         </Box>
       </ModalBody>
       <ModalFooter>
-        <Button
-          onClick={handleRunWordSeek}
-          isDisabled={isButtonDisabled}
-          isLoading={isLoading && wordSeekRunType === "page"}
-        >
-          Run for single page
-        </Button>
+        {isFetching ? (
+          <Skeleton height="20px" />
+        ) : (
+          (hasAccess ||
+            (wordSeekResults?.length &&
+              wordSeekResults?.length < MAX_FREE_RESULTS)) && (
+            <Button
+              onClick={handleRunWordSeek}
+              isDisabled={isButtonDisabled}
+              isLoading={isLoading && wordSeekRunType === "page"}
+            >
+              Run for single page
+            </Button>
+          )
+        )}
         <Button
           onClick={handleRunWordSeekAll}
           isDisabled={!selectedPage}

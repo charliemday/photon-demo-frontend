@@ -15,6 +15,7 @@ export const apiUrls = {
     // User
     USER: 'user/',
     ONBOARDING_STEP: 'onboarding-step/',
+    FEEDBACK: 'feedback/',
     // Vendors
     AUTH_URL: (appName: string | null) => {
         if (appName) return `get-auth-url/?app=${appName}`;
