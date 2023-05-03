@@ -55,5 +55,10 @@ export const apiUrls = {
     UPDATE_BLOG: (blogId: number) => `blogs/${blogId}/`,
     GENERATE_BLOG_OUTLINES: `blogs/generate-sections/`,
     DELETE_BLOG: (blogId: number) => `blogs/${blogId}/`,
-
+    // Content Strategies
+    LIST_CREATE_CONTENT_STRATEGIES: (teamId: number) => `strategies/content-strategy/?team_id=${teamId}`,
+    LIST_CREATE_SEED_KEYWORDS: (contentStrategyId: number) => `strategies/content-strategy/${contentStrategyId}/seed-keywords`,
+    RETRIEVE_UPDATE_DELETE_CONTENT_STRATEGY: (contentStrategyId: number) => `strategies/content-strategy/${contentStrategyId}/`,
+    RETRIEVE_UPDATE_DELETE_SEED_KEYWORD: (contentStrategyId: number, seedKeywordId: number) => `strategies/content-strategy/${contentStrategyId}/seed-keywords/${seedKeywordId}/`,
+    LIST_CREATE_COMPETITORS: (contentStrategyId: number) => `strategies/content-strategy/${contentStrategyId}/competitors/`,
 };

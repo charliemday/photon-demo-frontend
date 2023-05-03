@@ -14,7 +14,7 @@ import React, { useState } from "react";
 
 import { useListTeamsQuery } from "api/team.api";
 import { useUserDetailsQuery } from "api/user.api";
-import { FloatingButton } from "components/button";
+import { Button, FloatingButton } from "components/button";
 
 import { AutomationCard } from "components/cards";
 import { ContentStrategy } from "components/wizards";
@@ -180,6 +180,11 @@ const STEPS: { title: string; steps: STEP[] }[] = [
 export const AutomationView: React.FC = () => {
   const [activeStep, setActiveStep] = useState<KEY>(KEY.COMPARE_CONSOLE_REPORT);
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const {
+    isOpen: isContentStrategyOpen,
+    onClose: onCloseContentStrategy,
+    onOpen: onOpenContentStrategy,
+  } = useDisclosure();
   // const [useNewStep1, setUserNewStep1] = useState<boolean>(false);
 
   const { data: user } = useUserDetailsQuery(undefined);
@@ -192,7 +197,10 @@ export const AutomationView: React.FC = () => {
 
   return (
     <Box mt={20}>
-      <ContentStrategy isOpen onClose={() => {}} />
+      <ContentStrategy
+        isOpen={isContentStrategyOpen}
+        onClose={onCloseContentStrategy}
+      />
       <HStack justifyContent="space-between" mb={10}>
         <Heading fontSize="2xl">
           {`🤖 Welcome to the Automation page, ${user?.firstName || ""}`}
@@ -235,7 +243,11 @@ export const AutomationView: React.FC = () => {
 
       <Divider my={8} />
 
-      <Stack spacing={12} pb={32}>
+      <Button onClick={onOpenContentStrategy}>
+        Open Content Strategy Wizard
+      </Button>
+
+      <Stack spacing={12} pb={32} pt={6}>
         {STEPS.map(({ title, steps }, key) => (
           <Stack key={key} spacing={8}>
             <Text fontSize="lg" fontWeight="semibold">

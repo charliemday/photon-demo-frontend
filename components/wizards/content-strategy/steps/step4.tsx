@@ -1,74 +1,103 @@
-import { Checkbox, HStack, Stack, Tag, Text } from "@chakra-ui/react";
+import { Checkbox, Flex, HStack, Stack, Text } from "@chakra-ui/react";
 import { Button } from "components/button";
-import React from "react";
+import { CompetitorInterface } from "forms/competitors";
+import { FC, useState } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 
-interface Props extends Partial<StepWizardChildProps> {
-  stepIndex: number;
-  totalSteps: number;
-}
+interface Props extends Partial<StepWizardChildProps> {}
 
-const testData = [
+const testData: CompetitorInterface[] = [
   {
-    keyword: "christmas wish list",
-    volume: 2600,
+    name: "Competitor 1",
+    url: "https://www.competitor1.com",
   },
   {
-    keyword: "christmas wish list ideas",
-    volume: 2600,
+    name: "Competitor 2",
+    url: "https://www.competitor2.com",
   },
   {
-    keyword: "christmas wish list template",
-    volume: 2600,
+    name: "Competitor 3",
+    url: "https://www.competitor3.com",
   },
 ];
 
-export const Step4: React.FC<Props> = ({
+export const Step4: FC<Props> = ({
   nextStep,
-  stepIndex,
+  currentStep = 0,
   totalSteps,
   previousStep,
-}) => (
-  <Stack spacing={12}>
-    <Stack>
-      <Text fontSize="xl" fontWeight="bold">
-        Review Keywords
-      </Text>
-      <Text fontSize="sm" fontWeight="light" color="gray.500">
-        Step {stepIndex + 1} of {totalSteps}
-      </Text>
-    </Stack>
+}) => {
+  const [competitors, setCompetitors] = useState<{
+    [key: number]: CompetitorInterface;
+  }>({
+    0: {
+      name: "",
+      url: "",
+    },
+  });
 
-    <Stack spacing={6}>
-      <Text fontSize="lg" fontWeight="bold">
-        Select Seed Keywords
-      </Text>
-      <Text>
-        These keywords are the result of your competitor analysis and form the
-        seeds of your content strategy. You can add your own keywords and remove
-        any you do not want to target.
-      </Text>
+  console.log(competitors);
 
+  return (
+    <Stack spacing={12}>
       <Stack>
-        {testData.map(({ keyword, volume }, i) => {
-          return (
-            <HStack key={i} justifyContent="space-between">
-              <Checkbox>
-                <Text fontWeight="semibold">{keyword}</Text>
-              </Checkbox>
-              <HStack>
-                <Text>Volume</Text>
-                <Tag>{volume}</Tag>
-              </HStack>
-            </HStack>
-          );
-        })}
+        <Text fontSize="xl" fontWeight="bold">
+          Review Competitors
+        </Text>
+        <Text fontSize="sm" fontWeight="light" color="gray.500">
+          Step {currentStep} of {totalSteps}
+        </Text>
       </Stack>
-    </Stack>
 
-    <HStack>
-      <Button onClick={previousStep}>Previous Step</Button>
-      <Button onClick={nextStep}>Generate Strategy</Button>
-    </HStack>
-  </Stack>
-);
+      <Stack spacing={4}>
+        <Text fontSize="lg" fontWeight="bold">
+          Add Competitors
+        </Text>
+        <Text>
+          Would you like to add any of these competitors into the mix?
+        </Text>
+        <Stack>
+          {testData.map(({ name, url }, index) => (
+            <HStack key={index} spacing={4}>
+              <Flex flex={1} p={2} border="solid 1px #E7E7E7" rounded="md">
+                <Checkbox
+                  isChecked={!!competitors[index]}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setCompetitors({
+                        ...competitors,
+                        [index]: {
+                          name,
+                          url,
+                        },
+                      });
+                    } else {
+                      delete competitors[index];
+                      setCompetitors({ ...competitors });
+                    }
+                  }}
+                >
+                  <Text fontWeight="semibold">{name}</Text>
+                </Checkbox>
+              </Flex>
+              <Flex
+                flex={1}
+                p={2}
+                border="solid 1px #E7E7E7"
+                rounded="md"
+                bgColor="gray.50"
+              >
+                <Text fontWeight="semibold">{url}</Text>
+              </Flex>
+            </HStack>
+          ))}
+        </Stack>
+      </Stack>
+
+      <HStack>
+        <Button onClick={previousStep}>Previous Step</Button>
+        <Button onClick={nextStep}>Check for more competitors</Button>
+      </HStack>
+    </Stack>
+  );
+};
