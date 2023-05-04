@@ -4,7 +4,13 @@ import React, { useEffect, useState } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 
 import { Input, Stack } from "@chakra-ui/react";
-import { useCreateCompetitorsMutation } from "api/strategies.api";
+import {
+  useCreateCompetitorsMutation,
+  useGenerateCompetitorsKeywordsMutation,
+  useListCompetitorsQuery,
+  useListGeographiesQuery,
+  useUpdateContentStrategyMutation,
+} from "api/strategies.api";
 import { SemrushDatabaseMenu } from "components/menus";
 import { CompetitorInterface } from "forms/competitors";
 import { typeCheckError } from "utils";
@@ -31,6 +37,66 @@ export const Step2: React.FC<Props> = ({
   });
   const toast = useToast();
 
+  const { data: geographies, isLoading: isGeographiesLoading } =
+    useListGeographiesQuery();
+
+  const { data: contentStrategyCompetitors } = useListCompetitorsQuery(
+    {
+      contentStrategyId: contentStrategyId || 0,
+    },
+    {
+      skip: !contentStrategyId,
+    }
+  );
+
+  const [
+    generateCompetitorsKeywords,
+    {
+      isLoading: isGeneratingCompetitorsKeywords,
+      error: generateCompetitorsKeywordsError,
+      isSuccess: isCompetitorsKeywordsGenerated,
+      isError: isCompetitorsKeywordsGenerateError,
+    },
+  ] = useGenerateCompetitorsKeywordsMutation();
+
+  useEffect(() => {
+    if (!isGeneratingCompetitorsKeywords && isCompetitorsKeywordsGenerated) {
+      nextStep && nextStep();
+    }
+
+    if (
+      !isGeneratingCompetitorsKeywords &&
+      isCompetitorsKeywordsGenerateError
+    ) {
+      toast({
+        title:
+          typeCheckError(generateCompetitorsKeywordsError) ||
+          "Error Generating Competitors Keywords",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [
+    isGeneratingCompetitorsKeywords,
+    isCompetitorsKeywordsGenerated,
+    isCompetitorsKeywordsGenerateError,
+    generateCompetitorsKeywordsError,
+    nextStep,
+    toast,
+  ]);
+
+  useEffect(() => {
+    if (contentStrategyCompetitors?.length) {
+      setCompetitors(
+        contentStrategyCompetitors.reduce((acc: any, competitor, index) => {
+          acc[index] = competitor;
+          return acc;
+        }, {})
+      );
+    }
+  }, [contentStrategyCompetitors]);
+
   const [
     createCompetitors,
     {
@@ -41,7 +107,26 @@ export const Step2: React.FC<Props> = ({
     },
   ] = useCreateCompetitorsMutation();
 
+  const [
+    updateContentStrategy,
+    {
+      isLoading: isUpdatingContentStrategy,
+      error: updateContentStrategyError,
+      isSuccess: isContentStrategyUpdated,
+      isError: isContentStrategyUpdateError,
+    },
+  ] = useUpdateContentStrategyMutation();
+
   const handleCreateCompetitors = () => {
+    /**
+     * We make 3 requests here controlled by the useEffect
+     * 1. Create the competitors
+     * 2. Update the content strategy with the geography
+     * 3. Generate the keywords for the competitors
+     *
+     * And finally we move to the next step
+     */
+
     // Filter out any competitors that don't have a name
     const filteredCompetitors = Object.values(competitors).filter(
       (competitor) => competitor.name !== ""
@@ -57,17 +142,30 @@ export const Step2: React.FC<Props> = ({
   };
 
   useEffect(() => {
+    /**
+     * Handle any success that occur when creating competitors
+     */
     if (!isCreatingCompetitors && isCompetitorsCreated) {
-      toast({
-        title: "Competitors Created",
-        description: "Your competitors have been created.",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
-      nextStep && nextStep();
+      if (geography) {
+        const targetGeography = geographies?.find(
+          (geo) => geo.name.toLowerCase() === geography.toLowerCase()
+        )?.id;
+
+        if (targetGeography) {
+          updateContentStrategy({
+            body: {
+              // Get the id of the geography
+              geography: targetGeography,
+            },
+            id: contentStrategyId as number,
+          });
+        }
+      }
     }
 
+    /**
+     * Handle any errors that occur when creating competitors
+     */
     if (!isCreatingCompetitors && isCompetitorsCreateError) {
       toast({
         title:
@@ -78,6 +176,7 @@ export const Step2: React.FC<Props> = ({
         isClosable: true,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isCompetitorsCreated,
     isCompetitorsCreateError,
@@ -85,6 +184,43 @@ export const Step2: React.FC<Props> = ({
     isCreatingCompetitors,
     toast,
     nextStep,
+  ]);
+
+  useEffect(() => {
+    /**
+     * If the geographies have loaded, set the first one as the default
+     */
+    if (!isGeographiesLoading) {
+      setGeography(geographies?.[0]?.name || null);
+    }
+  }, [isGeographiesLoading, geographies]);
+
+  useEffect(() => {
+    /**
+     * If the content strategy has been updated, go to the next step
+     */
+    if (!isUpdatingContentStrategy && isContentStrategyUpdated) {
+      generateCompetitorsKeywords({
+        contentStrategyId: contentStrategyId as number,
+      });
+    }
+
+    if (!isUpdatingContentStrategy && isContentStrategyUpdateError) {
+      toast({
+        title: typeCheckError(updateContentStrategyError) || "Error",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [
+    isUpdatingContentStrategy,
+    isContentStrategyUpdated,
+    toast,
+    updateContentStrategyError,
+    isContentStrategyUpdateError,
+    contentStrategyId,
+    generateCompetitorsKeywords,
   ]);
 
   return (
@@ -142,7 +278,7 @@ export const Step2: React.FC<Props> = ({
         <Text>Select the geography that you are competing in.</Text>
         <Box>
           <SemrushDatabaseMenu
-            onChange={(e: any) => setGeography(e.value)}
+            onChange={setGeography}
             itemVerboseName="Geography"
             itemVerbosePluralName="Geographies"
           />
@@ -151,7 +287,16 @@ export const Step2: React.FC<Props> = ({
 
       <HStack>
         <Button onClick={previousStep}>Previous Step</Button>
-        <Button onClick={handleCreateCompetitors}>Next</Button>
+        <Button
+          onClick={handleCreateCompetitors}
+          isLoading={
+            isCreatingCompetitors ||
+            isUpdatingContentStrategy ||
+            isGeneratingCompetitorsKeywords
+          }
+        >
+          Next
+        </Button>
       </HStack>
     </Stack>
   );

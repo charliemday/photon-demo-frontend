@@ -1,7 +1,7 @@
 import { Modal } from "components/modals";
 import { FC, useState } from "react";
 import StepWizard from "react-step-wizard";
-import { Step1, Step2, Step3, Step4, Step5, Step6 } from "./steps";
+import { Step1, Step2, Step5, Step6 } from "./steps";
 
 interface Props {
   isOpen: boolean;
@@ -27,9 +27,10 @@ export const ContentStrategy: FC<Props> = ({ isOpen, onClose }) => {
       <StepWizard>
         <Step1 onComplete={handleStep1Complete} />
         <Step2 contentStrategyId={contentStrategyId} />
-        <Step3 />
-        <Step4 />
-        <Step5 />
+        {/* TODO: Not required for barebones wizard */}
+        {/* <Step3 contentStrategyId={contentStrategyId} />
+        <Step4 /> */}
+        <Step5 contentStrategyId={contentStrategyId} />
         <Step6 />
       </StepWizard>
     </Modal>

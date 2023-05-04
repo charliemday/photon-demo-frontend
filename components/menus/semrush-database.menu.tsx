@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { BsChevronDown as ChevronDownIcon } from "react-icons/bs";
 
-import { SEMRUSH_DATABASES } from "config";
+import { useListGeographiesQuery } from "api/strategies.api";
 import FuseJS from "fuse.js";
 import debounce from "lodash/debounce";
 
@@ -40,14 +40,19 @@ export const SemrushDatabaseMenu: React.FC<Props> = ({
   itemVerboseName = "database",
   itemVerbosePluralName = "databases",
 }) => {
+  const { data: geographies } = useListGeographiesQuery();
+
+  // TODO: Handle Error on Geography request
+
   const buildDatabaseMenu = useMemo(
     () => () =>
-      Object.keys(SEMRUSH_DATABASES).map((key) => ({
-        label: key,
-        // @ts-ignore
-        value: SEMRUSH_DATABASES[key],
-      })),
-    []
+      geographies
+        ? geographies.map(({ id, label, name }) => ({
+            label,
+            value: name,
+          }))
+        : [],
+    [geographies]
   );
 
   const databases = buildDatabaseMenu();

@@ -36,8 +36,6 @@ export const Step4: FC<Props> = ({
     },
   });
 
-  console.log(competitors);
-
   return (
     <Stack spacing={12}>
       <Stack>

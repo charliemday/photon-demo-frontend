@@ -1,21 +1,111 @@
-import { Grid, GridItem, HStack, Input, Stack, Text } from "@chakra-ui/react";
+import {
+  Grid,
+  GridItem,
+  HStack,
+  Input,
+  Stack,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
+import {
+  useCreateSeedKeywordMutation,
+  useListSeedKeywordsQuery,
+} from "api/strategies.api";
 import { Button } from "components/button";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
+import { typeCheckError } from "utils";
 
-interface Props extends Partial<StepWizardChildProps> {}
+interface Props extends Partial<StepWizardChildProps> {
+  contentStrategyId: number | null;
+}
 
 export const Step3: FC<Props> = ({
   nextStep,
   currentStep = 0,
   totalSteps,
   previousStep,
+  contentStrategyId,
 }) => {
   const [targetKeywords, setTargetKeywords] = useState<{
     [key: number]: string;
   }>({
     0: "",
   });
+
+  const toast = useToast();
+
+  const { data: seedKeywords, isLoading: isFetchingSeedKeywords } =
+    useListSeedKeywordsQuery(
+      {
+        contentStrategyId: contentStrategyId || 0,
+      },
+      {
+        skip: !contentStrategyId,
+      }
+    );
+
+  useEffect(() => {
+    if (seedKeywords) {
+      setTargetKeywords(
+        seedKeywords.reduce((acc: any, seedKeyword, index) => {
+          acc[index] = seedKeyword.keyword;
+          return acc;
+        }, {})
+      );
+    }
+  }, [seedKeywords, isFetchingSeedKeywords]);
+
+  const [
+    createSeedKeywords,
+    {
+      isLoading: isCreatingSeedKeywords,
+      error: createSeedKeywordsError,
+      isSuccess: isSeedKeywordsCreated,
+      isError: isSeedKeywordsCreateError,
+    },
+  ] = useCreateSeedKeywordMutation();
+
+  const handleCreateTargetKeywords = () => {
+    // Filter out empty target keywords
+    const filteredTargetKeywords = Object.values(targetKeywords).filter(
+      (targetKeyword) => targetKeyword !== ""
+    );
+
+    console.log(filteredTargetKeywords, contentStrategyId);
+
+    if (filteredTargetKeywords.length && contentStrategyId) {
+      createSeedKeywords({
+        contentStrategyId,
+        body: {
+          keywords: filteredTargetKeywords,
+        },
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (!isCreatingSeedKeywords && isSeedKeywordsCreated) {
+      nextStep && nextStep();
+    }
+
+    if (!isCreatingSeedKeywords && isSeedKeywordsCreateError) {
+      toast({
+        title:
+          typeCheckError(createSeedKeywordsError) || "Something went wrong",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [
+    isCreatingSeedKeywords,
+    isSeedKeywordsCreated,
+    isSeedKeywordsCreateError,
+    createSeedKeywordsError,
+    nextStep,
+    toast,
+  ]);
 
   return (
     <Stack spacing={12}>
@@ -57,7 +147,12 @@ export const Step3: FC<Props> = ({
 
       <HStack>
         <Button onClick={previousStep}>Previous Step</Button>
-        <Button onClick={nextStep}>Check for more competitors</Button>
+        <Button
+          onClick={handleCreateTargetKeywords}
+          isLoading={isCreatingSeedKeywords}
+        >
+          Check for more competitors
+        </Button>
       </HStack>
     </Stack>
   );

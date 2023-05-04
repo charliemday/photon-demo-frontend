@@ -185,7 +185,6 @@ export const AutomationView: React.FC = () => {
     onClose: onCloseContentStrategy,
     onOpen: onOpenContentStrategy,
   } = useDisclosure();
-  // const [useNewStep1, setUserNewStep1] = useState<boolean>(false);
 
   const { data: user } = useUserDetailsQuery(undefined);
   const { data: teams } = useListTeamsQuery({
