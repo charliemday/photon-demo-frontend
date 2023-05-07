@@ -8,14 +8,14 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
+import { useCreateSeedKeywordMutation } from "api/strategies.api";
 import {
-  useBulkCreateSeedKeywordsMutation,
+  // useBulkCreateSeedKeywordsMutation,
   useGenerateBroadKeywordsMutation,
 } from "api/team.api";
 import { Button } from "components/button";
+import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState, Team } from "types";
 import { calculateSemrushCost, typeCheckError } from "utils";
 import { ModalStepWrapper } from "../modal-step-wrapper";
 import DatabaseSection from "./database-section";
@@ -33,20 +33,12 @@ export const BroadSeedKeywords: React.FC<Props> = (props) => {
   const [database, setDatabase] = useState<string>("uk");
   const toast = useToast();
 
-  const activeTeam: Team = useSelector(
-    (state: RootState) => state.team.activeTeam
-  );
+  const activeTeam = useActiveTeam();
+  const activeContentStrategy = useActiveContentStrategy();
 
   const [generateBroadKeywords, { isLoading, isSuccess, isError, error }] =
     useGenerateBroadKeywordsMutation();
-  const [
-    bulkCreateSeedKeywords,
-    {
-      isLoading: bulkCreateIsLoading,
-      isError: bulkCreateIsError,
-      error: bulkCreateError,
-    },
-  ] = useBulkCreateSeedKeywordsMutation();
+  const [createSeedKeywords] = useCreateSeedKeywordMutation();
 
   useEffect(() => {
     if (!isLoading && isSuccess) {
@@ -74,34 +66,28 @@ export const BroadSeedKeywords: React.FC<Props> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess, isError, error, isLoading]);
 
-  useEffect(() => {
-    if (!bulkCreateIsLoading && bulkCreateIsError) {
-      toast({
-        title: "Seed Keywords Error",
-        description:
-          typeCheckError(bulkCreateError) || "Could not save Seed Keywords.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bulkCreateIsError, bulkCreateError, bulkCreateIsLoading]);
-
   const handleSubmit = async () => {
+    /**
+     * On submitting we:
+     * 1. Save the seed keywords to the database
+     * 2. Generate the broad keywords from the seed keywords
+     */
     if (!activeTeam) return;
 
-    const response = await bulkCreateSeedKeywords({
-      teamUid: activeTeam.uid,
-      keywords: targetKeywords,
+    const response = await createSeedKeywords({
+      contentStrategyId: activeContentStrategy?.id,
+      body: {
+        keywords: targetKeywords.map((keyword) => ({
+          keyword,
+        })),
+      },
     });
 
     if ("error" in response) return;
 
     generateBroadKeywords({
       database,
-      teamId: activeTeam.id,
+      contentStrategyId: activeContentStrategy?.id,
       limit: maxBroadResults,
       keywords: targetKeywords,
     });

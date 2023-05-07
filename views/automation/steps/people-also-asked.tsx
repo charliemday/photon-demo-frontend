@@ -12,7 +12,6 @@ import {
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { BsCheckCircle } from "react-icons/bs";
-import { useSelector } from "react-redux";
 import { BarLoader } from "react-spinners";
 
 import { usePeopleAlsoAskMutation } from "api/engine.api";
@@ -20,7 +19,7 @@ import { Button } from "components/button";
 import { BaserMenu } from "components/menus";
 import { BRAND_COLOR, GOOGLE_LANGUAGES } from "config";
 import { GridInputForm } from "forms/grid-input";
-import { RootState } from "store";
+import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import { typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
 import { InputSection } from "./seed-keywords";
@@ -31,7 +30,8 @@ interface Props {
 }
 
 export const PeopleAlsoAsked: React.FC<Props> = (props) => {
-  const activeTeam = useSelector((state: RootState) => state.team.activeTeam);
+  const activeTeam = useActiveTeam();
+  const activeContentStrategy = useActiveContentStrategy();
 
   const [exclusionKeywords, setExclusionKeywords] = useState<string[]>([]);
   const [volumeThreshold, setVolumeThreshold] = useState<number>(1e3);
@@ -89,13 +89,16 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
   };
 
   const handleSubmitAlsoAskedData = async () => {
-    if (!alsoAskedFile || !activeTeam?.id) return;
+    if (!alsoAskedFile) return;
 
     const formData = new FormData();
 
     formData.append("file", alsoAskedFile);
     formData.append("language", language || "en");
-    formData.append("team", activeTeam?.id);
+    formData.append(
+      "content_strategy_id",
+      activeContentStrategy?.id.toString()
+    );
 
     if (useVolumeThreshold) {
       formData.append("volume_threshold", volumeThreshold.toString());

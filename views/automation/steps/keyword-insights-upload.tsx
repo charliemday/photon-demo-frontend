@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from "react";
 import { ModalStepWrapper } from "./modal-step-wrapper";
 
 import {
-  Box,
   Checkbox,
   Flex,
   HStack,
@@ -13,16 +12,14 @@ import {
   Tooltip,
   useToast,
 } from "@chakra-ui/react";
-import { useUploadKeywordInsightsOutputMutation } from "api/engine.api";
-import { useSelector } from "react-redux";
-import { RootState } from "store";
+import {
+  useCreateKeywordInsightOrderMutation,
+  useUploadKeywordInsightsOutputMutation,
+} from "api/engine.api";
 import { typeCheckError } from "utils";
-import { UploadZone } from "./upload-zone";
-
-import { FaRandom } from "react-icons/fa";
 
 import { Button } from "components/button";
-import * as ung from "unique-names-generator";
+import { useActiveContentStrategy } from "hooks";
 
 interface Props {
   isOpen: boolean;
@@ -37,11 +34,23 @@ const GPT_MODELS = [
 const MAX_BATCH_OUTPUTS = 10; // Store this in a config file
 
 export const KeywordInsightsUpload: FC<Props> = (props) => {
-  const activeTeam = useSelector((state: RootState) => state.team.activeTeam);
+  const activeStrategy = useActiveContentStrategy();
 
   const [openaiModel, setOpenaiModel] = useState<string>("gpt-3.5");
-  const [batchOutputs, setBatchOutputs] = useState<number>(MAX_BATCH_OUTPUTS);
   const [reportName, setReportName] = useState<string>("");
+  const [sheetUrl, setSheetUrl] = useState<string>("");
+
+  const [createOrder, { isLoading, isSuccess, isError, error }] =
+    useCreateKeywordInsightOrderMutation();
+  const [
+    uploadKeywordInsights,
+    {
+      isLoading: isUploading,
+      isSuccess: isUploadSuccess,
+      isError: isUploadError,
+      error: uploadError,
+    },
+  ] = useUploadKeywordInsightsOutputMutation();
 
   const toast = useToast();
 
@@ -54,19 +63,14 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
     }
   }, [props.isOpen]);
 
-  const [uploadFile, { isLoading, isSuccess, isError, error }] =
-    useUploadKeywordInsightsOutputMutation();
-
-  const handleUploadClick = (files: File[]) => {
-    let formData = new FormData();
-
-    formData.append("file", files[0]);
-    formData.append("team_id", activeTeam.id);
-    formData.append("model", openaiModel);
-    formData.append("outputs", batchOutputs.toString());
-    formData.append("report_name", reportName);
-
-    uploadFile(formData);
+  const handleSubmit = () => {
+    if (activeStrategy?.id) {
+      createOrder({
+        contentStrategyId: activeStrategy?.id,
+        sheetsUrl: sheetUrl,
+        status: "complete",
+      });
+    }
   };
 
   useEffect(() => {
@@ -92,32 +96,15 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
     }
   }, [isSuccess, isError, error, isLoading, toast]);
 
-  const suggestRandomName = () => {
-    const randomName = ung.uniqueNamesGenerator({
-      dictionaries: [ung.adjectives, ung.colors, ung.animals],
-    });
-
-    setReportName(randomName);
-  };
-
   const headerComponent = () => (
     <Stack spacing={6}>
       <HStack spacing={4}>
         <Flex flex={1}>
           <Input
-            placeholder="Enter a name for your report"
-            size="sm"
-            onChange={(e) => setReportName(e.target.value)}
+            placeholder="Enter the URL of the Google Sheet"
+            onChange={(e) => setSheetUrl(e.target.value)}
             value={reportName}
           />
-        </Flex>
-        <Flex>
-          <Button onClick={suggestRandomName} size="sm" flex={1}>
-            Suggest a name
-            <Box ml={2}>
-              <FaRandom />
-            </Box>
-          </Button>
         </Flex>
       </HStack>
 
@@ -164,14 +151,20 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
 
   return (
     <ModalStepWrapper {...props}>
-      <UploadZone
+      {headerComponent()}
+      {/* <UploadZone
         title="Upload Keyword Insights Data"
         subtitle="Upload the output from Keyword Insights"
         uploadText="Upload the file here"
         isLoading={isLoading}
         handleUpload={handleUploadClick}
         headerComponent={headerComponent()}
-      />
+      /> */}
+      <HStack justifyContent="flex-end" mt={6}>
+        <Button isLoading={isLoading} onClick={handleSubmit}>
+          Submit
+        </Button>
+      </HStack>
     </ModalStepWrapper>
   );
 };

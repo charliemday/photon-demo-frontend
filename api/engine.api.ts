@@ -57,12 +57,10 @@ export interface GenerateKIInputBody {
 }
 
 export interface GenerateSeedKeywordsBody {
-  teamId: string;
-  classify?: boolean;
+  contentStrategyId: number;
   maxOrganicResults?: number;
   maxPosition?: number;
   database?: string; // TODO: Type this to the SEMRUSH_DATABASES
-  useCompetitors?: boolean;
 }
 
 export interface CreateKeywordsThemesBody { teamId: string, themes: string[] }
@@ -129,6 +127,13 @@ export interface KeywordInsightsResultsRequest {
   parentId: number;
 }
 
+export interface CreateKeywordInsightsOrderBody {
+  contentStrategyId: number;
+  orderId?: string;
+  sheetsUrl?: string;
+  status?: string;
+}
+
 
 // Define a service using a base URL and expected endpoints
 export const engineApi = baseApi.injectEndpoints({
@@ -136,13 +141,9 @@ export const engineApi = baseApi.injectEndpoints({
     /**
      * API for uploading the Ahrefs CSV
      */
-    processAhrefsData: builder.mutation<undefined, ProcessAhrefsDataBody>({
-      query: (body) => ({
-        url: apiUrls.PROCESS_AHREFS_DATA,
-        method: "POST",
-        body,
-      })
-    }),
+
+
+    // // TODO: This might be the "unused" endpoint (keyword-research)
     seedKeywords: builder.mutation<undefined, SeedKeywordsBody>({
       query: (body) => ({
         url: apiUrls.SEED_KEYWORDS,
@@ -150,7 +151,7 @@ export const engineApi = baseApi.injectEndpoints({
         body: decamelizeKeys(body),
       })
     }),
-    // New Endpoint
+    // Old Version (e.g. Step 1.1)
     generateSeedKeywords: builder.mutation<undefined, GenerateSeedKeywordsBody>({
       query: (body) => ({
         url: apiUrls.GENERATE_SEED_KEYWORDS,
@@ -158,6 +159,11 @@ export const engineApi = baseApi.injectEndpoints({
         body: decamelizeKeys(body),
       })
     }),
+
+
+
+
+
     peopleAlsoAsk: builder.mutation<undefined, PeopleAlsoAskBody>({
       query: (body) => ({
         url: apiUrls.PEOPLE_ALSO_ASK,
@@ -165,27 +171,8 @@ export const engineApi = baseApi.injectEndpoints({
         body,
       })
     }),
-    clusterKeywords: builder.mutation<undefined, SeedKeywordsBody>({
-      query: (body) => ({
-        url: apiUrls.CLUSTER_KEYWORDS,
-        method: "POST",
-        body: decamelizeKeys(body),
-      })
-    }),
-    listKeywordThemes: builder.query<KeywordTheme[], string>({
-      query: (teamUid) => ({
-        url: apiUrls.KEYWORD_THEMES(teamUid),
-      })
-    }),
-    createKeywordThemes: builder.mutation<undefined, CreateKeywordsThemesBody>({
-      query: ({ teamId, themes }) => ({
-        url: apiUrls.KEYWORD_THEMES(),
-        method: "POST",
-        body: decamelizeKeys({ themes, teamId }),
-      })
-    }),
     /**
-     * Runs both the Seed Keywords and PAA steps
+     * Runs both the Seed Keywords and PAA steps (Step 1 + 2)
      */
     generateKIInput: builder.mutation<undefined, GenerateKIInputBody>({
       query: (body) => ({
@@ -238,6 +225,16 @@ export const engineApi = baseApi.injectEndpoints({
       })
     }),
     /**
+     * Creates the Keyword Insights Order
+     */
+    createKeywordInsightOrder: builder.mutation<undefined, CreateKeywordInsightsOrderBody>({
+      query: (body) => ({
+        url: apiUrls.KEYWORD_INSIGHTS_ORDER,
+        method: "POST",
+        body: decamelizeKeys(body),
+      })
+    }),
+    /**
      * Fetch the Keyword Insights output
      */
     keywordInsightsOutput: builder.query<KeywordInsightsOutput[], number>({
@@ -253,11 +250,7 @@ export const engineApi = baseApi.injectEndpoints({
 // auto-generated based on the defined endpoints
 
 export const {
-  useProcessAhrefsDataMutation,
   usePeopleAlsoAskMutation,
-  useClusterKeywordsMutation,
-  useListKeywordThemesQuery,
-  useCreateKeywordThemesMutation,
   useSeedKeywordsMutation,
   useGenerateSeedKeywordsMutation,
   useGenerateKIInputMutation,
@@ -266,4 +259,5 @@ export const {
   useKeywordInsightsResultsQuery,
   useUploadKeywordInsightsOutputMutation,
   useKeywordInsightsOutputQuery,
+  useCreateKeywordInsightOrderMutation
 } = engineApi;

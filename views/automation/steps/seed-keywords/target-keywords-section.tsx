@@ -1,12 +1,11 @@
 import { Box, Heading, HStack, Text } from "@chakra-ui/react";
 import { GridInputForm } from "forms/grid-input";
 
-import { useListSeedKeywordsQuery } from "api/team.api";
+import { useListSeedKeywordsQuery } from "api/strategies.api";
 import { Image } from "components/image";
+import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import React, { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
 import uuid from "react-uuid";
-import { RootState, Team } from "types";
 
 interface Props {
   onChangeKeywords: (keywords: string[]) => void;
@@ -15,17 +14,21 @@ interface Props {
 const TargetKeywordsSection: React.FC<Props> = ({ onChangeKeywords }) => {
   const [keywords, setTargetKeywords] = useState<string[]>([]);
 
-  const activeTeam: Team = useSelector(
-    (state: RootState) => state.team.activeTeam
-  );
+  const activeTeam = useActiveTeam();
+  const activeContentStrategy = useActiveContentStrategy();
 
   const {
     data: seedKeywords,
     refetch,
     isLoading,
-  } = useListSeedKeywordsQuery(activeTeam?.uid, {
-    skip: !activeTeam?.uid,
-  });
+  } = useListSeedKeywordsQuery(
+    {
+      contentStrategyId: activeContentStrategy?.id,
+    },
+    {
+      skip: !activeContentStrategy?.id,
+    }
+  );
 
   useEffect(() => {
     refetch();
