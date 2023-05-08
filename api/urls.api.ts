@@ -47,10 +47,9 @@ export const apiUrls = {
     VERIFY: 'payments/stripe/verify',
     CUSTOMER_PORTAL: 'payments/stripe/customer-portal',
     // Keyword Insights
-    KEYWORD_INSIGHTS_RESULTS: (teamId: number, parentId: number) => `engine/keyword-insights/results?team_id=${teamId}&parent_id=${parentId}`,
-    KEYWORD_INSIGHTS_OUTPUT: (teamId: number) => `engine/keyword-insights?team_id=${teamId}`,
-    UPLOAD_KEYWORD_INSIGHTS_OUTPUT: 'engine/keyword-insights/',
-    KEYWORD_INSIGHTS_ORDER: 'engine/keyword-insights/order',
+    KEYWORD_INSIGHTS_RESULTS: (orderId: number) => `engine/keyword-insights/results?&order_id=${orderId}`,
+    CREATE_KEYWORD_INSIGHTS_ORDER: 'engine/keyword-insights/order/',
+    KEYWORD_INSIGHTS_ORDER: (contentStrategyId: number) => `engine/keyword-insights/order?content_strategy_id=${contentStrategyId}`,
     // Blogs
     LIST_TEAM_BLOGS: (teamId: number) => `blogs?team_id=${teamId}`,
     LIST_BLOG_SECTIONS: (blogId: number) => `blogs/${blogId}/sections`,

@@ -1,11 +1,11 @@
 import { FC, useEffect, useState } from "react";
 import { ModalStepWrapper } from "../modal-step-wrapper";
 
-import { useSelector } from "react-redux";
-import { RootState, Team } from "types";
+import { Team } from "types";
 
 import { Spinner, Stack } from "@chakra-ui/react";
-import { KeywordItem, useKeywordInsightsOutputQuery } from "api/engine.api";
+import { KeywordItem, useKeywordInsightsOrderQuery } from "api/engine.api";
+import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import StepWizard from "react-step-wizard";
 import { HubItems } from "./hub-items";
 import { KeywordItems } from "./keyword-items";
@@ -21,17 +21,16 @@ export const KeywordInsightsResults: FC<Props> = (props) => {
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [selectedKeywords, setSelectedKeywords] = useState<KeywordItem[]>([]);
 
-  const activeTeam: Team = useSelector(
-    (state: RootState) => state.team.activeTeam
-  );
+  const activeTeam: Team = useActiveTeam();
+  const activeContentStrategy = useActiveContentStrategy();
 
   const {
     data: output,
     refetch,
     isLoading,
     isFetching,
-  } = useKeywordInsightsOutputQuery(activeTeam?.id, {
-    skip: !activeTeam?.id,
+  } = useKeywordInsightsOrderQuery(activeContentStrategy?.id, {
+    skip: !activeContentStrategy?.id,
   });
 
   useEffect(() => {

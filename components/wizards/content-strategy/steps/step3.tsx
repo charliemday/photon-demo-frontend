@@ -72,16 +72,14 @@ export const Step3: FC<Props> = ({
       (targetKeyword) => targetKeyword !== ""
     );
 
-    console.log(filteredTargetKeywords, contentStrategyId);
-
-    if (filteredTargetKeywords.length && contentStrategyId) {
-      createSeedKeywords({
-        contentStrategyId,
-        body: {
-          keywords: filteredTargetKeywords,
-        },
-      });
-    }
+    // if (filteredTargetKeywords.length && contentStrategyId) {
+    //   createSeedKeywords({
+    //     contentStrategyId,
+    //     body: {
+    //       keywords: filteredTargetKeywords,
+    //     },
+    //   });
+    // }
   };
 
   useEffect(() => {

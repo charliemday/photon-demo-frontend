@@ -32,11 +32,6 @@ export const FloatingButtonContentStrategy: FC = () => {
     teamId: activeTeam?.id,
   });
 
-  useEffect(() => {
-    refetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTeam]);
-
   const [selectedStrategy, setSelectedStrategy] =
     useState<ContentStrategy | null>(
       activeContentStrategy || contentStrategies?.[0] || null
@@ -56,6 +51,11 @@ export const FloatingButtonContentStrategy: FC = () => {
     setSelectedStrategy(contentStrategy);
     dispatch(setActiveContentStrategy(contentStrategy));
   };
+
+  useEffect(() => {
+    refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTeam]);
 
   const fuse = new FuseJS(contentStrategies || [], {
     keys: ["name"],
@@ -92,6 +92,7 @@ export const FloatingButtonContentStrategy: FC = () => {
               rightIcon={<ChevronDownIcon color="black" />}
               size="sm"
               border="solid 2px black"
+              onClick={refetch}
             >
               <Flex alignItems="center">
                 <Text color="black">

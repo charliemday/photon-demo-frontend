@@ -48,7 +48,7 @@ const GridInputForm: React.FC<Props> = ({
   }, [inputs]);
 
   const renderCompetitorInput = (key: string) => (
-    <GridItem colSpan={1}>
+    <GridItem colSpan={1} key={key}>
       <HStack pr={2} w="full">
         <FormControl isRequired>
           <Input
@@ -88,7 +88,7 @@ const GridInputForm: React.FC<Props> = ({
     return (
       <Stack w="full">
         <Grid templateColumns="repeat(2, 1fr)" gap={3}>
-          {Object.keys(inputs).map((inputKey, key) => (
+          {Object.keys(inputs).map((_, key) => (
             <Skeleton key={key} height="40px" borderRadius="md" />
           ))}
         </Grid>

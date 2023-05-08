@@ -115,16 +115,16 @@ export interface KeywordInsightsResult {
   },
 }
 
-export interface KeywordInsightsOutput {
+export interface KeywordInsightsOrder {
+  contentStrategy: number;
   id: number;
-  team: number;
-  created: string;
-  name: string;
+  sheetsUrl: string;
+  status: string;
+  orderId: string;
 }
 
 export interface KeywordInsightsResultsRequest {
-  teamId: number;
-  parentId: number;
+  orderId: number;
 }
 
 export interface CreateKeywordInsightsOrderBody {
@@ -159,11 +159,6 @@ export const engineApi = baseApi.injectEndpoints({
         body: decamelizeKeys(body),
       })
     }),
-
-
-
-
-
     peopleAlsoAsk: builder.mutation<undefined, PeopleAlsoAskBody>({
       query: (body) => ({
         url: apiUrls.PEOPLE_ALSO_ASK,
@@ -209,27 +204,20 @@ export const engineApi = baseApi.injectEndpoints({
      * Fetches the Keyword Insights results
      */
     keywordInsightsResults: builder.query<KeywordInsightsResult[], KeywordInsightsResultsRequest>({
-      query: ({ teamId, parentId }) => ({
-        url: apiUrls.KEYWORD_INSIGHTS_RESULTS(teamId, parentId),
+      query: ({ orderId }) => ({
+        url: apiUrls.KEYWORD_INSIGHTS_RESULTS(orderId),
       }),
       // transformResponse: (response: ConvertToSnakeCase<KeywordInsightsResult[]>) => camelizeKeys(response) as KeywordInsightsResult[]
     }),
     /**
      * Uploads the Keyword Insights Output
      */
-    uploadKeywordInsightsOutput: builder.mutation<undefined, UploadKeywordInsightsOutputBody>({
-      query: (body) => ({
-        url: apiUrls.UPLOAD_KEYWORD_INSIGHTS_OUTPUT,
-        method: "POST",
-        body
-      })
-    }),
     /**
      * Creates the Keyword Insights Order
      */
     createKeywordInsightOrder: builder.mutation<undefined, CreateKeywordInsightsOrderBody>({
       query: (body) => ({
-        url: apiUrls.KEYWORD_INSIGHTS_ORDER,
+        url: apiUrls.CREATE_KEYWORD_INSIGHTS_ORDER,
         method: "POST",
         body: decamelizeKeys(body),
       })
@@ -237,11 +225,11 @@ export const engineApi = baseApi.injectEndpoints({
     /**
      * Fetch the Keyword Insights output
      */
-    keywordInsightsOutput: builder.query<KeywordInsightsOutput[], number>({
-      query: (teamId) => ({
-        url: apiUrls.KEYWORD_INSIGHTS_OUTPUT(teamId),
+    keywordInsightsOrder: builder.query<KeywordInsightsOrder[], number>({
+      query: (contentStrategyId) => ({
+        url: apiUrls.KEYWORD_INSIGHTS_ORDER(contentStrategyId),
       }),
-      transformResponse: (response: ConvertToSnakeCase<KeywordInsightsOutput[]>) => camelizeKeys(response) as KeywordInsightsOutput[]
+      transformResponse: (response: ConvertToSnakeCase<KeywordInsightsOrder[]>) => camelizeKeys(response) as KeywordInsightsOrder[]
     })
   })
 });
@@ -257,7 +245,6 @@ export const {
   useWordSeekMutation,
   useWordSeekResultsQuery,
   useKeywordInsightsResultsQuery,
-  useUploadKeywordInsightsOutputMutation,
-  useKeywordInsightsOutputQuery,
+  useKeywordInsightsOrderQuery,
   useCreateKeywordInsightOrderMutation
 } = engineApi;
