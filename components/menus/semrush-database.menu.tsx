@@ -11,12 +11,14 @@ import {
   MenuItem,
   MenuList,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { BsChevronDown as ChevronDownIcon } from "react-icons/bs";
 
 import { useListGeographiesQuery } from "api/strategies.api";
 import FuseJS from "fuse.js";
 import debounce from "lodash/debounce";
+import { typeCheckError } from "utils";
 
 interface Props {
   onChange: (value: string) => void;
@@ -40,20 +42,46 @@ export const SemrushDatabaseMenu: React.FC<Props> = ({
   itemVerboseName = "database",
   itemVerbosePluralName = "databases",
 }) => {
-  const { data: geographies } = useListGeographiesQuery();
-
-  // TODO: Handle Error on Geography request
+  const {
+    data: geographies,
+    refetch,
+    error,
+    isError,
+    isLoading,
+  } = useListGeographiesQuery();
 
   const buildDatabaseMenu = useMemo(
     () => () =>
       geographies
-        ? geographies.map(({ id, label, name }) => ({
+        ? geographies.map(({ label, name }) => ({
             label,
             value: name,
           }))
         : [],
     [geographies]
   );
+
+  const toast = useToast();
+
+  useEffect(() => {
+    /**
+     * When the component mounts, we want to refetch the geographies
+     */
+    refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading && isError && error) {
+      toast({
+        title: "Error loading geographies",
+        description: typeCheckError(error) || "Something went wrong",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [isError, error, isLoading, toast]);
 
   const databases = buildDatabaseMenu();
 

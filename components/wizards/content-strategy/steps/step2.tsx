@@ -294,6 +294,7 @@ export const Step2: React.FC<Props> = ({
             isUpdatingContentStrategy ||
             isGeneratingCompetitorsKeywords
           }
+          isDisabled={geography === null}
         >
           Next
         </Button>
