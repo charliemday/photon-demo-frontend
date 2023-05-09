@@ -27,6 +27,7 @@ export const Step2: React.FC<Props> = ({
   contentStrategyId,
 }) => {
   const [geography, setGeography] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [competitors, setCompetitors] = useState<{
     [key: number]: CompetitorInterface;
   }>({
@@ -61,6 +62,7 @@ export const Step2: React.FC<Props> = ({
 
   useEffect(() => {
     if (!isGeneratingCompetitorsKeywords && isCompetitorsKeywordsGenerated) {
+      setIsLoading(false);
       nextStep && nextStep();
     }
 
@@ -68,6 +70,7 @@ export const Step2: React.FC<Props> = ({
       !isGeneratingCompetitorsKeywords &&
       isCompetitorsKeywordsGenerateError
     ) {
+      setIsLoading(false);
       toast({
         title:
           typeCheckError(generateCompetitorsKeywordsError) ||
@@ -127,6 +130,8 @@ export const Step2: React.FC<Props> = ({
      * And finally we move to the next step
      */
 
+    setIsLoading(true);
+
     // Filter out any competitors that don't have a name
     const filteredCompetitors = Object.values(competitors).filter(
       (competitor) => competitor.name !== ""
@@ -167,6 +172,7 @@ export const Step2: React.FC<Props> = ({
      * Handle any errors that occur when creating competitors
      */
     if (!isCreatingCompetitors && isCompetitorsCreateError) {
+      setIsLoading(false);
       toast({
         title:
           typeCheckError(createCompetitorsError) ||
@@ -289,11 +295,7 @@ export const Step2: React.FC<Props> = ({
         <Button onClick={previousStep}>Previous Step</Button>
         <Button
           onClick={handleCreateCompetitors}
-          isLoading={
-            isCreatingCompetitors ||
-            isUpdatingContentStrategy ||
-            isGeneratingCompetitorsKeywords
-          }
+          isLoading={isLoading}
           isDisabled={geography === null}
         >
           Next
