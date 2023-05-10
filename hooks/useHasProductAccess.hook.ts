@@ -1,11 +1,11 @@
 import { useUserDetailsQuery } from "api/user.api";
-import { PRICEA, PRODUCT_ID } from "config";
+import { PRICEA, PRICEB, PRICEC, PRODUCT_ID } from "config";
 
 interface ReturnProps {
     hasAccess: boolean
 }
 
-export const useHasProductAccess = (product: string = PRODUCT_ID, prices: string[] = [PRICEA]): ReturnProps => {
+export const useHasProductAccess = (product: string = PRODUCT_ID, prices: string[] = [PRICEA, PRICEB, PRICEC]): ReturnProps => {
     /**
      * Determines whether the user has access to a product and the pricing
      */
