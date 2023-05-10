@@ -61,6 +61,9 @@ export const Step2: React.FC<Props> = ({
   ] = useGenerateCompetitorsKeywordsMutation();
 
   useEffect(() => {
+    /**
+     * Handle any success/failures that occurs when generating competitors keywords
+     */
     if (!isGeneratingCompetitorsKeywords && isCompetitorsKeywordsGenerated) {
       setIsLoading(false);
       nextStep && nextStep();
@@ -197,7 +200,10 @@ export const Step2: React.FC<Props> = ({
      * If the geographies have loaded, set the first one as the default
      */
     if (!isGeographiesLoading) {
-      setGeography(geographies?.[0]?.name || null);
+      const defaultUkGeography = geographies?.find((geo) => geo.name === "uk");
+      if (defaultUkGeography) {
+        setGeography(defaultUkGeography.name);
+      }
     }
   }, [isGeographiesLoading, geographies]);
 
