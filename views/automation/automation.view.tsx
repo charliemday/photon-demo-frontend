@@ -23,6 +23,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "store";
 import { Team, TeamType } from "types";
 import {
+  AdminUser,
   BroadSeedKeywords,
   KeywordInsightsResults,
   KeywordInsightsUpload,
@@ -52,6 +53,7 @@ enum KEY {
   KEYWORD_INSIGHTS_UPLOAD = "keyword-insights-upload",
   KEYWORD_INSIGHTS_RESULTS = "keyword-insights-results",
   TEAM_BLOGS = "team-blogs",
+  ADMIN_USER = "admin-user",
 }
 
 interface STEP {
@@ -170,6 +172,17 @@ const STEPS: { title: string; steps: STEP[] }[] = [
         description: `Take the GSC keywords and check whether they exist on the
         pages they're associated with. The output will be saved to the drive.`,
         key: KEY.COMPARE_CONSOLE_REPORT,
+        image: "/steps/search-console.svg",
+      },
+    ],
+  },
+  {
+    title: "Admin Tools",
+    steps: [
+      {
+        title: "Admin User",
+        description: "For admin use",
+        key: KEY.ADMIN_USER,
         image: "/steps/search-console.svg",
       },
     ],
@@ -329,6 +342,11 @@ export const AutomationView: React.FC = () => {
       />
       <TeamBlogs
         isOpen={isOpen && activeStep === KEY.TEAM_BLOGS}
+        onClose={onClose}
+      />
+
+      <AdminUser
+        isOpen={isOpen && activeStep === KEY.ADMIN_USER}
         onClose={onClose}
       />
     </Box>
