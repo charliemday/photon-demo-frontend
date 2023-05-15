@@ -20,6 +20,7 @@ export interface SetPasswordFormValues {
 
 interface Props {
   handleSubmit: (values: SetPasswordFormValues) => void;
+  isLoading?: boolean;
 }
 
 const SetPasswordScheme = Yup.object().shape({
@@ -31,7 +32,10 @@ const SetPasswordScheme = Yup.object().shape({
     .required("Confirm Password Required"),
 });
 
-export const SetPasswordForm: React.FC<Props> = ({ handleSubmit }) => {
+export const SetPasswordForm: React.FC<Props> = ({
+  handleSubmit,
+  isLoading,
+}) => {
   const formik = useFormik<SetPasswordFormValues>({
     initialValues: {
       password: "",
@@ -80,7 +84,9 @@ export const SetPasswordForm: React.FC<Props> = ({ handleSubmit }) => {
         </FormControl>
       </Stack>
       <Flex mt={8} justifyContent="flex-end">
-        <Button type="submit">Set Password</Button>
+        <Button type="submit" isDisabled={isLoading} isLoading={isLoading}>
+          Set Password
+        </Button>
       </Flex>
     </form>
   );

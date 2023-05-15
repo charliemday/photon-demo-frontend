@@ -21,6 +21,13 @@ interface OAuthProps {
     app: string;
 }
 
+interface SetPasswordRequestProps {
+    token: string;
+    password: string;
+}
+
+interface SetPasswordReturnProps { }
+
 // Define a service using a base URL and expected endpoints
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -44,11 +51,18 @@ export const authApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body: { ...values },
             })
+        }),
+        setPassword: builder.mutation<SetPasswordReturnProps, SetPasswordRequestProps>({
+            query: (values) => ({
+                url: apiUrls.SET_PASSWORD,
+                method: 'POST',
+                body: { ...decamelizeKeys(values) }
+            })
         })
     }),
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useLoginMutation, useSignupMutation, useCompleteOauthMutation } = authApi
+export const { useLoginMutation, useSignupMutation, useCompleteOauthMutation, useSetPasswordMutation } = authApi
 

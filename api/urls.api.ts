@@ -5,6 +5,7 @@ export const apiUrls = {
     LOGIN: 'login/',
     SIGNUP: 'signup/',
     COMPLETE_OAUTH: 'complete-oauth/',
+    SET_PASSWORD: 'set-password/',
     // Teams
     TEAMS: (teamType?: TeamType) => `teams/${teamType ? `?team_type=${teamType}` : ''}`,
     TEAM: (id: number) => `teams/${id}/`,
