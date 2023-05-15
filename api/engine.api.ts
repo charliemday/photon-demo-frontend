@@ -49,7 +49,7 @@ export interface SeedKeywordsBody {
 
 
 export interface GenerateKIInputBody {
-  teamId: number;
+  contentStrategyId: number;
   keywords: string[];
   limit?: number;
   topPercentage?: number;
