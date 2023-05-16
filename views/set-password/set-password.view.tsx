@@ -1,19 +1,18 @@
 import { Box, Container, useToast } from "@chakra-ui/react";
 import { useSetPasswordMutation } from "api/auth.api";
-import { ROUTES } from "config";
 import { SetPasswordForm, SetPasswordFormValues } from "forms/set-password";
-import { useRouter } from "next/router";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { typeCheckError } from "utils";
+import { BackgroundView } from "views/background";
 
 interface Props {}
 
 export const SetPasswordView: FC<Props> = () => {
+  const [showBackground, setShowBackground] = useState(false);
   const [setPassword, { isLoading, isSuccess, isError, error }] =
     useSetPasswordMutation();
 
   const toast = useToast();
-  const router = useRouter();
 
   const handleSetPassword = (values: SetPasswordFormValues) => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -33,7 +32,13 @@ export const SetPasswordView: FC<Props> = () => {
      */
     if (!isLoading) {
       if (isSuccess) {
-        router.push(ROUTES.BASE);
+        toast({
+          title: "Password updated successfully",
+          status: "success",
+          isClosable: true,
+          duration: 5000,
+        });
+        setShowBackground(true);
       }
       if (isError && error) {
         toast({
@@ -44,7 +49,11 @@ export const SetPasswordView: FC<Props> = () => {
         });
       }
     }
-  }, [isLoading, isSuccess, isError, error, toast, router]);
+  }, [isLoading, isSuccess, isError, error, toast]);
+
+  if (showBackground) {
+    return <BackgroundView />;
+  }
 
   return (
     <Container p={12}>

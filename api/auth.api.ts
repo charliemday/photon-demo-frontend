@@ -26,7 +26,9 @@ interface SetPasswordRequestProps {
     password: string;
 }
 
-interface SetPasswordReturnProps { }
+interface SetPasswordReturnProps {
+    token: string;
+}
 
 // Define a service using a base URL and expected endpoints
 export const authApi = baseApi.injectEndpoints({
