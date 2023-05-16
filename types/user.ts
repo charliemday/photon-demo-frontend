@@ -1,3 +1,8 @@
+export enum Features {
+    WORD_SEEK = "word_seek",
+    // TODO: Add more features here
+}
+
 export interface User {
     id: number;
     email: string;
@@ -26,4 +31,8 @@ export interface User {
     products: {
         [key: string]: string[];
     }
+    /**
+     * Features the user has access to
+     */
+    features: Features[];
 }

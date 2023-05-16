@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit';
 import { authApi, userApi } from 'api';
 import { User } from 'types';
 
@@ -15,21 +15,27 @@ const initialState: AuthState = {
 export const authSlice = createSlice({
     name: 'auth',
     initialState,
-    reducers: {},
+    reducers: {
+        setAuthToken(state, action) {
+            state.token = action.payload;
+        }
+    },
     extraReducers: (builder) => {
         builder.addMatcher(authApi.endpoints.login.matchFulfilled, (state, action) => {
             state.token = action.payload.token;
         }),
-        builder.addMatcher(authApi.endpoints.signup.matchFulfilled, (state, action) => {
-            state.token = action.payload.token;
-        }),
-        builder.addMatcher(userApi.endpoints.userDetails.matchFulfilled, (state, action) => {
-            // state.userDetails = action.payload;
-        })
+            builder.addMatcher(authApi.endpoints.signup.matchFulfilled, (state, action) => {
+                state.token = action.payload.token;
+            }),
+            builder.addMatcher(userApi.endpoints.userDetails.matchFulfilled, (state, action) => {
+                // state.userDetails = action.payload;
+            })
     },
 })
 
 // Action creators are generated for each case reducer function
-// export const { } = authSlice.actions
+export const {
+    setAuthToken
+} = authSlice.actions
 
 export default authSlice.reducer

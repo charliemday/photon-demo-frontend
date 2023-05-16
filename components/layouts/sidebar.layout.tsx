@@ -1,5 +1,13 @@
-import { Badge, Box, Flex, Text } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Flex,
+  HStack,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { Avatar } from "components/avatar";
+import { FeedbackModal } from "components/modals";
 import { Sidebar } from "components/sidebar";
 import { ROUTES } from "config";
 import { useLogout } from "hooks";
@@ -23,6 +31,11 @@ export const SidebarLayout: React.FC<Props> = ({
 }) => {
   const router = useRouter();
   const { logout } = useLogout();
+  const {
+    isOpen: isFeedbackModalOpen,
+    onOpen: onOpenFeedbackModal,
+    onClose: onCloseFeedbackModal,
+  } = useDisclosure();
 
   const SIDEBAR_ITEMS = [
     {
@@ -46,6 +59,14 @@ export const SidebarLayout: React.FC<Props> = ({
 
   const FOOTER_ITEMS = [
     {
+      label: "Feedback",
+      isActive: isFeedbackModalOpen,
+      onClick: () => {
+        onOpenFeedbackModal();
+      },
+      icon: <Text fontSize="sm">📝</Text>,
+    },
+    {
       label: "Settings",
       isActive: router.route === ROUTES.SETTINGS,
       onClick: () => router.push(ROUTES.SETTINGS),
@@ -60,8 +81,14 @@ export const SidebarLayout: React.FC<Props> = ({
 
   return (
     <Flex>
+      <FeedbackModal
+        isOpen={isFeedbackModalOpen}
+        onClose={onCloseFeedbackModal}
+      />
       <Box position="absolute" right={5} top={5}>
-        <Avatar />
+        <HStack>
+          <Avatar />
+        </HStack>
       </Box>
       {headerTitle && (
         <Head>
