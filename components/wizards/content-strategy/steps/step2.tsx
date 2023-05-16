@@ -19,6 +19,8 @@ interface Props extends Partial<StepWizardChildProps> {
   contentStrategyId: number | null;
 }
 
+const NUMBER_OF_COMPETITORS = 10;
+
 export const Step2: React.FC<Props> = ({
   nextStep,
   previousStep,
@@ -252,7 +254,7 @@ export const Step2: React.FC<Props> = ({
         </Text>
         <Text>Enter the URLs of your competitors in this space.</Text>
         <Stack>
-          {Array.from({ length: 6 }).map((_, index) => (
+          {Array.from({ length: NUMBER_OF_COMPETITORS }).map((_, index) => (
             <HStack key={index}>
               <Input
                 placeholder="Competitor Name"
