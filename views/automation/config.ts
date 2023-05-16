@@ -12,6 +12,7 @@ export enum KEY {
     KEYWORD_INSIGHTS_UPLOAD = "keyword-insights-upload",
     KEYWORD_INSIGHTS_RESULTS = "keyword-insights-results",
     TEAM_BLOGS = "team-blogs",
+    ADMIN_USER = "admin-user",
 }
 
 export interface STEP {
@@ -119,6 +120,17 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
                 description: `Take the GSC keywords and check whether they exist on the
           pages they're associated with. The output will be saved to the drive.`,
                 key: KEY.COMPARE_CONSOLE_REPORT,
+                image: "/steps/search-console.svg",
+            },
+        ],
+    },
+    {
+        title: "Admin Tools",
+        steps: [
+            {
+                title: "Admin User",
+                description: "For admin use",
+                key: KEY.ADMIN_USER,
                 image: "/steps/search-console.svg",
             },
         ],
