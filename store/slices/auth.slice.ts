@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { authApi, userApi } from 'api';
+import { authApi } from 'api';
 import { User } from 'types';
 
 export interface AuthState {
@@ -27,10 +27,10 @@ export const authSlice = createSlice({
             builder.addMatcher(authApi.endpoints.signup.matchFulfilled, (state, action) => {
                 state.token = action.payload.token;
             }),
-            builder.addMatcher(userApi.endpoints.userDetails.matchFulfilled, (state, action) => {
-                // state.userDetails = action.payload;
+            builder.addMatcher(authApi.endpoints.setPassword.matchFulfilled, (state, action) => {
+                state.token = action.payload.token;
             })
-    },
+    }
 })
 
 // Action creators are generated for each case reducer function
