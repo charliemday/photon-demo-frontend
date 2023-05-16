@@ -8,8 +8,8 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import {
+  useBulkDeleteSeedKeywordsMutation,
   useCreateSeedKeywordMutation,
-  useDeleteSeedKeywordMutation,
   useGenerateContentStrategyMutation,
   useListSeedKeywordsQuery,
 } from "api/strategies.api";
@@ -64,7 +64,7 @@ export const Step5: FC<Props> = ({
     },
   ] = useCreateSeedKeywordMutation();
 
-  const [deleteKeyword] = useDeleteSeedKeywordMutation();
+  const [deleteKeywords] = useBulkDeleteSeedKeywordsMutation();
 
   const { data: seedKeywords, refetch } = useListSeedKeywordsQuery(
     {
@@ -168,11 +168,9 @@ export const Step5: FC<Props> = ({
       .map(({ id }) => id);
 
     // Remove the competitor keywords that do not exist in the suggested keywords
-    competitorKeywordsToRemove?.forEach(async (id) => {
-      await deleteKeyword({
-        contentStrategyId: contentStrategyId || 0,
-        seedKeywordId: id,
-      });
+    await deleteKeywords({
+      contentStrategyId: contentStrategyId || 0,
+      seedKeywords: competitorKeywordsToRemove || [],
     });
 
     // Create the user seed keywords

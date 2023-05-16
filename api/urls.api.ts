@@ -9,10 +9,10 @@ export const apiUrls = {
     // Teams
     TEAMS: (teamType?: TeamType) => `teams/${teamType ? `?team_type=${teamType}` : ''}`,
     TEAM: (id: number) => `teams/${id}/`,
-    TEAM_CLASSIFICATION: (teamUid: string) => `teams/team/${teamUid}/classifications`,
-    TEAM_COMPETITORS: (teamUid?: string) => `teams/team/competitors${teamUid ? `?team_uid=${teamUid}` : ''}`,
-    TEAM_COMPETITORS_BULK: "teams/team/competitors/bulk-update",
-    TEAM_SEED_KEYWORDS: (teamUid: string) => `teams/team/${teamUid}/seed-keywords`,
+    TEAM_CLASSIFICATION: (teamUid: string) => `teams/team/${teamUid}/classifications`, // TODO: DEPRECATE
+    TEAM_COMPETITORS: (teamUid?: string) => `teams/team/competitors${teamUid ? `?team_uid=${teamUid}` : ''}`, // TODO: DEPRECATE
+    TEAM_COMPETITORS_BULK: "teams/team/competitors/bulk-update", // TODO: DEPRECATE
+    TEAM_SEED_KEYWORDS: (teamUid: string) => `teams/team/${teamUid}/seed-keywords`, // TODO: DEPRECATE
     // User
     USER: 'user/',
     ONBOARDING_STEP: 'onboarding-step/',
@@ -66,4 +66,6 @@ export const apiUrls = {
     LIST_GEOGRAPHIES: 'strategies/geography/',
     GENERATE_COMPETITORS_KEYWORDS: (contentStrategyId: number) => `strategies/content-strategy/${contentStrategyId}/competitor-keywords`,
     GENERATE_CONTENT_STRATEGY: (contentStrategyId: number) => `strategies/content-strategy/${contentStrategyId}/generate`,
+    BULK_DELETE_COMPETITORS: (contentStrategyId: number) => `strategies/content-strategy/${contentStrategyId}/competitors/bulk/delete`,
+    BULK_DELETE_SEED_KEYWORDS: (contentStrategyId: number) => `strategies/content-strategy/${contentStrategyId}/seed-keywords/bulk/delete`,
 };

@@ -142,6 +142,30 @@ export const strategiesApi = baseApi.injectEndpoints({
                 method: "POST",
             }),
         }),
+        /**
+         * Bulk delete competitors
+         */
+        bulkDeleteCompetitors: builder.mutation<void, { contentStrategyId: number, competitors: number[] }>({
+            query: ({ contentStrategyId, competitors }) => ({
+                url: apiUrls.BULK_DELETE_COMPETITORS(contentStrategyId),
+                method: "DELETE",
+                body: {
+                    competitors
+                }
+            }),
+        }),
+        /**
+         * Bulk delete seed keywords
+         */
+        bulkDeleteSeedKeywords: builder.mutation<void, { contentStrategyId: number, seedKeywords: number[] }>({
+            query: ({ contentStrategyId, seedKeywords }) => ({
+                url: apiUrls.BULK_DELETE_SEED_KEYWORDS(contentStrategyId),
+                method: "DELETE",
+                body: {
+                    keywords: seedKeywords
+                }
+            }),
+        }),
     })
 
 });
@@ -159,5 +183,7 @@ export const {
     useListCompetitorsQuery,
     useGenerateCompetitorsKeywordsMutation,
     useDeleteSeedKeywordMutation,
-    useGenerateContentStrategyMutation
+    useGenerateContentStrategyMutation,
+    useBulkDeleteCompetitorsMutation,
+    useBulkDeleteSeedKeywordsMutation,
 } = strategiesApi;
