@@ -13,6 +13,7 @@ import { BiMinusCircle } from "react-icons/bi";
 import uuid from "react-uuid";
 import { Team } from "types";
 
+// TODO: Store this in the types file
 export interface CompetitorInterface {
   name: string;
   url: string;

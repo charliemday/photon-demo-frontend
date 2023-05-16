@@ -8,36 +8,24 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 
-import {
-  CreateKeywordsThemesBody,
-  SeedKeywordsBody,
-  useClusterKeywordsMutation,
-  useCreateKeywordThemesMutation,
-  useGenerateSeedKeywordsMutation,
-  useSeedKeywordsMutation,
-} from "api/engine.api";
-import {
-  useBulkCreateSeedKeywordsMutation,
-  useBulkUpdateCompetitorsMutation,
-  useCreateCompetitorsMutation,
-  useUpdateClassificationsMutation,
-} from "api/team.api";
+import { useGenerateSeedKeywordsMutation } from "api/engine.api";
+
 import { Button } from "components/button";
-import { RootState } from "store";
-import { SemrushDatabase, Team } from "types";
+import { SeedKeywordSource, SemrushDatabase } from "types";
 import { ModalStepWrapper } from "../modal-step-wrapper";
 
-import { TeamClassification } from "api/team.api";
+import {
+  useCreateCompetitorsMutation,
+  useCreateSeedKeywordMutation,
+} from "api/strategies.api";
 import { CompetitorInterface } from "forms/competitors";
+import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import { calculateSemrushCost, typeCheckError } from "utils";
 import {
-  ClassificationSection,
   CompetitorsSection,
   DatabaseSection,
   InputSection,
-  KeywordThemeSection,
   NavTab,
   TargetKeywordsSection,
 } from "views/automation/steps/seed-keywords";
@@ -51,32 +39,23 @@ export const SeedKeywords: React.FC<Props> = (props) => {
   const [database, setDatabase] = useState<SemrushDatabase>("uk");
   const [targetKeywords, setTargetKeywords] = useState<string[]>([]);
   const [competitors, setCompetitors] = useState<CompetitorInterface[]>([]);
-  const [checkClustering, setCheckClustering] = useState<boolean>(false);
-  const [broadKeywordsCount, setBroadKeywordsCount] = useState<number>(10);
   const [maxOrganicResults, setMaxOrganicResults] = useState<number>(300);
   const [maxPosition, setMaxPosition] = useState<number>(30);
   const [useCompetitors, setUseCompetitors] = useState<boolean>(true);
 
-  const [step, setStep] = useState<number>(1);
+  const [step, setStep] = useState<number>(0);
 
-  const [keywordThemes, setKeywordThemes] = useState<string[]>([]);
+  const activeTeam = useActiveTeam();
+  const activeContentStrategy = useActiveContentStrategy();
 
-  const [classify, setClassify] = useState<boolean>(true);
-  const [classificationCategory, setClassificationCategory] = useState<
-    string | null
-  >(null);
-  const [positivePrompts, setPositivePrompts] = useState<string[]>([]);
-  const [negativePrompts, setNegativePrompts] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const activeTeam: Team = useSelector(
-    (state: RootState) => state.team.activeTeam
-  );
+  const [createSeedKeywords] = useCreateSeedKeywordMutation();
 
-  const [generateSeedKeywords, { isLoading, isError, error }] =
-    useSeedKeywordsMutation();
+  const [createCompetitors] = useCreateCompetitorsMutation();
 
   const [
-    generateSeedKeywordsv2,
+    generateSeedKeywords,
     {
       isLoading: isGeneratingSeedKeywords,
       isError: hasErrorGeneratingSeedKeywords,
@@ -84,88 +63,14 @@ export const SeedKeywords: React.FC<Props> = (props) => {
     },
   ] = useGenerateSeedKeywordsMutation();
 
-  const [
-    bulkCreateSeedKeywords,
-    {
-      isLoading: isBulkCreatingSeedKeywords,
-      isError: hasErrorBulkCreatingSeedKeywords,
-      error: bulkCreateSeedKeywordsError,
-    },
-  ] = useBulkCreateSeedKeywordsMutation();
-
-  const [
-    createCompetitors,
-    {
-      isLoading: isCreatingCompetitors,
-      isError: hasErrorCreatingCompetitors,
-      error: createCompetitorsError,
-    },
-  ] = useCreateCompetitorsMutation();
-
-  const [
-    bulkUpdateCompetitors,
-    {
-      isLoading: isBulkUpdatingCompetitors,
-      isError: hasErrorBulkUpdatingCompetitors,
-      error: bulkUpdateCompetitorsError,
-    },
-  ] = useBulkUpdateCompetitorsMutation();
-
-  const [
-    updateClassifications,
-    {
-      isLoading: isUpdatingClassifications,
-      isError: hasErrorUpdatingClassifications,
-      error: updateClassificationsError,
-    },
-  ] = useUpdateClassificationsMutation();
-
-  // TODO: Uncomment when the API is ready
-  const [
-    createKeywordThemes,
-    {
-      isLoading: isCreatingKeywordThemes,
-      isError: hasErrorCreatingKeywordThemes,
-      error: createKeywordThemesError,
-    },
-  ] = useCreateKeywordThemesMutation();
-
-  const [
-    runClustering,
-    {
-      isLoading: isClustering,
-      isError: isClusteringError,
-      error: clusteringError,
-    },
-  ] = useClusterKeywordsMutation();
-
   const toast = useToast();
 
   useEffect(() => {
     setStep(0);
+    setIsLoading(false);
   }, [props.isOpen]);
 
   useEffect(() => {
-    if (!isLoading && isError && error) {
-      toast({
-        title: "Error",
-        description: typeCheckError(error) || "Something went wrong.",
-        status: "error",
-        isClosable: true,
-      });
-    }
-
-    if (!isClustering && isClusteringError && clusteringError) {
-      toast({
-        title: "Error",
-        description:
-          typeCheckError(clusteringError) ||
-          "Something went wrong with the Clustering.",
-        status: "error",
-        isClosable: true,
-      });
-    }
-
     if (
       !isGeneratingSeedKeywords &&
       hasErrorGeneratingSeedKeywords &&
@@ -181,192 +86,45 @@ export const SeedKeywords: React.FC<Props> = (props) => {
       });
     }
   }, [
-    isError,
-    error,
-    isClustering,
-    isClusteringError,
-    clusteringError,
     isGeneratingSeedKeywords,
     hasErrorGeneratingSeedKeywords,
     generateSeedKeywordsError,
-    isLoading,
     toast,
   ]);
 
-  useEffect(
-    () => {
-      if (
-        !isUpdatingClassifications &&
-        hasErrorUpdatingClassifications &&
-        updateClassificationsError
-      ) {
-        toast({
-          title: "Error",
-          description:
-            typeCheckError(updateClassificationsError) ||
-            "Something went wrong with updating the classifications.",
-          status: "error",
-          isClosable: true,
-        });
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      isUpdatingClassifications,
-      hasErrorUpdatingClassifications,
-      updateClassificationsError,
-    ]
-  );
-
-  useEffect(
-    () => {
-      if (
-        !isBulkCreatingSeedKeywords &&
-        hasErrorBulkCreatingSeedKeywords &&
-        bulkCreateSeedKeywordsError
-      ) {
-        toast({
-          title: "Error",
-          description:
-            typeCheckError(bulkCreateSeedKeywordsError) ||
-            "Something went wrong with creating the seed keywords.",
-          status: "error",
-          isClosable: true,
-        });
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      isBulkCreatingSeedKeywords,
-      hasErrorBulkCreatingSeedKeywords,
-      bulkCreateSeedKeywordsError,
-    ]
-  );
-
-  useEffect(
-    () => {
-      if (
-        !isBulkUpdatingCompetitors &&
-        hasErrorBulkUpdatingCompetitors &&
-        bulkUpdateCompetitorsError
-      ) {
-        toast({
-          title: "Error",
-          description:
-            typeCheckError(bulkUpdateCompetitorsError) ||
-            "Something went wrong with updating the competitors.",
-          status: "error",
-          isClosable: true,
-        });
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      isBulkUpdatingCompetitors,
-      hasErrorBulkUpdatingCompetitors,
-      bulkUpdateCompetitorsError,
-    ]
-  );
-
   const handleSubmit = async () => {
-    if (classify) {
-      const body: TeamClassification = {
-        teamUid: activeTeam.uid,
-        targetKeywords: positivePrompts.join(","),
-        avoidanceKeywords: negativePrompts.join(","),
-        category: classificationCategory,
-      };
-      const response = await updateClassifications(body);
-      if ("error" in response) {
-        return;
-      }
-    }
+    /**
+     * On submitting we:
+     * 1. Create the Seed Keywords for the Content Strategy (User Source)
+     * 2. We then Create the Competitors for the Content Strategy
+     * 3. We run the Generate Seed Keywords API
+     */
 
-    const generateSeedKeywordsResponse = await generateSeedKeywordsv2({
-      teamId: activeTeam.id.toString(),
-      maxOrganicResults,
-      maxPosition,
-      classify,
-      database,
-      useCompetitors,
+    setIsLoading(true);
+
+    createSeedKeywords({
+      contentStrategyId: activeContentStrategy.id,
+      body: {
+        keywords: targetKeywords.map((k) => ({
+          keyword: k,
+          source: SeedKeywordSource.USER,
+        })),
+      },
     });
 
-    if ("data" in generateSeedKeywordsResponse) {
-      toast({
-        title: "Success",
-        description: "Seed keywords are being generated.",
-        status: "success",
-        isClosable: true,
-      });
-      props.onClose();
-    }
-  };
+    createCompetitors({
+      contentStrategyId: activeContentStrategy.id,
+      body: competitors,
+    });
 
-  // TODO: Uncomment this when the API is ready
-  const handleSaveThemes = async () => {
-    const body: CreateKeywordsThemesBody = {
-      teamId: activeTeam.id.toString(),
-      themes: keywordThemes,
-    };
-    const response = await createKeywordThemes(body);
-
-    if ("data" in response) {
-      setStep((s) => s + 1);
-    }
-  };
-
-  const handleSetup = async () => {
-    const body: SeedKeywordsBody = {
-      teamId: activeTeam.id.toString(),
-      keywords: targetKeywords,
-      database,
-      maxPosition,
+    generateSeedKeywords({
+      contentStrategyId: activeContentStrategy.id,
       maxOrganicResults,
-    };
+      maxPosition,
+      database,
+    });
 
-    if (useCompetitors) {
-      body["competitors"] = competitors;
-    }
-
-    if (checkClustering) {
-      // If the "Run Clustering Checkbox" is checked then we
-      // will run the clustering algorithm on the generated keywords
-
-      body["limit"] = broadKeywordsCount;
-      const response = await runClustering(body);
-
-      if ("data" in response) {
-        // The clustering is complete so we can now show the clustering results
-        // to the user
-        setStep((s) => s + 1);
-      }
-    } else {
-      let proceed = true;
-
-      // Save the seed keywords
-      const createSeedKeywordsResponse = await bulkCreateSeedKeywords({
-        teamUid: activeTeam.uid,
-        keywords: targetKeywords,
-      });
-
-      if ("error" in createSeedKeywordsResponse) proceed = false;
-
-      // Save the competitors
-      if (useCompetitors) {
-        const createCompetitorsResponse = await bulkUpdateCompetitors({
-          teamUid: activeTeam.uid,
-          competitors: competitors.map(({ name, url }) => ({
-            name,
-            url,
-          })),
-        });
-        if ("error" in createCompetitorsResponse) proceed = false;
-      }
-
-      if (proceed) {
-        setStep((s) => s + 1);
-      }
-    }
+    setIsLoading(false);
   };
 
   const renderSeedKeywordSection = () => (
@@ -395,23 +153,6 @@ export const SeedKeywords: React.FC<Props> = (props) => {
           helperText={`e.g. For a value of 20, we would only get the top 20 results`}
           label="Max Position:"
         />
-        {/* <Divider />
-        <InputSection
-          title={`Max Organic Results (Max Cost: $${calculateSemrushCost({
-            costPerLine: 20,
-            noOfLines: broadKeywordsCount,
-            noOfRequests: 4,
-          })})`}
-          subtitle="Run the each of the target keywords through the Broad Keywords API to return a list of themes to manually select from"
-          onChange={(value) => setBroadKeywordsCount(value as number)}
-          defaultValue={broadKeywordsCount}
-          helperText={`This is the number of Broad Keywords to return for each of the
-          Target Keywords in the "Expanding Broad Keywords" section of the flow`}
-          label="Broad Keywords Count:"
-          checkLabel="Generate Themes?"
-          isChecked={checkClustering}
-          onCheck={setCheckClustering}
-        /> */}
       </Stack>
       <Stack flex={1} spacing={12}>
         <CompetitorsSection
@@ -427,48 +168,15 @@ export const SeedKeywords: React.FC<Props> = (props) => {
     </HStack>
   );
 
-  const renderThemeSection = () => (
-    <HStack>
-      <KeywordThemeSection onSelectTheme={setKeywordThemes} />
-    </HStack>
-  );
-
-  const renderClassificationSection = () => (
-    <HStack w="50%">
-      <ClassificationSection
-        onAutoClassifyChange={setClassify}
-        onClassificationCategoryChange={setClassificationCategory}
-        onPositivePromptsChange={setPositivePrompts}
-        onNegativePromptsChange={setNegativePrompts}
-      />
-    </HStack>
-  );
-
   const STEPS = [
     {
       title: "Seed Keywords",
       content: renderSeedKeywordSection(),
-      onClick: handleSetup,
-      buttonLabel: "Next Step",
+      onClick: handleSubmit,
+      buttonLabel: "Submit",
       buttonDisabled:
         (!targetKeywords.length && !competitors.length) || !database,
-      isButtonLoading: isBulkCreatingSeedKeywords || isCreatingCompetitors,
-    },
-    // {
-    //   title: "Keyword Themes",
-    //   content: renderThemeSection(),
-    //   onClick: handleSaveThemes,
-    //   buttonLabel: "Setup Step 2 👉",
-    //   buttonDisabled: !keywordThemes.length,
-    // },
-    {
-      title: "Classifications",
-      content: renderClassificationSection(),
-      onClick: handleSubmit,
-      buttonLabel: "Run Step 1 🚀",
-      buttonDisabled: false,
-      isButtonLoading:
-        isUpdatingClassifications || isGeneratingSeedKeywords || isLoading,
+      isButtonLoading: isLoading,
     },
   ];
 
@@ -491,7 +199,6 @@ export const SeedKeywords: React.FC<Props> = (props) => {
           step. We can optionally classify the keywords into categories for
           deeper analysis.`}
         </Text>
-
         <Divider my={6} />
 
         <HStack alignItems="flex-start" spacing={12}>

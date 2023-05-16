@@ -49,7 +49,7 @@ export interface SeedKeywordsBody {
 
 
 export interface GenerateKIInputBody {
-  teamId: number;
+  contentStrategyId: number;
   keywords: string[];
   limit?: number;
   topPercentage?: number;
@@ -57,12 +57,10 @@ export interface GenerateKIInputBody {
 }
 
 export interface GenerateSeedKeywordsBody {
-  teamId: string;
-  classify?: boolean;
+  contentStrategyId: number;
   maxOrganicResults?: number;
   maxPosition?: number;
   database?: string; // TODO: Type this to the SEMRUSH_DATABASES
-  useCompetitors?: boolean;
 }
 
 export interface CreateKeywordsThemesBody { teamId: string, themes: string[] }
@@ -117,16 +115,23 @@ export interface KeywordInsightsResult {
   },
 }
 
-export interface KeywordInsightsOutput {
+export interface KeywordInsightsOrder {
+  contentStrategy: number;
   id: number;
-  team: number;
-  created: string;
-  name: string;
+  sheetsUrl: string;
+  status: string;
+  orderId: string;
 }
 
 export interface KeywordInsightsResultsRequest {
-  teamId: number;
-  parentId: number;
+  orderId: number;
+}
+
+export interface CreateKeywordInsightsOrderBody {
+  contentStrategyId: number;
+  orderId?: string;
+  sheetsUrl?: string;
+  status?: string;
 }
 
 
@@ -136,13 +141,9 @@ export const engineApi = baseApi.injectEndpoints({
     /**
      * API for uploading the Ahrefs CSV
      */
-    processAhrefsData: builder.mutation<undefined, ProcessAhrefsDataBody>({
-      query: (body) => ({
-        url: apiUrls.PROCESS_AHREFS_DATA,
-        method: "POST",
-        body,
-      })
-    }),
+
+
+    // // TODO: This might be the "unused" endpoint (keyword-research)
     seedKeywords: builder.mutation<undefined, SeedKeywordsBody>({
       query: (body) => ({
         url: apiUrls.SEED_KEYWORDS,
@@ -150,7 +151,7 @@ export const engineApi = baseApi.injectEndpoints({
         body: decamelizeKeys(body),
       })
     }),
-    // New Endpoint
+    // Old Version (e.g. Step 1.1)
     generateSeedKeywords: builder.mutation<undefined, GenerateSeedKeywordsBody>({
       query: (body) => ({
         url: apiUrls.GENERATE_SEED_KEYWORDS,
@@ -165,27 +166,8 @@ export const engineApi = baseApi.injectEndpoints({
         body,
       })
     }),
-    clusterKeywords: builder.mutation<undefined, SeedKeywordsBody>({
-      query: (body) => ({
-        url: apiUrls.CLUSTER_KEYWORDS,
-        method: "POST",
-        body: decamelizeKeys(body),
-      })
-    }),
-    listKeywordThemes: builder.query<KeywordTheme[], string>({
-      query: (teamUid) => ({
-        url: apiUrls.KEYWORD_THEMES(teamUid),
-      })
-    }),
-    createKeywordThemes: builder.mutation<undefined, CreateKeywordsThemesBody>({
-      query: ({ teamId, themes }) => ({
-        url: apiUrls.KEYWORD_THEMES(),
-        method: "POST",
-        body: decamelizeKeys({ themes, teamId }),
-      })
-    }),
     /**
-     * Runs both the Seed Keywords and PAA steps
+     * Runs both the Seed Keywords and PAA steps (Step 1 + 2)
      */
     generateKIInput: builder.mutation<undefined, GenerateKIInputBody>({
       query: (body) => ({
@@ -222,29 +204,32 @@ export const engineApi = baseApi.injectEndpoints({
      * Fetches the Keyword Insights results
      */
     keywordInsightsResults: builder.query<KeywordInsightsResult[], KeywordInsightsResultsRequest>({
-      query: ({ teamId, parentId }) => ({
-        url: apiUrls.KEYWORD_INSIGHTS_RESULTS(teamId, parentId),
+      query: ({ orderId }) => ({
+        url: apiUrls.KEYWORD_INSIGHTS_RESULTS(orderId),
       }),
       // transformResponse: (response: ConvertToSnakeCase<KeywordInsightsResult[]>) => camelizeKeys(response) as KeywordInsightsResult[]
     }),
     /**
      * Uploads the Keyword Insights Output
      */
-    uploadKeywordInsightsOutput: builder.mutation<undefined, UploadKeywordInsightsOutputBody>({
+    /**
+     * Creates the Keyword Insights Order
+     */
+    createKeywordInsightOrder: builder.mutation<undefined, CreateKeywordInsightsOrderBody>({
       query: (body) => ({
-        url: apiUrls.UPLOAD_KEYWORD_INSIGHTS_OUTPUT,
+        url: apiUrls.CREATE_KEYWORD_INSIGHTS_ORDER,
         method: "POST",
-        body
+        body: decamelizeKeys(body),
       })
     }),
     /**
      * Fetch the Keyword Insights output
      */
-    keywordInsightsOutput: builder.query<KeywordInsightsOutput[], number>({
-      query: (teamId) => ({
-        url: apiUrls.KEYWORD_INSIGHTS_OUTPUT(teamId),
+    keywordInsightsOrder: builder.query<KeywordInsightsOrder[], number>({
+      query: (contentStrategyId) => ({
+        url: apiUrls.KEYWORD_INSIGHTS_ORDER(contentStrategyId),
       }),
-      transformResponse: (response: ConvertToSnakeCase<KeywordInsightsOutput[]>) => camelizeKeys(response) as KeywordInsightsOutput[]
+      transformResponse: (response: ConvertToSnakeCase<KeywordInsightsOrder[]>) => camelizeKeys(response) as KeywordInsightsOrder[]
     })
   })
 });
@@ -253,17 +238,13 @@ export const engineApi = baseApi.injectEndpoints({
 // auto-generated based on the defined endpoints
 
 export const {
-  useProcessAhrefsDataMutation,
   usePeopleAlsoAskMutation,
-  useClusterKeywordsMutation,
-  useListKeywordThemesQuery,
-  useCreateKeywordThemesMutation,
   useSeedKeywordsMutation,
   useGenerateSeedKeywordsMutation,
   useGenerateKIInputMutation,
   useWordSeekMutation,
   useWordSeekResultsQuery,
   useKeywordInsightsResultsQuery,
-  useUploadKeywordInsightsOutputMutation,
-  useKeywordInsightsOutputQuery,
+  useKeywordInsightsOrderQuery,
+  useCreateKeywordInsightOrderMutation
 } = engineApi;

@@ -1,5 +1,5 @@
 const BRAND_NAME = 'baser';
-const TAG_LINE = 'Automated SaaS Management';
+const TAG_LINE = 'Automate your SEO';
 const BRAND_COLOR = '#6062F6';
 const SECONDARY_COLOR = '#6B58DD';
 const LANDING_PAGE = 'https://getbaser.com';

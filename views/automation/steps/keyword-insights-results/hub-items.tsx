@@ -23,14 +23,14 @@ import { BsDownload } from "react-icons/bs";
 
 import { useEffect, useState } from "react";
 
-import { useSelector } from "react-redux";
-import { RootState, Team } from "types";
+import { Team } from "types";
 
 import {
   KeywordItem,
-  useKeywordInsightsOutputQuery,
+  useKeywordInsightsOrderQuery,
   useKeywordInsightsResultsQuery,
 } from "api/engine.api";
+import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import { useRef } from "react";
 
 interface Props extends Partial<StepWizardChildProps> {
@@ -59,21 +59,24 @@ const LEGEND_DATA = [
 ];
 
 export const HubItems: React.FC<Props> = (props) => {
-  const [parentId, setParentId] = useState<number | null>(null);
+  const [orderId, setOrderId] = useState<number | null>(null);
   const [selectedHubName, setSelectedHubName] = useState<string | null>(null);
 
   const csvData = useRef<any>([]);
 
-  const activeTeam: Team = useSelector(
-    (state: RootState) => state.team.activeTeam
+  const activeTeam: Team = useActiveTeam();
+  const activeContentStrategy = useActiveContentStrategy();
+
+  const { data: output } = useKeywordInsightsOrderQuery(
+    activeContentStrategy?.id,
+    {
+      skip: !activeContentStrategy?.id,
+    }
   );
-  const { data: output } = useKeywordInsightsOutputQuery(activeTeam?.id, {
-    skip: !activeTeam?.id,
-  });
 
   useEffect(() => {
     if (output && output.length) {
-      setParentId(output[0].id);
+      setOrderId(output[0].id);
     }
   }, [output]);
 
@@ -81,19 +84,18 @@ export const HubItems: React.FC<Props> = (props) => {
     useKeywordInsightsResultsQuery(
       {
         // @ts-ignore
-        parentId,
-        teamId: activeTeam?.id,
+        orderId,
       },
       {
-        skip: parentId === null || !activeTeam?.id,
+        skip: orderId === null || !activeTeam?.id,
       }
     );
 
   useEffect(() => {
-    if (parentId) {
+    if (orderId) {
       refetchResults();
     }
-  }, [parentId, refetchResults]);
+  }, [orderId, refetchResults]);
 
   const buildExportData = () => {
     const csvData: string[][] = [["Hub", "Spoke", "Theme"]];
@@ -117,17 +119,17 @@ export const HubItems: React.FC<Props> = (props) => {
             placeholder="Select an output"
             size="sm"
             onChange={(e) => {
-              setParentId(parseInt(e.target.value));
+              setOrderId(parseInt(e.target.value));
               setSelectedHubName(
-                output?.find((d) => d.id === parseInt(e.target.value))?.name ||
-                  null
+                output?.find((d) => d.id === parseInt(e.target.value))
+                  ?.orderId || null
               );
             }}
           >
             {output?.map((d, key) => {
               return (
                 <option key={key} value={d.id}>
-                  {d.name}
+                  {d.orderId}
                 </option>
               );
             })}

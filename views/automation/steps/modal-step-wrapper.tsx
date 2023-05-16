@@ -8,7 +8,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import Image from "next/image";
-import React from "react";
+import { FC, ReactNode, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
 import { Team } from "types";
@@ -16,14 +16,14 @@ import { Team } from "types";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  children: React.ReactNode;
+  children: ReactNode;
   size?: string;
   contentProps?: {
     [key: string]: any;
   };
 }
 
-export const ModalStepWrapper: React.FC<Props> = ({
+export const ModalStepWrapper: FC<Props> = ({
   isOpen,
   onClose,
   children,
@@ -33,6 +33,7 @@ export const ModalStepWrapper: React.FC<Props> = ({
   const activeTeam: Team = useSelector(
     (state: RootState) => state.team.activeTeam
   );
+  const [imageError, setImageError] = useState(false);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={size}>
@@ -48,11 +49,14 @@ export const ModalStepWrapper: React.FC<Props> = ({
           borderRadius={4}
           overflow="hidden"
         >
-          <Image
-            src={activeTeam?.logo || ""}
-            alt={activeTeam?.name || ""}
-            layout="fill"
-          />
+          {imageError ? null : (
+            <Image
+              src={activeTeam?.logo || ""}
+              alt={activeTeam?.name || ""}
+              layout="fill"
+              onError={() => setImageError(true)}
+            />
+          )}
         </Box>
 
         <Box position="absolute" left={20} top={7}>

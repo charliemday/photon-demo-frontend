@@ -2,27 +2,19 @@ import { FC, useEffect, useState } from "react";
 import { ModalStepWrapper } from "./modal-step-wrapper";
 
 import {
-  Box,
-  Checkbox,
   Flex,
   HStack,
   Input,
   Select,
   Stack,
   Text,
-  Tooltip,
   useToast,
 } from "@chakra-ui/react";
-import { useUploadKeywordInsightsOutputMutation } from "api/engine.api";
-import { useSelector } from "react-redux";
-import { RootState } from "store";
+import { useCreateKeywordInsightOrderMutation } from "api/engine.api";
 import { typeCheckError } from "utils";
-import { UploadZone } from "./upload-zone";
-
-import { FaRandom } from "react-icons/fa";
 
 import { Button } from "components/button";
-import * as ung from "unique-names-generator";
+import { useActiveContentStrategy } from "hooks";
 
 interface Props {
   isOpen: boolean;
@@ -37,11 +29,13 @@ const GPT_MODELS = [
 const MAX_BATCH_OUTPUTS = 10; // Store this in a config file
 
 export const KeywordInsightsUpload: FC<Props> = (props) => {
-  const activeTeam = useSelector((state: RootState) => state.team.activeTeam);
+  const activeStrategy = useActiveContentStrategy();
 
   const [openaiModel, setOpenaiModel] = useState<string>("gpt-3.5");
-  const [batchOutputs, setBatchOutputs] = useState<number>(MAX_BATCH_OUTPUTS);
-  const [reportName, setReportName] = useState<string>("");
+  const [sheetUrl, setSheetUrl] = useState<string>("");
+
+  const [createOrder, { isLoading, isSuccess, isError, error }] =
+    useCreateKeywordInsightOrderMutation();
 
   const toast = useToast();
 
@@ -49,24 +43,18 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
     // Reset the state when the modal is closed
     if (props.isOpen) {
       setOpenaiModel("gpt-3.5");
-      setBatchOutputs(MAX_BATCH_OUTPUTS);
-      setReportName("");
+      setSheetUrl("");
     }
   }, [props.isOpen]);
 
-  const [uploadFile, { isLoading, isSuccess, isError, error }] =
-    useUploadKeywordInsightsOutputMutation();
-
-  const handleUploadClick = (files: File[]) => {
-    let formData = new FormData();
-
-    formData.append("file", files[0]);
-    formData.append("team_id", activeTeam.id);
-    formData.append("model", openaiModel);
-    formData.append("outputs", batchOutputs.toString());
-    formData.append("report_name", reportName);
-
-    uploadFile(formData);
+  const handleSubmit = () => {
+    if (activeStrategy?.id) {
+      createOrder({
+        contentStrategyId: activeStrategy?.id,
+        sheetsUrl: sheetUrl,
+        status: "complete",
+      });
+    }
   };
 
   useEffect(() => {
@@ -92,32 +80,15 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
     }
   }, [isSuccess, isError, error, isLoading, toast]);
 
-  const suggestRandomName = () => {
-    const randomName = ung.uniqueNamesGenerator({
-      dictionaries: [ung.adjectives, ung.colors, ung.animals],
-    });
-
-    setReportName(randomName);
-  };
-
   const headerComponent = () => (
     <Stack spacing={6}>
       <HStack spacing={4}>
         <Flex flex={1}>
           <Input
-            placeholder="Enter a name for your report"
-            size="sm"
-            onChange={(e) => setReportName(e.target.value)}
-            value={reportName}
+            placeholder="Enter the URL of the Google Sheet"
+            onChange={(e) => setSheetUrl(e.target.value)}
+            value={sheetUrl}
           />
-        </Flex>
-        <Flex>
-          <Button onClick={suggestRandomName} size="sm" flex={1}>
-            Suggest a name
-            <Box ml={2}>
-              <FaRandom />
-            </Box>
-          </Button>
         </Flex>
       </HStack>
 
@@ -140,38 +111,19 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
             </Select>
           </Flex>
         </HStack>
-        <Stack>
-          <Checkbox
-            onChange={(e) => {
-              if (e.target.checked) {
-                setBatchOutputs(1);
-              } else {
-                setBatchOutputs(MAX_BATCH_OUTPUTS);
-              }
-            }}
-          >
-            <Tooltip
-              label="Checking this box will only run a single batch for testing purposes (so we can keep the cost down)"
-              hasArrow
-            >
-              <Text>Test Run</Text>
-            </Tooltip>
-          </Checkbox>
-        </Stack>
       </HStack>
     </Stack>
   );
 
   return (
     <ModalStepWrapper {...props}>
-      <UploadZone
-        title="Upload Keyword Insights Data"
-        subtitle="Upload the output from Keyword Insights"
-        uploadText="Upload the file here"
-        isLoading={isLoading}
-        handleUpload={handleUploadClick}
-        headerComponent={headerComponent()}
-      />
+      {headerComponent()}
+
+      <HStack justifyContent="flex-end" mt={6}>
+        <Button isLoading={isLoading} onClick={handleSubmit}>
+          Submit
+        </Button>
+      </HStack>
     </ModalStepWrapper>
   );
 };

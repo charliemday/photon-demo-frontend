@@ -52,7 +52,7 @@ export interface SeedKeywords {
 
 interface BroadKeywordBody {
   keywords: string[];
-  teamId: number;
+  contentStrategyId: number;
   database: string;
   limit: number;
 }
@@ -140,6 +140,7 @@ export const teamApi = baseApi.injectEndpoints({
     /**
      * List competitors for a team
      */
+    // TODO: Remove
     teamCompetitors: builder.query<CompetitorResponse[], string>({
       query: (teamId) => ({
         url: apiUrls.TEAM_COMPETITORS(teamId),
@@ -151,17 +152,18 @@ export const teamApi = baseApi.injectEndpoints({
     /**
      * List seed keywords for a team
      */
-    listSeedKeywords: builder.query<SeedKeywords[], string>({
-      query: (teamUid) => ({
-        url: apiUrls.TEAM_SEED_KEYWORDS(teamUid),
-      }),
-      providesTags: [TAG_TYPES.TEAMS],
-      transformResponse: (response: ConvertToSnakeCase<SeedKeywords>[]) =>
-        response.map((c) => camelizeKeys(c) as SeedKeywords),
-    }),
+    // listSeedKeywords: builder.query<SeedKeywords[], string>({
+    //   query: (teamUid) => ({
+    //     url: apiUrls.TEAM_SEED_KEYWORDS(teamUid),
+    //   }),
+    //   providesTags: [TAG_TYPES.TEAMS],
+    //   transformResponse: (response: ConvertToSnakeCase<SeedKeywords>[]) =>
+    //     response.map((c) => camelizeKeys(c) as SeedKeywords),
+    // }),
     /**
      * Bulk create seed keywords for a team
      */
+    // TODO: Remove
     bulkCreateSeedKeywords: builder.mutation<
       SeedKeywords[],
       { teamUid: string; keywords: string[] }
@@ -173,27 +175,28 @@ export const teamApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [TAG_TYPES.TEAMS],
     }),
-    /**
-     * Create competitors for a team
-     */
-    createCompetitors: builder.mutation<
-      CompetitorResponse[],
-      {
-        competitorName: string;
-        competitorUrl: string;
-        team: number;
-      }[]
-    >({
-      query: (body) => ({
-        url: apiUrls.TEAM_COMPETITORS(),
-        method: "POST",
-        body: decamelizeKeys(body),
-      }),
-      invalidatesTags: [TAG_TYPES.TEAMS],
-    }),
+    // /**
+    //  * Create competitors for a team
+    //  */
+    // createCompetitors: builder.mutation<
+    //   CompetitorResponse[],
+    //   {
+    //     competitorName: string;
+    //     competitorUrl: string;
+    //     team: number;
+    //   }[]
+    // >({
+    //   query: (body) => ({
+    //     url: apiUrls.TEAM_COMPETITORS(),
+    //     method: "POST",
+    //     body: decamelizeKeys(body),
+    //   }),
+    //   invalidatesTags: [TAG_TYPES.TEAMS],
+    // }),
     /**
      * Bulk Update the team's competitors
      */
+    // TODO: Remove 
     bulkUpdateCompetitors: builder.mutation<CompetitorResponse[], BulkUpdateCompetitorsInterface>({
       query: (body) => ({
         url: apiUrls.TEAM_COMPETITORS_BULK,
@@ -204,6 +207,7 @@ export const teamApi = baseApi.injectEndpoints({
     /**
      * Run keywords through Broad Keyword API
      */
+    // TODO: This is the "new" version we've been using (e.g. Step 1.2)
     generateBroadKeywords: builder.mutation<undefined, BroadKeywordBody>({
       query: (body) => ({
         url: apiUrls.BROAD_KEYWORD_API,
@@ -224,9 +228,9 @@ export const {
   useRetrieveClassificationQuery,
   useTeamCompetitorsQuery,
   useUpdateClassificationsMutation,
-  useListSeedKeywordsQuery,
+  // useListSeedKeywordsQuery,
   useBulkCreateSeedKeywordsMutation,
-  useCreateCompetitorsMutation,
+  // useCreateCompetitorsMutation,
   useBulkUpdateCompetitorsMutation,
   useGenerateBroadKeywordsMutation
 } = teamApi;

@@ -9,7 +9,7 @@ import { resettableReducer } from "reduxsauce";
 
 import { authApi, baseApi } from "api";
 import { LOGOUT_ACTION } from "hooks/useLogout.hook";
-import { authReducer, teamReducer, territoryReducer } from "./slices";
+import { authReducer, strategyReducer, teamReducer, territoryReducer } from "./slices";
 
 const resettable = resettableReducer(LOGOUT_ACTION);
 
@@ -22,6 +22,7 @@ const rootReducers: Reducer = combineReducers({
   auth: resettable(authReducer),
   team: resettable(teamReducer),
   territory: resettable(territoryReducer),
+  contentStrategy: resettable(strategyReducer),
   [baseApi.reducerPath]: baseApi.reducer,
 });
 

@@ -9,11 +9,12 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useGenerateKIInputMutation } from "api/engine.api";
-import { useBulkCreateSeedKeywordsMutation } from "api/team.api";
+// import { useBulkCreateSeedKeywordsMutation } from "api/team.api";
+import { useCreateSeedKeywordMutation } from "api/strategies.api";
 import { Button } from "components/button";
+import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState, Team } from "types";
+import { SeedKeywordSource } from "types";
 import { calculateSemrushCost, typeCheckError } from "utils";
 import { ModalStepWrapper } from "../modal-step-wrapper";
 import DatabaseSection from "./database-section";
@@ -34,9 +35,8 @@ export const GenerateKIInput: React.FC<Props> = (props) => {
 
   const toast = useToast();
 
-  const activeTeam: Team = useSelector(
-    (state: RootState) => state.team.activeTeam
-  );
+  const activeTeam = useActiveTeam();
+  const activeContentStrategy = useActiveContentStrategy();
 
   const [generateBroadKeywords, { isLoading, isSuccess, isError, error }] =
     useGenerateKIInputMutation();
@@ -47,7 +47,7 @@ export const GenerateKIInput: React.FC<Props> = (props) => {
       isError: bulkCreateIsError,
       error: bulkCreateError,
     },
-  ] = useBulkCreateSeedKeywordsMutation();
+  ] = useCreateSeedKeywordMutation();
 
   useEffect(() => {
     if (!isLoading && isSuccess) {
@@ -94,15 +94,20 @@ export const GenerateKIInput: React.FC<Props> = (props) => {
     if (!activeTeam) return;
 
     const response = await bulkCreateSeedKeywords({
-      teamUid: activeTeam.uid,
-      keywords: targetKeywords,
+      contentStrategyId: activeContentStrategy?.id,
+      body: {
+        keywords: targetKeywords.map((keyword) => ({
+          keyword,
+          source: SeedKeywordSource.USER,
+        })),
+      },
     });
 
     if ("error" in response) return;
 
     generateBroadKeywords({
       database,
-      teamId: activeTeam.id,
+      contentStrategyId: activeContentStrategy?.id,
       limit: maxBroadResults,
       topPercentage: topPercent,
       keywords: targetKeywords,

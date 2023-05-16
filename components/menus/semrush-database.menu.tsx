@@ -10,15 +10,26 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Text,
+  useToast,
 } from "@chakra-ui/react";
 import { BsChevronDown as ChevronDownIcon } from "react-icons/bs";
 
-import { SEMRUSH_DATABASES } from "config";
+import { useListGeographiesQuery } from "api/strategies.api";
 import FuseJS from "fuse.js";
 import debounce from "lodash/debounce";
+import { typeCheckError } from "utils";
 
 interface Props {
   onChange: (value: string) => void;
+  /**
+   * For the placeholder e.g. "database"
+   */
+  itemVerboseName?: string;
+  /**
+   * For the placeholder e.g. "databases"
+   */
+  itemVerbosePluralName?: string;
 }
 
 interface Database {
@@ -26,16 +37,51 @@ interface Database {
   value: string;
 }
 
-export const SemrushDatabaseMenu: React.FC<Props> = ({ onChange }) => {
+export const SemrushDatabaseMenu: React.FC<Props> = ({
+  onChange,
+  itemVerboseName = "database",
+  itemVerbosePluralName = "databases",
+}) => {
+  const {
+    data: geographies,
+    refetch,
+    error,
+    isError,
+    isLoading,
+  } = useListGeographiesQuery();
+
   const buildDatabaseMenu = useMemo(
     () => () =>
-      Object.keys(SEMRUSH_DATABASES).map((key) => ({
-        label: key,
-        // @ts-ignore
-        value: SEMRUSH_DATABASES[key],
-      })),
-    []
+      geographies
+        ? geographies.map(({ label, name }) => ({
+            label,
+            value: name,
+          }))
+        : [],
+    [geographies]
   );
+
+  const toast = useToast();
+
+  useEffect(() => {
+    /**
+     * When the component mounts, we want to refetch the geographies
+     */
+    refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading && isError && error) {
+      toast({
+        title: "Error loading geographies",
+        description: typeCheckError(error) || "Something went wrong",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [isError, error, isLoading, toast]);
 
   const databases = buildDatabaseMenu();
 
@@ -83,11 +129,14 @@ export const SemrushDatabaseMenu: React.FC<Props> = ({ onChange }) => {
           <Input
             fontSize="sm"
             placeholder={
-              databases.length
-                ? `${databases.length} database${
-                    databases.length > 1 ? "s..." : "..."
-                  }`
-                : `No databases Found`
+              databases.length > 0
+                ? `${databases.length} ${
+                    databases.length === 1
+                      ? itemVerboseName
+                      : itemVerbosePluralName
+                  }
+                  `
+                : `No ${itemVerbosePluralName} Found`
             }
             onChange={(e) => handleSearch(e.target.value)}
           />
@@ -102,6 +151,9 @@ export const SemrushDatabaseMenu: React.FC<Props> = ({ onChange }) => {
               {label}
             </MenuItem>
           ))}
+          {searchResults.length === 0 && (
+            <Text p={6}>No {itemVerbosePluralName} Found</Text>
+          )}
         </Box>
       </MenuList>
     </Menu>
