@@ -1,4 +1,5 @@
 import { Stack, Text } from "@chakra-ui/react";
+import { BRAND_COLOR } from "config";
 import { FC } from "react";
 
 interface Props {
@@ -36,7 +37,7 @@ export const ProfileIcon: FC<Props> = ({ name, size = "sm" }) => {
 
   return (
     <Stack
-      background="#6062F6"
+      background={BRAND_COLOR}
       width={width}
       height={height}
       paddingX={paddingX}

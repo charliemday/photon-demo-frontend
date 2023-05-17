@@ -13,9 +13,9 @@ export const Assigned: FC<Props> = ({ name }) => (
     <Text
       fontFamily="Inter"
       lineHeight="1.43"
-      fontWeight="medium"
       fontSize="12px"
-      color="#000000"
+      fontWeight="medium"
+      textOverflow="ellipsis"
       width="108px"
     >
       {name}
