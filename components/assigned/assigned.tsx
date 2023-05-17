@@ -11,12 +11,12 @@ export const Assigned: FC<Props> = ({ name }) => (
     <ProfileIcon name="M" size="sm" />
 
     <Text
+      width="108px"
       fontFamily="Inter"
       lineHeight="1.43"
       fontSize="12px"
       fontWeight="medium"
       textOverflow="ellipsis"
-      width="108px"
     >
       {name}
     </Text>

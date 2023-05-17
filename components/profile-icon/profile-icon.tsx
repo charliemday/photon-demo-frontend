@@ -1,4 +1,4 @@
-import { Stack, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { BRAND_COLOR } from "config";
 import { FC } from "react";
 
@@ -36,7 +36,7 @@ export const ProfileIcon: FC<Props> = ({ name, size = "sm" }) => {
   }
 
   return (
-    <Stack
+    <Flex
       background={BRAND_COLOR}
       width={width}
       height={height}
@@ -55,12 +55,12 @@ export const ProfileIcon: FC<Props> = ({ name, size = "sm" }) => {
         lineHeight="1.75"
         fontWeight="bold"
         fontSize={fontSize}
-        color="#FFFFFF"
+        color="white"
         textAlign="center"
         textTransform="uppercase"
       >
         {name.substring(0, 1)}
       </Text>
-    </Stack>
+    </Flex>
   );
 };
