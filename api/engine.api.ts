@@ -210,17 +210,15 @@ export const engineApi = baseApi.injectEndpoints({
       // transformResponse: (response: ConvertToSnakeCase<KeywordInsightsResult[]>) => camelizeKeys(response) as KeywordInsightsResult[]
     }),
     /**
-     * Uploads the Keyword Insights Output
-     */
-    /**
      * Creates the Keyword Insights Order
      */
-    createKeywordInsightOrder: builder.mutation<undefined, CreateKeywordInsightsOrderBody>({
+    createKeywordInsightOrder: builder.mutation<KeywordInsightsOrder, CreateKeywordInsightsOrderBody>({
       query: (body) => ({
         url: apiUrls.CREATE_KEYWORD_INSIGHTS_ORDER,
         method: "POST",
         body: decamelizeKeys(body),
-      })
+      }),
+      transformResponse: (response: ConvertToSnakeCase<KeywordInsightsOrder>) => camelizeKeys(response) as KeywordInsightsOrder
     }),
     /**
      * Fetch the Keyword Insights output

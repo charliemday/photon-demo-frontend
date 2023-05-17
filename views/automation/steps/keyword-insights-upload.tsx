@@ -11,6 +11,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useCreateKeywordInsightOrderMutation } from "api/engine.api";
+import { useGenerateContentStrategyPart2ManualMutation } from "api/strategies.api";
 import { typeCheckError } from "utils";
 
 import { Button } from "components/button";
@@ -26,16 +27,17 @@ const GPT_MODELS = [
   { label: "GPT-4", value: "gpt-4" },
 ];
 
-const MAX_BATCH_OUTPUTS = 10; // Store this in a config file
-
 export const KeywordInsightsUpload: FC<Props> = (props) => {
   const activeStrategy = useActiveContentStrategy();
 
   const [openaiModel, setOpenaiModel] = useState<string>("gpt-3.5");
   const [sheetUrl, setSheetUrl] = useState<string>("");
 
-  const [createOrder, { isLoading, isSuccess, isError, error }] =
+  const [createOrder, { isLoading: isCreating }] =
     useCreateKeywordInsightOrderMutation();
+
+  const [triggerManualStep, { isLoading, isSuccess, isError, error }] =
+    useGenerateContentStrategyPart2ManualMutation();
 
   const toast = useToast();
 
@@ -53,7 +55,23 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
         contentStrategyId: activeStrategy?.id,
         sheetsUrl: sheetUrl,
         status: "complete",
-      });
+      })
+        .then((res) => {
+          if ("data" in res) {
+            triggerManualStep({
+              orderId: res.data?.orderId,
+            });
+          }
+        })
+        .catch((err) => {
+          toast({
+            title: "Error",
+            description: typeCheckError(err) || "Something went wrong",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        });
     }
   };
 
@@ -84,11 +102,16 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
     <Stack spacing={6}>
       <HStack spacing={4}>
         <Flex flex={1}>
-          <Input
-            placeholder="Enter the URL of the Google Sheet"
-            onChange={(e) => setSheetUrl(e.target.value)}
-            value={sheetUrl}
-          />
+          <Stack>
+            <Input
+              placeholder="Enter the URL of the Google Sheet"
+              onChange={(e) => setSheetUrl(e.target.value)}
+              value={sheetUrl}
+            />
+            <Text fontSize="sm" opacity={0.75}>
+              {`It needs to be of the form  https://docs.google.com/spreadsheets/d/<SHEET_ID>/copy`}
+            </Text>
+          </Stack>
         </Flex>
       </HStack>
 
