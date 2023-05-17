@@ -176,6 +176,15 @@ export const strategiesApi = baseApi.injectEndpoints({
                 body: decamelizeKeys(body)
             }),
         }),
+        /**
+         * Delete a content strategy
+         */
+        deleteContentStrategy: builder.mutation<void, { id: number }>({
+            query: ({ id }) => ({
+                url: apiUrls.RETRIEVE_UPDATE_DESTROY_CONTENT_STRATEGY(id),
+                method: "DELETE",
+            }),
+        }),
     })
 })
 
@@ -195,5 +204,6 @@ export const {
     useGenerateContentStrategyMutation,
     useBulkDeleteCompetitorsMutation,
     useBulkDeleteSeedKeywordsMutation,
-    useGenerateContentStrategyPart2ManualMutation
+    useGenerateContentStrategyPart2ManualMutation,
+    useDeleteContentStrategyMutation,
 } = strategiesApi;

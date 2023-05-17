@@ -14,20 +14,21 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { useListContentStrategiesQuery } from "api/strategies.api";
 import { useListTeamsQuery } from "api/team.api";
 import { Image } from "components/image";
 import { AddTeamModal } from "components/modals";
 import { motion } from "framer-motion";
 import FuseJS from "fuse.js";
+import { useActiveTeam } from "hooks";
 import debounce from "lodash/debounce";
 import React, { useEffect, useState } from "react";
 import { AiOutlineTeam } from "react-icons/ai";
 import { BiRefresh } from "react-icons/bi";
 import { BsChevronDown as ChevronDownIcon } from "react-icons/bs";
 import { GrAdd } from "react-icons/gr";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "store";
-import { setActiveTeam } from "store/slices";
+import { useDispatch } from "react-redux";
+import { setActiveContentStrategy, setActiveTeam } from "store/slices";
 import { Team, TeamType } from "types";
 import { typeCheckError } from "utils";
 
@@ -48,14 +49,21 @@ export const FloatingButton: React.FC<Props> = ({
   title = "Select a Team",
   teamType = TeamType.INTERNAL,
 }) => {
-  const activeTeam: Team = useSelector(
-    (state: RootState) => state.team.activeTeam
-  );
+  const activeTeam = useActiveTeam();
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(
     activeTeam || teams?.[0] || null
   );
 
   const [searchResults, setSearchResults] = useState<Team[]>(teams || []);
+
+  const { refetch: refetchStrategies } = useListContentStrategiesQuery(
+    {
+      teamId: activeTeam?.id,
+    },
+    {
+      skip: !activeTeam?.id,
+    }
+  );
 
   useEffect(() => {
     setSearchResults(teams);
@@ -67,7 +75,13 @@ export const FloatingButton: React.FC<Props> = ({
   const onSelect = (team: Team) => {
     setSelectedTeam(team);
     dispatch(setActiveTeam(team));
+    dispatch(setActiveContentStrategy(null));
   };
+
+  // useEffect(() => {
+  //   refetchStrategies();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [activeTeam]);
 
   const fuse = new FuseJS(teams, {
     keys: ["name"],

@@ -30,7 +30,7 @@ export const Topbar: React.FC<Props> = () => {
         {BRAND_NAME}
       </Text>
       <HStack spacing={12}>
-        <Button onClick={logout} size="sm">
+        <Button onClick={logout}>
           <HStack>
             <BiExit />
             <Text>Logout</Text>

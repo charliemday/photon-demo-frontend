@@ -7,11 +7,9 @@ import {
   ModalOverlay,
   Text,
 } from "@chakra-ui/react";
+import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import Image from "next/image";
 import { FC, ReactNode, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "store";
-import { Team } from "types";
 
 interface Props {
   isOpen: boolean;
@@ -30,9 +28,9 @@ export const ModalStepWrapper: FC<Props> = ({
   size = "2xl",
   contentProps,
 }) => {
-  const activeTeam: Team = useSelector(
-    (state: RootState) => state.team.activeTeam
-  );
+  const activeTeam = useActiveTeam();
+  const activeContentStrategy = useActiveContentStrategy();
+
   const [imageError, setImageError] = useState(false);
 
   return (
@@ -62,6 +60,20 @@ export const ModalStepWrapper: FC<Props> = ({
         <Box position="absolute" left={20} top={7}>
           <Text fontSize="lg" fontWeight="bold">
             {activeTeam?.name}
+          </Text>
+        </Box>
+
+        <Box
+          position="absolute"
+          right={20}
+          top={7}
+          overflow="hidden"
+          maxW={400}
+        >
+          <Text fontSize="lg" fontWeight="bold" isTruncated>
+            {activeContentStrategy
+              ? `📝 ${activeContentStrategy?.name}`
+              : "⚠️ No Content Strategy Selected"}
           </Text>
         </Box>
 
