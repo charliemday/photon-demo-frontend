@@ -43,7 +43,7 @@ export const ProfileIcon: FC<Props> = ({ name, size = "sm" }) => {
       paddingX={paddingX}
       paddingY={paddingY}
       borderRadius={borderRadius}
-      borderColor="#000000"
+      borderColor="black"
       borderWidth="0.75px"
       boxShadow="0px 0px 6px 0px rgba(169, 169, 169, 0.15)"
       justify="center"
