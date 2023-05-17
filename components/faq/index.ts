@@ -1,0 +1,1 @@
+export { FaqText } from "./FaqText";
