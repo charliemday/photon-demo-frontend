@@ -33,7 +33,6 @@ export const FaqText: FC<Props> = ({ heading, label, text }) => (
           lineHeight="1.71"
           fontWeight="semibold"
           fontSize="14px"
-          color="black"
         >
           {heading}
         </Text>
@@ -47,7 +46,6 @@ export const FaqText: FC<Props> = ({ heading, label, text }) => (
         lineHeight="1.67"
         fontWeight="regular"
         fontSize="12px"
-        color="black"
       >
         {text}
       </Text>

@@ -1,1 +1,1 @@
-export { FaqText } from "./FaqText";
+export { FaqText } from "./faq-text";
