@@ -8,7 +8,7 @@ interface Props {
 
 export const Assigned: FC<Props> = ({ name }) => (
   <Stack direction="row" justify="flex-start" align="center" spacing="6px">
-    <ProfileIcon name={name.substring(0, 1)} size="sm" />
+    <ProfileIcon name={name} size="sm" />
 
     <Text
       width="108px"
