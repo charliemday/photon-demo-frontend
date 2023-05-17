@@ -166,9 +166,18 @@ export const strategiesApi = baseApi.injectEndpoints({
                 }
             }),
         }),
+        /**
+         * Triggers the next step of the manual content strategy
+         */
+        generateContentStrategyPart2Manual: builder.mutation<void, { orderId: string }>({
+            query: (body) => ({
+                url: apiUrls.GENERATE_CONTENT_STRATEGY_PART_2_MANUAL,
+                method: "POST",
+                body: decamelizeKeys(body)
+            }),
+        }),
     })
-
-});
+})
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
@@ -186,4 +195,5 @@ export const {
     useGenerateContentStrategyMutation,
     useBulkDeleteCompetitorsMutation,
     useBulkDeleteSeedKeywordsMutation,
+    useGenerateContentStrategyPart2ManualMutation
 } = strategiesApi;
