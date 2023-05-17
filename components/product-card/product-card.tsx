@@ -1,4 +1,4 @@
-import { Flex, Stack, Text } from "@chakra-ui/react";
+import { Stack, Text } from "@chakra-ui/react";
 import { Button } from "components/button";
 import { ProductSnippet } from "components/product-snippet";
 import { SECONDARY_COLOR } from "config/brand";
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const ProductCard: FC<Props> = ({ text }) => (
-  <Flex
+  <Stack
     background="white"
     width="342px"
     paddingX="20px"
@@ -17,26 +17,13 @@ export const ProductCard: FC<Props> = ({ text }) => (
     borderRadius="8px"
     borderColor="#ECECEC"
     borderWidth="1px"
-    justify="flex-start"
-    align="flex-start"
-    overflow="hidden"
+    spacing="20px"
   >
-    <Stack justify="flex-start" align="flex-start" spacing="20px" alignSelf="stretch">
-      <ProductSnippet name="WordSeek" icon="👀" tag="Trial Available" />
+    <ProductSnippet name="WordSeek" icon="👀" tag="Trial Available" />
+    <Text fontSize="xs">{text}</Text>
 
-      <Text
-        alignSelf="stretch"
-        fontFamily="Inter"
-        lineHeight="1.67"
-        fontWeight="regular"
-        fontSize="12px"
-      >
-        {text}
-      </Text>
-
-      <Button bgColor={SECONDARY_COLOR} textColor="white" borderColor="black" borderWidth="1px">
-        View
-      </Button>
-    </Stack>
-  </Flex>
+    <Button bgColor={SECONDARY_COLOR} textColor="white" borderColor="black" borderWidth="1px">
+      View
+    </Button>
+  </Stack>
 );

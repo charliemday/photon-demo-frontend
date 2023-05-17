@@ -7,17 +7,10 @@ interface Props {
 }
 
 export const Assigned: FC<Props> = ({ name }) => (
-  <Stack direction="row" justify="flex-start" align="center" spacing="6px">
+  <Stack direction="row" align="center" spacing="6px">
     <ProfileIcon name={name} size="sm" />
 
-    <Text
-      width="108px"
-      fontFamily="Inter"
-      lineHeight="1.43"
-      fontSize="12px"
-      fontWeight="medium"
-      textOverflow="ellipsis"
-    >
+    <Text maxWidth="108px" fontSize="xs" fontWeight="medium" textOverflow="ellipsis">
       {name}
     </Text>
   </Stack>

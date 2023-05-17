@@ -1,18 +1,16 @@
 import { Flex } from "@chakra-ui/react";
 import { EmptyState } from "./empty.state";
+import { FC } from "react";
 
-export const EmptySection = () => (
+export const EmptySection: FC = () => (
   <Flex
     background="white"
-    width="100%"
-    maxWidth="100%"
     pt="40px"
     pb="60px"
-    borderColor="#ECECEC"
     borderRadius="8px"
+    borderColor="#ECECEC"
     justify="center"
     align="center"
-    overflow="hidden"
   >
     <EmptyState
       icon="🕳"

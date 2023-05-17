@@ -13,14 +13,8 @@ export const ProductSnippet: FC<Props> = ({ name, icon, tag }) => (
   <Stack direction="row" justify="center" align="center" spacing="11px">
     <ProductIcon icon={icon} />
 
-    <Stack justify="center" align="flex-start" spacing="2px">
-      <Text
-        fontFamily="Inter"
-        lineHeight="1.71"
-        fontWeight="semibold"
-        fontSize="14px"
-        textAlign="center"
-      >
+    <Stack justify="center" spacing="2px">
+      <Text fontSize="sm" fontWeight="semibold" textAlign="center">
         {name}
       </Text>
 

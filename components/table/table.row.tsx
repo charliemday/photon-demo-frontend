@@ -12,25 +12,14 @@ interface Props {
 }
 
 export const TableRow: FC<Props> = ({ text, type, assigned, month, status }) => (
-  <Stack width="100%" direction="row" justify="space-between" align="flex-start" spacing="16px">
-    <Text width="100%" fontFamily="Inter" lineHeight="1.43" fontWeight="semibold" fontSize="12px">
+  <Stack direction="row" justify="space-between" spacing="16px">
+    <Text fontSize="xs" fontWeight="semibold">
       {text}
     </Text>
 
-    <Stack direction="row" justify="space-between" align="flex-start" spacing="16px" width="100%">
-      <Tag text={type} />
-    </Stack>
-
-    <Stack direction="row" justify="space-between" align="flex-start" spacing="16px" width="100%">
-      <Assigned name={assigned} />
-    </Stack>
-
-    <Stack direction="row" justify="space-between" align="flex-start" spacing="16px" width="100%">
-      <Tag text={month} />
-    </Stack>
-
-    <Stack direction="row" justify="space-between" align="flex-start" spacing="16px" width="100%">
-      <Tag text={status} />
-    </Stack>
+    <Tag text={type} />
+    <Assigned name={assigned} />
+    <Tag text={month} />
+    <Tag text={status} />
   </Stack>
 );

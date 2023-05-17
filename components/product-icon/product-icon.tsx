@@ -48,15 +48,8 @@ export const ProductIcon: FC<Props> = ({ icon, size = "base", inactive }) => {
       boxShadow={boxShadow}
       justify="center"
       align="center"
-      overflow="hidden"
     >
-      <Text
-        fontFamily="Inter"
-        lineHeight="0.88"
-        fontWeight="medium"
-        fontSize="24px"
-        textAlign="center"
-      >
+      <Text fontSize="2xl" fontWeight="medium" textAlign="center">
         {icon}
       </Text>
     </Flex>

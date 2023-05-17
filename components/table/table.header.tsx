@@ -6,16 +6,9 @@ interface Props {
 }
 
 export const TableHeader: FC<Props> = ({ headers }) => (
-  <Stack direction="row" justify="space-between" align="flex-start" spacing="16px" width="100%">
+  <Stack direction="row" justify="space-between" spacing="16px" width="100%">
     {headers.map((header) => (
-      <Text
-        width="100%"
-        fontFamily="Inter"
-        lineHeight="1.43"
-        fontWeight="semibold"
-        fontSize="14px"
-        key={header}
-      >
+      <Text fontSize="sm" fontWeight="semibold" key={header}>
         {header}
       </Text>
     ))}

@@ -11,8 +11,6 @@ export const MenuDropdown: FC = () => (
     borderRadius="8px"
     borderColor="#ECECEC"
     borderWidth="1px"
-    justify="flex-start"
-    align="flex-start"
     spacing="16px"
   >
     <NavIcon label="Contact" icon={<FiMail />} />

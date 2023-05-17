@@ -1,5 +1,6 @@
-import { Flex, Stack, Text } from "@chakra-ui/react";
+import { Stack, Text } from "@chakra-ui/react";
 import { Tag } from "components/tag";
+import { TERTIARY_COLOR } from "config";
 import { FC } from "react";
 
 interface Props {
@@ -9,46 +10,21 @@ interface Props {
 }
 
 export const FaqText: FC<Props> = ({ heading, label, text }) => (
-  <Flex
-    background="#BD95E7"
-    width="100%"
-    maxWidth="100%"
+  <Stack
+    background={TERTIARY_COLOR}
     padding="16px"
     borderRadius="8px"
     justify="space-between"
-    align="flex-start"
-    overflow="hidden"
+    spacing="12px"
   >
-    <Stack justify="flex-start" align="flex-start" spacing="12px" alignSelf="stretch">
-      <Stack
-        direction="row"
-        alignSelf="stretch"
-        justify="space-between"
-        align="center"
-        spacing="4px"
-      >
-        <Text
-          width="170px"
-          fontFamily="Inter"
-          lineHeight="1.71"
-          fontWeight="semibold"
-          fontSize="14px"
-        >
-          {heading}
-        </Text>
-
-        <Tag text={label} />
-      </Stack>
-
-      <Text
-        alignSelf="stretch"
-        fontFamily="Inter"
-        lineHeight="1.67"
-        fontWeight="regular"
-        fontSize="12px"
-      >
-        {text}
+    <Stack direction="row" justify="space-between" align="center" spacing="4px">
+      <Text maxWidth="170px" fontSize="sm" fontWeight="semibold">
+        {heading}
       </Text>
+
+      <Tag text={label} />
     </Stack>
-  </Flex>
+
+    <Text fontSize="xs">{text}</Text>
+  </Stack>
 );

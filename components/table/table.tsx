@@ -14,7 +14,7 @@ export const Table: FC = () => (
     justify="space-between"
     spacing="20px"
   >
-    <Stack justify="space-between" align="flex-start" spacing="20px">
+    <Stack justify="space-between" spacing="20px">
       <TableHeader headers={["SEO Task", "Type", "Assignee", "Month", "Status"]} />
 
       {Array.from({ length: 5 }, (_, i) => (

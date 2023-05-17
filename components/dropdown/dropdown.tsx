@@ -1,4 +1,4 @@
-import { Flex, Stack, Text } from "@chakra-ui/react";
+import { Box, Stack, Text } from "@chakra-ui/react";
 import { FC } from "react";
 import { FiChevronDown } from "react-icons/fi";
 
@@ -7,7 +7,7 @@ interface Props {
 }
 
 export const Dropdown: FC<Props> = ({ label }) => (
-  <Flex
+  <Box
     background="#F6F5FA"
     width="120px"
     paddingX="12px"
@@ -15,23 +15,13 @@ export const Dropdown: FC<Props> = ({ label }) => (
     borderRadius="6px"
     borderColor="#E7E7E7"
     borderWidth="1px"
-    justify="flex-start"
-    align="flex-start"
-    overflow="hidden"
   >
-    <Stack
-      height="20px"
-      alignSelf="stretch"
-      direction="row"
-      justify="space-between"
-      align="center"
-      spacing="15px"
-    >
-      <Text fontFamily="Clash Grotesk" lineHeight="1.5" fontWeight="medium" fontSize="14px">
+    <Stack height="20px" direction="row" justify="space-between" align="center" spacing="15px">
+      <Text fontSize="sm" fontWeight="medium">
         {label}
       </Text>
 
       <FiChevronDown />
     </Stack>
-  </Flex>
+  </Box>
 );

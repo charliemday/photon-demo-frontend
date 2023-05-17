@@ -7,16 +7,10 @@ interface Props {
 }
 
 export const NavIcon: FC<Props> = ({ label = "Performance Data", icon }) => (
-  <Stack direction="row" justify="flex-start" align="center" spacing="10px">
+  <Stack direction="row" align="center" spacing="10px">
     <Box>{icon}</Box>
 
-    <Text
-      fontFamily="Clash Grotesk"
-      lineHeight="1.5"
-      fontWeight="medium"
-      fontSize="14px"
-      textAlign="center"
-    >
+    <Text fontSize="sm" fontWeight="medium" textAlign="center">
       {label}
     </Text>
   </Stack>

@@ -22,7 +22,7 @@ export const ProfileIcon: FC<Props> = ({ name, size = "base" }) => {
       paddingX = "9px";
       paddingY = "7px";
       borderRadius = "6px";
-      fontSize = "12px";
+      fontSize = "xs";
       break;
 
     case "sm":
@@ -47,13 +47,10 @@ export const ProfileIcon: FC<Props> = ({ name, size = "base" }) => {
       boxShadow="0px 0px 6px 0px rgba(169, 169, 169, 0.15)"
       justify="center"
       align="center"
-      overflow="hidden"
     >
       <Text
-        fontFamily="Inter"
-        lineHeight="1.75"
-        fontWeight="bold"
         fontSize={fontSize}
+        fontWeight="bold"
         color="white"
         textAlign="center"
         textTransform="uppercase"
