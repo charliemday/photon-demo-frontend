@@ -1,4 +1,5 @@
 import { Modal } from "components/modals";
+import { useActiveContentStrategy } from "hooks";
 import { FC, useState } from "react";
 import StepWizard from "react-step-wizard";
 import { Step1, Step2, Step5, Step6 } from "./steps";
@@ -9,11 +10,21 @@ interface Props {
 }
 
 export const ContentStrategy: FC<Props> = ({ isOpen, onClose }) => {
+  const activeContentStrategy = useActiveContentStrategy();
+
   const [contentStrategyId, setContentStrategyId] = useState<number | null>(
-    null
+    activeContentStrategy?.id || null
   );
 
   const handleStep1Complete = (id: number) => setContentStrategyId(id);
+
+  const handleCompleteWizard = () => {
+    /**
+     * Because we use hashes to keep track of the steps, we need to reset the hash
+     */
+    window.location.hash = "";
+    onClose();
+  };
 
   return (
     <Modal
@@ -24,14 +35,12 @@ export const ContentStrategy: FC<Props> = ({ isOpen, onClose }) => {
         overflow: "hidden",
       }}
     >
-      <StepWizard>
+      <StepWizard isHashEnabled={true}>
         <Step1 onComplete={handleStep1Complete} />
         <Step2 contentStrategyId={contentStrategyId} />
-        {/* TODO: Not required for barebones wizard */}
-        {/* <Step3 contentStrategyId={contentStrategyId} />
-        <Step4 /> */}
+        {/* We have Step 3 and 4 but they're not required yet */}
         <Step5 contentStrategyId={contentStrategyId} />
-        <Step6 />
+        <Step6 handleCompleteWizard={handleCompleteWizard} />
       </StepWizard>
     </Modal>
   );

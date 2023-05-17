@@ -27,12 +27,12 @@ export const Topbar: React.FC<Props> = () => {
         }}
         fontSize="xl"
       >
-        {BRAND_NAME}
+        {BRAND_NAME} | Automated SEO
       </Text>
       <HStack spacing={12}>
-        <Button onClick={logout}>
+        <Button onClick={logout} variant="outline">
           <HStack>
-            <BiExit />
+            <BiExit fontSize={24} />
             <Text>Logout</Text>
           </HStack>
         </Button>

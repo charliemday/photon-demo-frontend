@@ -3,9 +3,11 @@ import { Button } from "components/button";
 import React from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 
-interface Props extends Partial<StepWizardChildProps> {}
+interface Props extends Partial<StepWizardChildProps> {
+  handleCompleteWizard: () => void;
+}
 
-export const Step6: React.FC<Props> = ({ previousStep, currentStep = 0 }) => (
+export const Step6: React.FC<Props> = ({ handleCompleteWizard }) => (
   <Stack spacing={12} pb={12}>
     <Stack>
       <Text fontSize="lg" fontWeight="bold">
@@ -24,6 +26,6 @@ export const Step6: React.FC<Props> = ({ previousStep, currentStep = 0 }) => (
         themes for your content strategy.
       </Text>
     </Stack>
-    <Button onClick={previousStep}>Previous Step</Button>
+    <Button onClick={handleCompleteWizard}>Close</Button>
   </Stack>
 );

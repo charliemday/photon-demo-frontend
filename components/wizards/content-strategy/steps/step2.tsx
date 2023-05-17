@@ -123,7 +123,6 @@ export const Step2: FC<Props> = ({
     {
       isLoading: isUpdatingContentStrategy,
       error: updateContentStrategyError,
-      isSuccess: isContentStrategyUpdated,
       isError: isContentStrategyUpdateError,
     },
   ] = useUpdateContentStrategyMutation();
@@ -153,7 +152,10 @@ export const Step2: FC<Props> = ({
       });
 
       // If there is an error, stop here
-      if ("error" in createCompetitorsResponse) return;
+      if ("error" in createCompetitorsResponse) {
+        setIsLoading(false);
+        return;
+      }
 
       // Update the content strategy with the geography
       if (geography) {
@@ -179,7 +181,10 @@ export const Step2: FC<Props> = ({
             });
 
           // If there is an error, stop here
-          if ("error" in generateCompetitorKeywordsResponse) return;
+          if ("error" in generateCompetitorKeywordsResponse) {
+            setIsLoading(false);
+            return;
+          }
 
           // Move to the next step
           nextStep && nextStep();
@@ -201,7 +206,17 @@ export const Step2: FC<Props> = ({
           isClosable: true,
         });
       }
+    } else {
+      toast({
+        title: "Error",
+        description: "No Content Strategy ID",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
+
+    setIsLoading(false);
   };
 
   useEffect(() => {

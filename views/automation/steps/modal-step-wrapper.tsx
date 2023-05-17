@@ -70,7 +70,12 @@ export const ModalStepWrapper: FC<Props> = ({
           overflow="hidden"
           maxW={400}
         >
-          <Text fontSize="lg" fontWeight="bold" isTruncated>
+          <Text
+            fontSize="lg"
+            fontWeight="bold"
+            isTruncated
+            title="Name of Content Strategy"
+          >
             {activeContentStrategy
               ? `📝 ${activeContentStrategy?.name}`
               : "⚠️ No Content Strategy Selected"}

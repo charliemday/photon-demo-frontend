@@ -28,7 +28,7 @@ export interface STEP {
 
 export const STEPS: { title: string; steps: STEP[] }[] = [
     {
-        title: "Step 1",
+        title: "🌱 Step 1",
         steps: [
             {
                 title: "1.1 SEMRush Competitors",
@@ -56,7 +56,7 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
         ],
     },
     {
-        title: "Step 2",
+        title: "🔍 Step 2",
         steps: [
             {
                 title: "2.1 People Also Asked",
@@ -67,7 +67,7 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
         ],
     },
     {
-        title: "Step 3",
+        title: "🧠 Step 3",
         steps: [
             {
                 title: "3.1 Upload Keyword Insights Data",
@@ -90,14 +90,8 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
         ],
     },
     {
-        title: "Reporting",
+        title: "📊 Reporting",
         steps: [
-            {
-                title: "Upload Ahrefs report",
-                description: "Upload the Ahrefs report.",
-                key: KEY.UPLOAD_AHREFS_REPORT,
-                image: "/steps/ahrefs.jpeg",
-            },
             {
                 title: "Populate SC Reports",
                 description: `This will populate the Search Console reports for *all* the teams.`,
@@ -107,7 +101,7 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
         ],
     },
     {
-        title: "SEO Tools",
+        title: "🛠️ SEO Tools",
         steps: [
             {
                 title: "Connect up your Google Search Console",
@@ -125,7 +119,7 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
         ],
     },
     {
-        title: "Admin Tools",
+        title: "🔒 Admin Tools",
         steps: [
             {
                 title: "Admin User",
