@@ -3,62 +3,61 @@ import { BRAND_COLOR } from "config";
 import { FC } from "react";
 
 interface Props {
-  name: string;
+  icon: string;
   size?: "base" | "sm";
+  inactive?: boolean;
 }
 
-export const ProfileIcon: FC<Props> = ({ name, size = "base" }) => {
+export const ProductIcon: FC<Props> = ({ icon, size = "base", inactive }) => {
   let width: string = "";
   let height: string = "";
   let paddingX: string = "";
   let paddingY: string = "";
   let borderRadius: string = "";
-  let fontSize: string = "";
+  let boxShadow: string = "";
 
   switch (size) {
     case "base":
-      width = "32px";
-      height = "32px";
-      paddingX = "9px";
-      paddingY = "7px";
-      borderRadius = "6px";
-      fontSize = "12px";
+      width = "70px";
+      height = "70px";
+      paddingX = "20px";
+      paddingY = "16px";
+      borderRadius = "10px";
+      boxShadow = "0px 0px 6px 0px rgba(169, 169, 169, 0.15)";
       break;
 
     case "sm":
       width = "18px";
       height = "18px";
-      paddingX = "2px";
-      borderRadius = "3px";
-      fontSize = "10px";
+      paddingX = "4px";
+      paddingY = "11px";
+      borderRadius = "6px";
       break;
   }
 
   return (
     <Flex
-      background={BRAND_COLOR}
+      background={inactive ? "#F6F5FA" : BRAND_COLOR}
       width={width}
       height={height}
       paddingX={paddingX}
       paddingY={paddingY}
       borderRadius={borderRadius}
       borderColor="black"
-      borderWidth="0.75px"
-      boxShadow="0px 0px 6px 0px rgba(169, 169, 169, 0.15)"
+      borderWidth="1px"
+      boxShadow={boxShadow}
       justify="center"
       align="center"
       overflow="hidden"
     >
       <Text
         fontFamily="Inter"
-        lineHeight="1.75"
-        fontWeight="bold"
-        fontSize={fontSize}
-        color="white"
+        lineHeight="0.88"
+        fontWeight="medium"
+        fontSize="24px"
         textAlign="center"
-        textTransform="uppercase"
       >
-        {name.substring(0, 1)}
+        {icon}
       </Text>
     </Flex>
   );
