@@ -220,35 +220,39 @@ export const Step5: FC<Props> = ({
             Suggested Competitor Keywords
           </Text>
           <Stack spacing={4}>
-            {competitorKeywords?.map(({ keyword, searchVolume }, i) => {
-              return (
-                <HStack key={i} justifyContent="space-between">
-                  <Checkbox
-                    isChecked={suggestedKeywords[i] ? true : false}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSuggestedKeywords({
-                          ...suggestedKeywords,
-                          [i]: { keyword, searchVolume },
-                        });
-                      } else {
-                        const newSuggestedKeywords = { ...suggestedKeywords };
-                        delete newSuggestedKeywords[i];
-                        setSuggestedKeywords(newSuggestedKeywords);
-                      }
-                    }}
-                  >
-                    <Text fontWeight="semibold">{keyword}</Text>
-                  </Checkbox>
-                  {searchVolume && (
-                    <HStack>
-                      <Text>Volume</Text>
-                      <Tag>{searchVolume}</Tag>
-                    </HStack>
-                  )}
-                </HStack>
-              );
-            })}
+            {competitorKeywords?.length ? (
+              competitorKeywords?.map(({ keyword, searchVolume }, i) => {
+                return (
+                  <HStack key={i} justifyContent="space-between">
+                    <Checkbox
+                      isChecked={suggestedKeywords[i] ? true : false}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSuggestedKeywords({
+                            ...suggestedKeywords,
+                            [i]: { keyword, searchVolume },
+                          });
+                        } else {
+                          const newSuggestedKeywords = { ...suggestedKeywords };
+                          delete newSuggestedKeywords[i];
+                          setSuggestedKeywords(newSuggestedKeywords);
+                        }
+                      }}
+                    >
+                      <Text fontWeight="semibold">{keyword}</Text>
+                    </Checkbox>
+                    {searchVolume && (
+                      <HStack>
+                        <Text>Volume</Text>
+                        <Tag>{searchVolume}</Tag>
+                      </HStack>
+                    )}
+                  </HStack>
+                );
+              })
+            ) : (
+              <Text>No competitor keywords found</Text>
+            )}
           </Stack>
         </Stack>
       </Stack>
