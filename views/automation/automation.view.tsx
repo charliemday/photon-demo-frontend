@@ -1,5 +1,6 @@
 import {
   Box,
+  Button as ChakraButton,
   Divider,
   Grid,
   GridItem,
@@ -8,10 +9,15 @@ import {
   Stack,
   Text,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
+import {
+  useDeleteContentStrategyMutation,
+  useListContentStrategiesQuery,
+} from "api/strategies.api";
 import { useListTeamsQuery } from "api/team.api";
 import { useUserDetailsQuery } from "api/user.api";
 import {
@@ -21,12 +27,20 @@ import {
 } from "components/button";
 
 import { AutomationCard } from "components/cards";
+import { ConfirmationModal } from "components/modals";
 import { ContentStrategy } from "components/wizards";
+import {
+  useActiveContentStrategy,
+  useActiveTeam,
+  useContentStrategies,
+} from "hooks";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { IoIosCloseCircle } from "react-icons/io";
-import { useSelector } from "react-redux";
-import { RootState } from "store";
-import { Team, TeamType } from "types";
+import { useDispatch } from "react-redux";
+import { setActiveContentStrategy } from "store/slices";
+import { removeContentStrategy } from "store/slices/strategy.slice";
+import { TeamType } from "types";
+import { typeCheckError } from "utils";
 import { KEY, STEPS } from "./config";
 import {
   BroadSeedKeywords,
@@ -45,25 +59,113 @@ import { GenerateKIInput } from "./steps/seed-keywords";
 export const AutomationView: React.FC = () => {
   const [activeStep, setActiveStep] = useState<KEY>(KEY.COMPARE_CONSOLE_REPORT);
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const toast = useToast();
+  const dispatch = useDispatch();
   const {
     isOpen: isContentStrategyOpen,
     onClose: onCloseContentStrategy,
     onOpen: onOpenContentStrategy,
   } = useDisclosure();
 
+  const {
+    isOpen: isConfirmDeleteOpen,
+    onClose: onCloseConfirmDelete,
+    onOpen: onOpenConfirmDelete,
+  } = useDisclosure();
+
   const { data: user } = useUserDetailsQuery(undefined);
   const { data: teams } = useListTeamsQuery({
     teamType: TeamType.INTERNAL,
   });
-  const activeTeam: Team = useSelector(
-    (state: RootState) => state.team.activeTeam
+  const activeTeam = useActiveTeam();
+  const activeContentStrategy = useActiveContentStrategy();
+  const contentStrategies = useContentStrategies();
+
+  useListContentStrategiesQuery(
+    {
+      teamId: activeTeam?.id,
+    },
+    {
+      refetchOnMountOrArgChange: true,
+    }
   );
+
+  const [
+    deleteContentStrategy,
+    {
+      isLoading: isDeletingContentStrategy,
+      isSuccess: isDeletedContentStrategy,
+      isError: isDeleteContentStrategyError,
+      error: deleteContentStrategyError,
+    },
+  ] = useDeleteContentStrategyMutation();
+
+  useEffect(() => {
+    /**
+     * Handle the deletion of a content strategy
+     */
+    if (!isDeletingContentStrategy) {
+      onCloseConfirmDelete();
+      if (isDeletedContentStrategy) {
+        toast({
+          title: "Content Strategy Deleted",
+          description: "Your content strategy has been deleted.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+
+        // Remove the content strategy from the store
+        dispatch(removeContentStrategy(activeContentStrategy?.id));
+
+        // Remove the active content strategy locally
+        const updatedContentStrategies = contentStrategies.filter(
+          (contentStrategy) => contentStrategy.id !== activeContentStrategy?.id
+        );
+
+        if (updatedContentStrategies.length > 0) {
+          // Set the active content strategy to the first one
+          dispatch(setActiveContentStrategy(updatedContentStrategies[0]));
+        } else {
+          // Set the default to null
+          dispatch(setActiveContentStrategy(null));
+        }
+      } else if (isDeleteContentStrategyError) {
+        toast({
+          title: "Error",
+          description:
+            typeCheckError(deleteContentStrategyError) ||
+            "Unable to delete content strategy",
+          duration: 5000,
+          status: "error",
+          isClosable: true,
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    isDeletedContentStrategy,
+    isDeleteContentStrategyError,
+    deleteContentStrategyError,
+    isDeletingContentStrategy,
+  ]);
 
   return (
     <Box mt={20}>
       <ContentStrategy
         isOpen={isContentStrategyOpen}
         onClose={onCloseContentStrategy}
+      />
+      <ConfirmationModal
+        isOpen={isConfirmDeleteOpen}
+        onClose={onCloseConfirmDelete}
+        handleConfirm={() => {
+          if (activeContentStrategy?.id) {
+            deleteContentStrategy({ id: activeContentStrategy.id });
+          }
+        }}
+        isLoading={isDeletingContentStrategy}
+        title={`Delete Content Strategy "${activeContentStrategy?.name}"?`}
       />
       <HStack justifyContent="space-between" mb={10} alignItems="flex-start">
         <Heading fontSize="2xl">
@@ -72,53 +174,88 @@ export const AutomationView: React.FC = () => {
 
         <HStack spacing={6}>
           {teams && <FloatingButton teams={teams} />}
-          {<FloatingButtonContentStrategy />}
+          {activeContentStrategy && <FloatingButtonContentStrategy />}
         </HStack>
       </HStack>
 
-      <Stack my={4}>
-        <HStack>
-          <Text fontSize="sm">Current Team:</Text>
-          <Text fontSize="sm" fontWeight="bold">
-            {activeTeam?.name || ""}
-          </Text>
-          <Box
-            h={6}
-            w={6}
-            position="relative"
-            borderRadius={4}
-            overflow="hidden"
-          >
-            {activeTeam?.logo && (
-              <Image
-                src={activeTeam?.logo || ""}
-                layout="fill"
-                alt="Team Logo"
-              />
-            )}
-          </Box>
-        </HStack>
-        <HStack>
-          <Text fontSize="sm">Team Has Drive Setup:</Text>
-          {activeTeam?.driveFolderId ? (
-            <BsCheckCircleFill color="green" />
-          ) : (
-            <IoIosCloseCircle color="red" />
+      <HStack
+        alignItems="flex-end"
+        border="solid 2px black"
+        borderRadius="md"
+        p={5}
+      >
+        <Stack flex={1} my={4}>
+          <HStack>
+            <Text>Current Team:</Text>
+            <Text fontWeight="bold">{activeTeam?.name || ""}</Text>
+            <Box
+              h={6}
+              w={6}
+              position="relative"
+              borderRadius={4}
+              overflow="hidden"
+            >
+              {activeTeam?.logo && (
+                <Image
+                  src={activeTeam?.logo || ""}
+                  layout="fill"
+                  alt="Team Logo"
+                />
+              )}
+            </Box>
+          </HStack>
+          {activeContentStrategy && (
+            <HStack>
+              <Text>Current Content Strategy:</Text>
+              <Text fontWeight="bold">{activeContentStrategy?.name}</Text>
+            </HStack>
           )}
-        </HStack>
-        <HStack>
-          <Text fontSize="sm">UID:</Text>
-          <Text fontSize="sm" fontWeight="bold">
-            {activeTeam?.uid || ""}
-          </Text>
-        </HStack>
-      </Stack>
+          <HStack>
+            <Text>Team Has Drive Setup:</Text>
+            {activeTeam?.driveFolderId ? (
+              <BsCheckCircleFill color="green" />
+            ) : (
+              <IoIosCloseCircle color="red" />
+            )}
+          </HStack>
+          <HStack>
+            <Text>UID:</Text>
+            <Text fontWeight="bold">{activeTeam?.uid || ""}</Text>
+          </HStack>
+          <HStack>
+            <Text># of Content Strategies:</Text>
+            <Text fontWeight="bold">{contentStrategies?.length || 0}</Text>
+          </HStack>
+        </Stack>
+
+        <Stack h="full" justifyContent="flex-end">
+          {activeContentStrategy && (
+            <ChakraButton
+              variant="outline"
+              colorScheme="red"
+              onClick={onOpenConfirmDelete}
+            >
+              Delete Content Strategy
+            </ChakraButton>
+          )}
+        </Stack>
+      </HStack>
 
       <Divider my={8} />
 
+      <Text fontSize="lg" fontWeight="semibold" mb={4} textDecor="underline">
+        Automated
+      </Text>
+
       <Button onClick={onOpenContentStrategy}>
-        Open Content Strategy Wizard
+        Create Content Strategy 🧙
       </Button>
+
+      <Divider my={8} />
+
+      <Text fontSize="lg" fontWeight="semibold" mb={4} textDecor="underline">
+        Manual
+      </Text>
 
       <Stack spacing={12} pb={32} pt={6}>
         {STEPS.map(({ title, steps }, key) => (

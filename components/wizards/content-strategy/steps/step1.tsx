@@ -3,7 +3,9 @@ import { useCreateContentStrategyMutation } from "api/strategies.api";
 import { Button } from "components/button";
 import { useActiveTeam } from "hooks";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { StepWizardChildProps } from "react-step-wizard";
+import { setActiveContentStrategy } from "store/slices";
 import { typeCheckError } from "utils";
 
 interface Props extends Partial<StepWizardChildProps> {
@@ -19,6 +21,7 @@ export const Step1: React.FC<Props> = ({
   const activeTeam = useActiveTeam();
   const [name, setName] = useState<string | null>(null);
   const toast = useToast();
+  const dispatch = useDispatch();
 
   const [
     createContentStrategy,
@@ -42,14 +45,20 @@ export const Step1: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isError, isSuccess, error, nextStep, toast]);
 
-  const handleCreateContentStrategy = () => {
+  const handleCreateContentStrategy = async () => {
     if (activeTeam && name) {
-      createContentStrategy({
+      const createContentStrategyResponse = await createContentStrategy({
         teamId: activeTeam.id,
         body: {
           name,
         },
       });
+
+      if ("error" in createContentStrategyResponse) return;
+
+      if (createContentStrategyResponse.data) {
+        dispatch(setActiveContentStrategy(createContentStrategyResponse.data));
+      }
     }
   };
 

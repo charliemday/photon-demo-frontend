@@ -41,11 +41,26 @@ export const FloatingButtonContentStrategy: FC = () => {
   );
 
   useEffect(() => {
+    /**
+     * If the active content strategy changes and it's not the same as the selected strategy
+     * update the selected strategy to the active content strategy
+     */
+    if (
+      activeContentStrategy &&
+      selectedStrategy &&
+      activeContentStrategy.id !== selectedStrategy.id
+    ) {
+      setSelectedStrategy(activeContentStrategy);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeContentStrategy]);
+
+  useEffect(() => {
     contentStrategies && setSearchResults(contentStrategies);
     setSelectedStrategy(contentStrategies?.[0] || null);
   }, [contentStrategies]);
 
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { isOpen, onClose } = useDisclosure();
   const dispatch = useDispatch();
   const onSelect = (contentStrategy: ContentStrategy) => {
     setSelectedStrategy(contentStrategy);

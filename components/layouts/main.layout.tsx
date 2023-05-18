@@ -1,14 +1,14 @@
-import { Flex, Box } from "@chakra-ui/react";
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { Box, Flex } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 import { useUserDetailsQuery } from "api/user.api";
+import { Topbar } from "components/topbar";
+import { BRAND_NAME, ROUTES, TAG_LINE } from "config";
+import Head from "next/head";
 import { RootState } from "store";
 import { AuthState } from "store/slices";
-import { BRAND_NAME, ROUTES, TAG_LINE } from "config";
-import { Topbar } from "components/topbar";
-import Head from "next/head";
 
 interface Props {
   children: React.ReactNode;
@@ -16,11 +16,9 @@ interface Props {
 
 export const MainLayout: React.FC<Props> = ({ children }) => {
   const authState: AuthState = useSelector((state: RootState) => state.auth);
-  const activeTeam = useSelector((state: RootState) => state.team?.activeTeam);
   const authToken = authState?.token;
 
   const router = useRouter();
-  const dispatch = useDispatch();
 
   useUserDetailsQuery(undefined, {
     skip: !authToken,

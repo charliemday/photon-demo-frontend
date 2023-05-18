@@ -69,8 +69,6 @@ export const KeywordItems: React.FC<Props> = (props) => {
     }
 
     if (!isGenerating && isGenerateError) {
-      console.log(generateError);
-
       toast({
         title: typeCheckError(generateError) || "Unable to generate outline",
         status: "error",

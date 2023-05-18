@@ -1,6 +1,6 @@
 import { Box, HStack, Text, useToast } from "@chakra-ui/react";
 import { Button } from "components/button";
-import React, { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 
 import { Input, Stack } from "@chakra-ui/react";
@@ -21,7 +21,7 @@ interface Props extends Partial<StepWizardChildProps> {
 
 const NUMBER_OF_COMPETITORS = 10;
 
-export const Step2: React.FC<Props> = ({
+export const Step2: FC<Props> = ({
   nextStep,
   previousStep,
   currentStep = 0,
@@ -40,8 +40,11 @@ export const Step2: React.FC<Props> = ({
   });
   const toast = useToast();
 
-  const { data: geographies, isLoading: isGeographiesLoading } =
-    useListGeographiesQuery();
+  const {
+    data: geographies,
+    isLoading: isGeographiesLoading,
+    refetch,
+  } = useListGeographiesQuery(undefined);
 
   const { data: contentStrategyCompetitors } = useListCompetitorsQuery(
     {
@@ -120,12 +123,11 @@ export const Step2: React.FC<Props> = ({
     {
       isLoading: isUpdatingContentStrategy,
       error: updateContentStrategyError,
-      isSuccess: isContentStrategyUpdated,
       isError: isContentStrategyUpdateError,
     },
   ] = useUpdateContentStrategyMutation();
 
-  const handleCreateCompetitors = () => {
+  const handleCreateCompetitors = async () => {
     /**
      * We make 3 requests here controlled by the useEffect
      * 1. Create the competitors
@@ -142,37 +144,91 @@ export const Step2: React.FC<Props> = ({
       (competitor) => competitor.name !== ""
     );
 
-    if (filteredCompetitors.length && contentStrategyId) {
+    if (contentStrategyId) {
       // Create the competitors
-      createCompetitors({
+      const createCompetitorsResponse = await createCompetitors({
         body: filteredCompetitors,
         contentStrategyId,
       });
-    }
-  };
 
-  useEffect(() => {
-    /**
-     * Handle any success that occur when creating competitors
-     */
-    if (!isCreatingCompetitors && isCompetitorsCreated) {
+      // If there is an error, stop here
+      if ("error" in createCompetitorsResponse) {
+        setIsLoading(false);
+        return;
+      }
+
+      // Update the content strategy with the geography
       if (geography) {
         const targetGeography = geographies?.find(
           (geo) => geo.name.toLowerCase() === geography.toLowerCase()
         )?.id;
 
         if (targetGeography) {
-          updateContentStrategy({
+          const updateContentStrategyResponse = await updateContentStrategy({
             body: {
               // Get the id of the geography
               geography: targetGeography,
             },
             id: contentStrategyId as number,
           });
+          // If there is an error, stop here
+          if ("error" in updateContentStrategyResponse) return;
+
+          // Generate the keywords for the competitors
+          const generateCompetitorKeywordsResponse =
+            await generateCompetitorsKeywords({
+              contentStrategyId: contentStrategyId as number,
+            });
+
+          // If there is an error, stop here
+          if ("error" in generateCompetitorKeywordsResponse) {
+            setIsLoading(false);
+            return;
+          }
+
+          // Move to the next step
+          nextStep && nextStep();
+        } else {
+          toast({
+            title: "Error",
+            description: "Geography not found",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
         }
+      } else {
+        toast({
+          title: "Error",
+          description: "No Geography selected",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       }
+    } else {
+      toast({
+        title: "Error",
+        description: "No Content Strategy ID",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
 
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    /**
+     * Use effect for handling when the component is first mounted
+     */
+    // Refetch the geographies on load
+    refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     /**
      * Handle any errors that occur when creating competitors
      */
@@ -194,7 +250,6 @@ export const Step2: React.FC<Props> = ({
     createCompetitorsError,
     isCreatingCompetitors,
     toast,
-    nextStep,
   ]);
 
   useEffect(() => {
@@ -210,15 +265,6 @@ export const Step2: React.FC<Props> = ({
   }, [isGeographiesLoading, geographies]);
 
   useEffect(() => {
-    /**
-     * If the content strategy has been updated, go to the next step
-     */
-    if (!isUpdatingContentStrategy && isContentStrategyUpdated) {
-      generateCompetitorsKeywords({
-        contentStrategyId: contentStrategyId as number,
-      });
-    }
-
     if (!isUpdatingContentStrategy && isContentStrategyUpdateError) {
       toast({
         title: typeCheckError(updateContentStrategyError) || "Error",
@@ -229,12 +275,10 @@ export const Step2: React.FC<Props> = ({
     }
   }, [
     isUpdatingContentStrategy,
-    isContentStrategyUpdated,
     toast,
     updateContentStrategyError,
     isContentStrategyUpdateError,
     contentStrategyId,
-    generateCompetitorsKeywords,
   ]);
 
   return (

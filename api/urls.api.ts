@@ -69,4 +69,5 @@ export const apiUrls = {
     GENERATE_CONTENT_STRATEGY: (contentStrategyId: number) => `strategies/content-strategy/${contentStrategyId}/generate`,
     BULK_DELETE_COMPETITORS: (contentStrategyId: number) => `strategies/content-strategy/${contentStrategyId}/competitors/bulk/delete`,
     BULK_DELETE_SEED_KEYWORDS: (contentStrategyId: number) => `strategies/content-strategy/${contentStrategyId}/seed-keywords/bulk/delete`,
+    GENERATE_CONTENT_STRATEGY_PART_2_MANUAL: 'strategies/content-strategy/part-2/manual/generate',
 };
