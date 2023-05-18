@@ -5,10 +5,11 @@ import { FC } from "react";
 export interface Props {
   title: string;
   value: number;
+  delta?: number;
   color?: string;
 }
 
-export const ContentDataCard: FC<Props> = ({ title, value, color = BRAND_COLOR }) => {
+export const DataCard: FC<Props> = ({ title, value, delta, color = BRAND_COLOR }) => {
   const formatValue = (value: number) => {
     if (value > 1e6) {
       return `${value / 1e6}M`;
@@ -19,6 +20,11 @@ export const ContentDataCard: FC<Props> = ({ title, value, color = BRAND_COLOR }
     }
 
     return value;
+  };
+
+  const formatDelta = (value: number) => {
+    const sign = value > 0 ? "+" : "-";
+    return `${sign} ${Math.abs(value) * 100}%`;
   };
 
   return (
@@ -37,6 +43,12 @@ export const ContentDataCard: FC<Props> = ({ title, value, color = BRAND_COLOR }
       <Text fontSize="2xl" fontWeight="semibold">
         {formatValue(value)}
       </Text>
+
+      {delta ? (
+        <Text fontSize="xs" fontWeight="semibold" textAlign="center">
+          {formatDelta(delta)}
+        </Text>
+      ) : null}
     </Stack>
   );
 };
