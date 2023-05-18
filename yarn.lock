@@ -1300,7 +1300,7 @@
   resolved "https://registry.yarnpkg.com/@nivo/legends/-/legends-0.80.0.tgz#49edc54000075b4df055f86794a8c32810269d06"
   integrity sha512-h0IUIPGygpbKIZZZWIxkkxOw4SO0rqPrqDrykjaoQz4CvL4HtLIUS3YRA4akKOVNZfS5agmImjzvIe0s3RvqlQ==
 
-"@nivo/line@0.80.0":
+"@nivo/line@^0.80.0":
   version "0.80.0"
   resolved "https://registry.yarnpkg.com/@nivo/line/-/line-0.80.0.tgz#ba541b0fcfd53b3a7ce865feb43c993b7cf4a7d4"
   integrity sha512-6UAD/y74qq3DDRnVb+QUPvXYojxMtwXMipGSNvCGk8omv1QZNTaUrbV+eQacvn9yh//a0yZcWipnpq0tGJyJCA==

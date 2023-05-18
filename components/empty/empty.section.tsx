@@ -1,6 +1,6 @@
 import { Flex } from "@chakra-ui/react";
-import { EmptyState } from "./empty.state";
 import { FC } from "react";
+import { EmptyState } from "./empty.state";
 
 export const EmptySection: FC = () => (
   <Flex

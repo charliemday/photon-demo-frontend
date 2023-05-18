@@ -1,8 +1,8 @@
 import { Stack, Text } from "@chakra-ui/react";
+import { Dropdown } from "components/dropdown";
 import { FC } from "react";
 import { Modal } from "./modal";
 import { ModalField } from "./modal.field";
-import { Dropdown } from "components/dropdown";
 
 interface Props {
   isOpen: boolean;
@@ -42,7 +42,7 @@ export const ContentStrategyCompetitorsModal: FC<Props> = ({ isOpen, onClose }) 
           </Text>
         </Stack>
 
-        <Dropdown />
+        <Dropdown label="Select Geography" />
       </Stack>
     </Stack>
   </Modal>

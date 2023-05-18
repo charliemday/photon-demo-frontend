@@ -86,6 +86,7 @@ export const DemoGraph: FC<Props> = () => (
     axisTop={null}
     axisRight={null}
     axisBottom={{
+      // @ts-ignore
       orient: "bottom",
       tickSize: 0,
       tickPadding: 10,
@@ -95,6 +96,7 @@ export const DemoGraph: FC<Props> = () => (
       legendOffset: 100,
     }}
     axisLeft={{
+      // @ts-ignore
       orient: "left",
       tickSize: 0,
       tickPadding: 10,
