@@ -29,12 +29,8 @@ export const Modal: React.FC<Props> = ({
 }) => (
   <ChakraModal isOpen={isOpen} onClose={onClose} size={size}>
     <ModalOverlay />
-    <ModalContent
-      p={contentPadding}
-      borderRadius={contentRadius}
-      {...contentProps}
-    >
-      {showCloseButton && <ModalCloseButton />}
+    <ModalContent p={contentPadding} borderRadius={contentRadius} {...contentProps}>
+      {showCloseButton && <ModalCloseButton zIndex="docked" />}
       {children}
     </ModalContent>
   </ChakraModal>
