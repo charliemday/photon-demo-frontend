@@ -1,4 +1,4 @@
-import { Grid, Heading, Stack } from "@chakra-ui/react";
+import { Divider, Grid, Heading, Stack } from "@chakra-ui/react";
 import { useListTeamsQuery } from "api/team.api";
 import { FloatingButton } from "components/button";
 import { ProductCard } from "components/cards";
@@ -48,6 +48,8 @@ export const DashboardView: FC = () => {
           />
         </Stack>
       </Stack>
+
+      <Divider my={12} />
 
       <Grid templateColumns="repeat(3, 1fr)" gap={6}>
         <ProductCard

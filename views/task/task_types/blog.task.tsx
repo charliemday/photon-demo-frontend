@@ -1,22 +1,16 @@
 import { Divider, HStack, Stack, Text } from "@chakra-ui/react";
 import { BlogSectionItem } from "components/blog/blog-section-item";
-import { Button } from "components/button";
 import React from "react";
-import { FaArrowLeft } from "react-icons/fa";
-import { StepWizardChildProps } from "react-step-wizard";
-import { BlogSection } from "types/blog";
+import { Blog } from "types";
 
-interface Props extends Partial<StepWizardChildProps> {
-  blogSections?: BlogSection[];
-  blogTitle?: string;
+interface Props {
+  blog: Blog;
 }
 
-export const BlogOutline: React.FC<Props> = ({
-  blogSections,
-  previousStep,
-  nextStep,
-  blogTitle,
-}) => {
+export const BlogTask: React.FC<Props> = ({ blog }) => {
+  const blogSections = blog?.sections;
+  const blogTitle = blog?.title;
+
   const renderEmptyBlogSections = () => (
     <Stack alignItems="center" justifyContent="center" p={12}>
       <Text>{`The blog "${blogTitle}" has no sections yet.`}</Text>
@@ -26,18 +20,6 @@ export const BlogOutline: React.FC<Props> = ({
   return (
     <Stack spacing={6}>
       <HStack w="full" justifyContent="space-between">
-        <HStack
-          cursor="pointer"
-          onClick={previousStep}
-          alignItems="center"
-          _hover={{
-            textDecoration: "underline",
-          }}
-        >
-          <FaArrowLeft fontSize={12} />
-          <Text fontSize="sm">Back to Blogs</Text>
-        </HStack>
-
         <Text fontSize="lg" fontWeight="medium">
           {blogTitle}
         </Text>
@@ -50,7 +32,6 @@ export const BlogOutline: React.FC<Props> = ({
           <Divider />
           <HStack justifyContent="space-between">
             <Text fontSize="sm">Click to copy the text to your clipboard</Text>
-            <Button onClick={nextStep}>Edit</Button>
           </HStack>
         </>
       ) : null}

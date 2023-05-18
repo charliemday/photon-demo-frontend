@@ -1,5 +1,6 @@
 import { Badge, Box, Flex, HStack, Text, useDisclosure } from "@chakra-ui/react";
 import { Avatar } from "components/avatar";
+import { Breadcrumb, Breadcrumbs } from "components/breadcrumbs";
 import { FeedbackModal } from "components/modals";
 import { Sidebar } from "components/sidebar";
 import { ROUTES } from "config";
@@ -13,11 +14,12 @@ interface Props {
   children?: React.ReactNode;
   title?: string;
   headerTitle?: string;
+  breadcrumbs?: Breadcrumb[];
 }
 
 const SIDEBAR_WIDTH = "15%";
 
-export const SidebarLayout: React.FC<Props> = ({ children, title, headerTitle }) => {
+export const SidebarLayout: React.FC<Props> = ({ children, title, headerTitle, breadcrumbs }) => {
   const router = useRouter();
   const { logout } = useLogout();
   const {
@@ -99,6 +101,11 @@ export const SidebarLayout: React.FC<Props> = ({ children, title, headerTitle })
           <Text fontSize="2xl" fontWeight="bold" mb={4}>
             {title}
           </Text>
+        )}
+        {breadcrumbs && (
+          <Box mb={12}>
+            <Breadcrumbs breadcrumbs={breadcrumbs} />
+          </Box>
         )}
         {children}
       </Box>

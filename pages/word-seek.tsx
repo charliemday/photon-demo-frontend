@@ -5,7 +5,6 @@ import { WordSeekView } from "views/word-seek";
 const WordSeek: FC = () => {
   return (
     <SidebarLayout headerTitle="Baser | WordSeek" title={`Word Seek | Find your missing keywords`}>
-       
       <WordSeekView />
     </SidebarLayout>
   );

@@ -1,3 +1,4 @@
+import { Blog } from "./blog";
 import { Team } from "./team";
 import { User } from "./user";
 
@@ -15,11 +16,13 @@ export enum TaskStatusNameEnum {
 export enum TaskTypeSlugEnum {
     blog = "blog",
     onboarding = "onboarding",
+    gsc = "gsc_connect"
 }
 
 export enum TaskTypeNameEnum {
     blog = "Blog",
     onboarding = "Onboarding",
+    gsc = "GSC Connect"
 }
 
 
@@ -41,4 +44,5 @@ export interface Task {
     assignee: Partial<User>,
     taskType: TaskType;
     created: string;
+    content: Blog | null;
 };
