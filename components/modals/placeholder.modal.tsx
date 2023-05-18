@@ -10,7 +10,7 @@ interface Props {
   onClose: () => void;
 }
 
-export const SuccessModal: FC<Props> = ({ icon, heading, text, isOpen, onClose }) => (
+export const PlaceholderModal: FC<Props> = ({ icon, heading, text, isOpen, onClose }) => (
   <Modal isOpen={isOpen} onClose={onClose} size="md">
     <Stack align="center" spacing="10px">
       <Text fontSize="2xl" fontWeight="medium" textAlign="center">
@@ -21,7 +21,7 @@ export const SuccessModal: FC<Props> = ({ icon, heading, text, isOpen, onClose }
         {heading}
       </Text>
 
-      <Text maxWidth="302px" fontSize="sm" fontWeight="medium" textAlign="center">
+      <Text fontSize="sm" fontWeight="semi" textAlign="center">
         {text}
       </Text>
     </Stack>
