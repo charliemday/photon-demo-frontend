@@ -6,6 +6,7 @@ export { FeedbackModal } from "./feedback.modal";
 export { Modal } from "./modal";
 export { ModalField } from "./modal.field";
 export { OAuthConnectingModal } from "./oauth-connecting.modal";
+export { OptimisationTaskModal } from "./optimisation-task.modal";
 export { PlaceholderModal } from "./placeholder.modal";
 export { SimpleModal } from "./simple.modal";
 export { WordSeekModal } from "./wordseek.modal";
