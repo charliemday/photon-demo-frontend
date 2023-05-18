@@ -1,5 +1,5 @@
 import { Stack } from "@chakra-ui/react";
-import { NavIcon } from "components/nav-icon";
+import { NavIcon } from "components/icons";
 import { FC } from "react";
 import { FiLogOut, FiMail, FiSettings } from "react-icons/fi";
 

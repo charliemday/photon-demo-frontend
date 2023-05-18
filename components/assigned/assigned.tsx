@@ -1,5 +1,5 @@
 import { Stack, Text } from "@chakra-ui/react";
-import { ProfileIcon } from "components/profile-icon";
+import { ProfileIcon } from "components/icons";
 import { FC } from "react";
 
 interface Props {
