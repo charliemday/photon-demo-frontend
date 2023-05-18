@@ -1,16 +1,13 @@
 import { Box, Stack, Text } from "@chakra-ui/react";
 import { FC } from "react";
-import { FiChevronDown } from "react-icons/fi";
 
 interface Props {
   label: string;
-  maxWidth?: number;
 }
 
-export const Dropdown: FC<Props> = ({ label, maxWidth }) => (
+export const ModalField: FC<Props> = ({ label }) => (
   <Box
     background="#F6F5FA"
-    maxWidth={maxWidth}
     paddingX="12px"
     paddingY="6px"
     borderRadius="6px"
@@ -18,11 +15,9 @@ export const Dropdown: FC<Props> = ({ label, maxWidth }) => (
     borderWidth="1px"
   >
     <Stack direction="row" justify="space-between" align="center" spacing="15px">
-      <Text fontSize="sm" fontWeight="medium">
+      <Text fontSize="xs" fontWeight="medium">
         {label}
       </Text>
-
-      <FiChevronDown />
     </Stack>
   </Box>
 );
