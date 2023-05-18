@@ -1,5 +1,6 @@
 export { AddTeamModal } from "./add-team.modal";
 export { ConfirmationModal } from "./confirmation.modal";
+export { ContentStrategyModal } from "./content-strategy.modal";
 export { FeedbackModal } from "./feedback.modal";
 export { Modal } from "./modal";
 export { ModalField } from "./modal.field";
