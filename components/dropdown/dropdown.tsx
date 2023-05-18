@@ -4,12 +4,13 @@ import { FiChevronDown } from "react-icons/fi";
 
 interface Props {
   label: string;
+  maxWidth?: number;
 }
 
-export const Dropdown: FC<Props> = ({ label }) => (
+export const Dropdown: FC<Props> = ({ label, maxWidth }) => (
   <Box
     background="#F6F5FA"
-    width="120px"
+    maxWidth={maxWidth}
     paddingX="12px"
     paddingY="6px"
     borderRadius="6px"
