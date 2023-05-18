@@ -14,7 +14,6 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useListContentStrategiesQuery } from "api/strategies.api";
 import { useListTeamsQuery } from "api/team.api";
 import { Image } from "components/image";
 import { AddTeamModal } from "components/modals";
@@ -50,20 +49,9 @@ export const FloatingButton: React.FC<Props> = ({
   teamType = TeamType.INTERNAL,
 }) => {
   const activeTeam = useActiveTeam();
-  const [selectedTeam, setSelectedTeam] = useState<Team | null>(
-    activeTeam || teams?.[0] || null
-  );
+  const [selectedTeam, setSelectedTeam] = useState<Team | null>(activeTeam || teams?.[0] || null);
 
   const [searchResults, setSearchResults] = useState<Team[]>(teams || []);
-
-  const { refetch: refetchStrategies } = useListContentStrategiesQuery(
-    {
-      teamId: activeTeam?.id,
-    },
-    {
-      skip: !activeTeam?.id,
-    }
-  );
 
   useEffect(() => {
     setSearchResults(teams);
@@ -77,11 +65,6 @@ export const FloatingButton: React.FC<Props> = ({
     dispatch(setActiveTeam(team));
     dispatch(setActiveContentStrategy(null));
   };
-
-  // useEffect(() => {
-  //   refetchStrategies();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [activeTeam]);
 
   const fuse = new FuseJS(teams, {
     keys: ["name"],
@@ -146,14 +129,7 @@ export const FloatingButton: React.FC<Props> = ({
               border="solid 2px black"
             >
               <Flex alignItems="center">
-                <Box
-                  w={5}
-                  minH={5}
-                  m={2}
-                  overflow="hidden"
-                  position="relative"
-                  borderRadius="sm"
-                >
+                <Box w={5} minH={5} m={2} overflow="hidden" position="relative" borderRadius="sm">
                   {selectedTeam?.logo ? (
                     <Image
                       src={selectedTeam.logo}
@@ -175,9 +151,7 @@ export const FloatingButton: React.FC<Props> = ({
                   fontSize="sm"
                   placeholder={
                     teams.length
-                      ? `${teams.length} team${
-                          teams.length > 1 ? "s..." : "..."
-                        }`
+                      ? `${teams.length} team${teams.length > 1 ? "s..." : "..."}`
                       : `No Teams Found`
                   }
                   onChange={(e) => handleSearch(e.target.value)}

@@ -8,7 +8,9 @@ interface Props {
 }
 
 export const Tag: FC<Props> = ({ text, bgColor, textColor }) => (
-  <ChakraTag bgColor={bgColor} textColor={textColor} size="sm" height="20px">
-    <TagLabel textAlign="center">{text}</TagLabel>
+  <ChakraTag bgColor={bgColor} textColor={textColor}>
+    <TagLabel textAlign="center" fontWeight="semibold">
+      {text}
+    </TagLabel>
   </ChakraTag>
 );

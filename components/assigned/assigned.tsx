@@ -10,7 +10,7 @@ export const Assigned: FC<Props> = ({ name }) => (
   <Stack direction="row" align="center" spacing="6px">
     <ProfileIcon name={name} size="sm" />
 
-    <Text maxWidth="108px" fontSize="xs" fontWeight="medium" textOverflow="ellipsis">
+    <Text maxWidth="108px" fontWeight="semibold" fontSize="sm" textOverflow="ellipsis">
       {name}
     </Text>
   </Stack>

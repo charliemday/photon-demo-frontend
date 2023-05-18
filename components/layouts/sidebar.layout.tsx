@@ -1,11 +1,4 @@
-import {
-  Badge,
-  Box,
-  Flex,
-  HStack,
-  Text,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Badge, Box, Flex, HStack, Text, useDisclosure } from "@chakra-ui/react";
 import { Avatar } from "components/avatar";
 import { FeedbackModal } from "components/modals";
 import { Sidebar } from "components/sidebar";
@@ -24,11 +17,7 @@ interface Props {
 
 const SIDEBAR_WIDTH = "15%";
 
-export const SidebarLayout: React.FC<Props> = ({
-  children,
-  title,
-  headerTitle,
-}) => {
+export const SidebarLayout: React.FC<Props> = ({ children, title, headerTitle }) => {
   const router = useRouter();
   const { logout } = useLogout();
   const {
@@ -39,7 +28,7 @@ export const SidebarLayout: React.FC<Props> = ({
 
   const SIDEBAR_ITEMS = [
     {
-      label: "Word Seek",
+      label: "Dashboard",
       isActive: router.route === ROUTES.DASHBOARD,
       icon: <Text fontSize="sm">🚀</Text>,
       onClick: () => router.push(ROUTES.DASHBOARD),
@@ -48,6 +37,18 @@ export const SidebarLayout: React.FC<Props> = ({
           Beta
         </Badge>
       ),
+    },
+    {
+      label: "Content Strategy",
+      isActive: router.route === ROUTES.CONTENT_STRATEGY,
+      icon: <Text fontSize="sm">🤖</Text>,
+      onClick: () => router.push(ROUTES.CONTENT_STRATEGY),
+    },
+    {
+      label: "Word Seek",
+      isActive: router.route === ROUTES.WORD_SEEK,
+      icon: <Text fontSize="sm">🚀</Text>,
+      onClick: () => router.push(ROUTES.WORD_SEEK),
     },
     {
       label: "FAQs",
@@ -81,10 +82,7 @@ export const SidebarLayout: React.FC<Props> = ({
 
   return (
     <Flex>
-      <FeedbackModal
-        isOpen={isFeedbackModalOpen}
-        onClose={onCloseFeedbackModal}
-      />
+      <FeedbackModal isOpen={isFeedbackModalOpen} onClose={onCloseFeedbackModal} />
       <Box position="absolute" right={5} top={5}>
         <HStack>
           <Avatar />
@@ -95,11 +93,7 @@ export const SidebarLayout: React.FC<Props> = ({
           <title>{headerTitle}</title>
         </Head>
       )}
-      <Sidebar
-        width={SIDEBAR_WIDTH}
-        items={SIDEBAR_ITEMS}
-        footerItems={FOOTER_ITEMS}
-      />
+      <Sidebar width={SIDEBAR_WIDTH} items={SIDEBAR_ITEMS} footerItems={FOOTER_ITEMS} />
       <Box pl={SIDEBAR_WIDTH} m={20}>
         {title && (
           <Text fontSize="2xl" fontWeight="bold" mb={4}>

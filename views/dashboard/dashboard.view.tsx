@@ -1,157 +1,70 @@
-import { Grid, Stack, useDisclosure } from "@chakra-ui/react";
-import { useFathom } from "hooks";
-import { FC, useEffect, useState } from "react";
-import {
-  DashboardCard,
-  GscConnectModal,
-  PricingModal,
-  WordSeekModal,
-  WordSeekResultsModal,
-} from ".";
-import { OnboardingModal } from "./onboarding";
-
-import { useWordSeekResultsQuery } from "api/engine.api";
+import { Grid, Heading, Stack } from "@chakra-ui/react";
 import { useListTeamsQuery } from "api/team.api";
-import { useUserDetailsQuery } from "api/user.api";
-import { FATHOM_EVENTS } from "config";
-import { useHasProductAccess } from "hooks";
-import { useSelector } from "react-redux";
-import { RootState, Team } from "types";
+import { FloatingButton } from "components/button";
+import { ProductCard } from "components/cards";
+import { Table } from "components/table";
+import { HeaderItem } from "components/table/table.header";
+import { ROUTES } from "config";
+import { useBuildTaskTableData } from "hooks";
+import { useRouter } from "next/router";
+import { FC } from "react";
 
-interface Props {}
+const rowHeaders: HeaderItem[] = [
+  {
+    text: "SEO Task",
+    flex: 3,
+  },
+  {
+    text: "Type",
+    flex: 2,
+  },
+  {
+    text: "Assignee",
+    flex: 1,
+  },
+  {
+    text: "Month",
+  },
+  {
+    text: "Status",
+  },
+];
 
-const MIN_ONBOARDING_STEP = 1;
-
-export const DashboardView: FC<Props> = () => {
-  const { data: userDetails } = useUserDetailsQuery(undefined);
-  const [defaultPage, setDefaultPage] = useState<string | null>(null);
-
-  useListTeamsQuery({});
-
-  const { hasAccess: hasWordSeekAccess } = useHasProductAccess();
-
-  const {
-    isOpen: isWordSeekOpen,
-    onClose: onWordSeekClose,
-    onToggle: onWordSeekToggle,
-  } = useDisclosure();
-  const {
-    isOpen: isWordSeekResultsOpen,
-    onClose: onWordSeekResultsClose,
-    onToggle: onWordSeekResultsToggle,
-  } = useDisclosure();
-  const {
-    isOpen: isOnboardingModalOpen,
-    onClose: onOnboardingModalClose,
-    onToggle: onOnboardingModalToggle,
-  } = useDisclosure();
-  const {
-    isOpen: isPricingModalOpen,
-    onClose: onPricingModalClose,
-    onToggle: onPricingModalToggle,
-  } = useDisclosure();
-
-  useEffect(() => {
-    if (
-      userDetails &&
-      userDetails.onboardingStep !== undefined &&
-      userDetails.onboardingStep < MIN_ONBOARDING_STEP
-    ) {
-      onOnboardingModalToggle();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const activeTeam: Team = useSelector(
-    (state: RootState) => state.team.activeTeam
-  );
-
-  const { refetch: refetchResult } = useWordSeekResultsQuery(activeTeam?.uid, {
-    skip: !activeTeam?.uid,
-  });
-
-  const handleShowResults = (page: string) => {
-    setDefaultPage(page);
-    onWordSeekResultsToggle();
-  };
-
-  useEffect(() => {
-    refetchResult();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const fathom = useFathom();
-
+export const DashboardView: FC = () => {
+  const router = useRouter();
+  const { data: teams } = useListTeamsQuery({});
+  const { rowItems, isLoading } = useBuildTaskTableData();
   return (
-    <Stack py={6} spacing={12}>
-      <Grid templateColumns="repeat(5, 1fr)" gap={6}>
-        <DashboardCard
-          onClick={() => {
-            if (activeTeam) {
-              onWordSeekToggle();
-              fathom.trackEvent(FATHOM_EVENTS.WORD_SEEK_CLICK);
-            } else {
-              onOnboardingModalToggle();
-            }
-          }}
-          title={"WordSeek: Missing Keyword Report"}
-          description="Automatically identify missing keywords based on your query data from
-        Google Search Console"
-          buttonLabel="Get Started"
-          emoji="👀"
-        />
-        {activeTeam && (
-          <DashboardCard
-            onClick={() => {
-              onWordSeekResultsToggle();
-              fathom.trackEvent(FATHOM_EVENTS.WORD_SEEK_RESULTS_OPENED);
-            }}
-            title={"WordSeek: Results"}
-            description="View the results of your WordSeek report"
-            buttonLabel="View Results"
-            emoji="🏁"
+    <Stack spacing={24}>
+      <Stack spacing={12}>
+        <FloatingButton teams={teams || []} />
+        <Stack spacing={6}>
+          <Heading fontSize="xl">Task List</Heading>
+          <Table
+            rowItems={rowItems}
+            headers={rowHeaders}
+            isLoading={isLoading}
+            emptyText="You have no tasks to display."
           />
-        )}
-        {!hasWordSeekAccess && (
-          <DashboardCard
-            onClick={() => {
-              onPricingModalToggle();
-              fathom.trackEvent(FATHOM_EVENTS.PAYMENT_CLICKED);
-            }}
-            title={"Upgrade"}
-            description="You can do one free page per month and one free team. Upgrade to get unlimited pages and unlimited teams."
-            buttonLabel="Upgrade"
-            emoji="💰"
-          />
-        )}
-      </Grid>
-      {userDetails?.connectedSearchConsole ? (
-        <WordSeekModal
-          isOpen={isWordSeekOpen}
-          onClose={onWordSeekClose}
-          onShowResults={handleShowResults}
-          onUpgrade={() => {
-            onWordSeekClose();
-            onPricingModalToggle();
-          }}
-        />
-      ) : (
-        <GscConnectModal isOpen={isWordSeekOpen} onClose={onWordSeekClose} />
-      )}
+        </Stack>
+      </Stack>
 
-      <WordSeekResultsModal
-        isOpen={isWordSeekResultsOpen}
-        onClose={onWordSeekResultsClose}
-        defaultPage={defaultPage}
-      />
-      <OnboardingModal
-        isOpen={isOnboardingModalOpen}
-        onClose={onOnboardingModalClose}
-        onComplete={() => {
-          onWordSeekToggle();
-        }}
-      />
-      <PricingModal isOpen={isPricingModalOpen} onClose={onPricingModalClose} />
+      <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+        <ProductCard
+          title="Content Strategy"
+          description="This is a description of the content strategy card"
+          emoji="🤖"
+          onClick={() => router.push(ROUTES.CONTENT_STRATEGY)}
+          buttonLabel="Build a Content Strategy"
+        />
+        <ProductCard
+          title="Word Seek"
+          description="This is a description of the word seek card"
+          emoji="🚀"
+          onClick={() => router.push(ROUTES.WORD_SEEK)}
+          buttonLabel="Run a Word Seek Report"
+        />
+      </Grid>
     </Stack>
   );
 };
