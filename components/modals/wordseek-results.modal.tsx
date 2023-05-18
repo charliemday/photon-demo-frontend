@@ -1,4 +1,4 @@
-import { Stack, Text, Box } from "@chakra-ui/react";
+import { Stack, Text } from "@chakra-ui/react";
 import { Table } from "../table";
 import { Modal } from "./modal";
 import { FC } from "react";
@@ -7,12 +7,13 @@ import { SECONDARY_COLOR } from "config";
 
 interface Props {
   missingQueries: number;
+  size?: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const WordSeekResultsModal: FC<Props> = ({ missingQueries, isOpen, onClose }) => (
-  <Modal isOpen={isOpen} onClose={onClose}>
+export const WordSeekResultsModal: FC<Props> = ({ missingQueries, size, isOpen, onClose }) => (
+  <Modal isOpen={isOpen} onClose={onClose} size={size}>
     <Stack align="center" spacing="16px">
       <Stack direction="row" justify="space-between" align="center" spacing="16px">
         <Text fontSize="xs" fontWeight="semibold" maxWidth="725px">
