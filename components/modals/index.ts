@@ -4,5 +4,6 @@ export { FeedbackModal } from "./feedback.modal";
 export { Modal } from "./modal";
 export { OAuthConnectingModal } from "./oauth-connecting.modal";
 export { SimpleModal } from "./simple.modal";
+export { SuccessModal } from "./success.modal";
 export { WordSeekModal } from "./wordseek.modal";
 export { WordSeekResultsModal } from "./wordseek-results.modal";

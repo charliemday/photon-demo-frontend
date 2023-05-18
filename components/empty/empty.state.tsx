@@ -17,7 +17,7 @@ export const EmptyState: FC<Props> = ({ icon, heading, text, button }) => (
         {icon}
       </Text>
 
-      <Text flex="1" fontSize="xl" fontWeight="medium">
+      <Text fontSize="xl" fontWeight="medium">
         {heading}
       </Text>
 
