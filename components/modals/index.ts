@@ -6,4 +6,5 @@ export { OAuthConnectingModal } from "./oauth-connecting.modal";
 export { SimpleModal } from "./simple.modal";
 export { SuccessModal } from "./success.modal";
 export { WordSeekModal } from "./wordseek.modal";
+export { WordSeekLoadingModal } from "./wordseek-loading.modal";
 export { WordSeekResultsModal } from "./wordseek-results.modal";
