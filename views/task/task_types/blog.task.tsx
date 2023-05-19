@@ -18,7 +18,7 @@ export const BlogTask: React.FC<Props> = ({ blog }) => {
   );
 
   return (
-    <Stack spacing={6}>
+    <Stack spacing={6} border="solid 1px #ECECEC" borderRadius="md" py={7} px={6}>
       <HStack w="full" justifyContent="space-between">
         <Text fontSize="lg" fontWeight="medium">
           {blogTitle}
