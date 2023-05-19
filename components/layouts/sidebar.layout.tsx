@@ -1,4 +1,4 @@
-import { Badge, Box, Flex, HStack, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, HStack, Text, useDisclosure } from "@chakra-ui/react";
 import { Avatar } from "components/avatar";
 import { Breadcrumb, Breadcrumbs } from "components/breadcrumbs";
 import { FeedbackModal } from "components/modals";
@@ -30,15 +30,10 @@ export const SidebarLayout: React.FC<Props> = ({ children, title, headerTitle, b
 
   const SIDEBAR_ITEMS = [
     {
-      label: "Dashboard",
+      label: "Home",
       isActive: router.route === ROUTES.DASHBOARD,
       icon: <Text fontSize="sm">🚀</Text>,
       onClick: () => router.push(ROUTES.DASHBOARD),
-      badge: (
-        <Badge color="white" variant="solid">
-          Beta
-        </Badge>
-      ),
     },
     {
       label: "Content Strategy",
@@ -49,7 +44,7 @@ export const SidebarLayout: React.FC<Props> = ({ children, title, headerTitle, b
     {
       label: "Word Seek",
       isActive: router.route === ROUTES.WORD_SEEK,
-      icon: <Text fontSize="sm">🚀</Text>,
+      icon: <Text fontSize="sm">👀</Text>,
       onClick: () => router.push(ROUTES.WORD_SEEK),
     },
     {

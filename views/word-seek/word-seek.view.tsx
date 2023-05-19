@@ -21,7 +21,7 @@ export const WordSeekView: FC<Props> = () => {
   const { data: userDetails } = useUserDetailsQuery(undefined);
   const [defaultPage, setDefaultPage] = useState<string | null>(null);
 
-  useListTeamsQuery({});
+  const { data: teams } = useListTeamsQuery({});
 
   const { hasAccess: hasWordSeekAccess } = useHasProductAccess();
 
@@ -50,7 +50,8 @@ export const WordSeekView: FC<Props> = () => {
     if (
       userDetails &&
       userDetails.onboardingStep !== undefined &&
-      userDetails.onboardingStep < MIN_ONBOARDING_STEP
+      userDetails.onboardingStep < MIN_ONBOARDING_STEP &&
+      teams?.length === 0
     ) {
       onOnboardingModalToggle();
     }

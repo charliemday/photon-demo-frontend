@@ -1,6 +1,4 @@
 import { Divider, Grid, Heading, Stack } from "@chakra-ui/react";
-import { useListTeamsQuery } from "api/team.api";
-import { FloatingButton } from "components/button";
 import { ProductCard } from "components/cards";
 import { Table } from "components/table";
 import { HeaderItem } from "components/table/table.header";
@@ -32,12 +30,10 @@ const rowHeaders: HeaderItem[] = [
 
 export const DashboardView: FC = () => {
   const router = useRouter();
-  const { data: teams } = useListTeamsQuery({});
   const { rowItems, isLoading } = useBuildTaskTableData();
   return (
     <Stack spacing={24}>
       <Stack spacing={12}>
-        <FloatingButton teams={teams || []} />
         <Stack spacing={6}>
           <Heading fontSize="xl">Task List</Heading>
           <Table
