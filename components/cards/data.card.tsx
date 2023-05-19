@@ -1,11 +1,13 @@
-import { Box, Stack, Text } from "@chakra-ui/react";
+import { Box, Skeleton, Stack, Text } from "@chakra-ui/react";
 import { Tag } from "components/tag";
 import { BRAND_COLOR } from "config";
 import { OverviewStat } from "hooks/useBuildOverviewStats.hook";
 import { FC } from "react";
 
-export interface Props extends OverviewStat {
+export interface Props extends Partial<OverviewStat> {
   width?: number;
+  isLoading?: boolean;
+  height?: number;
 }
 
 export const DataCard: FC<Props> = ({
@@ -14,6 +16,8 @@ export const DataCard: FC<Props> = ({
   value,
   delta,
   width,
+  height,
+  isLoading,
   color = BRAND_COLOR,
 }) => {
   const formatValue = (value: number) => {
@@ -33,6 +37,10 @@ export const DataCard: FC<Props> = ({
     return `${sign} ${Math.abs(value) * 100}%`;
   };
 
+  if (isLoading) {
+    return <Skeleton height="64px" width={width} borderRadius="md" height={height} />;
+  }
+
   return (
     <Stack
       background={color}
@@ -48,7 +56,7 @@ export const DataCard: FC<Props> = ({
       </Text>
 
       <Text fontSize="3xl" fontWeight="bold" color={textColor}>
-        {formatValue(value)}
+        {formatValue(value || 0)}
       </Text>
 
       <Box>{delta ? <Tag text={formatDelta(delta)} /> : null}</Box>

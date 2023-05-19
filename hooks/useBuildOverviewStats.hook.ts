@@ -1,4 +1,7 @@
+import { useToast } from "@chakra-ui/react";
 import { useTeamPerformanceQuery } from "api/team.api";
+import { useEffect } from "react";
+import { calculateDelta, typeCheckError } from "utils";
 import { useActiveTeam } from "./useActiveTeam.hook";
 
 
@@ -12,16 +15,15 @@ export interface OverviewStat {
 
 interface ReturnProps {
     overviewStats: OverviewStat[];
+    isLoading: boolean;
+    isError: boolean;
 }
 
 export const useBuildOverviewStats = (): ReturnProps => {
     const activeTeam = useActiveTeam();
-    const calculateDelta = (current: number, previous: number): number => {
-        if (previous === 0) return 0;
-        return Math.round(((current - previous) / previous) * 100);
-    }
+    const toast = useToast();
 
-    const { data: teamPerformance } = useTeamPerformanceQuery(
+    const { data: teamPerformance, isError, isLoading, error } = useTeamPerformanceQuery(
         {
             teamUid: activeTeam?.uid,
         },
@@ -29,6 +31,20 @@ export const useBuildOverviewStats = (): ReturnProps => {
             skip: !activeTeam?.uid,
         },
     );
+
+    useEffect(() => {
+        if (!isLoading) {
+            if (isError) {
+                toast({
+                    title: "Error",
+                    description: typeCheckError(error) || "Something went wrong",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            }
+        }
+    }, [isError, error, isLoading, toast]);
 
     const organicTraffic = {
         title: 'Organic Traffic',
@@ -77,5 +93,7 @@ export const useBuildOverviewStats = (): ReturnProps => {
 
     return {
         overviewStats,
+        isLoading,
+        isError,
     }
 };
