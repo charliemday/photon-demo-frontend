@@ -17,5 +17,6 @@ export const ROUTES = {
     DEVELOPER: '/developer',
     FAQS: '/faqs',
     CONTENT_STRATEGY: '/content-strategy',
+    PERFORMANCE: '/performance',
     TASK: (id: number) => `/task/${id}`,
 }
