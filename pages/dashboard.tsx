@@ -11,7 +11,7 @@ const Dashboard: FC = () => {
   const fullName = `${firstName} ${lastName}`;
 
   return (
-    <SidebarLayout headerTitle="Baser | Dashboard" title={`Welcome to Baser, ${fullName}!`}>
+    <SidebarLayout headerTitle="Baser | Dashboard" title={`Welcome, ${fullName} 👋!`}>
        
       <DashboardView />
     </SidebarLayout>
