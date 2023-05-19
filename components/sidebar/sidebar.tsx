@@ -36,7 +36,7 @@ interface Props {
 
 const SIDEBAR_COLOR = "#FAF7F3";
 
-const LOGO_DIM = 7;
+const LOGO_DIM = 6;
 
 export const Sidebar: React.FC<Props> = ({ width = "50%", items = [], footerItems = [] }) => {
   const activeTeam = useActiveTeam();
