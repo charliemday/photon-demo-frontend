@@ -48,20 +48,20 @@ export const DataCard: FC<Props> = ({
       paddingY="12px"
       borderRadius="8px"
       justify="space-between"
-      spacing="8px"
+      spacing={0}
       w="full"
-      h="full"
+      h="88px"
     >
       <Text fontSize="xs" fontWeight="semibold" color={textColor}>
         {title}
       </Text>
 
-      <Text fontSize="3xl" fontWeight="bold" color={textColor}>
+      <Text fontSize="2xl" fontWeight="bold" color={textColor} lineHeight="auto">
         {formatValue(value || 0)}
       </Text>
 
       <Box>
-        <Tag text={delta ? formatDelta(delta) : "-"} />
+        <Tag text={delta ? formatDelta(delta) : "-"} size="sm" />
       </Box>
     </Stack>
   );

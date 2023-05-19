@@ -3,11 +3,11 @@ import { BRAND_COLOR } from "config";
 import { FC } from "react";
 
 interface Props {
-  name: string;
+  initials: string;
   size?: "base" | "sm";
 }
 
-export const ProfileIcon: FC<Props> = ({ name, size = "base" }) => {
+export const ProfileIcon: FC<Props> = ({ initials, size = "base" }) => {
   let width: string = "";
   let height: string = "";
   let paddingX: string = "";
@@ -55,7 +55,7 @@ export const ProfileIcon: FC<Props> = ({ name, size = "base" }) => {
         textAlign="center"
         textTransform="uppercase"
       >
-        {name.substring(0, 1)}
+        {initials}
       </Text>
     </Flex>
   );

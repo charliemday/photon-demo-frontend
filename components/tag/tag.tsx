@@ -5,10 +5,11 @@ interface Props {
   text: string;
   bgColor?: string;
   textColor?: string;
+  size?: string;
 }
 
-export const Tag: FC<Props> = ({ text, bgColor, textColor }) => (
-  <ChakraTag bgColor={bgColor} textColor={textColor}>
+export const Tag: FC<Props> = ({ text, bgColor, textColor, size = "md" }) => (
+  <ChakraTag bgColor={bgColor} textColor={textColor} size={size}>
     <TagLabel textAlign="center" fontWeight="semibold">
       {text}
     </TagLabel>

@@ -1,5 +1,4 @@
 import {
-  Box,
   HStack,
   Menu,
   MenuButton,
@@ -9,6 +8,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useUserDetailsQuery } from "api/user.api";
+import { ProfileIcon } from "components/icons";
 import { FeedbackModal } from "components/modals";
 import { ROUTES } from "config";
 import { useLogout } from "hooks";
@@ -25,7 +25,6 @@ export const DropdownAvatar: FC = () => {
     onClose: onFeedbackModalClose,
   } = useDisclosure();
 
-  const fullName = `${userDetails?.firstName} ${userDetails?.lastName}`;
   const initials = `${userDetails?.firstName[0]}${userDetails?.lastName[0]}`;
 
   if (!userDetails) {
@@ -51,9 +50,7 @@ export const DropdownAvatar: FC = () => {
     <HStack>
       <Menu>
         <MenuButton>
-          <Box border="solid 2px black" px={2} py={1} borderRadius="md" bgColor="purple.400">
-            <Text fontWeight="semibold">{initials}</Text>
-          </Box>
+          <ProfileIcon initials={initials} size="base" />
         </MenuButton>
         <MenuList>
           {menuItems.map(({ label, onClick }, key) => (
