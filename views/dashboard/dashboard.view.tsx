@@ -34,18 +34,19 @@ export const DashboardView: FC = () => {
   const { rowItems, isLoading } = useBuildTaskTableData();
   return (
     <Stack spacing={24}>
-      <OverviewStats />
+      <Stack spacing={12}>
+        <Heading fontSize="xl">SEO Overview</Heading>
+        <OverviewStats />
+      </Stack>
 
       <Stack spacing={12}>
-        <Stack spacing={6}>
-          <Heading fontSize="xl">Task List</Heading>
-          <Table
-            rowItems={rowItems}
-            headers={rowHeaders}
-            isLoading={isLoading}
-            emptyText="You have no tasks to display."
-          />
-        </Stack>
+        <Heading fontSize="xl">Task List</Heading>
+        <Table
+          rowItems={rowItems}
+          headers={rowHeaders}
+          isLoading={isLoading}
+          emptyText="You have no tasks to display."
+        />
       </Stack>
 
       <Divider my={12} />

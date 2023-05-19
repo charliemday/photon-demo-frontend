@@ -1,5 +1,6 @@
-import { HStack } from "@chakra-ui/react";
+import { HStack, Stack } from "@chakra-ui/react";
 import { DataCard } from "components/cards/data.card";
+import { DataOverview } from "components/overview/data.overview";
 import { useBuildOverviewStats } from "hooks";
 import { FC } from "react";
 
@@ -23,10 +24,8 @@ export const OverviewStats: FC<Props> = () => {
   }
 
   return (
-    <HStack w="full" spacing={6}>
-      {overviewStats.map((data, index) => (
-        <DataCard key={index} width={240} {...data} height={125} />
-      ))}
-    </HStack>
+    <Stack justify="flex-start" align="flex-start" spacing="16px" alignSelf="stretch">
+      <DataOverview data={overviewStats} />
+    </Stack>
   );
 };

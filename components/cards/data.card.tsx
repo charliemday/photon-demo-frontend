@@ -49,8 +49,8 @@ export const DataCard: FC<Props> = ({
       borderRadius="8px"
       justify="space-between"
       spacing="8px"
-      width={width}
-      height={height}
+      w="full"
+      h="full"
     >
       <Text fontSize="xs" fontWeight="semibold" color={textColor}>
         {title}
@@ -60,7 +60,9 @@ export const DataCard: FC<Props> = ({
         {formatValue(value || 0)}
       </Text>
 
-      <Box>{delta ? <Tag text={formatDelta(delta)} /> : null}</Box>
+      <Box>
+        <Tag text={delta ? formatDelta(delta) : "-"} />
+      </Box>
     </Stack>
   );
 };
