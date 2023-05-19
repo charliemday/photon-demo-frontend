@@ -34,7 +34,7 @@ export const DataCard: FC<Props> = ({
 
   const formatDelta = (value: number) => {
     const sign = value > 0 ? "+" : "-";
-    return `${sign} ${Math.abs(value) * 100}%`;
+    return `${sign} ${Math.round(Math.abs(value) * 100)}%`;
   };
 
   if (isLoading) {
@@ -50,6 +50,7 @@ export const DataCard: FC<Props> = ({
       justify="space-between"
       spacing="8px"
       width={width}
+      height={height}
     >
       <Text fontSize="xs" fontWeight="semibold" color={textColor}>
         {title}

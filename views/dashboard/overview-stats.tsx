@@ -25,7 +25,7 @@ export const OverviewStats: FC<Props> = () => {
   return (
     <HStack w="full" spacing={6}>
       {overviewStats.map((data, index) => (
-        <DataCard key={index} width={240} {...data} />
+        <DataCard key={index} width={240} {...data} height={125} />
       ))}
     </HStack>
   );
