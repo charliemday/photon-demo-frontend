@@ -4,25 +4,23 @@ import { User } from "./user";
 
 export enum TaskStatusEnum {
     todo = "To Do",
-    completed = "Completed",
+    done = "Done",
 }
 
 export enum TaskStatusNameEnum {
     todo = "to_do",
-    completed = "completed",
+    done = "done",
 }
 
 
 export enum TaskTypeSlugEnum {
     blog = "blog",
     onboarding = "onboarding",
-    gsc = "gsc_connect"
 }
 
 export enum TaskTypeNameEnum {
     blog = "Blog",
     onboarding = "Onboarding",
-    gsc = "GSC Connect"
 }
 
 
