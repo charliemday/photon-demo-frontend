@@ -11,7 +11,7 @@ import { useUserDetailsQuery } from "api/user.api";
 import { ProfileIcon } from "components/icons";
 import { FeedbackModal } from "components/modals";
 import { ROUTES } from "config";
-import { useLogout } from "hooks";
+import { useInitials, useLogout } from "hooks";
 import { useRouter } from "next/router";
 import { FC } from "react";
 
@@ -25,7 +25,7 @@ export const DropdownAvatar: FC = () => {
     onClose: onFeedbackModalClose,
   } = useDisclosure();
 
-  const initials = `${userDetails?.firstName[0]}${userDetails?.lastName[0]}`;
+  const { initials } = useInitials();
 
   if (!userDetails) {
     return null;

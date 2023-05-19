@@ -3,7 +3,7 @@ import { useRetrieveTaskQuery } from "api/tasks.api";
 import { FC } from "react";
 import { Blog, TaskTypeSlugEnum } from "types";
 import { GscConnectModal } from "views/word-seek";
-import { BlogTask, OnboardingTask } from "./task_types";
+import { BlogTask } from "./task_types";
 
 interface Props {
   taskId: number;
@@ -22,10 +22,6 @@ export const TaskView: FC<Props> = ({ taskId }) => {
     }
 
     if (taskType === TaskTypeSlugEnum.onboarding) {
-      return <OnboardingTask />;
-    }
-
-    if (taskType === TaskTypeSlugEnum.gsc) {
       if (!isOpen) {
         onOpen();
       }

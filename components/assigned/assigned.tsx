@@ -1,17 +1,20 @@
 import { Stack, Text } from "@chakra-ui/react";
 import { ProfileIcon } from "components/icons";
+import { useInitials } from "hooks";
 import { FC } from "react";
 
 interface Props {
   name: string;
 }
 
-export const Assigned: FC<Props> = ({ name }) => (
-  <Stack direction="row" align="center" spacing="6px">
-    <ProfileIcon name={name} size="sm" />
-
-    <Text maxWidth="108px" fontWeight="semibold" fontSize="sm" textOverflow="ellipsis">
-      {name}
-    </Text>
-  </Stack>
-);
+export const Assigned: FC<Props> = ({ name }) => {
+  const { initials } = useInitials({ name });
+  return (
+    <Stack direction="row" align="center" spacing="6px">
+      <ProfileIcon initials={initials} size="sm" />
+      <Text maxWidth="108px" fontWeight="semibold" fontSize="sm" textOverflow="ellipsis">
+        {name}
+      </Text>
+    </Stack>
+  );
+};
