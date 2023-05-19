@@ -11,6 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useListTeamsQuery } from "api/team.api";
+import { Image } from "components/image";
 import { useActiveTeam } from "hooks";
 import React from "react";
 import { BiCheck } from "react-icons/bi";
@@ -35,6 +36,8 @@ interface Props {
 
 const SIDEBAR_COLOR = "#FAF7F3";
 
+const LOGO_DIM = 7;
+
 export const Sidebar: React.FC<Props> = ({ width = "50%", items = [], footerItems = [] }) => {
   const activeTeam = useActiveTeam();
   const dispatch = useDispatch();
@@ -49,6 +52,11 @@ export const Sidebar: React.FC<Props> = ({ width = "50%", items = [], footerItem
       <Menu>
         <MenuButton pt={8} pb={4} pl={8}>
           <HStack>
+            <Box position="relative" h={LOGO_DIM} w={LOGO_DIM} overflow="hidden" borderRadius="md">
+              {activeTeam?.logo && (
+                <Image src={activeTeam?.logo} objectFit="cover" alt="Team Logo" layout="fill" />
+              )}
+            </Box>
             <Text fontWeight="semibold" fontSize="lg">
               {activeTeam?.name}
             </Text>
