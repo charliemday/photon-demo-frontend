@@ -38,7 +38,7 @@ export const DataCard: FC<Props> = ({
   };
 
   if (isLoading) {
-    return <Skeleton height="64px" width={width} borderRadius="md" height={height} />;
+    return <Skeleton width={width} borderRadius="md" height={height || 50} />;
   }
 
   return (
