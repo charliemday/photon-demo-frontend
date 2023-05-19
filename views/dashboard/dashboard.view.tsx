@@ -6,6 +6,7 @@ import { ROUTES } from "config";
 import { useBuildTaskTableData } from "hooks";
 import { useRouter } from "next/router";
 import { FC } from "react";
+import { OverviewStats } from "./overview-stats";
 
 const rowHeaders: HeaderItem[] = [
   {
@@ -33,6 +34,8 @@ export const DashboardView: FC = () => {
   const { rowItems, isLoading } = useBuildTaskTableData();
   return (
     <Stack spacing={24}>
+      <OverviewStats />
+
       <Stack spacing={12}>
         <Stack spacing={6}>
           <Heading fontSize="xl">Task List</Heading>

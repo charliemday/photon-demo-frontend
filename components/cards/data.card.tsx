@@ -1,15 +1,21 @@
-import { Stack, Text } from "@chakra-ui/react";
+import { Box, Stack, Text } from "@chakra-ui/react";
+import { Tag } from "components/tag";
 import { BRAND_COLOR } from "config";
+import { OverviewStat } from "hooks/useBuildOverviewStats.hook";
 import { FC } from "react";
 
-export interface Props {
-  title: string;
-  value: number;
-  delta?: number;
-  color?: string;
+export interface Props extends OverviewStat {
+  width?: number;
 }
 
-export const DataCard: FC<Props> = ({ title, value, delta, color = BRAND_COLOR }) => {
+export const DataCard: FC<Props> = ({
+  title,
+  textColor,
+  value,
+  delta,
+  width,
+  color = BRAND_COLOR,
+}) => {
   const formatValue = (value: number) => {
     if (value > 1e6) {
       return `${value / 1e6}M`;
@@ -35,20 +41,17 @@ export const DataCard: FC<Props> = ({ title, value, delta, color = BRAND_COLOR }
       borderRadius="8px"
       justify="space-between"
       spacing="8px"
+      width={width}
     >
-      <Text fontSize="xs" fontWeight="semibold">
+      <Text fontSize="xs" fontWeight="semibold" color={textColor}>
         {title}
       </Text>
 
-      <Text fontSize="2xl" fontWeight="semibold">
+      <Text fontSize="3xl" fontWeight="bold" color={textColor}>
         {formatValue(value)}
       </Text>
 
-      {delta ? (
-        <Text fontSize="xs" fontWeight="semibold" textAlign="center">
-          {formatDelta(delta)}
-        </Text>
-      ) : null}
+      <Box>{delta ? <Tag text={formatDelta(delta)} /> : null}</Box>
     </Stack>
   );
 };

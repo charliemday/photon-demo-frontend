@@ -7,7 +7,7 @@ export type { ContentStrategy, Geography, SeedKeyword } from "./strategies";
 export { TaskStatusEnum, TaskStatusNameEnum, TaskTypeNameEnum, TaskTypeSlugEnum } from "./tasks";
 export type { Task, TaskType } from "./tasks";
 export { TeamType } from "./team";
-export type { SemrushDatabase, SemrushDatabaseKeys, Team } from './team';
+export type { SemrushDatabase, SemrushDatabaseKeys, Team, TeamPerformance } from './team';
 export type { Account, Opportunity, Territory } from "./territories";
 export { Features } from './user';
 export type { User } from './user';

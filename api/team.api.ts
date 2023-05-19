@@ -1,5 +1,5 @@
 import { camelizeKeys, decamelizeKeys } from "humps";
-import { APIErrorResponse, ConvertToSnakeCase, Team, TeamType } from "types";
+import { APIErrorResponse, ConvertToSnakeCase, Team, TeamPerformance, TeamType } from "types";
 import { baseApi, TAG_TYPES } from ".";
 
 import { apiUrls } from "api/urls.api";
@@ -59,6 +59,10 @@ interface BroadKeywordBody {
 
 interface ListTeamRequestParams {
   teamType?: TeamType;
+}
+
+interface TeamPerformanceRequestParams {
+  teamUid: string;
 }
 
 // Define a service using a base URL and expected endpoints
@@ -149,6 +153,16 @@ export const teamApi = baseApi.injectEndpoints({
         method: "POST",
         body: decamelizeKeys(body),
       }),
+    }),
+    /**
+     * Get a team's performance
+     */
+
+    teamPerformance: builder.query<TeamPerformance, TeamPerformanceRequestParams>({
+      query: ({ teamUid }) => ({
+        url: apiUrls.TEAM_PERFORMANCE(teamUid),
+      }),
+      transformResponse: (response: TeamPerformance) => camelizeKeys(response) as TeamPerformance,
     })
   }),
 });
@@ -162,5 +176,6 @@ export const {
   useCreateTeamMutation,
   useBulkCreateSeedKeywordsMutation,
   useBulkUpdateCompetitorsMutation,
-  useGenerateBroadKeywordsMutation
+  useGenerateBroadKeywordsMutation,
+  useTeamPerformanceQuery,
 } = teamApi;
