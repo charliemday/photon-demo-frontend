@@ -13,6 +13,7 @@ export enum KEY {
     KEYWORD_INSIGHTS_RESULTS = "keyword-insights-results",
     TEAM_BLOGS = "team-blogs",
     ADMIN_USER = "admin-user",
+    TEAM_CONTENT_STRATEGIES = "team-content-strategies",
 }
 
 export interface STEP {

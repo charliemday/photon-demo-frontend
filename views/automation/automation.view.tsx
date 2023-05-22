@@ -20,20 +20,12 @@ import {
 } from "api/strategies.api";
 import { useListTeamsQuery } from "api/team.api";
 import { useUserDetailsQuery } from "api/user.api";
-import {
-  Button,
-  FloatingButton,
-  FloatingButtonContentStrategy,
-} from "components/button";
+import { Button, FloatingButton, FloatingButtonContentStrategy } from "components/button";
 
 import { AutomationCard } from "components/cards";
 import { ConfirmationModal } from "components/modals";
 import { ContentStrategy } from "components/wizards";
-import {
-  useActiveContentStrategy,
-  useActiveTeam,
-  useContentStrategies,
-} from "hooks";
+import { useActiveContentStrategy, useActiveTeam, useContentStrategies } from "hooks";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { IoIosCloseCircle } from "react-icons/io";
 import { useDispatch } from "react-redux";
@@ -52,6 +44,7 @@ import {
   SearchConsoleReport,
   SeedKeywords,
   TeamBlogs,
+  TeamContentStrategies,
   WordSeek,
 } from "./steps";
 import { GenerateKIInput } from "./steps/seed-keywords";
@@ -87,7 +80,7 @@ export const AutomationView: React.FC = () => {
     },
     {
       refetchOnMountOrArgChange: true,
-    }
+    },
   );
 
   const [
@@ -120,7 +113,7 @@ export const AutomationView: React.FC = () => {
 
         // Remove the active content strategy locally
         const updatedContentStrategies = contentStrategies.filter(
-          (contentStrategy) => contentStrategy.id !== activeContentStrategy?.id
+          (contentStrategy) => contentStrategy.id !== activeContentStrategy?.id,
         );
 
         if (updatedContentStrategies.length > 0) {
@@ -134,8 +127,7 @@ export const AutomationView: React.FC = () => {
         toast({
           title: "Error",
           description:
-            typeCheckError(deleteContentStrategyError) ||
-            "Unable to delete content strategy",
+            typeCheckError(deleteContentStrategyError) || "Unable to delete content strategy",
           duration: 5000,
           status: "error",
           isClosable: true,
@@ -152,10 +144,7 @@ export const AutomationView: React.FC = () => {
 
   return (
     <Box mt={20}>
-      <ContentStrategy
-        isOpen={isContentStrategyOpen}
-        onClose={onCloseContentStrategy}
-      />
+      <ContentStrategy isOpen={isContentStrategyOpen} onClose={onCloseContentStrategy} />
       <ConfirmationModal
         isOpen={isConfirmDeleteOpen}
         onClose={onCloseConfirmDelete}
@@ -178,29 +167,14 @@ export const AutomationView: React.FC = () => {
         </HStack>
       </HStack>
 
-      <HStack
-        alignItems="flex-end"
-        border="solid 2px black"
-        borderRadius="md"
-        p={5}
-      >
+      <HStack alignItems="flex-end" border="solid 1px lightgray" borderRadius="xl" p={5}>
         <Stack flex={1} my={4}>
           <HStack>
             <Text>Current Team:</Text>
             <Text fontWeight="bold">{activeTeam?.name || ""}</Text>
-            <Box
-              h={6}
-              w={6}
-              position="relative"
-              borderRadius={4}
-              overflow="hidden"
-            >
+            <Box h={6} w={6} position="relative" borderRadius={4} overflow="hidden">
               {activeTeam?.logo && (
-                <Image
-                  src={activeTeam?.logo || ""}
-                  layout="fill"
-                  alt="Team Logo"
-                />
+                <Image src={activeTeam?.logo || ""} layout="fill" alt="Team Logo" />
               )}
             </Box>
           </HStack>
@@ -228,17 +202,22 @@ export const AutomationView: React.FC = () => {
           </HStack>
         </Stack>
 
-        <Stack h="full" justifyContent="flex-end">
+        <HStack h="full" justifyContent="flex-end">
+          <ChakraButton
+            variant="outline"
+            onClick={() => {
+              setActiveStep(KEY.TEAM_CONTENT_STRATEGIES);
+              onOpen();
+            }}
+          >
+            View All Content Strategies
+          </ChakraButton>
           {activeContentStrategy && (
-            <ChakraButton
-              variant="outline"
-              colorScheme="red"
-              onClick={onOpenConfirmDelete}
-            >
+            <ChakraButton variant="outline" colorScheme="red" onClick={onOpenConfirmDelete}>
               Delete Content Strategy
             </ChakraButton>
           )}
-        </Stack>
+        </HStack>
       </HStack>
 
       <Divider my={8} />
@@ -247,9 +226,7 @@ export const AutomationView: React.FC = () => {
         Automated
       </Text>
 
-      <Button onClick={onOpenContentStrategy}>
-        Create Content Strategy 🧙
-      </Button>
+      <Button onClick={onOpenContentStrategy}>Create Content Strategy 🧙</Button>
 
       <Divider my={8} />
 
@@ -276,20 +253,8 @@ export const AutomationView: React.FC = () => {
                     comingSoon={step.comingSoon}
                     image={step.image}
                     isDisabled={step.isDisabled}
-                    badgeLabel={
-                      step.isNew
-                        ? "New"
-                        : step.isDeprecated
-                        ? "Deprecated"
-                        : undefined
-                    }
-                    badgeColor={
-                      step.isNew
-                        ? "green"
-                        : step.isDeprecated
-                        ? "yellow"
-                        : undefined
-                    }
+                    badgeLabel={step.isNew ? "New" : step.isDeprecated ? "Deprecated" : undefined}
+                    badgeColor={step.isNew ? "green" : step.isDeprecated ? "yellow" : undefined}
                   />
                 </GridItem>
               ))}
@@ -301,10 +266,7 @@ export const AutomationView: React.FC = () => {
       {/* STEPS */}
 
       {/* Step 1.1 */}
-      <SeedKeywords
-        isOpen={isOpen && activeStep === KEY.SEMRUSH_STEP_1}
-        onClose={onClose}
-      />
+      <SeedKeywords isOpen={isOpen && activeStep === KEY.SEMRUSH_STEP_1} onClose={onClose} />
 
       {/* Step 1.2 */}
       <BroadSeedKeywords
@@ -313,16 +275,10 @@ export const AutomationView: React.FC = () => {
       />
 
       {/* Step 1.3 */}
-      <GenerateKIInput
-        isOpen={isOpen && activeStep === KEY.COMBINED_STEPS}
-        onClose={onClose}
-      />
+      <GenerateKIInput isOpen={isOpen && activeStep === KEY.COMBINED_STEPS} onClose={onClose} />
 
       {/* Step 2 */}
-      <PeopleAlsoAsked
-        isOpen={isOpen && activeStep === KEY.PEOPLE_ALSO_ASKED}
-        onClose={onClose}
-      />
+      <PeopleAlsoAsked isOpen={isOpen && activeStep === KEY.PEOPLE_ALSO_ASKED} onClose={onClose} />
 
       {/* Step 3.1 */}
       <KeywordInsightsUpload
@@ -337,10 +293,7 @@ export const AutomationView: React.FC = () => {
       />
 
       {/* Step 3.3 */}
-      <TeamBlogs
-        isOpen={isOpen && activeStep === KEY.TEAM_BLOGS}
-        onClose={onClose}
-      />
+      <TeamBlogs isOpen={isOpen && activeStep === KEY.TEAM_BLOGS} onClose={onClose} />
 
       {/* Other */}
       <SearchConsoleConnect
@@ -351,12 +304,13 @@ export const AutomationView: React.FC = () => {
         isOpen={isOpen && activeStep === KEY.SEARCH_CONSOLE_REPORT}
         onClose={onClose}
       />
-      <WordSeek
-        isOpen={isOpen && activeStep === KEY.COMPARE_CONSOLE_REPORT}
-        onClose={onClose}
-      />
+      <WordSeek isOpen={isOpen && activeStep === KEY.COMPARE_CONSOLE_REPORT} onClose={onClose} />
       <PopulateSCReports
         isOpen={isOpen && activeStep === KEY.POPULATE_SC_REPORTS}
+        onClose={onClose}
+      />
+      <TeamContentStrategies
+        isOpen={isOpen && activeStep === KEY.TEAM_CONTENT_STRATEGIES}
         onClose={onClose}
       />
     </Box>

@@ -11,6 +11,9 @@ export interface ContentStrategy {
     created: string;
     modified: string;
     geography: number | Geography;
+    status: string;
+    blogCount: number;
+    seedKeywordCount: number;
 }
 
 
