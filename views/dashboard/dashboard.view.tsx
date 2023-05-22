@@ -33,7 +33,7 @@ export const DashboardView: FC = () => {
   const router = useRouter();
   const { rowItems, isLoading } = useBuildTaskTableData();
   return (
-    <Stack spacing={24}>
+    <Stack spacing={12}>
       <Stack spacing={4}>
         <Heading fontSize="xl" lineHeight="1">
           SEO Overview

@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const DataOverview: FC<Props> = ({ data }) => (
-  <Stack direction="row" justify="space-between" spacing="12px" width="100%">
+  <Stack direction="row" justify="space-between" spacing="20px" width="100%">
     {data?.map((d, key) =>
       d.value ? <DataCard key={key} {...d} /> : <DataEmptyCard key={key} {...d} />,
     )}

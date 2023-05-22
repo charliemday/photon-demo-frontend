@@ -59,7 +59,7 @@ export const TableRow: FC<Props> = ({ items, onClick }) => {
     >
       {items.map(({ text, type, flex }, key) => {
         return (
-          <Flex key={key} flex={flex || 1}>
+          <Flex key={key} flex={flex || 1} alignItems="center">
             {renderRowItem(text, type)}
           </Flex>
         );

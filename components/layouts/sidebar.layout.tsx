@@ -25,7 +25,7 @@ export const SidebarLayout: React.FC<Props> = ({ children, title, headerTitle, b
         <Sidebar />
 
         <Flex flexGrow="1" px="4" py="12">
-          <Box maxWidth="1098px" mx="auto">
+          <Box maxWidth="1098px" mx={8}>
             <Stack spacing="8">
               {title || breadcrumbs ? (
                 <Stack spacing="4">
