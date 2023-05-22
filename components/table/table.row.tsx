@@ -1,6 +1,7 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Assigned } from "components/assigned";
 import { Tag } from "components/tag";
+import { GREEN } from "config";
 import { FC } from "react";
 
 export enum RowItemTypes {
@@ -29,7 +30,14 @@ export const TableRow: FC<Props> = ({ items, onClick }) => {
     }
 
     if (type === RowItemTypes.tag) {
-      return <Tag key={text} fontSize="xs" text={text} />;
+      return (
+        <Tag
+          key={text}
+          fontSize="xs"
+          text={text}
+          bgColor={["Completed", "Done"].includes(text) ? GREEN : undefined}
+        />
+      );
     }
 
     if (type === RowItemTypes.avatar) {
