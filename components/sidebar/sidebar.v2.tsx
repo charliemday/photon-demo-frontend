@@ -1,4 +1,4 @@
-import { Stack } from "@chakra-ui/react";
+import { Box, Stack } from "@chakra-ui/react";
 import { NavButton } from "components/nav";
 import { TopIcon } from "./top-icon";
 
@@ -41,37 +41,32 @@ export const SidebarV2: FC<Props> = () => {
   ];
 
   return (
-    <Stack
+    <Box
+      background="white"
       padding="24px"
-      direction="row"
-      justify="space-between"
-      align="flex-start"
-      spacing="0px"
       width="240px"
-      maxWidth="100%"
-      height="100vh"
-      background="#FFFFFF"
+      height="100dvh"
+      flexShrink="0"
       borderRight="1px solid #ECECEC"
-      position="fixed"
+      position="sticky"
+      top="0"
       zIndex={100}
     >
-      <Stack justify="space-between" align="flex-start" spacing="100%" height="100%">
-        <Stack justify="center" align="flex-start" spacing="60px">
-          <TopIcon />
+      <Stack justify="center" spacing="60px">
+        <TopIcon />
 
-          <Stack justify="flex-start" align="flex-start" spacing="16px" width="134px" height="100%">
-            {SIDEBAR_ITEMS.map((item) => (
-              <NavButton
-                key={item.label}
-                label={item.label}
-                icon={item.icon}
-                isActive={item.isActive}
-                onClick={item.onClick}
-              />
-            ))}
-          </Stack>
+        <Stack spacing="16px" width="134px">
+          {SIDEBAR_ITEMS.map((item) => (
+            <NavButton
+              key={item.label}
+              label={item.label}
+              icon={item.icon}
+              isActive={item.isActive}
+              onClick={item.onClick}
+            />
+          ))}
         </Stack>
       </Stack>
-    </Stack>
+    </Box>
   );
 };
