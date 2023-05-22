@@ -14,7 +14,7 @@ export const TableHeader: FC<Props> = ({ headers }) => (
   <Stack direction="row" justify="space-between" width="100%" p={2}>
     {headers.map(({ text, flex }, key) => (
       <Flex key={key} flex={flex || 1}>
-        <Text size="sm" fontWeight="semibold">
+        <Text fontSize="sm" fontWeight="semibold">
           {text}
         </Text>
       </Flex>
