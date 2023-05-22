@@ -22,14 +22,14 @@ export const TableRow: FC<Props> = ({ items, onClick }) => {
   const renderRowItem = (text: string, type: RowItemTypes) => {
     if (type === RowItemTypes.text) {
       return (
-        <Text fontWeight="semibold" key={text}>
+        <Text fontSize="xs" fontWeight="semibold" key={text}>
           {text}
         </Text>
       );
     }
 
     if (type === RowItemTypes.tag) {
-      return <Tag key={text} text={text} />;
+      return <Tag key={text} fontSize="xs" text={text} />;
     }
 
     if (type === RowItemTypes.avatar) {
