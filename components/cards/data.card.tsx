@@ -1,4 +1,4 @@
-import { Box, Skeleton, Stack, Text } from "@chakra-ui/react";
+import { Flex, Skeleton, Stack, Text } from "@chakra-ui/react";
 import { Tag } from "components/tag";
 import { BRAND_COLOR } from "config";
 import { OverviewStat } from "hooks/useBuildOverviewStats.hook";
@@ -44,25 +44,23 @@ export const DataCard: FC<Props> = ({
   return (
     <Stack
       background={color}
-      paddingX="16px"
-      paddingY="12px"
+      padding="12px"
       borderRadius="8px"
       justify="space-between"
-      spacing={0}
+      spacing="4px"
       w="full"
-      h="88px"
     >
-      <Text fontSize="xs" fontWeight="semibold" color={textColor}>
+      <Text fontSize="xs" fontWeight="semibold" color={textColor} lineHeight="1">
         {title}
       </Text>
 
-      <Text fontSize="2xl" fontWeight="bold" color={textColor} lineHeight="auto">
+      <Text fontSize="2xl" fontWeight="bold" color={textColor} lineHeight="1">
         {formatValue(value || 0)}
       </Text>
 
-      <Box>
+      <Flex>
         <Tag text={delta ? formatDelta(delta) : "-"} size="sm" />
-      </Box>
+      </Flex>
     </Stack>
   );
 };

@@ -33,14 +33,18 @@ export const DashboardView: FC = () => {
   const router = useRouter();
   const { rowItems, isLoading } = useBuildTaskTableData();
   return (
-    <Stack spacing={24}>
-      <Stack spacing={12}>
-        <Heading fontSize="xl">SEO Overview</Heading>
+    <Stack spacing={12}>
+      <Stack spacing={4}>
+        <Heading fontSize="xl" lineHeight="1">
+          SEO Overview
+        </Heading>
         <OverviewStats />
       </Stack>
 
-      <Stack spacing={12}>
-        <Heading fontSize="xl">Task List</Heading>
+      <Stack spacing={4}>
+        <Heading fontSize="xl" lineHeight="1">
+          Task List
+        </Heading>
         <Table
           rowItems={rowItems}
           headers={rowHeaders}
