@@ -1,4 +1,4 @@
-import { Box, Flex, Skeleton, Stack, Text } from "@chakra-ui/react";
+import { Flex, Skeleton, Stack, Text } from "@chakra-ui/react";
 import { Tag } from "components/tag";
 import { BRAND_COLOR } from "config";
 import { OverviewStat } from "hooks/useBuildOverviewStats.hook";
@@ -44,8 +44,7 @@ export const DataCard: FC<Props> = ({
   return (
     <Stack
       background={color}
-      paddingX="12px"
-      paddingY="12px"
+      padding="12px"
       borderRadius="8px"
       justify="space-between"
       spacing="4px"
