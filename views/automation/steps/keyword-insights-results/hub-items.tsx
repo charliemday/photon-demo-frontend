@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 
 import { CSVLink } from "react-csv";
@@ -35,28 +35,8 @@ import { useRef } from "react";
 
 interface Props extends Partial<StepWizardChildProps> {
   isOpen: boolean;
-  onClick: (
-    hub: string,
-    spoke: string,
-    theme: string,
-    keywordItems: KeywordItem[]
-  ) => void;
+  onClick: (hub: string, spoke: string, theme: string, keywordItems: KeywordItem[]) => void;
 }
-
-const LEGEND_DATA = [
-  {
-    label: "Hub",
-    color: "#C6F6D5",
-  },
-  {
-    label: "Spoke",
-    color: "#BEE3F8",
-  },
-  {
-    label: "Theme",
-    color: "#FEEBC8",
-  },
-];
 
 export const HubItems: React.FC<Props> = (props) => {
   const [orderId, setOrderId] = useState<number | null>(null);
@@ -67,12 +47,9 @@ export const HubItems: React.FC<Props> = (props) => {
   const activeTeam: Team = useActiveTeam();
   const activeContentStrategy = useActiveContentStrategy();
 
-  const { data: output } = useKeywordInsightsOrderQuery(
-    activeContentStrategy?.id,
-    {
-      skip: !activeContentStrategy?.id,
-    }
-  );
+  const { data: output } = useKeywordInsightsOrderQuery(activeContentStrategy?.id, {
+    skip: !activeContentStrategy?.id,
+  });
 
   useEffect(() => {
     if (output && output.length) {
@@ -80,16 +57,15 @@ export const HubItems: React.FC<Props> = (props) => {
     }
   }, [output]);
 
-  const { data: results, refetch: refetchResults } =
-    useKeywordInsightsResultsQuery(
-      {
-        // @ts-ignore
-        orderId,
-      },
-      {
-        skip: orderId === null || !activeTeam?.id,
-      }
-    );
+  const { data: results, refetch: refetchResults } = useKeywordInsightsResultsQuery(
+    {
+      // @ts-ignore
+      orderId,
+    },
+    {
+      skip: orderId === null || !activeTeam?.id,
+    },
+  );
 
   useEffect(() => {
     if (orderId) {
@@ -111,6 +87,57 @@ export const HubItems: React.FC<Props> = (props) => {
     return csvData;
   };
 
+  const resultCount = useMemo(() => {
+    const hubCount = results?.length;
+    let spokeCount = 0;
+    let themeCount = 0;
+    let keywordCount = 0;
+
+    if (results?.length) {
+      results.forEach((result) => {
+        spokeCount += Object.keys(result.hub_data).length;
+        Object.keys(result.hub_data).forEach((key) => {
+          themeCount += Object.keys(result.hub_data[key]).length;
+          Object.keys(result.hub_data[key]).forEach((k) => {
+            keywordCount += result.hub_data[key][k].length;
+          });
+        });
+      });
+    }
+
+    return {
+      hubCount,
+      spokeCount,
+      themeCount,
+      keywordCount,
+    };
+  }, [results]);
+
+  const legendData = useMemo(
+    () => [
+      {
+        label: `Hub (${resultCount?.hubCount || ""})`,
+        color: "#C6F6D5",
+      },
+      {
+        label: `Spoke (${resultCount?.spokeCount || ""})`,
+        color: "#BEE3F8",
+      },
+      {
+        label: `Theme (${resultCount?.themeCount || ""})`,
+        color: "#FEEBC8",
+      },
+    ],
+    [resultCount],
+  );
+
+  const { hubCount, spokeCount, themeCount, keywordCount } = resultCount;
+
+  // console.log("Hub Count", hubCount);
+  // console.log("Spoke Count", spokeCount);
+  // console.log("Theme Count", themeCount);
+  // console.log("Keyword Count", keywordCount);
+
   return (
     <Stack>
       <HStack justifyContent="space-between">
@@ -121,8 +148,7 @@ export const HubItems: React.FC<Props> = (props) => {
             onChange={(e) => {
               setOrderId(parseInt(e.target.value));
               setSelectedHubName(
-                output?.find((d) => d.id === parseInt(e.target.value))
-                  ?.orderId || null
+                output?.find((d) => d.id === parseInt(e.target.value))?.orderId || null,
               );
             }}
           >
@@ -156,8 +182,16 @@ export const HubItems: React.FC<Props> = (props) => {
       </HStack>
 
       <Box py={4}>
-        <Legend data={LEGEND_DATA} />
+        <Legend data={legendData} />
       </Box>
+
+      <Text fontSize="sm" fontWeight="semibold" pb={4}>
+        {resultCount?.keywordCount > 0
+          ? `${resultCount.keywordCount} keyword${
+              resultCount.keywordCount > 1 ? "s" : ""
+            } classified`
+          : "No keywords found"}
+      </Text>
 
       <Stack maxW="auto">
         {results?.length ? (
@@ -193,30 +227,23 @@ export const HubItems: React.FC<Props> = (props) => {
 
                           <AccordionPanel pb={4}>
                             <Stack>
-                              {Object.keys(hub_data[key]).map(
-                                (themeKey, index) => (
-                                  <HStack key={index} alignItems="center">
-                                    <Tag
-                                      colorScheme="orange"
-                                      cursor="pointer"
-                                      _hover={{
-                                        boxShadow: "0 0 0 2px #68D391",
-                                      }}
-                                      onClick={() => {
-                                        props.onClick(
-                                          hub,
-                                          key,
-                                          themeKey,
-                                          hub_data[key][themeKey]
-                                        );
-                                        props.nextStep?.();
-                                      }}
-                                    >
-                                      {themeKey}
-                                    </Tag>
-                                  </HStack>
-                                )
-                              )}
+                              {Object.keys(hub_data[key]).map((themeKey, index) => (
+                                <HStack key={index} alignItems="center">
+                                  <Tag
+                                    colorScheme="orange"
+                                    cursor="pointer"
+                                    _hover={{
+                                      boxShadow: "0 0 0 2px #68D391",
+                                    }}
+                                    onClick={() => {
+                                      props.onClick(hub, key, themeKey, hub_data[key][themeKey]);
+                                      props.nextStep?.();
+                                    }}
+                                  >
+                                    {themeKey}
+                                  </Tag>
+                                </HStack>
+                              ))}
                             </Stack>
                           </AccordionPanel>
                         </AccordionItem>
@@ -229,9 +256,7 @@ export const HubItems: React.FC<Props> = (props) => {
           </Accordion>
         ) : (
           <Stack py={6}>
-            <Text>
-              No results found {selectedHubName ? `for ${selectedHubName}` : ""}
-            </Text>
+            <Text>No results found {selectedHubName ? `for ${selectedHubName}` : ""}</Text>
           </Stack>
         )}
       </Stack>
