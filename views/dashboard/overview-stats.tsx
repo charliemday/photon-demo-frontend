@@ -24,7 +24,7 @@ export const OverviewStats: FC<Props> = () => {
   }
 
   return (
-    <Stack justify="flex-start" align="flex-start" spacing="16px" alignSelf="stretch">
+    <Stack spacing="16px" alignSelf="stretch">
       <DataOverview data={overviewStats} />
     </Stack>
   );

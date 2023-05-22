@@ -3,10 +3,10 @@ import { Tag } from "components/tag";
 import { FC } from "react";
 
 interface Props {
-  heading: string;
+  title?: string;
 }
 
-export const DataEmptyCard: FC<Props> = ({ heading }) => (
+export const DataEmptyCard: FC<Props> = ({ title }) => (
   <Stack
     background="#F6F5FA"
     padding="12px"
@@ -16,7 +16,7 @@ export const DataEmptyCard: FC<Props> = ({ heading }) => (
     w="full"
   >
     <Text fontSize="xs" fontWeight="semibold" lineHeight="1">
-      {heading}
+      {title}
     </Text>
 
     <Text fontSize="2xl" fontWeight="bold" lineHeight="1">
