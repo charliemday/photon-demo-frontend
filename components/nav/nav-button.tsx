@@ -25,6 +25,7 @@ export const NavButton: FC<Props> = ({ label = "Performance Data", icon, onClick
       fontSize="14px"
       color="#000000"
       textAlign="center"
+      whiteSpace="nowrap"
     >
       {label}
     </Text>
