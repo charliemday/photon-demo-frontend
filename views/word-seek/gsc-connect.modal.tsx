@@ -20,9 +20,10 @@ import { FC, useEffect } from "react";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  onComplete?: () => void;
 }
 
-const GscConnect: FC<Props> = ({ isOpen, onClose }) => {
+const GscConnect: FC<Props> = ({ isOpen, onClose, onComplete }) => {
   const [completeOauth, { isLoading, isSuccess, isError }] = useCompleteOauthMutation();
 
   const toast = useToast();
@@ -39,6 +40,10 @@ const GscConnect: FC<Props> = ({ isOpen, onClose }) => {
         });
 
         refetchUserDetails();
+
+        if (onComplete) {
+          onComplete();
+        }
       }
 
       if (isError) {
@@ -50,7 +55,7 @@ const GscConnect: FC<Props> = ({ isOpen, onClose }) => {
         });
       }
     }
-  }, [isLoading, isSuccess, isError, toast, refetchUserDetails]);
+  }, [isLoading, isSuccess, isError, toast, refetchUserDetails, onComplete]);
 
   const googleLogin = useGoogleLogin({
     flow: "auth-code",

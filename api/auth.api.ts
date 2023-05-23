@@ -4,7 +4,7 @@ import { LoginFormValues } from 'forms/login';
 import { SignupFormValues } from 'forms/signup';
 import { decamelizeKeys } from 'humps';
 
-import { apiUrls } from 'api/urls.api';
+import { authUrls } from 'api/urls';
 
 interface LoginReturnProps {
     token: string;
@@ -30,33 +30,40 @@ interface SetPasswordReturnProps {
     token: string;
 }
 
+const {
+    LOGIN,
+    SIGNUP,
+    COMPLETE_OAUTH,
+    SET_PASSWORD,
+} = authUrls;
+
 // Define a service using a base URL and expected endpoints
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         login: builder.mutation<LoginReturnProps, LoginFormValues>({
             query: (values) => ({
-                url: apiUrls.LOGIN,
+                url: LOGIN,
                 method: 'POST',
                 body: { ...values },
             })
         }),
         signup: builder.mutation<SignupReturnProps, SignupFormValues>({
             query: (values) => ({
-                url: apiUrls.SIGNUP,
+                url: SIGNUP,
                 method: 'POST',
                 body: { ...decamelizeKeys(values) },
             }),
         }),
         completeOauth: builder.mutation<OAuthReturnProps, OAuthProps>({
             query: (values) => ({
-                url: apiUrls.COMPLETE_OAUTH,
+                url: COMPLETE_OAUTH,
                 method: 'POST',
                 body: { ...values },
             })
         }),
         setPassword: builder.mutation<SetPasswordReturnProps, SetPasswordRequestProps>({
             query: (values) => ({
-                url: apiUrls.SET_PASSWORD,
+                url: SET_PASSWORD,
                 method: 'POST',
                 body: { ...decamelizeKeys(values) }
             })

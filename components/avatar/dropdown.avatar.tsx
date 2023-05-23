@@ -14,6 +14,7 @@ import { ROUTES } from "config";
 import { useInitials, useLogout } from "hooks";
 import { useRouter } from "next/router";
 import { FC } from "react";
+import { FiCompass, FiLogOut, FiSettings } from "react-icons/fi";
 
 export const DropdownAvatar: FC = () => {
   const { data: userDetails } = useUserDetailsQuery(undefined);
@@ -34,14 +35,17 @@ export const DropdownAvatar: FC = () => {
   const menuItems = [
     {
       label: "Settings",
+      icon: <FiSettings />,
       onClick: () => router.push(ROUTES.SETTINGS),
     },
     {
       label: "Feedback",
+      icon: <FiCompass />,
       onClick: () => onFeedbackModalOpen(),
     },
     {
       label: "Logout",
+      icon: <FiLogOut />,
       onClick: () => logout(),
     },
   ];
@@ -52,10 +56,13 @@ export const DropdownAvatar: FC = () => {
         <MenuButton>
           <ProfileIcon initials={initials} size="base" />
         </MenuButton>
-        <MenuList>
-          {menuItems.map(({ label, onClick }, key) => (
-            <MenuItem key={key} onClick={onClick}>
-              <Text>{label}</Text>
+        <MenuList p={0} overflow="hidden">
+          {menuItems.map(({ label, onClick, icon }, key) => (
+            <MenuItem key={key} onClick={onClick} py="12px">
+              <HStack alignItems="center">
+                {icon}
+                <Text fontSize="sm">{label}</Text>
+              </HStack>
             </MenuItem>
           ))}
         </MenuList>
