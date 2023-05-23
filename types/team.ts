@@ -14,9 +14,8 @@ export interface Team {
   teamType: TeamType;
 }
 
-
 export type SemrushDatabaseKeys = keyof typeof SEMRUSH_DATABASES;
-export type SemrushDatabase = typeof SEMRUSH_DATABASES[SemrushDatabaseKeys];
+export type SemrushDatabase = (typeof SEMRUSH_DATABASES)[SemrushDatabaseKeys];
 
 export enum TeamType {
   INTERNAL = "internal",
@@ -40,5 +39,16 @@ export interface TeamPerformance {
   previousOrganicPages: number;
   referringDomains: number;
   previousReferringDomains: number;
+}
 
+export interface TeamMember {
+  id: number;
+  user: {
+    id: number;
+    name: string;
+    email: string;
+  };
+  created: string;
+  modified: string;
+  team: number;
 }
