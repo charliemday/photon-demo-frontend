@@ -58,7 +58,7 @@ export const DropdownAvatar: FC = () => {
         </MenuButton>
         <MenuList p={0} overflow="hidden">
           {menuItems.map(({ label, onClick, icon }, key) => (
-            <MenuItem key={key} onClick={onClick} py="16px">
+            <MenuItem key={key} onClick={onClick} py="12px">
               <HStack alignItems="center">
                 {icon}
                 <Text fontSize="sm">{label}</Text>

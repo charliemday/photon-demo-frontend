@@ -15,6 +15,10 @@ export enum Features {
      * The user can access and run their own content strategies
      */
     CONTENT_STRATEGY_WIZARD = "content_strategy_wizard",
+    /**
+     * The user can access everything
+     */
+    ALL = "*",
 }
 
 export interface User {

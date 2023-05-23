@@ -23,8 +23,9 @@ export const useFeatureFlag = (): ReturnProps => {
 
         const { featureAccess } = userTier?.tier;
 
-        let access = false;
+        if (featureAccess.includes(Features.ALL)) return true;
 
+        let access = false;
         if (features.length > 0) {
             /**
              * If a feature is passed, then we need to check the user has access
