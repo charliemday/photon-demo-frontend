@@ -1,5 +1,5 @@
 import { Stack, Text } from "@chakra-ui/react";
-import { ProductIcon } from "components/product-icon";
+import { ProductIcon } from "components/icons";
 import { Tag } from "components/tag";
 import { FC } from "react";
 
