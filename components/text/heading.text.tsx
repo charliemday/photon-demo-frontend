@@ -11,7 +11,7 @@ interface Props {
 
 export const Heading = ({
   level = "h1",
-  fontFamily = "Grotesk",
+  fontFamily = "ClashGrotesk",
   fontWeight = "medium",
   lineHeight = "1.125",
   children,

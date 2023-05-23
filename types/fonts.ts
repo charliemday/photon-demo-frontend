@@ -1,1 +1,1 @@
-export type Font = "Inter" | "Grotesk";
+export type Font = "Inter" | "ClashGrotesk";

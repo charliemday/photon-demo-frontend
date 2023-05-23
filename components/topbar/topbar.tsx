@@ -20,7 +20,6 @@ export const Topbar: React.FC<Props> = () => {
       boxShadow="sm"
     >
       <Text
-        fontFamily="ClashGroteskMedium"
         cursor="pointer"
         onClick={() => {
           window.location.href = LANDING_PAGE;
