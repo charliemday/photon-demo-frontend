@@ -69,7 +69,7 @@ export const BackgroundView: React.FC<Props> = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccess, isLoading, isError, error, userDetails]);
+  }, [isSuccess, isLoading, isError, error, userDetails, isLoadingUserTiers, hasLoadedUserTiers]);
 
   if (pageErrored) {
     return (
