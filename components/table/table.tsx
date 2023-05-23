@@ -8,6 +8,7 @@ interface Props {
   rowItems?: {
     rowData: RowItem[];
     rowClick?: () => void;
+    rowType?: string;
   }[];
   isLoading?: boolean;
   emptyText?: string;
@@ -44,11 +45,11 @@ export const Table: FC<Props> = ({
       {isLoading ? (
         <>{renderSkeleton()}</>
       ) : (
-        <Stack justify="space-between" spacing="15px">
+        <Stack justify="space-between">
           <TableHeader headers={headers} />
           {rowItems?.length ? (
-            rowItems.map(({ rowData, rowClick }, key) => (
-              <TableRow key={key} items={rowData} onClick={rowClick} />
+            rowItems.map(({ rowData, rowClick, rowType }, key) => (
+              <TableRow key={key} items={rowData} onClick={rowClick} rowType={rowType} />
             ))
           ) : (
             <Text textAlign="center" py={12} fontWeight="semibold">

@@ -9,10 +9,14 @@ interface Props {
   size?: ThemingProps["size"];
 }
 
-export const Tag: FC<Props> = ({ text, bgColor, textColor, fontSize, size = "md" }) => (
-  <ChakraTag bgColor={bgColor} textColor={textColor} size={size}>
-    <TagLabel fontSize={fontSize} textAlign="center" fontWeight="semibold">
-      {text}
-    </TagLabel>
-  </ChakraTag>
-);
+export const Tag: FC<Props> = ({ text, bgColor, textColor, fontSize, size = "md" }) => {
+  if (!text) return null;
+
+  return (
+    <ChakraTag bgColor={bgColor} textColor={textColor} size={size}>
+      <TagLabel fontSize={fontSize} textAlign="center" fontWeight="semibold">
+        {text}
+      </TagLabel>
+    </ChakraTag>
+  );
+};

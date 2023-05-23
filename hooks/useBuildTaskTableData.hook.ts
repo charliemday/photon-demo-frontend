@@ -9,6 +9,7 @@ interface ReturnProps {
     rowItems: {
         rowData: RowItem[];
         rowClick: () => void;
+        rowType: string;
     }[];
     isLoading: boolean;
     isError: boolean;
@@ -29,7 +30,8 @@ export const useBuildTaskTableData = (): ReturnProps => {
         title,
         id,
         taskType: {
-            name
+            name,
+            slug
         },
         assignee: {
             firstName,
@@ -68,7 +70,8 @@ export const useBuildTaskTableData = (): ReturnProps => {
         ]
         return {
             rowData,
-            rowClick: () => router.push(ROUTES.TASK(id))
+            rowClick: () => router.push(ROUTES.TASK(id)),
+            rowType: slug
         }
 
     }), [taskData, router]);

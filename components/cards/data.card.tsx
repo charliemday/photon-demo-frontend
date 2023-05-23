@@ -58,7 +58,7 @@ export const DataCard: FC<Props> = ({
         {formatValue(value || 0)}
       </Text>
 
-      <Flex>
+      <Flex opacity={0.7}>
         <Tag text={delta ? formatDelta(delta) : "-"} size="sm" />
       </Flex>
     </Stack>
