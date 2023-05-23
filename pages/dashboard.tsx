@@ -11,8 +11,14 @@ const Dashboard: FC = () => {
   const lastName = user.data?.lastName;
   const fullName = `${firstName} ${lastName}`;
 
+  let title = `Welcome, ${fullName} 👋!`;
+
+  if (!firstName && !lastName) {
+    title = "Welcome to Baser 👋!";
+  }
+
   return (
-    <SidebarLayout headerTitle="Baser | Dashboard" title={`Welcome, ${fullName} 👋!`}>
+    <SidebarLayout headerTitle="Baser | Dashboard" title={title}>
       <FeatureWrapper restrictedFeatures={[Features.CONTENT_STRATEGY_WIZARD]}>
         <DashboardView />
       </FeatureWrapper>
