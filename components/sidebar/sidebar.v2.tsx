@@ -1,4 +1,4 @@
-import { Stack } from "@chakra-ui/react";
+import { Box, Stack } from "@chakra-ui/react";
 import { NavButton } from "components/nav";
 import { TopIcon } from "./top-icon";
 
@@ -67,18 +67,15 @@ export const SidebarV2: FC<Props> = () => {
   ];
 
   return (
-    <Stack
+    <Box
+      background="white"
       padding="24px"
-      direction="row"
-      justify="space-between"
-      align="flex-start"
-      spacing="0px"
       width="240px"
-      maxWidth="100%"
-      height="100vh"
-      background="#FFFFFF"
+      height="100dvh"
+      flexShrink="0"
       borderRight="1px solid #ECECEC"
-      position="fixed"
+      position="sticky"
+      top="0"
       zIndex={100}
     >
       <Stack justify="space-between" align="flex-start" spacing="100%" height="100%" w="full">
@@ -97,6 +94,6 @@ export const SidebarV2: FC<Props> = () => {
           </Stack>
         </Stack>
       </Stack>
-    </Stack>
+    </Box>
   );
 };
