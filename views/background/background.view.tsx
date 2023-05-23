@@ -1,13 +1,14 @@
 import { Flex } from "@chakra-ui/react";
 import { useListTeamsQuery } from "api/team.api";
-import { useUserDetailsQuery } from "api/user.api";
-import { SidebarLayout } from "components/layouts";
+import { useUserDetailsQuery, useUserTiersQuery } from "api/user.api";
 import { ROUTES } from "config";
+import { useFeatureFlag } from "hooks";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { MoonLoader } from "react-spinners";
 import { setActiveTeam } from "store/slices";
+import { Features } from "types";
 
 interface Props {}
 
@@ -19,24 +20,34 @@ export const BackgroundView: React.FC<Props> = () => {
     isError,
     error,
   } = useUserDetailsQuery(undefined);
-
-  const dispatch = useDispatch();
-
+  const { isLoading: isLoadingUserTiers, isSuccess: hasLoadedUserTiers } = useUserTiersQuery();
   const { data: teams } = useListTeamsQuery({});
 
+  const dispatch = useDispatch();
+  const { hasAccess } = useFeatureFlag();
   const router = useRouter();
 
   useEffect(() => {
-    if (isSuccess && !isLoading) {
-      // If we have the user details we should run the following checks:
-      // 1. If the user has a team, select the first team in the list as the active team
-
+    if (isSuccess && !isLoading && !isLoadingUserTiers && hasLoadedUserTiers) {
+      // Initialize the active team if the user has one
       dispatch(setActiveTeam(teams?.[0]));
 
       if (userDetails?.isStaff) {
         router.push(ROUTES.AUTOMATION);
       } else {
-        router.push(ROUTES.DASHBOARD);
+        if (hasAccess({ features: [Features.CONTENT_STRATEGY_WIZARD] })) {
+          /**
+           * For users who have access to the content strategy wizard
+           * direct them to the dashboard
+           */
+          router.push(ROUTES.DASHBOARD);
+        } else {
+          /**
+           * For users who do not have access to the content strategy wizard
+           * direct them to the word seek page
+           */
+          router.push(ROUTES.WORD_SEEK);
+        }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -44,7 +55,6 @@ export const BackgroundView: React.FC<Props> = () => {
 
   return (
     <>
-      <SidebarLayout />
       <Flex
         alignItems="center"
         justifyContent="center"

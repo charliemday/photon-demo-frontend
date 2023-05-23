@@ -1,6 +1,7 @@
 import {
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Input,
   ModalBody,
@@ -83,9 +84,7 @@ export const OnboardingStep2: FC<Props> = (props) => {
       </ModalHeader>
       <ModalBody py={6}>
         <Stack spacing={6}>
-          <FormControl
-            isInvalid={!!formik.errors?.name && formik.touched?.name}
-          >
+          <FormControl isInvalid={!!formik.errors?.name && formik.touched?.name}>
             <FormLabel>Workspace name</FormLabel>
             <Input
               name="name"
@@ -93,6 +92,9 @@ export const OnboardingStep2: FC<Props> = (props) => {
               onChange={formik.handleChange}
             />
             <FormErrorMessage>{formik.errors?.name}</FormErrorMessage>
+            <FormHelperText fontSize="xs">
+              This could be the name of your website, project, or team
+            </FormHelperText>
           </FormControl>
         </Stack>
       </ModalBody>

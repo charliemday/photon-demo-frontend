@@ -1,5 +1,7 @@
 import { Skeleton, Stack, useDisclosure } from "@chakra-ui/react";
 import { useRetrieveTaskQuery } from "api/tasks.api";
+import { ROUTES } from "config";
+import { useRouter } from "next/router";
 import { FC } from "react";
 import { Blog, TaskTypeSlugEnum } from "types";
 import { GscConnectModal } from "views/word-seek";
@@ -14,6 +16,7 @@ export const TaskView: FC<Props> = ({ taskId }) => {
     skip: !taskId,
   });
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const router = useRouter();
   const taskType = task?.taskType?.slug;
 
   const renderContent = () => {
@@ -43,7 +46,11 @@ export const TaskView: FC<Props> = ({ taskId }) => {
   return (
     <>
       <Stack w="full">{isLoading ? renderSkeleton() : renderContent()}</Stack>
-      <GscConnectModal isOpen={isOpen} onClose={onClose} />
+      <GscConnectModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onComplete={() => router.push(ROUTES.DASHBOARD)}
+      />
     </>
   );
 };

@@ -3,10 +3,10 @@ import { DropdownAvatar } from "components/avatar";
 import { Breadcrumb, Breadcrumbs } from "components/breadcrumbs";
 import { SidebarV2 as Sidebar } from "components/sidebar";
 import Head from "next/head";
-import React from "react";
+import { FC, ReactNode } from "react";
 
 interface Props {
-  children?: React.ReactNode;
+  children?: ReactNode;
   title?: string;
   headerTitle?: string;
   breadcrumbs?: Breadcrumb[];
@@ -14,7 +14,7 @@ interface Props {
 
 const SIDEBAR_WIDTH = "15%";
 
-export const SidebarLayout: React.FC<Props> = ({ children, title, headerTitle, breadcrumbs }) => {
+export const SidebarLayout: FC<Props> = ({ children, title, headerTitle, breadcrumbs }) => {
   return (
     <Flex>
       <Box position="absolute" right={5} top={5}>
