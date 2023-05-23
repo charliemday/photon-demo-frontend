@@ -1,11 +1,9 @@
 import { FC, useEffect, useState } from "react";
 import { ModalStepWrapper } from "../modal-step-wrapper";
 
-import { Team } from "types";
-
 import { Spinner, Stack } from "@chakra-ui/react";
 import { KeywordItem, useKeywordInsightsOrderQuery } from "api/engine.api";
-import { useActiveContentStrategy, useActiveTeam } from "hooks";
+import { useActiveContentStrategy } from "hooks";
 import StepWizard from "react-step-wizard";
 import { HubItems } from "./hub-items";
 import { KeywordItems } from "./keyword-items";
@@ -20,8 +18,6 @@ export const KeywordInsightsResults: FC<Props> = (props) => {
   const [selectedSpoke, setSelectedSpoke] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [selectedKeywords, setSelectedKeywords] = useState<KeywordItem[]>([]);
-
-  const activeTeam: Team = useActiveTeam();
   const activeContentStrategy = useActiveContentStrategy();
 
   const {

@@ -44,6 +44,7 @@ import {
   SearchConsoleReport,
   SeedKeywords,
   TeamBlogs,
+  TeamContentStrategies,
   WordSeek,
 } from "./steps";
 import { GenerateKIInput } from "./steps/seed-keywords";
@@ -166,7 +167,7 @@ export const AutomationView: React.FC = () => {
         </HStack>
       </HStack>
 
-      <HStack alignItems="flex-end" border="solid 2px black" borderRadius="md" p={5}>
+      <HStack alignItems="flex-end" border="solid 1px lightgray" borderRadius="xl" p={5}>
         <Stack flex={1} my={4}>
           <HStack>
             <Text>Current Team:</Text>
@@ -201,13 +202,22 @@ export const AutomationView: React.FC = () => {
           </HStack>
         </Stack>
 
-        <Stack h="full" justifyContent="flex-end">
+        <HStack h="full" justifyContent="flex-end">
+          <ChakraButton
+            variant="outline"
+            onClick={() => {
+              setActiveStep(KEY.TEAM_CONTENT_STRATEGIES);
+              onOpen();
+            }}
+          >
+            View All Content Strategies
+          </ChakraButton>
           {activeContentStrategy && (
             <ChakraButton variant="outline" colorScheme="red" onClick={onOpenConfirmDelete}>
               Delete Content Strategy
             </ChakraButton>
           )}
-        </Stack>
+        </HStack>
       </HStack>
 
       <Divider my={8} />
@@ -297,6 +307,10 @@ export const AutomationView: React.FC = () => {
       <WordSeek isOpen={isOpen && activeStep === KEY.COMPARE_CONSOLE_REPORT} onClose={onClose} />
       <PopulateSCReports
         isOpen={isOpen && activeStep === KEY.POPULATE_SC_REPORTS}
+        onClose={onClose}
+      />
+      <TeamContentStrategies
+        isOpen={isOpen && activeStep === KEY.TEAM_CONTENT_STRATEGIES}
         onClose={onClose}
       />
     </Box>

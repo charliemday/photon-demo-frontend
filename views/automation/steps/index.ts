@@ -8,6 +8,8 @@ export { SearchConsoleConnect } from './search-console-connect';
 export { SearchConsoleReport } from './search-console-report';
 export { BroadSeedKeywords, SeedKeywords } from './seed-keywords';
 export { TeamBlogs } from "./team-blogs/team-blogs";
+export { TeamContentStrategies } from "./team-content-strategies";
 export { UploadAhrefsReport } from './upload-ahrefs-report';
 export { UploadZone } from './upload-zone';
 export { WordSeek } from './word-seek';
+
