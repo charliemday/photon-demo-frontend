@@ -10,7 +10,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { useWordSeekMutation, useWordSeekResultsQuery } from "api/engine.api";
+import { useWordSeekJobsQuery, useWordSeekMutation, useWordSeekResultsQuery } from "api/engine.api";
 import { useGetSearchConsolePagesQuery, useGetSearchConsoleSitesQuery } from "api/vendor.api";
 import { Button } from "components/button";
 import { Modal } from "components/modals";
@@ -36,10 +36,13 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
 
   const activeTeam: Team = useSelector((state: RootState) => state.team.activeTeam);
 
+  const { data: wordSeekJobs } = useWordSeekJobsQuery(activeTeam?.id, {
+    skip: !activeTeam?.id,
+  });
+
   const {
     data: wordSeekResults,
     refetch,
-    isLoading: isLoadingResults,
     isFetching,
   } = useWordSeekResultsQuery(activeTeam?.uid, {
     skip: !activeTeam?.uid,
@@ -100,23 +103,33 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
   }, [selectedSite]);
 
   useEffect(() => {
-    if (!isLoading && isSuccess) {
-      toast({
-        title: "Success",
-        description: "WordSeek has started",
-        status: "success",
-      });
-      setShowAwaitEmail(true);
+    /**
+     * Handles success/failure states
+     * for the runWordSeek mutation
+     */
+    if (!isLoading) {
+      if (isSuccess) {
+        toast({
+          title: "Success",
+          description: "WordSeek has started",
+          status: "success",
+        });
+        setShowAwaitEmail(true);
+      }
+
+      if (isError) {
+        toast({
+          title: "Error",
+          description: typeCheckError(error) || "Something went wrong",
+          status: "error",
+        });
+      }
     }
 
-    if (!isLoading && isError) {
-      toast({
-        title: "Error",
-        description: typeCheckError(error) || "Something went wrong",
-        status: "error",
-      });
-    }
-
+    /**
+     * Handles success/failure states
+     * for the getWordSeekResults query
+     */
     if (!isPagesLoading && isPagesError) {
       toast({
         title: "Error",
@@ -173,6 +186,9 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
   );
 
   useEffect(() => {
+    /**
+     * Initialise the selected site
+     */
     if (siteOptionData.length) {
       const activeTeamSite = siteOptionData.find(
         (site) => cleanUrl(site.value) === cleanUrl(activeTeam?.url || ""),
@@ -185,6 +201,9 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
   }, [siteOptionData, activeTeam]);
 
   useEffect(() => {
+    /**
+     * Initialise the selected page
+     */
     if (pagesOptionData.length) {
       setSelectedPage(pagesOptionData[0]?.value || null);
     }
@@ -281,19 +300,21 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
           )}
         </Box>
       </ModalBody>
-      <ModalFooter>
+      <ModalFooter position="relative">
         {isFetching ? (
           <Skeleton height="20px" />
+        ) : hasAccess || (wordSeekJobs && wordSeekJobs?.length < MAX_FREE_RESULTS) ? (
+          <Button
+            onClick={handleRunWordSeek}
+            isDisabled={isButtonDisabled}
+            isLoading={isLoading && wordSeekRunType === "page"}
+          >
+            Run for single page
+          </Button>
         ) : (
-          (hasAccess || (wordSeekResults && wordSeekResults?.length < MAX_FREE_RESULTS)) && (
-            <Button
-              onClick={handleRunWordSeek}
-              isDisabled={isButtonDisabled}
-              isLoading={isLoading && wordSeekRunType === "page"}
-            >
-              Run for single page
-            </Button>
-          )
+          <Text position="absolute" textAlign="left" fontWeight="semibold" fontSize="sm" left={7}>
+            Upgrade to run for more than {MAX_FREE_RESULTS} pages
+          </Text>
         )}
         <Button
           onClick={handleRunWordSeekAll}

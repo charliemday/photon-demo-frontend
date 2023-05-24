@@ -31,7 +31,7 @@ export const apiUrls = {
     // WordSeek
     WORD_SEEK: 'engine/word-seek/',
     WORD_SEEK_RESULTS: (teamUid: string) => `/engine/word-seek/results?team_uid=${teamUid}`,
-    WORD_SEEK_JOBS: "engine/word-seek/jobs",
+    WORD_SEEK_JOBS: (teamId?: number) => `engine/word-seek/jobs${teamId ? `?team_id=${teamId}` : ''}`,
     WORD_SEEK_TRIGGER_JOB: "engine/word-seek/trigger-job",
     // Engine
     MISSING_KEYWORDS: 'engine/missing-keywords-job',

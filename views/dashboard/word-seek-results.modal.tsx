@@ -126,7 +126,7 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage =
             </Stack>
           </HStack>
           <HStack spacing={2}>
-            <Button size="sm" isLoading={isFetching} onClick={refetch}>
+            <Button isLoading={isFetching} onClick={refetch}>
               <Text mr={2}>Refresh</Text>
               <BiRefresh fontSize={18} />
             </Button>
@@ -139,7 +139,6 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage =
               onClick={() => {
                 csvData.current.link.click();
               }}
-              size="sm"
             >
               CSV{" "}
               <Box ml={2}>
@@ -170,6 +169,9 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage =
               <Text fontSize="sm" fontWeight="bold">{`${tableData?.length} missing keyword${
                 tableData?.length > 1 ? "s" : ""
               } found for this page`}</Text>
+              <Text fontWeight="semibold" fontSize="sm">
+                Word Seek has run on {pages?.length} page{pages?.length === 1 ? "" : "s"}
+              </Text>
             </Flex>
             <Table variant="striped" size="sm">
               <Thead>

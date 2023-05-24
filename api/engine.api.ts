@@ -232,9 +232,9 @@ export const engineApi = baseApi.injectEndpoints({
     /**
      * Fetches the Word Seek Jobs
      */
-    wordSeekJobs: builder.query<WordSeekJob[], void>({
-      query: () => ({
-        url: apiUrls.WORD_SEEK_JOBS,
+    wordSeekJobs: builder.query<WordSeekJob[], number | void>({
+      query: (teamId) => ({
+        url: apiUrls.WORD_SEEK_JOBS(teamId || undefined),
       }),
       transformResponse: (response: ConvertToSnakeCase<WordSeekJob[]>) => response.map((job) => camelizeKeys(job)) as WordSeekJob[]
     }),
