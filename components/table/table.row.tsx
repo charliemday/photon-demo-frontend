@@ -3,7 +3,7 @@ import { Assigned } from "components/assigned";
 import { Tag } from "components/tag";
 import { GREEN } from "config";
 import { FC } from "react";
-import { TaskStatusEnum, TaskTypeSlugEnum } from "types";
+import { TaskStatusEnum } from "types";
 import { GscConnectModal } from "views/word-seek";
 
 export enum RowItemTypes {
@@ -20,9 +20,8 @@ export interface RowItem {
 interface Props {
   items: RowItem[];
   onClick?: () => void;
-  rowType?: string;
 }
-export const TableRow: FC<Props> = ({ items, onClick, rowType }) => {
+export const TableRow: FC<Props> = ({ items, onClick }) => {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const renderRowItem = (text: string, type: RowItemTypes) => {
@@ -50,14 +49,6 @@ export const TableRow: FC<Props> = ({ items, onClick, rowType }) => {
     }
   };
 
-  const handleClick = () => {
-    // TODO: Hacky way to open the GSC modal - need to create a universal useModal hook
-    // that can access provider state and dispatch
-    if (rowType && rowType === TaskTypeSlugEnum.onboarding) {
-      onOpen();
-    } else if (onClick) onClick();
-  };
-
   return (
     <>
       <HStack
@@ -69,7 +60,7 @@ export const TableRow: FC<Props> = ({ items, onClick, rowType }) => {
         }}
         p={2}
         borderRadius="md"
-        onClick={handleClick}
+        onClick={onClick && onClick}
       >
         {items.map(({ text, type, flex }, key) => {
           return (

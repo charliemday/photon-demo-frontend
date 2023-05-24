@@ -1,15 +1,12 @@
 import { Skeleton, Stack, Text } from "@chakra-ui/react";
+import { TaskRowItem } from "hooks";
 import { FC } from "react";
 import { HeaderItem, TableHeader } from "./table.header";
-import { RowItem, TableRow } from "./table.row";
+import { TableRow } from "./table.row";
 
 interface Props {
   headers?: HeaderItem[];
-  rowItems?: {
-    rowData: RowItem[];
-    rowClick?: () => void;
-    rowType?: string;
-  }[];
+  rowItems?: TaskRowItem[];
   isLoading?: boolean;
   emptyText?: string;
 }
@@ -49,7 +46,7 @@ export const Table: FC<Props> = ({
           <TableHeader headers={headers} />
           {rowItems?.length ? (
             rowItems.map(({ rowData, rowClick, rowType }, key) => (
-              <TableRow key={key} items={rowData} onClick={rowClick} rowType={rowType} />
+              <TableRow key={key} items={rowData} onClick={rowClick} />
             ))
           ) : (
             <Text textAlign="center" py={12} fontWeight="semibold">

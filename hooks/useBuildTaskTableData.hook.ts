@@ -4,18 +4,27 @@ import { ROUTES } from "config";
 import { useActiveTeam } from "hooks/useActiveTeam.hook";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
+import { TaskTypeSlugEnum } from "types";
+
+export interface TaskRowItem {
+    rowData: RowItem[];
+    rowClick: () => void;
+    rowType: string;
+}
 
 interface ReturnProps {
-    rowItems: {
-        rowData: RowItem[];
-        rowClick: () => void;
-        rowType: string;
-    }[];
+    rowItems: TaskRowItem[];
     isLoading: boolean;
     isError: boolean;
 }
 
-export const useBuildTaskTableData = (): ReturnProps => {
+interface Props {
+    // TODO: This is a temporary solution until we have
+    // a way to open modals inside of a hook
+    onOnboardingClick: () => void;
+}
+
+export const useBuildTaskTableData = (props: Props): ReturnProps => {
     const activeTeam = useActiveTeam();
     const router = useRouter();
     const { data: taskData, isLoading, isError } = useListTasksQuery({
@@ -70,11 +79,18 @@ export const useBuildTaskTableData = (): ReturnProps => {
         ]
         return {
             rowData,
-            rowClick: () => router.push(ROUTES.TASK(id)),
-            rowType: slug
+            rowType: slug,
+            rowClick: () => {
+                if (slug === TaskTypeSlugEnum.onboarding && props.onOnboardingClick) {
+                    props.onOnboardingClick();
+                    return;
+                }
+
+                router.push(ROUTES.TASK(id));
+            }
         }
 
-    }), [taskData, router]);
+    }), [taskData, router, props]);
 
 
     return {
