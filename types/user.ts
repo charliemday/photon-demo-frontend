@@ -36,3 +36,10 @@ export interface User {
      */
     features: Features[];
 }
+
+export interface UserMin {
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+}

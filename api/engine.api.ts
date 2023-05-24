@@ -1,6 +1,6 @@
 import { CompetitorInterface } from "forms/competitors";
 import { camelizeKeys, decamelizeKeys } from "humps";
-import { ConvertToSnakeCase, WordSeekItem } from "types";
+import { ConvertToSnakeCase, WordSeekItem, WordSeekJob } from "types";
 import { apiUrls, baseApi } from ".";
 
 interface ProcessAhrefsDataBody extends FormData { }
@@ -228,7 +228,29 @@ export const engineApi = baseApi.injectEndpoints({
         url: apiUrls.KEYWORD_INSIGHTS_ORDER(contentStrategyId),
       }),
       transformResponse: (response: ConvertToSnakeCase<KeywordInsightsOrder[]>) => camelizeKeys(response) as KeywordInsightsOrder[]
-    })
+    }),
+    /**
+     * Fetches the Word Seek Jobs
+     */
+    wordSeekJobs: builder.query<WordSeekJob[], void>({
+      query: () => ({
+        url: apiUrls.WORD_SEEK_JOBS,
+      }),
+      transformResponse: (response: ConvertToSnakeCase<WordSeekJob[]>) => response.map((job) => camelizeKeys(job)) as WordSeekJob[]
+    }),
+    /**
+     * Triggers a single word seek job to be re-run
+     */
+    reRunWordSeekJob: builder.mutation<WordSeekJob, {
+      jobId: number;
+    }>({
+      query: (body) => ({
+        url: apiUrls.WORD_SEEK_TRIGGER_JOB,
+        body: decamelizeKeys(body),
+        method: "POST",
+      }),
+    }),
+
   })
 });
 
@@ -244,5 +266,7 @@ export const {
   useWordSeekResultsQuery,
   useKeywordInsightsResultsQuery,
   useKeywordInsightsOrderQuery,
-  useCreateKeywordInsightOrderMutation
+  useCreateKeywordInsightOrderMutation,
+  useWordSeekJobsQuery,
+  useReRunWordSeekJobMutation,
 } = engineApi;
