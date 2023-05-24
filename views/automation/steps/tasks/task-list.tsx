@@ -50,8 +50,7 @@ export const TaskList: React.FC<Props> = ({ nextStep, setSelectedTask, goToNamed
     return taskData?.map((task) => {
       const {
         title,
-        id,
-        taskType: { name },
+        taskType: { name, slug },
         assignee: { firstName, lastName },
         status,
         created,
@@ -90,6 +89,7 @@ export const TaskList: React.FC<Props> = ({ nextStep, setSelectedTask, goToNamed
 
       return {
         rowData,
+        rowType: slug,
         rowClick: () => {
           setSelectedTask(task);
           nextStep && nextStep();
