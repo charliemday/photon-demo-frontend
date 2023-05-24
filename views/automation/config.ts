@@ -14,6 +14,7 @@ export enum KEY {
     TEAM_BLOGS = "team-blogs",
     ADMIN_USER = "admin-user",
     TEAM_CONTENT_STRATEGIES = "team-content-strategies",
+    WORD_SEEK_JOBS = "word-seek-jobs",
 }
 
 export interface STEP {
@@ -111,12 +112,19 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
                 image: "/steps/google.jpeg",
             },
             {
-                title: "WordSeek",
+                title: "Word Seek",
                 description: `Take the GSC keywords and check whether they exist on the
           pages they're associated with. The output will be saved to the drive.`,
                 key: KEY.COMPARE_CONSOLE_REPORT,
                 image: "/steps/search-console.svg",
             },
+            {
+                title: "Word Seek Jobs",
+                description: "View the Word Seek jobs that are not currently complete",
+                key: KEY.WORD_SEEK_JOBS,
+                image: "/steps/search-console.svg",
+
+            }
         ],
     },
     {

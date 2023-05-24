@@ -19,6 +19,7 @@ interface Props {
   contentProps?: {
     [key: string]: any;
   };
+  showContentStrategy?: boolean;
 }
 
 export const ModalStepWrapper: FC<Props> = ({
@@ -27,6 +28,7 @@ export const ModalStepWrapper: FC<Props> = ({
   children,
   size = "2xl",
   contentProps,
+  showContentStrategy = true,
 }) => {
   const activeTeam = useActiveTeam();
   const activeContentStrategy = useActiveContentStrategy();
@@ -38,15 +40,7 @@ export const ModalStepWrapper: FC<Props> = ({
       <ModalOverlay />
       <ModalContent p={12} {...contentProps}>
         <ModalCloseButton />
-        <Box
-          h={10}
-          w={10}
-          position="absolute"
-          top={5}
-          left={8}
-          borderRadius={4}
-          overflow="hidden"
-        >
+        <Box h={10} w={10} position="absolute" top={5} left={8} borderRadius={4} overflow="hidden">
           {imageError ? null : (
             <Image
               src={activeTeam?.logo || ""}
@@ -62,25 +56,15 @@ export const ModalStepWrapper: FC<Props> = ({
             {activeTeam?.name}
           </Text>
         </Box>
-
-        <Box
-          position="absolute"
-          right={20}
-          top={7}
-          overflow="hidden"
-          maxW={400}
-        >
-          <Text
-            fontSize="lg"
-            fontWeight="bold"
-            isTruncated
-            title="Name of Content Strategy"
-          >
-            {activeContentStrategy
-              ? `📝 ${activeContentStrategy?.name}`
-              : "⚠️ No Content Strategy Selected"}
-          </Text>
-        </Box>
+        {showContentStrategy && (
+          <Box position="absolute" right={20} top={7} overflow="hidden" maxW={400}>
+            <Text fontSize="lg" fontWeight="bold" isTruncated title="Name of Content Strategy">
+              {activeContentStrategy
+                ? `📝 ${activeContentStrategy?.name}`
+                : "⚠️ No Content Strategy Selected"}
+            </Text>
+          </Box>
+        )}
 
         <Divider my={6} />
         {children}

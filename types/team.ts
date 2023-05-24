@@ -14,6 +14,12 @@ export interface Team {
   teamType: TeamType;
 }
 
+export interface TeamMin {
+  id: number;
+  name: string;
+  slug: string;
+}
+
 
 export type SemrushDatabaseKeys = keyof typeof SEMRUSH_DATABASES;
 export type SemrushDatabase = typeof SEMRUSH_DATABASES[SemrushDatabaseKeys];

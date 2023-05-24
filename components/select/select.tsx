@@ -1,13 +1,15 @@
 import React from "react";
-import ReactSelect from "react-select";
+import ReactSelect, { createFilter } from "react-select";
+
+export interface Option {
+  value: string;
+  label: string;
+}
 
 interface Props {
-  options: {
-    value: string;
-    label: string;
-  }[];
-  placeholder: string;
-  onChange: (e: any) => void;
+  options: Option[];
+  onChange: (e: Option) => void;
+  placeholder?: string;
   defaultValue?: any;
   isMulti?: boolean;
 }
@@ -17,7 +19,7 @@ export const Select: React.FC<Props> = ({
   placeholder = "Select...",
   onChange,
   defaultValue = [],
-  isMulti = true,
+  isMulti = false,
 }) => (
   <ReactSelect
     isMulti={isMulti}
@@ -25,5 +27,8 @@ export const Select: React.FC<Props> = ({
     placeholder={placeholder}
     onChange={onChange}
     defaultValue={defaultValue}
+    filterOption={createFilter({
+      ignoreAccents: false,
+    })}
   />
 );
