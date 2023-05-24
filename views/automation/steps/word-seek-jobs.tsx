@@ -40,19 +40,6 @@ export const WordSeekJobs: FC<Props> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props]);
 
-  useEffect(() => {
-    if (!isLoading) {
-      if (isError && error) {
-        toast({
-          title: typeCheckError(error) || "An error occurred.",
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-      }
-    }
-  }, [isLoading, error, toast, isError]);
-
   const handleTriggerJob = (jobId: number) => {
     setSelectedJob(jobId);
     triggerJob({ jobId }).then((res) => {

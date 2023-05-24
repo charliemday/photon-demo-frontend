@@ -155,7 +155,7 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage =
           <Flex alignItems="center" justifyContent="center" h="40vh">
             <Spinner size="lg" />
           </Flex>
-        ) : tableData.length === 0 ? (
+        ) : tableData?.length === 0 ? (
           <Flex alignItems="center" justifyContent="center" h="50vh">
             <Stack m="auto" w="full" textAlign="center" alignItems="center">
               <Text fontSize="xl">🎉</Text>
@@ -167,8 +167,8 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage =
         ) : (
           <TableContainer h="50vh" overflowY="auto">
             <Flex alignItems="center" justifyContent="space-between" pb={6}>
-              <Text fontSize="sm" fontWeight="bold">{`${tableData.length} missing keyword${
-                tableData.length > 1 ? "s" : ""
+              <Text fontSize="sm" fontWeight="bold">{`${tableData?.length} missing keyword${
+                tableData?.length > 1 ? "s" : ""
               } found for this page`}</Text>
             </Flex>
             <Table variant="striped" size="sm">
@@ -181,7 +181,7 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage =
                 </Tr>
               </Thead>
               <Tbody>
-                {tableData.map((i, index) => (
+                {tableData?.map((i, index) => (
                   <Tr key={index}>
                     <Td>{i.keyword}</Td>
                     <Td>{i.clicks}</Td>
