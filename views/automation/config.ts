@@ -99,6 +99,7 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
                 description: "Manually view, create, update, and remove tasks for a team",
                 key: KEY.TASK_MODAL,
                 image: "/logos/baser.png",
+                isNew: true,
             },
             {
                 title: "Populate SC Reports",

@@ -13,7 +13,11 @@ export const BlogTask: React.FC<Props> = ({ blog }) => {
 
   const renderEmptyBlogSections = () => (
     <Stack alignItems="center" justifyContent="center" p={12}>
-      <Text>{`The blog "${blogTitle}" has no sections yet.`}</Text>
+      {blog ? (
+        <Text>{`The blog "${blogTitle}" has no sections yet.`}</Text>
+      ) : (
+        <Text>This task has no content yet.</Text>
+      )}
     </Stack>
   );
 
