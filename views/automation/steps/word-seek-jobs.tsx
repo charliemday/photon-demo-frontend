@@ -92,7 +92,13 @@ export const WordSeekJobs: FC<Props> = (props) => {
   };
 
   return (
-    <ModalStepWrapper {...props} size="6xl" showContentStrategy={false}>
+    <ModalStepWrapper
+      {...props}
+      size="6xl"
+      showContentStrategy={false}
+      showTeam={false}
+      title="👀 Outstanding Word Seek Jobs"
+    >
       <Stack>
         {wordSeekJobs?.length ? (
           <TableContainer>
