@@ -23,6 +23,7 @@ import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import { typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
 import { InputSection } from "./seed-keywords";
+import { Label } from "components/text";
 
 interface Props {
   isOpen: boolean;
@@ -38,9 +39,7 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
   const [useVolumeThreshold, setUseVolumeThreshold] = useState<boolean>(false);
 
   const alsoAskedInputRef = useRef<HTMLInputElement>(null);
-  const [alsoAskedFile, setAlsoAskedFile] = useState<File | null | undefined>(
-    null
-  );
+  const [alsoAskedFile, setAlsoAskedFile] = useState<File | null | undefined>(null);
   const [language, setLanguage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -95,10 +94,7 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
 
     formData.append("file", alsoAskedFile);
     formData.append("language", language || "en");
-    formData.append(
-      "content_strategy_id",
-      activeContentStrategy?.id.toString()
-    );
+    formData.append("content_strategy_id", activeContentStrategy?.id.toString());
 
     if (useVolumeThreshold) {
       formData.append("volume_threshold", volumeThreshold.toString());
@@ -133,16 +129,14 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
         <Stack alignItems="center" spacing={6}>
           <HStack>
             <BsCheckCircle fontSize={18} color="green" />
-            <Text fontSize="sm" color="green.500">
-              {alsoAskedFile.name} ready for submission
-            </Text>
+            <Label color="green.500">{alsoAskedFile.name} ready for submission</Label>
           </HStack>
           {isLoading && <BarLoader color={BRAND_COLOR} />}
         </Stack>
       ) : (
         <HStack>
           <AiOutlineCloudDownload fontSize={18} />
-          <Text fontSize="sm">Click here to upload keyword data</Text>
+          <Label>Click here to upload keyword data</Label>
         </HStack>
       )}
     </Flex>
@@ -151,9 +145,7 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
   return (
     <ModalStepWrapper {...props} size="6xl">
       <Box>
-        <Heading fontSize="lg">
-          2. Questions Asked for {activeTeam?.name}
-        </Heading>
+        <Heading fontSize="lg">2. Questions Asked for {activeTeam?.name}</Heading>
         <Text fontSize="xs" my={6} opacity={0.75}>
           {`This will take a CSV file with the first column of sorted keywords and get the "People Also Asked" questions for each keyword`}
         </Text>
@@ -201,11 +193,7 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
 
             <Box>
               <BaserMenu
-                defaultValue={
-                  langOptions[
-                    langOptions.findIndex(({ value }) => value === "en")
-                  ]
-                }
+                defaultValue={langOptions[langOptions.findIndex(({ value }) => value === "en")]}
                 onChange={(e: any) => setLanguage(e.value)}
                 data={langOptions as any}
               />
@@ -236,11 +224,7 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
         </HStack>
 
         <Flex justifyContent="flex-end" pt={6}>
-          <Button
-            size="lg"
-            onClick={() => setAlsoAskedFile(null)}
-            color="white"
-          >
+          <Button size="lg" onClick={() => setAlsoAskedFile(null)} color="white">
             Clear
           </Button>
           <Button

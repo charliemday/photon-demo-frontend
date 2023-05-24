@@ -1,13 +1,4 @@
-import {
-  Box,
-  Grid,
-  GridItem,
-  Heading,
-  HStack,
-  Stack,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Grid, GridItem, Heading, HStack, Stack, Text, useToast } from "@chakra-ui/react";
 import Image from "next/image";
 import React, { useEffect } from "react";
 import { BsFillPersonFill } from "react-icons/bs";
@@ -17,6 +8,7 @@ import { useListTeamsQuery } from "api/team.api";
 import { usePopulateSearchConsoleReportsMutation } from "api/vendor.api";
 import { Button } from "components/button";
 import { typeCheckError } from "utils";
+import { Label } from "components/text";
 
 interface Props {
   isOpen: boolean;
@@ -52,22 +44,14 @@ export const PopulateSCReports: React.FC<Props> = (props) => {
 
   const renderTeam = (logo: string | null, name: string) => (
     <Stack alignItems="center">
-      <Box
-        position="relative"
-        minH={25}
-        w={25}
-        boxShadow="md"
-        borderRadius="md"
-      >
+      <Box position="relative" minH={25} w={25} boxShadow="md" borderRadius="md">
         {logo ? (
           <Image src={logo} layout="fill" alt={name} unoptimized />
         ) : (
           <BsFillPersonFill fontSize={28} />
         )}
       </Box>
-      <Text fontSize="sm" fontWeight="semibold" noOfLines={1}>
-        {name}
-      </Text>
+      <Label noOfLines={1}>{name}</Label>
     </Stack>
   );
 
@@ -75,23 +59,17 @@ export const PopulateSCReports: React.FC<Props> = (props) => {
     <ModalStepWrapper {...props}>
       <Stack>
         <Heading fontSize="lg">Populate Search Console Reports</Heading>
-        <Text fontSize="sm">
-          This step will populate the Search Console reports for all the teams
-          in our database (not just the ones below).
+        <Label>
+          This step will populate the Search Console reports for all the teams in our database (not
+          just the ones below).
           <Grid templateColumns="repeat(6, 1fr)" gap={4} py={12}>
             {teams?.slice(0, 18)?.map((team) => (
-              <GridItem key={team.id}>
-                {renderTeam(team.logo, team.name)}
-              </GridItem>
+              <GridItem key={team.id}>{renderTeam(team.logo, team.name)}</GridItem>
             ))}
           </Grid>
-        </Text>
+        </Label>
         <HStack justifyContent="flex-end" pt={6}>
-          <Button
-            size="sm"
-            isLoading={isLoading}
-            onClick={() => populateReports(null)}
-          >
+          <Button size="sm" isLoading={isLoading} onClick={() => populateReports(null)}>
             Populate
           </Button>
           <Button size="sm" onClick={props.onClose}>

@@ -13,13 +13,10 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import {
-  UpdateBlogBody,
-  useDeleteBlogMutation,
-  useUpdateBlogMutation,
-} from "api/blog.api";
+import { UpdateBlogBody, useDeleteBlogMutation, useUpdateBlogMutation } from "api/blog.api";
 import { Button } from "components/button";
 import { ConfirmationModal } from "components/modals";
+import { Label } from "components/text";
 import { FC, useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { StepWizardChildProps } from "react-step-wizard";
@@ -37,11 +34,7 @@ const mapEnum = (enumObj: any, mapper: Function) => {
     .map((key) => mapper(enumObj[key]));
 };
 
-export const EditBlog: FC<Props> = ({
-  previousStep,
-  blog,
-  handleDeleteComplete,
-}) => {
+export const EditBlog: FC<Props> = ({ previousStep, blog, handleDeleteComplete }) => {
   const [status, setStatus] = useState<BlogStatus | undefined>(blog?.status);
   const [title, setTitle] = useState(blog?.title);
 
@@ -55,12 +48,7 @@ export const EditBlog: FC<Props> = ({
 
   const [
     deleteBlog,
-    {
-      isLoading: isDeleting,
-      isSuccess: isDeleted,
-      isError: isDeletedError,
-      error: deleteError,
-    },
+    { isLoading: isDeleting, isSuccess: isDeleted, isError: isDeletedError, error: deleteError },
   ] = useDeleteBlogMutation();
 
   useEffect(() => {
@@ -147,7 +135,7 @@ export const EditBlog: FC<Props> = ({
           }}
         >
           <FaArrowLeft fontSize={12} />
-          <Text fontSize="sm">Back to Blog Outline</Text>
+          <Label>Back to Blog Outline</Label>
         </HStack>
 
         <Stack py={6} spacing={6}>

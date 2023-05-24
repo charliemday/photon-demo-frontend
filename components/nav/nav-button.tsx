@@ -1,4 +1,5 @@
 import { Box, Stack, Text } from "@chakra-ui/react";
+import { Label } from "components/text";
 import { FC, ReactNode } from "react";
 
 interface Props {
@@ -19,15 +20,13 @@ export const NavButton: FC<Props> = ({ label = "Performance Data", icon, onClick
   >
     <Box>{icon}</Box>
 
-    <Text
-      lineHeight="1.5"
-      fontWeight={isActive ? "bold" : "medium"}
-      fontSize="14px"
-      color="#000000"
+    <Label
+      fontFamily="ClashGrotesk"
+      fontWeight={isActive ? "semibold" : "medium"}
       textAlign="center"
       whiteSpace="nowrap"
     >
       {label}
-    </Text>
+    </Label>
   </Stack>
 );

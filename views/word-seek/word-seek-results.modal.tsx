@@ -22,6 +22,7 @@ import { useWordSeekResultsQuery } from "api/engine.api";
 import { Button } from "components/button";
 import { Image } from "components/image";
 import { Modal } from "components/modals";
+import { Label } from "components/text";
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { CSVLink } from "react-csv";
 import { AiOutlineTeam } from "react-icons/ai";
@@ -36,17 +37,11 @@ interface Props {
   defaultPage?: string | null;
 }
 
-export const WordSeekResultsModal: FC<Props> = ({
-  isOpen,
-  onClose,
-  defaultPage = null,
-}) => {
+export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage = null }) => {
   const [selectedPage, setSelectedPage] = useState<string | null>(defaultPage);
 
   const csvData = useRef<any>([]);
-  const activeTeam: Team = useSelector(
-    (state: RootState) => state.team.activeTeam
-  );
+  const activeTeam: Team = useSelector((state: RootState) => state.team.activeTeam);
 
   const {
     data: wordSeekResults,
@@ -64,11 +59,7 @@ export const WordSeekResultsModal: FC<Props> = ({
   }, [isOpen, refetch]);
 
   useEffect(() => {
-    if (
-      selectedPage === null &&
-      wordSeekResults &&
-      wordSeekResults?.length > 0
-    ) {
+    if (selectedPage === null && wordSeekResults && wordSeekResults?.length > 0) {
       setSelectedPage(wordSeekResults[0].page);
     }
   }, [wordSeekResults, selectedPage]);
@@ -108,13 +99,7 @@ export const WordSeekResultsModal: FC<Props> = ({
       <ModalHeader>
         <HStack justifyContent="space-between" alignItems="flex-end">
           <HStack spacing={4}>
-            <Box
-              w={12}
-              h={12}
-              position="relative"
-              borderRadius="md"
-              overflow="hidden"
-            >
+            <Box w={12} h={12} position="relative" borderRadius="md" overflow="hidden">
               <Image
                 src={activeTeam?.logo || ""}
                 alt={activeTeam?.name}
@@ -182,11 +167,9 @@ export const WordSeekResultsModal: FC<Props> = ({
         ) : (
           <TableContainer h="50vh" overflowY="auto">
             <Flex alignItems="center" justifyContent="space-between" pb={6}>
-              <Text fontSize="sm" fontWeight="bold">{`${
-                tableData.length
-              } missing keyword${
+              <Label fontWeight="bold">{`${tableData.length} missing keyword${
                 tableData.length > 1 ? "s" : ""
-              } found for this page`}</Text>
+              } found for this page`}</Label>
             </Flex>
             <Table variant="striped" size="sm">
               <Thead>

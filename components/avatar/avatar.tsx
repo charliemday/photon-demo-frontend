@@ -16,6 +16,7 @@ export const Avatar: FC = () => {
   return (
     <HStack>
       <Text fontSize="lg">{fullName}</Text>
+
       <Box border="solid 2px black" px={2} py={1} borderRadius="md" bgColor="purple.400">
         <Text fontWeight="semibold">{initials}</Text>
       </Box>

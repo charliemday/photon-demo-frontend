@@ -1,5 +1,6 @@
 import { Stack, Text } from "@chakra-ui/react";
 import { Tag } from "components/tag";
+import { Label } from "components/text";
 import { TERTIARY_COLOR } from "config";
 import { FC } from "react";
 
@@ -18,9 +19,9 @@ export const FaqText: FC<Props> = ({ heading, label, text }) => (
     spacing="12px"
   >
     <Stack direction="row" justify="space-between" align="center" spacing="4px">
-      <Text maxWidth="170px" fontSize="sm" fontWeight="semibold">
+      <Label maxWidth="170px" fontWeight="semibold">
         {heading}
-      </Text>
+      </Label>
 
       <Tag text={label} />
     </Stack>

@@ -21,6 +21,7 @@ import { RootState } from "store";
 import { Team } from "types";
 import { typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
+import { Label } from "components/text";
 
 interface Props {
   isDisabled?: boolean;
@@ -28,11 +29,7 @@ interface Props {
   onClose: () => void;
 }
 
-export const SearchConsoleReport: React.FC<Props> = ({
-  isDisabled,
-  isOpen,
-  onClose,
-}) => {
+export const SearchConsoleReport: React.FC<Props> = ({ isDisabled, isOpen, onClose }) => {
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
   const [domain, setDomain] = useState<string | null>(null);
@@ -40,28 +37,20 @@ export const SearchConsoleReport: React.FC<Props> = ({
 
   const toast = useToast();
 
-  const activeTeam = useSelector(
-    (state: RootState) => state.team.activeTeam
-  ) as Team | null;
+  const activeTeam = useSelector((state: RootState) => state.team.activeTeam) as Team | null;
 
-  const { isLoading: isSiteLoading, data: sites } =
-    useGetSearchConsoleSitesQuery(
-      {
-        teamUid: activeTeam?.uid || "",
-      },
-      {
-        skip: !isOpen || activeTeam?.uid === undefined,
-      }
-    );
+  const { isLoading: isSiteLoading, data: sites } = useGetSearchConsoleSitesQuery(
+    {
+      teamUid: activeTeam?.uid || "",
+    },
+    {
+      skip: !isOpen || activeTeam?.uid === undefined,
+    },
+  );
 
   const [
     createReport,
-    {
-      isLoading: isReportLoading,
-      isSuccess: isReportSuccess,
-      error: reportError,
-      isError,
-    },
+    { isLoading: isReportLoading, isSuccess: isReportSuccess, error: reportError, isError },
   ] = useCreateSearchConsoleReportMutation();
 
   useEffect(() => {
@@ -107,9 +96,7 @@ export const SearchConsoleReport: React.FC<Props> = ({
   return (
     <ModalStepWrapper isOpen={isOpen} onClose={onClose}>
       <Stack spacing={6} pointerEvents={isDisabled ? "none" : "auto"}>
-        <Heading fontSize="lg">
-          4. Google Search Console Report for {activeTeam?.name}
-        </Heading>
+        <Heading fontSize="lg">4. Google Search Console Report for {activeTeam?.name}</Heading>
         <Text fontSize="xs" opacity={0.5}>
           {isDisabled
             ? "You need to connect to Google Search Console to use this automation"
@@ -118,9 +105,7 @@ export const SearchConsoleReport: React.FC<Props> = ({
         <Stack opacity={isDisabled ? 0.25 : 1}>
           <HStack>
             <Stack w="full">
-              <Text fontSize="sm" fontWeight="semibold">
-                Start Date:
-              </Text>
+              <Label fontWeight="semibold">Start Date:</Label>
               <Input
                 type="date"
                 onChange={(e) => {
@@ -131,9 +116,7 @@ export const SearchConsoleReport: React.FC<Props> = ({
               />
             </Stack>
             <Stack w="full">
-              <Text fontSize="sm" fontWeight="semibold">
-                End Date:
-              </Text>
+              <Label fontWeight="semibold">End Date:</Label>
               <Input
                 type="date"
                 onChange={(e) => {
@@ -145,19 +128,14 @@ export const SearchConsoleReport: React.FC<Props> = ({
             </Stack>
           </HStack>
           <Stack>
-            <Text fontSize="sm" fontWeight="semibold">
-              Domain
-            </Text>
+            <Label fontWeight="semibold">Domain</Label>
             <Select
               placeholder="Select Site"
               bgColor="white"
               onChange={({ target: { value } }) => setDomain(value)}
               defaultValue={
                 activeTeam?.url
-                  ? sites?.find(
-                      (site) =>
-                        activeTeam?.url && site.includes(activeTeam?.url)
-                    )
+                  ? sites?.find((site) => activeTeam?.url && site.includes(activeTeam?.url))
                   : undefined
               }
             >
@@ -169,18 +147,13 @@ export const SearchConsoleReport: React.FC<Props> = ({
             </Select>
             {!isDisabled && isSiteLoading && (
               <HStack opacity={0.5}>
-                <Text fontSize="sm">
-                  Fetching the domains you have access to
-                </Text>
+                <Label>Fetching the domains you have access to</Label>
                 <Spinner size="xs" />
               </HStack>
             )}
           </Stack>
           <Stack pt={4} pl={2}>
-            <Checkbox
-              size="sm"
-              onChange={(e) => setSaveReport(e.target.checked)}
-            >
+            <Checkbox size="sm" onChange={(e) => setSaveReport(e.target.checked)}>
               Save Report
             </Checkbox>
             <Text fontSize="xs" opacity={0.75}>

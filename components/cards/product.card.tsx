@@ -1,5 +1,6 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { Button } from "components/button";
+import { Label } from "components/text";
 import { FC } from "react";
 
 interface Props {
@@ -46,9 +47,7 @@ export const ProductCard: FC<Props> = ({
           <Text fontWeight="semibold">{title}</Text>
         </Box>
         <Box my={4}>
-          <Text fontSize="sm" letterSpacing={0.25}>
-            {description}
-          </Text>
+          <Label letterSpacing={0.25}>{description}</Label>
         </Box>
       </Box>
       <Box>

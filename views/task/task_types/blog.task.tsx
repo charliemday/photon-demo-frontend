@@ -1,5 +1,6 @@
 import { Divider, HStack, Stack, Text } from "@chakra-ui/react";
 import { BlogSectionItem } from "components/blog/blog-section-item";
+import { Label } from "components/text";
 import React from "react";
 import { Blog } from "types";
 
@@ -31,7 +32,7 @@ export const BlogTask: React.FC<Props> = ({ blog }) => {
         <>
           <Divider />
           <HStack justifyContent="space-between">
-            <Text fontSize="sm">Click to copy the text to your clipboard</Text>
+            <Label>Click to copy the text to your clipboard</Label>
           </HStack>
         </>
       ) : null}

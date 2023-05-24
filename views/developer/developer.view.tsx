@@ -12,14 +12,10 @@ import {
 import { Image } from "components/image";
 import { BaserMenu } from "components/menus";
 import React, { useState } from "react";
-import {
-  metricalFields,
-  metricOperations,
-  textFields,
-  textOperations,
-} from "./data";
+import { metricalFields, metricOperations, textFields, textOperations } from "./data";
 
 import { AiOutlineCopy } from "react-icons/ai";
+import { Label } from "components/text";
 
 interface Props {}
 
@@ -48,10 +44,8 @@ export const DeveloperView: React.FC<Props> = () => {
 
   const [fieldType, setFieldType] = useState<FieldType>(FieldType.METRIC);
 
-  const fieldData =
-    fieldType === FieldType.METRIC ? metricalFields : textFields;
-  const operationData =
-    fieldType === FieldType.METRIC ? metricOperations : textOperations;
+  const fieldData = fieldType === FieldType.METRIC ? metricalFields : textFields;
+  const operationData = fieldType === FieldType.METRIC ? metricOperations : textOperations;
 
   const buildResult = () => `${sign}|${field}|${operation}|${value}`;
 
@@ -70,18 +64,8 @@ export const DeveloperView: React.FC<Props> = () => {
       <Stack spacing={12}>
         <Stack>
           <HStack>
-            <Box
-              position="relative"
-              h={30}
-              w={30}
-              overflow="hidden"
-              borderRadius="md"
-            >
-              <Image
-                src="/steps/semrush.jpeg"
-                layout="fill"
-                alt="SEMRush Logo"
-              />
+            <Box position="relative" h={30} w={30} overflow="hidden" borderRadius="md">
+              <Image src="/steps/semrush.jpeg" layout="fill" alt="SEMRush Logo" />
             </Box>
 
             <Text fontSize="2xl" fontWeight="semibold">
@@ -94,11 +78,7 @@ export const DeveloperView: React.FC<Props> = () => {
           <Text>{fieldType} Fields:</Text>
           <Switch
             onChange={() => {
-              setFieldType(
-                fieldType === FieldType.METRIC
-                  ? FieldType.TEXT
-                  : FieldType.METRIC
-              );
+              setFieldType(fieldType === FieldType.METRIC ? FieldType.TEXT : FieldType.METRIC);
             }}
           />
         </HStack>
@@ -139,17 +119,15 @@ export const DeveloperView: React.FC<Props> = () => {
         p={3}
         position="relative"
       >
-        <Text fontSize="sm" opacity={0.5}>
-          Result:
-        </Text>
+        <Label opacity={0.5}>Result:</Label>
         <Text fontWeight="bold" fontSize="2xl" letterSpacing={1}>
           {buildResult()}
         </Text>
 
         <Box w="80%" position="absolute" bottom={3} left={3}>
-          <Text fontSize="sm" opacity={0.5}>
+          <Label opacity={0.5}>
             {`Note: If you're using the '+' symbol you may have replace with '%2B' to URL encode it. See https://www.webatic.com/ascii-table`}
-          </Text>
+          </Label>
         </Box>
 
         <Box

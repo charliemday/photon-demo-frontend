@@ -1,5 +1,6 @@
 import { Box, Checkbox, HStack, Input, Stack, Text } from "@chakra-ui/react";
 import { Image } from "components/image";
+import { Label } from "components/text";
 import { FC, useEffect, useState } from "react";
 
 interface Props {
@@ -39,16 +40,8 @@ const InputSection: FC<Props> = ({
   return (
     <Stack spacing={6} w="full">
       <HStack>
-        <Box
-          width={18}
-          height={18}
-          position="relative"
-          borderRadius={4}
-          overflow="hidden"
-        >
-          {imageSrc && (
-            <Image src={imageSrc} layout="fill" alt="Semrush Logo" />
-          )}
+        <Box width={18} height={18} position="relative" borderRadius={4} overflow="hidden">
+          {imageSrc && <Image src={imageSrc} layout="fill" alt="Semrush Logo" />}
         </Box>
         <Text fontWeight="bold" fontSize="md">
           {title}
@@ -79,9 +72,7 @@ const InputSection: FC<Props> = ({
 
       <Stack>
         <HStack w="75%">
-          <Text fontWeight="semibold" fontSize="sm">
-            {label}
-          </Text>
+          <Label fontWeight="semibold">{label}</Label>
           <Input
             value={input}
             onChange={(e) => {

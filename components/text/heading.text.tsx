@@ -1,12 +1,10 @@
 import { Heading as ChakraHeading, TextProps } from "@chakra-ui/react";
 import { Font } from "types/fonts";
 
-interface Props {
+interface Props extends Omit<TextProps, "fontSize"> {
   level?: "h1" | "h2" | "h3";
   fontFamily?: Font;
-  fontWeight?: TextProps["fontWeight"];
-  lineHeight?: TextProps["lineHeight"];
-  children: TextProps["children"];
+  fontWeight?: "regular" | "medium";
 }
 
 export const Heading = ({
@@ -15,6 +13,7 @@ export const Heading = ({
   fontWeight = "medium",
   lineHeight = "1.125",
   children,
+  ...rest
 }: Props) => {
   let _fontSize = "";
 
@@ -40,6 +39,7 @@ export const Heading = ({
       fontWeight={fontWeight}
       lineHeight={lineHeight}
       my="-1"
+      {...rest}
     >
       {children}
     </ChakraHeading>

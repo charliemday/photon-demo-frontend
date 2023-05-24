@@ -7,11 +7,10 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Button,
-  Text,
   Spinner,
   Stack,
 } from "@chakra-ui/react";
+import { Label } from "components/text";
 
 interface Props {
   isOpen: boolean;
@@ -24,11 +23,7 @@ export interface FormValeus {
   description: string;
 }
 
-export const OAuthConnectingModal: React.FC<Props> = ({
-  isOpen,
-  onClose,
-  title,
-}) => {
+export const OAuthConnectingModal: React.FC<Props> = ({ isOpen, onClose, title }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -38,7 +33,7 @@ export const OAuthConnectingModal: React.FC<Props> = ({
         <ModalBody>
           <Stack alignItems="center">
             <Spinner />
-            <Text fontSize="sm">This will only take a moment</Text>
+            <Label>This will only take a moment</Label>
           </Stack>
         </ModalBody>
         <ModalFooter></ModalFooter>

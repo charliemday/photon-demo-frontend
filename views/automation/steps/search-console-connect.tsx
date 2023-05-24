@@ -1,9 +1,5 @@
 import { Box, Heading, HStack, Text, useToast } from "@chakra-ui/react";
-import {
-  CodeResponse,
-  GoogleOAuthProvider,
-  useGoogleLogin,
-} from "@react-oauth/google";
+import { CodeResponse, GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import { useCompleteOauthMutation } from "api/auth.api";
 import { useUserDetailsQuery } from "api/user.api";
 import { GOOGLE_INTERNAL_CLIENT_ID } from "config";
@@ -12,6 +8,7 @@ import { BsCheckCircle } from "react-icons/bs";
 import { GoogleLoginButton } from "react-social-login-buttons";
 import { typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
+import { Label } from "components/text";
 
 interface Props {
   isOpen: boolean;
@@ -19,10 +16,8 @@ interface Props {
 }
 
 const SearchConsoleConnectModal: FC<Props> = (props) => {
-  const { data: user, refetch: refetchUserDetails } =
-    useUserDetailsQuery(undefined);
-  const [completeOauth, { isLoading, isSuccess, isError, error }] =
-    useCompleteOauthMutation();
+  const { data: user, refetch: refetchUserDetails } = useUserDetailsQuery(undefined);
+  const [completeOauth, { isLoading, isSuccess, isError, error }] = useCompleteOauthMutation();
 
   const toast = useToast();
 
@@ -73,19 +68,17 @@ const SearchConsoleConnectModal: FC<Props> = (props) => {
         {user?.connectedSearchConsole && (
           <HStack mb={6} color="green.400">
             <BsCheckCircle />
-            <Text fontSize="sm" fontWeight="semibold">
-              You are already connected to Google Search Console
-            </Text>
+            <Label>You are already connected to Google Search Console</Label>
           </HStack>
         )}
         <Box opacity={user?.connectedSearchConsole ? 0.5 : 1}>
           {/* @ts-ignore */}
           <GoogleLoginButton onClick={googleLogin}>
-            <Text fontSize="sm">
+            <Label>
               {user?.connectedSearchConsole
                 ? "Reconnect to Google Search Console"
                 : "Connect up Google Search Console"}
-            </Text>
+            </Label>
           </GoogleLoginButton>
         </Box>
       </Box>

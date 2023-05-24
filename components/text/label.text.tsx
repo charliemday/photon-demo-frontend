@@ -1,18 +1,17 @@
 import { Text, TextProps } from "@chakra-ui/react";
 import { Font } from "types/fonts";
 
-interface Props {
+interface Props extends Omit<TextProps, "fontSize"> {
   fontFamily?: Font;
-  fontWeight?: TextProps["fontWeight"];
-  lineHeight?: TextProps["lineHeight"];
-  children: TextProps["children"];
+  fontWeight?: "medium" | "semibold";
 }
 
 export const Label = ({
   fontFamily = "Inter",
-  fontWeight = "medium",
+  fontWeight = "semibold",
   lineHeight = "1.5",
   children,
+  ...rest
 }: Props) => (
   <Text
     fontFamily={fontFamily}
@@ -20,6 +19,7 @@ export const Label = ({
     fontWeight={fontWeight}
     lineHeight={lineHeight}
     my="-1"
+    {...rest}
   >
     {children}
   </Text>

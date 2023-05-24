@@ -1,12 +1,4 @@
-import {
-  Checkbox,
-  Divider,
-  HStack,
-  Stack,
-  Tag,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
+import { Checkbox, Divider, HStack, Stack, Tag, Text, useToast } from "@chakra-ui/react";
 import {
   useBulkDeleteSeedKeywordsMutation,
   useCreateSeedKeywordMutation,
@@ -14,6 +6,7 @@ import {
   useListSeedKeywordsQuery,
 } from "api/strategies.api";
 import { Button } from "components/button";
+import { Label } from "components/text";
 import { GridInputForm } from "forms/grid-input";
 import { FC, useEffect, useMemo, useState } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
@@ -72,13 +65,11 @@ export const Step5: FC<Props> = ({
     },
     {
       skip: !contentStrategyId,
-    }
+    },
   );
 
   const competitorKeywords = useMemo(() => {
-    return seedKeywords?.filter(
-      (keyword) => keyword.source === SeedKeywordSource.COMPETITOR
-    );
+    return seedKeywords?.filter((keyword) => keyword.source === SeedKeywordSource.COMPETITOR);
   }, [seedKeywords]);
 
   useEffect(() => {
@@ -104,8 +95,7 @@ export const Step5: FC<Props> = ({
 
     if (!isCreatingSeedKeywords && isCreateSeedKeywordsError) {
       toast({
-        title:
-          typeCheckError(createSeedKeywordsError) || "Something went wrong",
+        title: typeCheckError(createSeedKeywordsError) || "Something went wrong",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -131,9 +121,7 @@ export const Step5: FC<Props> = ({
 
     if (!isGeneratingContentStrategy && isGenerateContentStrategyError) {
       toast({
-        title:
-          typeCheckError(generateContentStrategyError) ||
-          "Something went wrong",
+        title: typeCheckError(generateContentStrategyError) || "Something went wrong",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -162,8 +150,7 @@ export const Step5: FC<Props> = ({
     // Find the competitor keywords that do not exist in the suggested keywords
     const competitorKeywordsToRemove = competitorKeywords
       ?.filter(
-        ({ keyword }) =>
-          !Object.values(suggestedKeywords).find((k) => k.keyword === keyword)
+        ({ keyword }) => !Object.values(suggestedKeywords).find((k) => k.keyword === keyword),
       )
       .map(({ id }) => id);
 
@@ -191,9 +178,9 @@ export const Step5: FC<Props> = ({
         <Text fontSize="xl" fontWeight="bold">
           Review Keywords
         </Text>
-        <Text fontSize="sm" fontWeight="light" color="gray.500">
+        <Label color="gray.500">
           Step {currentStep} of {totalSteps}
-        </Text>
+        </Label>
       </Stack>
 
       <Stack spacing={6}>
@@ -201,9 +188,8 @@ export const Step5: FC<Props> = ({
           Select Seed Keywords
         </Text>
         <Text>
-          These keywords are the result of your competitor analysis and form the
-          seeds of your content strategy. You can add your own keywords and
-          remove any you do not want to target.
+          These keywords are the result of your competitor analysis and form the seeds of your
+          content strategy. You can add your own keywords and remove any you do not want to target.
         </Text>
 
         <Stack spacing={6}>

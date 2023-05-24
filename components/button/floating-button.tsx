@@ -17,6 +17,7 @@ import {
 import { useListTeamsQuery } from "api/team.api";
 import { Image } from "components/image";
 import { AddTeamModal } from "components/modals";
+import { Label } from "components/text";
 import { motion } from "framer-motion";
 import FuseJS from "fuse.js";
 import { useActiveTeam } from "hooks";
@@ -118,9 +119,7 @@ export const FloatingButton: React.FC<Props> = ({
           </motion.div>
         )}
         <Stack zIndex={101}>
-          <Text fontWeight="semibold" fontSize="sm">
-            {title}
-          </Text>
+          <Label>{title}</Label>
           <Menu>
             <MenuButton
               as={Button}
@@ -181,7 +180,7 @@ export const FloatingButton: React.FC<Props> = ({
                         <AiOutlineTeam />
                       )}
                     </Box>
-                    <Text fontSize="sm">{team.name}</Text>
+                    <Label>{team.name}</Label>
                   </MenuItem>
                 ))}
               </Box>
@@ -191,7 +190,7 @@ export const FloatingButton: React.FC<Props> = ({
                   <MenuItem onClick={onOpen}>
                     <HStack>
                       <GrAdd />
-                      <Text fontSize="sm">Add a Team</Text>
+                      <Label>Add a Team</Label>
                     </HStack>
                   </MenuItem>
                 </>

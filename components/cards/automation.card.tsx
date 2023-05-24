@@ -1,4 +1,5 @@
 import { Badge, Box, Flex, HStack, Stack, Text } from "@chakra-ui/react";
+import { Label } from "components/text";
 import { BRAND_COLOR } from "config";
 import Image from "next/image";
 import React from "react";
@@ -90,9 +91,9 @@ export const AutomationCard: React.FC<Props> = ({
         <Text fontWeight="semibold" noOfLines={1}>
           {title}
         </Text>
-        <Text fontSize="sm" noOfLines={3} opacity={0.75}>
+        <Label noOfLines={3} opacity={0.75}>
           {description}
-        </Text>
+        </Label>
         {image ? (
           Array.isArray(image) ? (
             <HStack position="absolute" bottom={5} right={5}>

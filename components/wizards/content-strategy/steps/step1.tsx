@@ -1,6 +1,7 @@
 import { Input, Stack, Text, useToast } from "@chakra-ui/react";
 import { useCreateContentStrategyMutation } from "api/strategies.api";
 import { Button } from "components/button";
+import { Label } from "components/text";
 import { useActiveTeam } from "hooks";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -12,21 +13,14 @@ interface Props extends Partial<StepWizardChildProps> {
   onComplete: (id: number) => void;
 }
 
-export const Step1: React.FC<Props> = ({
-  nextStep,
-  currentStep = 0,
-  totalSteps,
-  onComplete,
-}) => {
+export const Step1: React.FC<Props> = ({ nextStep, currentStep = 0, totalSteps, onComplete }) => {
   const activeTeam = useActiveTeam();
   const [name, setName] = useState<string | null>(null);
   const toast = useToast();
   const dispatch = useDispatch();
 
-  const [
-    createContentStrategy,
-    { isLoading, isError, error, isSuccess, data },
-  ] = useCreateContentStrategyMutation();
+  const [createContentStrategy, { isLoading, isError, error, isSuccess, data }] =
+    useCreateContentStrategyMutation();
 
   useEffect(() => {
     if (!isLoading && isSuccess) {
@@ -68,9 +62,9 @@ export const Step1: React.FC<Props> = ({
         <Text fontSize="xl" fontWeight="bold">
           Content Strategy
         </Text>
-        <Text fontSize="sm" fontWeight="light" color="gray.500">
+        <Label color="gray.500">
           Step {currentStep} of {totalSteps}
-        </Text>
+        </Label>
       </Stack>
 
       <Stack spacing={6}>
@@ -78,21 +72,13 @@ export const Step1: React.FC<Props> = ({
           Name your content strategy
         </Text>
         <Text>
-          You could end up with multiple strategies for different topics. e.g.
-          if you do online wish lists, you might have a strategy for Christmas
-          or Birthday, with different competitors.
+          You could end up with multiple strategies for different topics. e.g. if you do online wish
+          lists, you might have a strategy for Christmas or Birthday, with different competitors.
         </Text>
-        <Input
-          placeholder="Content Strategy Name"
-          onChange={(e) => setName(e.target.value)}
-        />
+        <Input placeholder="Content Strategy Name" onChange={(e) => setName(e.target.value)} />
       </Stack>
 
-      <Button
-        onClick={handleCreateContentStrategy}
-        isLoading={isLoading}
-        isDisabled={!name}
-      >
+      <Button onClick={handleCreateContentStrategy} isLoading={isLoading} isDisabled={!name}>
         Start Content Strategy
       </Button>
     </Stack>
