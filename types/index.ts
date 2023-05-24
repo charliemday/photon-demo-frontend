@@ -5,7 +5,7 @@ export type { MissingKeyword, WordSeekItem } from "./engine";
 export { SeedKeywordSource } from "./strategies";
 export type { ContentStrategy, Geography, SeedKeyword } from "./strategies";
 export { TaskStatusEnum, TaskStatusNameEnum, TaskTypeNameEnum, TaskTypeSlugEnum } from "./tasks";
-export type { Task, TaskType } from "./tasks";
+export type { CreateUpdateTask, Task, TaskStatusType, TaskType } from "./tasks";
 export { TeamType } from "./team";
 export type { SemrushDatabase, SemrushDatabaseKeys, Team, TeamPerformance } from './team';
 export type { Account, Opportunity, Territory } from "./territories";

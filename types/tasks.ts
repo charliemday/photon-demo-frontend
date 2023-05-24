@@ -12,7 +12,6 @@ export enum TaskStatusNameEnum {
     done = "done",
 }
 
-
 export enum TaskTypeSlugEnum {
     blog = "blog",
     onboarding = "onboarding",
@@ -23,6 +22,10 @@ export enum TaskTypeNameEnum {
     onboarding = "Onboarding",
 }
 
+export interface TaskStatusType {
+    name: TaskStatusNameEnum;
+    label: TaskStatusEnum;
+}
 
 export interface TaskType {
     id: number;
@@ -37,10 +40,17 @@ export interface Task {
     status: {
         name: TaskStatusNameEnum;
         value: TaskStatusEnum;
-    },
-    team: Partial<Team>,
-    assignee: Partial<User>,
+    };
+    team: Partial<Team>;
+    assignee: Partial<User>;
     taskType: TaskType;
     created: string;
     content: Blog | null;
-};
+}
+
+export interface CreateUpdateTask extends Omit<Task, "status" | "taskType" | "team" | "assignee"> {
+    status: string;
+    taskType: number;
+    team: number;
+    assignee: number;
+}

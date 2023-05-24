@@ -43,6 +43,7 @@ import {
   SearchConsoleConnect,
   SearchConsoleReport,
   SeedKeywords,
+  TaskModal,
   TeamBlogs,
   TeamContentStrategies,
   WordSeek,
@@ -313,6 +314,7 @@ export const AutomationView: React.FC = () => {
         isOpen={isOpen && activeStep === KEY.TEAM_CONTENT_STRATEGIES}
         onClose={onClose}
       />
+      <TaskModal isOpen={isOpen && activeStep === KEY.TASK_MODAL} onClose={onClose} />
     </Box>
   );
 };

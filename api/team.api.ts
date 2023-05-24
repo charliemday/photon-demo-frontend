@@ -3,6 +3,7 @@ import { APIErrorResponse, ConvertToSnakeCase, Team, TeamPerformance, TeamType }
 import { baseApi, TAG_TYPES } from ".";
 
 import { apiUrls } from "api/urls.api";
+import { TeamMember } from "types/team";
 
 interface CreateTeamInterface {
   body: Partial<Team>;
@@ -157,12 +158,19 @@ export const teamApi = baseApi.injectEndpoints({
     /**
      * Get a team's performance
      */
-
     teamPerformance: builder.query<TeamPerformance, TeamPerformanceRequestParams>({
       query: ({ teamUid }) => ({
         url: apiUrls.TEAM_PERFORMANCE(teamUid),
       }),
       transformResponse: (response: TeamPerformance) => camelizeKeys(response) as TeamPerformance,
+    }),
+    /**
+     * List team members
+     */
+    teamMembers: builder.query<TeamMember[], { teamId: number }>({
+      query: ({ teamId }) => ({
+        url: apiUrls.TEAM_MEMBERS(teamId),
+      }),
     })
   }),
 });
@@ -178,4 +186,5 @@ export const {
   useBulkUpdateCompetitorsMutation,
   useGenerateBroadKeywordsMutation,
   useTeamPerformanceQuery,
+  useTeamMembersQuery,
 } = teamApi;
