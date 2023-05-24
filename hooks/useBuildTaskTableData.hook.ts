@@ -6,11 +6,14 @@ import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { TaskTypeSlugEnum } from "types";
 
+export interface TaskRowItem {
+    rowData: RowItem[];
+    rowClick: () => void;
+    rowType: string;
+}
+
 interface ReturnProps {
-    rowItems: {
-        rowData: RowItem[];
-        rowClick: () => void;
-    }[];
+    rowItems: TaskRowItem[];
     isLoading: boolean;
     isError: boolean;
 }
@@ -76,6 +79,7 @@ export const useBuildTaskTableData = (props: Props): ReturnProps => {
         ]
         return {
             rowData,
+            rowType: slug,
             rowClick: () => {
                 if (slug === TaskTypeSlugEnum.onboarding && props.onOnboardingClick) {
                     props.onOnboardingClick();

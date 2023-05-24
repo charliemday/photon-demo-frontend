@@ -32,13 +32,10 @@ const rowHeaders: HeaderItem[] = [
 
 export const DashboardView: FC = () => {
   const router = useRouter();
-
   const { isOpen, onClose, onOpen } = useDisclosure();
-
   const { rowItems, isLoading } = useBuildTaskTableData({
     onOnboardingClick: onOpen,
   });
-
   return (
     <Stack spacing={12}>
       <Stack spacing={4}>
