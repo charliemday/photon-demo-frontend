@@ -38,6 +38,7 @@ import {
   BroadSeedKeywords,
   KeywordInsightsResults,
   KeywordInsightsUpload,
+  MagicUrl,
   PeopleAlsoAsked,
   PopulateSCReports,
   SearchConsoleConnect,
@@ -317,6 +318,7 @@ export const AutomationView: React.FC = () => {
       />
       <TaskModal isOpen={isOpen && activeStep === KEY.TASK_MODAL} onClose={onClose} />
       <WordSeekJobs isOpen={isOpen && activeStep === KEY.WORD_SEEK_JOBS} onClose={onClose} />
+      <MagicUrl isOpen={isOpen && activeStep === KEY.MAGIC_URL} onClose={onClose} />
     </Box>
   );
 };

@@ -10,7 +10,7 @@ export { TeamType } from "./team";
 export type { SemrushDatabase, SemrushDatabaseKeys, Team, TeamMin, TeamPerformance } from './team';
 export type { Account, Opportunity, Territory } from "./territories";
 export { Features } from './user';
-export type { User, UserMin, UserTier } from './user';
+export type { MagicTokenUrl, User, UserMin, UserTier } from './user';
 export type {
   APIErrorResponse, CamelToSnakeCase,
   ConvertToCamelCase,

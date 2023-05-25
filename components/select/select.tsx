@@ -1,3 +1,4 @@
+import { Flex, Skeleton } from "@chakra-ui/react";
 import React from "react";
 import ReactSelect, { createFilter } from "react-select";
 
@@ -12,6 +13,7 @@ interface Props {
   placeholder?: string;
   defaultValue?: any;
   isMulti?: boolean;
+  isLoading?: boolean;
 }
 
 export const Select: React.FC<Props> = ({
@@ -20,15 +22,21 @@ export const Select: React.FC<Props> = ({
   onChange,
   defaultValue = [],
   isMulti = false,
-}) => (
-  <ReactSelect
-    isMulti={isMulti}
-    options={options}
-    placeholder={placeholder}
-    onChange={onChange}
-    defaultValue={defaultValue}
-    filterOption={createFilter({
-      ignoreAccents: false,
-    })}
-  />
-);
+  isLoading = false,
+}) =>
+  isLoading ? (
+    <Flex justifyContent="center" w="full">
+      <Skeleton w="full" h={8} borderRadius="md" />
+    </Flex>
+  ) : (
+    <ReactSelect
+      isMulti={isMulti}
+      options={options}
+      placeholder={placeholder}
+      onChange={onChange}
+      defaultValue={defaultValue}
+      filterOption={createFilter({
+        ignoreAccents: false,
+      })}
+    />
+  );

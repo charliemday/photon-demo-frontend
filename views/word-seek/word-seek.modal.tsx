@@ -260,20 +260,15 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
             {`Select a site`}
           </Text>
           <Box mb={6}>
-            {isSitesLoading ? (
-              <Flex justifyContent="center" w="full">
-                <Skeleton w="full" h={8} borderRadius="md" />
-              </Flex>
-            ) : (
-              <Select
-                onChange={({ value }) => setSelectedSite(value)}
-                placeholder="🔍 Select for a site..."
-                options={siteOptionData.map((site) => ({
-                  label: site.label.replace("sc-domain:", "https://www."),
-                  value: site.value,
-                }))}
-              />
-            )}
+            <Select
+              onChange={({ value }) => setSelectedSite(value)}
+              placeholder="🔍 Select for a site..."
+              options={siteOptionData.map((site) => ({
+                label: site.label.replace("sc-domain:", "https://www."),
+                value: site.value,
+              }))}
+              isLoading={isSitesLoading}
+            />
           </Box>
 
           {selectedSite && (
