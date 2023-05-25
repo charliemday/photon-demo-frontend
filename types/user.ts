@@ -70,3 +70,9 @@ export interface UserTier {
     modified: string;
     user: number;
 }
+export interface UserMin {
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+}

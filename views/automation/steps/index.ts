@@ -13,3 +13,5 @@ export { TeamContentStrategies } from "./team-content-strategies";
 export { UploadAhrefsReport } from './upload-ahrefs-report';
 export { UploadZone } from './upload-zone';
 export { WordSeek } from './word-seek';
+export { WordSeekJobs } from './word-seek-jobs';
+

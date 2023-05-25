@@ -47,6 +47,7 @@ import {
   TeamBlogs,
   TeamContentStrategies,
   WordSeek,
+  WordSeekJobs,
 } from "./steps";
 import { GenerateKIInput } from "./steps/seed-keywords";
 
@@ -315,6 +316,7 @@ export const AutomationView: React.FC = () => {
         onClose={onClose}
       />
       <TaskModal isOpen={isOpen && activeStep === KEY.TASK_MODAL} onClose={onClose} />
+      <WordSeekJobs isOpen={isOpen && activeStep === KEY.WORD_SEEK_JOBS} onClose={onClose} />
     </Box>
   );
 };

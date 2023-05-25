@@ -5,8 +5,6 @@ import {
   HStack,
   ModalBody,
   ModalFooter,
-  ModalHeader,
-  Select,
   Spinner,
   Stack,
   Table,
@@ -22,6 +20,7 @@ import { useWordSeekResultsQuery } from "api/engine.api";
 import { Button } from "components/button";
 import { Image } from "components/image";
 import { Modal } from "components/modals";
+import { Select } from "components/select";
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { CSVLink } from "react-csv";
 import { AiOutlineTeam } from "react-icons/ai";
@@ -36,17 +35,11 @@ interface Props {
   defaultPage?: string | null;
 }
 
-export const WordSeekResultsModal: FC<Props> = ({
-  isOpen,
-  onClose,
-  defaultPage = null,
-}) => {
+export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage = null }) => {
   const [selectedPage, setSelectedPage] = useState<string | null>(defaultPage);
 
   const csvData = useRef<any>([]);
-  const activeTeam: Team = useSelector(
-    (state: RootState) => state.team.activeTeam
-  );
+  const activeTeam: Team = useSelector((state: RootState) => state.team.activeTeam);
 
   const {
     data: wordSeekResults,
@@ -64,11 +57,7 @@ export const WordSeekResultsModal: FC<Props> = ({
   }, [isOpen, refetch]);
 
   useEffect(() => {
-    if (
-      selectedPage === null &&
-      wordSeekResults &&
-      wordSeekResults?.length > 0
-    ) {
+    if (selectedPage === null && wordSeekResults && wordSeekResults?.length > 0) {
       setSelectedPage(wordSeekResults[0].page);
     }
   }, [wordSeekResults, selectedPage]);
@@ -105,16 +94,10 @@ export const WordSeekResultsModal: FC<Props> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl">
-      <ModalHeader>
+      <Stack p={4}>
         <HStack justifyContent="space-between" alignItems="flex-end">
-          <HStack spacing={4}>
-            <Box
-              w={12}
-              h={12}
-              position="relative"
-              borderRadius="md"
-              overflow="hidden"
-            >
+          <HStack spacing={4} w="75%">
+            <Box w={12} h={12} position="relative" borderRadius="md" overflow="hidden">
               <Image
                 src={activeTeam?.logo || ""}
                 alt={activeTeam?.name}
@@ -122,26 +105,28 @@ export const WordSeekResultsModal: FC<Props> = ({
                 fallbackComponent={<AiOutlineTeam fontSize={32} />}
               />
             </Box>
-            <Box>
-              <Text>{activeTeam?.name}</Text>
+            <Stack w="full" flex={1}>
+              <Text fontSize="xl" fontWeight="semibold">
+                {activeTeam?.name}
+              </Text>
               {pages && pages?.length > 0 && (
                 <Select
-                  size="sm"
-                  onChange={(e) => setSelectedPage(e.target.value)}
-                  p={0}
-                  cursor="pointer"
-                >
-                  {pages?.map((page, index) => (
-                    <option key={index} value={page}>
-                      {page}
-                    </option>
-                  ))}
-                </Select>
+                  options={
+                    pages
+                      ? pages.map((page) => ({
+                          label: page,
+                          value: page,
+                        }))
+                      : []
+                  }
+                  onChange={({ value }) => setSelectedPage(value)}
+                  placeholder="🔍 Search for a page..."
+                />
               )}
-            </Box>
+            </Stack>
           </HStack>
           <HStack spacing={2}>
-            <Button size="sm" isLoading={isFetching} onClick={refetch}>
+            <Button isLoading={isFetching} onClick={refetch}>
               <Text mr={2}>Refresh</Text>
               <BiRefresh fontSize={18} />
             </Button>
@@ -154,7 +139,6 @@ export const WordSeekResultsModal: FC<Props> = ({
               onClick={() => {
                 csvData.current.link.click();
               }}
-              size="sm"
             >
               CSV{" "}
               <Box ml={2}>
@@ -163,14 +147,14 @@ export const WordSeekResultsModal: FC<Props> = ({
             </Button>
           </HStack>
         </HStack>
-      </ModalHeader>
+      </Stack>
       <ModalBody>
         <Divider mb={6} />
         {isLoading ? (
           <Flex alignItems="center" justifyContent="center" h="40vh">
             <Spinner size="lg" />
           </Flex>
-        ) : tableData.length === 0 ? (
+        ) : tableData?.length === 0 ? (
           <Flex alignItems="center" justifyContent="center" h="50vh">
             <Stack m="auto" w="full" textAlign="center" alignItems="center">
               <Text fontSize="xl">🎉</Text>
@@ -182,11 +166,12 @@ export const WordSeekResultsModal: FC<Props> = ({
         ) : (
           <TableContainer h="50vh" overflowY="auto">
             <Flex alignItems="center" justifyContent="space-between" pb={6}>
-              <Text fontSize="sm" fontWeight="bold">{`${
-                tableData.length
-              } missing keyword${
-                tableData.length > 1 ? "s" : ""
+              <Text fontSize="sm" fontWeight="bold">{`${tableData?.length} missing keyword${
+                tableData?.length > 1 ? "s" : ""
               } found for this page`}</Text>
+              <Text fontWeight="semibold" fontSize="sm">
+                Word Seek has run on {pages?.length} page{pages?.length === 1 ? "" : "s"}
+              </Text>
             </Flex>
             <Table variant="striped" size="sm">
               <Thead>
@@ -194,14 +179,16 @@ export const WordSeekResultsModal: FC<Props> = ({
                   <Th>Keyword</Th>
                   <Th>Clicks</Th>
                   <Th>Impressions</Th>
+                  <Th>Average Position</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {tableData.map((i, index) => (
+                {tableData?.map((i, index) => (
                   <Tr key={index}>
                     <Td>{i.keyword}</Td>
                     <Td>{i.clicks}</Td>
                     <Td>{i.impressions}</Td>
+                    <Td>{i.position}</Td>
                   </Tr>
                 ))}
               </Tbody>
