@@ -36,7 +36,7 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
 
   const activeTeam: Team = useSelector((state: RootState) => state.team.activeTeam);
 
-  const { data: wordSeekJobs } = useWordSeekJobsQuery(activeTeam?.id, {
+  const { data: wordSeekJobs, refetch: refetchJobs } = useWordSeekJobsQuery(activeTeam?.id, {
     skip: !activeTeam?.id,
   });
 
@@ -52,16 +52,21 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
 
   const { hasAccess } = useHasProductAccess();
 
-  useEffect(() => {
+  const resetModal = () => {
     setShowAwaitEmail(false);
+    setSelectedPage(null);
+    setSelectedSite(null);
+    refetchJobs();
+  };
+
+  useEffect(() => {
     refetch();
 
     if (!isOpen) {
       /**
        * Reset the selected page and site
        */
-      setSelectedPage(null);
-      setSelectedSite(null);
+      resetModal();
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -227,9 +232,15 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
           </Stack>
         </ModalBody>
         <ModalFooter>
-          <Button w="full" onClick={onClose}>
-            Close
-          </Button>
+          <HStack w="full">
+            <Button flex={1} onClick={resetModal}>
+              Run another
+            </Button>
+
+            <Button flex={1} onClick={onClose}>
+              Close
+            </Button>
+          </HStack>
         </ModalFooter>
       </Modal>
     );
