@@ -16,6 +16,7 @@ export enum KEY {
     TEAM_CONTENT_STRATEGIES = "team-content-strategies",
     TASK_MODAL = "task-modal",
     WORD_SEEK_JOBS = "word-seek-jobs",
+    MAGIC_URL = "magic-url",
 }
 
 export interface STEP {
@@ -142,8 +143,13 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
                 title: "Admin User",
                 description: "For admin use",
                 key: KEY.ADMIN_USER,
-                image: "/steps/search-console.svg",
             },
+            {
+                title: "🪄 Generate Magic URL",
+                description: "Generate a magic URL for a user",
+                key: KEY.MAGIC_URL,
+                isNew: true,
+            }
 
         ],
     },

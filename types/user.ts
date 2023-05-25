@@ -76,3 +76,13 @@ export interface UserMin {
     firstName: string;
     lastName: string;
 }
+
+export interface MagicTokenUrl {
+    id: number;
+    magicUrl: string;
+    created: string;
+    modified: string;
+    token: string;
+    active: boolean;
+    user: number;
+}
