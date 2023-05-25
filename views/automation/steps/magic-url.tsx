@@ -74,7 +74,12 @@ export const MagicUrl: FC<Props> = (props) => {
   );
 
   return (
-    <ModalStepWrapper {...props}>
+    <ModalStepWrapper
+      {...props}
+      title="Generate Magic URL"
+      showContentStrategy={false}
+      showTeam={false}
+    >
       <Stack>
         <Text fontSize="sm" fontWeight="semibold">
           Which user needs a magic link?
