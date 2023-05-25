@@ -143,6 +143,7 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
                 title: "Admin User",
                 description: "For admin use",
                 key: KEY.ADMIN_USER,
+                isDisabled: true,
             },
             {
                 title: "🪄 Generate Magic URL",
