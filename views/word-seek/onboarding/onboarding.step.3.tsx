@@ -7,11 +7,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import {
-  CodeResponse,
-  GoogleOAuthProvider,
-  useGoogleLogin,
-} from "@react-oauth/google";
+import { CodeResponse, GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import { useCompleteOauthMutation } from "api/auth.api";
 import { useUserDetailsQuery } from "api/user.api";
 import { Button } from "components/button";
@@ -20,12 +16,11 @@ import { FC, useEffect } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 
 interface Props extends Partial<StepWizardChildProps> {
-  onCompleted?: () => void;
+  onCompleted?: (openModal?: boolean) => void;
 }
 
 export const OnboardingStep3Content: FC<Props> = (props) => {
-  const [completeOauth, { isLoading, isSuccess, isError, error }] =
-    useCompleteOauthMutation();
+  const [completeOauth, { isLoading, isSuccess, isError, error }] = useCompleteOauthMutation();
   const toast = useToast();
   const { refetch: refetchUserDetails } = useUserDetailsQuery(undefined);
 
@@ -41,7 +36,7 @@ export const OnboardingStep3Content: FC<Props> = (props) => {
 
         refetchUserDetails();
         if (props.onCompleted) {
-          props.onCompleted();
+          props.onCompleted(true);
         }
       }
 
@@ -66,6 +61,12 @@ export const OnboardingStep3Content: FC<Props> = (props) => {
     },
   });
 
+  const onSkip = () => {
+    if (props.onCompleted) {
+      props.onCompleted(false);
+    }
+  };
+
   return (
     <>
       <ModalHeader>
@@ -79,15 +80,27 @@ export const OnboardingStep3Content: FC<Props> = (props) => {
         <Stack alignItems="center" textAlign="center" w="75%" m="auto">
           <Heading>🤖</Heading>
           <Text fontSize="lg" fontWeight="medium">
-            Baser will need to read your Search Console data to give you the
-            fastest SEO insights
+            Baser will need to read your Search Console data to give you the fastest SEO insights
           </Text>
         </Stack>
       </ModalBody>
       <ModalFooter>
-        <Button w="full" isLoading={isLoading} onClick={googleLogin}>
-          Connect Search Console
-        </Button>
+        <Stack w="full" alignItems="center" spacing={4}>
+          <Button w="full" isLoading={isLoading} onClick={googleLogin}>
+            Connect Search Console
+          </Button>
+          <Text
+            fontSize="sm"
+            cursor="pointer"
+            _hover={{
+              textDecoration: "underline",
+              color: "blue.500",
+            }}
+            onClick={onSkip}
+          >
+            Skip
+          </Text>
+        </Stack>
       </ModalFooter>
     </>
   );

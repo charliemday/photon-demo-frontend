@@ -22,9 +22,40 @@ export interface TeamMin {
 
 
 export type SemrushDatabaseKeys = keyof typeof SEMRUSH_DATABASES;
-export type SemrushDatabase = typeof SEMRUSH_DATABASES[SemrushDatabaseKeys];
+export type SemrushDatabase = (typeof SEMRUSH_DATABASES)[SemrushDatabaseKeys];
 
 export enum TeamType {
   INTERNAL = "internal",
   EXTERNAL = "external",
+}
+
+export interface TeamPerformance {
+  traffic: number;
+  previousTraffic: number;
+  premiumKeywords: number;
+  previousPremiumKeywords: number;
+  standardKeywords: number;
+  previousStandardKeywords: number;
+  allKeywords: number;
+  previousAllKeywords: number;
+  impressions: number;
+  previousImpressions: number;
+  clicks: number;
+  previousClicks: number;
+  organicPages: number;
+  previousOrganicPages: number;
+  referringDomains: number;
+  previousReferringDomains: number;
+}
+
+export interface TeamMember {
+  id: number;
+  user: {
+    id: number;
+    name: string;
+    email: string;
+  };
+  created: string;
+  modified: string;
+  team: number;
 }

@@ -18,10 +18,7 @@ const BlogStatusColor: {
   [BlogStatus.Generated]: "gray.500",
 };
 
-export const BlogItem: React.FC<Props> = ({
-  item: { title, status },
-  onClick,
-}) => (
+export const BlogItem: React.FC<Props> = ({ item: { title, status }, onClick }) => (
   <HStack
     cursor="pointer"
     _hover={{
@@ -35,7 +32,7 @@ export const BlogItem: React.FC<Props> = ({
   >
     <Text>{title}</Text>
     <Text fontSize="sm" fontWeight="semibold" color={BlogStatusColor[status]}>
-      {status.toUpperCase()}
+      {status?.toUpperCase()}
     </Text>
   </HStack>
 );

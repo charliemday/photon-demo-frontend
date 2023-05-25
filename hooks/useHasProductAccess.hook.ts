@@ -14,6 +14,8 @@ export const useHasProductAccess = (): ReturnProps => {
     )
 
     return {
+        // TODO: Switch over to new feature flags once they are implemented
+        // @ts-ignore
         hasAccess: data?.features?.includes(Features.WORD_SEEK) ?? false
     }
 

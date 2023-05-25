@@ -43,9 +43,7 @@ export const BlogOutline: React.FC<Props> = ({
         </Text>
       </HStack>
       {blogSections?.length
-        ? blogSections?.map((section) => (
-            <BlogSectionItem key={section.id} item={section} />
-          ))
+        ? blogSections?.map((section) => <BlogSectionItem key={section.id} item={section} />)
         : renderEmptyBlogSections()}
       {blogSections?.length ? (
         <>

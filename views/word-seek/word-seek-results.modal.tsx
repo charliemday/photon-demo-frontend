@@ -7,15 +7,10 @@ import {
   ModalFooter,
   Spinner,
   Stack,
-  Table,
   TableContainer,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
 } from "@chakra-ui/react";
+import { createColumnHelper } from "@tanstack/react-table";
 import { useWordSeekResultsQuery } from "api/engine.api";
 import { Button } from "components/button";
 import { Image } from "components/image";
@@ -27,13 +22,44 @@ import { AiOutlineTeam } from "react-icons/ai";
 import { BiRefresh } from "react-icons/bi";
 import { BsDownload } from "react-icons/bs";
 import { useSelector } from "react-redux";
-import { RootState, Team } from "types";
+import { MissingKeyword, RootState, Team } from "types";
+import { WordSeekResultsTable } from "./word-seek-results.table";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   defaultPage?: string | null;
 }
+
+const columnHelper = createColumnHelper<MissingKeyword>();
+
+const columns = [
+  columnHelper.accessor("keyword", {
+    cell: (info) => info.getValue(),
+    header: "Keyword",
+  }),
+  columnHelper.accessor("clicks", {
+    cell: (info) => info.getValue(),
+    header: "Clicks",
+    meta: {
+      isNumeric: true,
+    },
+  }),
+  columnHelper.accessor("impressions", {
+    cell: (info) => info.getValue(),
+    header: "Impressions",
+    meta: {
+      isNumeric: true,
+    },
+  }),
+  columnHelper.accessor("position", {
+    cell: (info) => info.getValue(),
+    header: "Average Position",
+    meta: {
+      isNumeric: true,
+    },
+  }),
+];
 
 export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage = null }) => {
   const [selectedPage, setSelectedPage] = useState<string | null>(defaultPage);
@@ -173,26 +199,7 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage =
                 Word Seek has run on {pages?.length} page{pages?.length === 1 ? "" : "s"}
               </Text>
             </Flex>
-            <Table variant="striped" size="sm">
-              <Thead>
-                <Tr>
-                  <Th>Keyword</Th>
-                  <Th>Clicks</Th>
-                  <Th>Impressions</Th>
-                  <Th>Average Position</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {tableData?.map((i, index) => (
-                  <Tr key={index}>
-                    <Td>{i.keyword}</Td>
-                    <Td>{i.clicks}</Td>
-                    <Td>{i.impressions}</Td>
-                    <Td>{i.position}</Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
+            <WordSeekResultsTable data={tableData} columns={columns} />
           </TableContainer>
         )}
       </ModalBody>

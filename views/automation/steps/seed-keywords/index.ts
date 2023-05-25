@@ -1,5 +1,4 @@
 export { BroadSeedKeywords } from './broad-seed-keywords';
-export { ClassificationSection } from './classification-section';
 export { default as CompetitorsSection } from './competitors-section';
 export { default as DatabaseSection } from './database-section';
 export { GenerateKIInput } from './generate-ki-input';

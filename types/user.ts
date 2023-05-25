@@ -1,6 +1,24 @@
 export enum Features {
-    WORD_SEEK = "word_seek",
-    // TODO: Add more features here
+    /**
+     * The user can access the standard Word Seek
+     */
+    WORD_SEEK_FREE = "word_seek_free",
+    /**
+     * The user can access the premium Word Seek
+     */
+    WORD_SEEK_PREMIUM = "word_seek_premium",
+    /**
+     * The user can access their performance dashboard
+    **/
+    PERFORMANCE_DASHBOARD = "performance_dashboard",
+    /**
+     * The user can access and run their own content strategies
+     */
+    CONTENT_STRATEGY_WIZARD = "content_strategy_wizard",
+    /**
+     * The user can access everything
+     */
+    ALL = "*",
 }
 
 export interface User {
@@ -37,6 +55,21 @@ export interface User {
     features: Features[];
 }
 
+export interface UserTier {
+    id: number;
+    tier: {
+        id: number;
+        created: string;
+        modified: string;
+        name: string;
+        tier: number;
+        description: string;
+        featureAccess: Features[];
+    };
+    created: string;
+    modified: string;
+    user: number;
+}
 export interface UserMin {
     id: number;
     email: string;

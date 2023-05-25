@@ -3,6 +3,7 @@ export { baseApi, baseQuery, TAG_TYPES } from './base-query';
 export { engineApi } from './engine.api';
 export { paymentApi } from './payment.api';
 export { strategiesApi } from './strategies.api';
+export { taskApi } from './tasks.api';
 export { teamApi } from './team.api';
 export { apiUrls } from './urls.api';
 export { userApi } from './user.api';

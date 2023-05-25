@@ -17,14 +17,13 @@ import { BASE_FRONTEND_URL } from "config/urls";
 import { useLogout } from "hooks";
 import React from "react";
 import { typeCheckError } from "utils";
-import { GscConnectModal } from "views/dashboard";
+import { GscConnectModal } from "views/word-seek";
 
 interface Props {}
 
 export const SettingsView: React.FC<Props> = () => {
   const { data: userDetails } = useUserDetailsQuery(undefined);
-  const [deleteAccount, { isLoading: isDeletingAccount }] =
-    useDeleteAccountMutation();
+  const [deleteAccount, { isLoading: isDeletingAccount }] = useDeleteAccountMutation();
   const [createCustomerPortal, { isLoading: isCreatingCustomerPortal }] =
     useCreateCustomerPortalMutation();
 
@@ -43,12 +42,7 @@ export const SettingsView: React.FC<Props> = () => {
       <HStack>
         {imgSrc && (
           <Box h={6} w={6} position="relative">
-            <Image
-              layout="fill"
-              objectFit="contain"
-              src={imgSrc}
-              alt="Button Image"
-            />
+            <Image layout="fill" objectFit="contain" src={imgSrc} alt="Button Image" />
           </Box>
         )}
         <Text fontSize="lg" fontWeight="semibold">
@@ -68,9 +62,7 @@ export const SettingsView: React.FC<Props> = () => {
       .catch((err) => {
         toast({
           title: "Error",
-          description:
-            typeCheckError(err) ||
-            "Something went wrong. Please contact our team.",
+          description: typeCheckError(err) || "Something went wrong. Please contact our team.",
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -89,9 +81,7 @@ export const SettingsView: React.FC<Props> = () => {
       .catch((err) => {
         toast({
           title: "Error",
-          description:
-            typeCheckError(err) ||
-            "Something went wrong. Please contact our team.",
+          description: typeCheckError(err) || "Something went wrong. Please contact our team.",
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -173,12 +163,7 @@ export const SettingsView: React.FC<Props> = () => {
         <Stack spacing={6} borderRadius="xl">
           {renderHeading("☢️ Account Removal")}
           <Box>
-            <Button
-              colorScheme="red"
-              variant="outline"
-              onClick={onOpen}
-              borderWidth="2px"
-            >
+            <Button colorScheme="red" variant="outline" onClick={onOpen} borderWidth="2px">
               Delete Account
             </Button>
           </Box>

@@ -1,3 +1,4 @@
+export { calculateDelta } from './calculateDelta';
 export { calculateSemrushCost } from "./calculateSemrushCost";
 export { capitalizeFirstLetter } from './capitalizeFirstLetter';
 export { cleanUrl } from './cleanUrl';

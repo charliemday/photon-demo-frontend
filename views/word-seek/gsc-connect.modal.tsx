@@ -8,11 +8,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import {
-  CodeResponse,
-  GoogleOAuthProvider,
-  useGoogleLogin,
-} from "@react-oauth/google";
+import { CodeResponse, GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import { useCompleteOauthMutation } from "api/auth.api";
 import { useUserDetailsQuery } from "api/user.api";
 import { Button } from "components/button";
@@ -24,15 +20,14 @@ import { FC, useEffect } from "react";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  onComplete?: () => void;
 }
 
-const GscConnect: FC<Props> = ({ isOpen, onClose }) => {
-  const [completeOauth, { isLoading, isSuccess, isError }] =
-    useCompleteOauthMutation();
+const GscConnect: FC<Props> = ({ isOpen, onClose, onComplete }) => {
+  const [completeOauth, { isLoading, isSuccess, isError }] = useCompleteOauthMutation();
 
   const toast = useToast();
-  const { data: userDetails, refetch: refetchUserDetails } =
-    useUserDetailsQuery(undefined);
+  const { data: userDetails, refetch: refetchUserDetails } = useUserDetailsQuery(undefined);
 
   useEffect(() => {
     if (!isLoading) {
@@ -45,6 +40,10 @@ const GscConnect: FC<Props> = ({ isOpen, onClose }) => {
         });
 
         refetchUserDetails();
+
+        if (onComplete) {
+          onComplete();
+        }
       }
 
       if (isError) {
@@ -56,7 +55,7 @@ const GscConnect: FC<Props> = ({ isOpen, onClose }) => {
         });
       }
     }
-  }, [isLoading, isSuccess, isError, toast, refetchUserDetails]);
+  }, [isLoading, isSuccess, isError, toast, refetchUserDetails, onComplete]);
 
   const googleLogin = useGoogleLogin({
     flow: "auth-code",
@@ -72,11 +71,7 @@ const GscConnect: FC<Props> = ({ isOpen, onClose }) => {
       <ModalHeader>
         <HStack>
           <Box position="relative" h={8} w={8}>
-            <Image
-              src="/steps/search-console.svg"
-              alt="Search Console"
-              layout="fill"
-            />
+            <Image src="/steps/search-console.svg" alt="Search Console" layout="fill" />
           </Box>
           <Text>GSC Connection</Text>
         </HStack>
@@ -98,20 +93,16 @@ const GscConnect: FC<Props> = ({ isOpen, onClose }) => {
       <ModalHeader>
         <HStack spacing={6}>
           <Box position="relative" h={8} w={8}>
-            <Image
-              src="/steps/search-console.svg"
-              alt="Search Console"
-              layout="fill"
-            />
+            <Image src="/steps/search-console.svg" alt="Search Console" layout="fill" />
           </Box>
-          <Text>Word Seek: Missing Keyword Report</Text>
+          <Text>Connect your Google Search Console</Text>
         </HStack>
       </ModalHeader>
       <ModalBody>
         <Stack>
           <Text>
-            Connect your Google Search Console Account so we can find the pages
-            most important to you!
+            Connect your Google Search Console Account so we can find the pages most important to
+            you!
           </Text>
         </Stack>
       </ModalBody>
@@ -125,9 +116,7 @@ const GscConnect: FC<Props> = ({ isOpen, onClose }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="2xl">
-      {userDetails?.connectedSearchConsole
-        ? userIsConnected()
-        : userIsNotConnected()}
+      {userDetails?.connectedSearchConsole ? userIsConnected() : userIsNotConnected()}
     </Modal>
   );
 };

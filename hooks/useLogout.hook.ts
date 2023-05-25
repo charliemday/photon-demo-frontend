@@ -13,10 +13,10 @@ export const useLogout = (): ReturnProps => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const logout = () => {
+  const logout = async () => {
+    await router.push(ROUTES.BASE);
     dispatch({ type: LOGOUT_ACTION });
     dispatch(baseApi.util.resetApiState());
-    router.push(ROUTES.BASE);
   };
 
   return {

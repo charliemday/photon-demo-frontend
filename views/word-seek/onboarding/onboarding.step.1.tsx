@@ -9,9 +9,7 @@ export const OnboardingStep1: FC<Partial<StepWizardChildProps>> = (props) => (
       <Stack w="70%" m="auto" alignItems="center" textAlign="center" py={16}>
         <Heading>👋</Heading>
         <Heading size="lg">Welcome to Baser</Heading>
-        <Text>
-          {`Your account has been created! Let's create a workspace to that you can run WordSeek!`}
-        </Text>
+        <Text>{`Welcome to Baser! Let's get started by creating a Workspace`}</Text>
       </Stack>
     </ModalBody>
     <ModalFooter>

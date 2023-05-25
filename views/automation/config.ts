@@ -14,6 +14,7 @@ export enum KEY {
     TEAM_BLOGS = "team-blogs",
     ADMIN_USER = "admin-user",
     TEAM_CONTENT_STRATEGIES = "team-content-strategies",
+    TASK_MODAL = "task-modal",
     WORD_SEEK_JOBS = "word-seek-jobs",
 }
 
@@ -92,8 +93,15 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
         ],
     },
     {
-        title: "📊 Reporting",
+        title: "📊 Reporting & Tasks",
         steps: [
+            {
+                title: "Tasks",
+                description: "Manually view, create, update, and remove tasks for a team",
+                key: KEY.TASK_MODAL,
+                image: "/logos/baser.png",
+                isNew: true,
+            },
             {
                 title: "Populate SC Reports",
                 description: `This will populate the Search Console reports for *all* the teams.`,
@@ -136,6 +144,7 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
                 key: KEY.ADMIN_USER,
                 image: "/steps/search-console.svg",
             },
+
         ],
     },
 ];

@@ -1,3 +1,4 @@
+import { authUrls } from "api/urls";
 import { camelizeKeys } from "humps";
 import { ConvertToSnakeCase } from "types";
 import { apiUrls, baseApi, TAG_TYPES } from ".";
@@ -63,7 +64,7 @@ export const vendorApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getAuthUrl: builder.query<GetAuthUrlResponse, GetAuthUrlRequest>({
             query: ({ appName }) => ({
-                url: apiUrls.AUTH_URL(appName)
+                url: authUrls.AUTH_URL(appName)
             }),
         }),
         /**

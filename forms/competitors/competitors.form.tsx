@@ -1,13 +1,7 @@
-import {
-  Box,
-  FormControl,
-  HStack,
-  Input,
-  Skeleton,
-  Stack,
-} from "@chakra-ui/react";
-import { useTeamCompetitorsQuery } from "api/team.api";
+import { Box, FormControl, HStack, Input, Skeleton, Stack } from "@chakra-ui/react";
+import { useListCompetitorsQuery } from "api/strategies.api";
 import { Button } from "components/button";
+import { useActiveContentStrategy } from "hooks";
 import { useEffect, useState } from "react";
 import { BiMinusCircle } from "react-icons/bi";
 import uuid from "react-uuid";
@@ -34,12 +28,16 @@ const CompetitorsForm: React.FC<Props> = ({ onChange, team }) => {
     },
   });
 
+  const activeContentStrategy = useActiveContentStrategy();
+
   const {
     data: competitorData,
     refetch,
     isSuccess,
     isLoading,
-  } = useTeamCompetitorsQuery(team.uid);
+  } = useListCompetitorsQuery({
+    contentStrategyId: activeContentStrategy?.id,
+  });
 
   useEffect(() => {
     if (team) {
@@ -69,10 +67,10 @@ const CompetitorsForm: React.FC<Props> = ({ onChange, team }) => {
           [key: string]: CompetitorInterface;
         } = {};
 
-        competitorData.forEach((competitor) => {
+        competitorData.forEach(({ name, url }) => {
           initialCompetitors[uuid()] = {
-            name: competitor.competitorName,
-            url: competitor.competitorUrl,
+            name,
+            url,
           };
         });
 
@@ -160,9 +158,7 @@ const CompetitorsForm: React.FC<Props> = ({ onChange, team }) => {
 
   return (
     <Stack>
-      {Object.keys(inputs).map((inputKey, key) =>
-        renderCompetitorInput(inputKey)
-      )}
+      {Object.keys(inputs).map((inputKey, key) => renderCompetitorInput(inputKey))}
       <Box>
         <Button
           mt={3}

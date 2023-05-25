@@ -1,29 +1,63 @@
-import { Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { Button } from "components/button";
-import { ProductSnippet } from "components/product-snippet";
-import { SECONDARY_COLOR } from "config/brand";
 import { FC } from "react";
 
 interface Props {
-  text: string;
+  onClick?: () => void;
+  title: string;
+  description: string;
+  buttonLabel?: string;
+  emoji?: string;
+  isLoading?: boolean;
 }
 
-export const ProductCard: FC<Props> = ({ text }) => (
-  <Stack
-    background="white"
-    width="342px"
-    paddingX="20px"
-    paddingY="16px"
-    borderRadius="8px"
+export const ProductCard: FC<Props> = ({
+  onClick,
+  title,
+  description,
+  emoji,
+  buttonLabel = "Get Started",
+  isLoading = false,
+}) => (
+  <Box
+    w={350}
+    h="auto"
+    p={8}
     borderColor="#ECECEC"
     borderWidth="1px"
-    spacing="20px"
+    borderRadius="xl"
+    boxShadow="md"
   >
-    <ProductSnippet name="WordSeek" icon="👀" tag="Trial Available" />
-    <Text fontSize="xs">{text}</Text>
-
-    <Button bgColor={SECONDARY_COLOR} textColor="white" borderColor="black" borderWidth="1px">
-      View
-    </Button>
-  </Stack>
+    <Flex flexDir="column" justifyContent="space-between" h="full">
+      <Flex
+        w={41}
+        height={41}
+        bgColor="purple.300"
+        justifyContent="center"
+        alignItems="center"
+        borderRadius="md"
+        border="solid 2px black"
+        mb={3}
+      >
+        <Text fontSize="xl">{emoji}</Text>
+      </Flex>
+      <Box>
+        <Box>
+          <Text fontWeight="semibold">{title}</Text>
+        </Box>
+        <Box my={4}>
+          <Text fontSize="sm" letterSpacing={0.25}>
+            {description}
+          </Text>
+        </Box>
+      </Box>
+      <Box>
+        {buttonLabel && onClick && (
+          <Button w="full" onClick={onClick} isLoading={isLoading} border="solid 2px black">
+            {buttonLabel}
+          </Button>
+        )}
+      </Box>
+    </Flex>
+  </Box>
 );

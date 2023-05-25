@@ -1,25 +1,27 @@
 import { useUserDetailsQuery } from "api/user.api";
-import { SidebarLayout } from "components/layouts";
-import React from "react";
+import { FeatureWrapper, SidebarLayout } from "components/layouts";
+import { FC } from "react";
+import { Features } from "types";
 import { DashboardView } from "views/dashboard";
 
-interface Props {}
+const Dashboard: FC = () => {
+  const user = useUserDetailsQuery(undefined);
 
-const Dashboard: React.FC<Props> = () => {
-  const { data: user } = useUserDetailsQuery(undefined);
+  const firstName = user.data?.firstName;
+  const lastName = user.data?.lastName;
+  const fullName = `${firstName} ${lastName}`;
 
-  const firstName = user?.firstName;
-  const lastName = user?.lastName;
+  let title = `Welcome, ${fullName} 👋!`;
 
-  const fullName = user ? `${firstName} ${lastName}` : "";
+  if (!firstName && !lastName) {
+    title = "Welcome to Baser 👋!";
+  }
 
   return (
-    <SidebarLayout
-      headerTitle="Baser | Dashboard"
-      title={`Welcome your SEO Dashboard, ${fullName}`}
-    >
-       
-      <DashboardView />
+    <SidebarLayout headerTitle="Baser | Dashboard" title={title}>
+      <FeatureWrapper restrictedFeatures={[Features.CONTENT_STRATEGY_WIZARD]}>
+        <DashboardView />
+      </FeatureWrapper>
     </SidebarLayout>
   );
 };

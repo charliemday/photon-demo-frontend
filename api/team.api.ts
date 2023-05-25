@@ -1,8 +1,9 @@
 import { camelizeKeys, decamelizeKeys } from "humps";
-import { APIErrorResponse, ConvertToSnakeCase, Team, TeamType } from "types";
+import { APIErrorResponse, ConvertToSnakeCase, Team, TeamPerformance, TeamType } from "types";
 import { baseApi, TAG_TYPES } from ".";
 
 import { apiUrls } from "api/urls.api";
+import { TeamMember } from "types/team";
 
 interface CreateTeamInterface {
   body: Partial<Team>;
@@ -61,6 +62,10 @@ interface ListTeamRequestParams {
   teamType?: TeamType;
 }
 
+interface TeamPerformanceRequestParams {
+  teamUid: string;
+}
+
 // Define a service using a base URL and expected endpoints
 export const teamApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -114,53 +119,6 @@ export const teamApi = baseApi.injectEndpoints({
       invalidatesTags: [TAG_TYPES.TEAMS],
     }),
     /**
-     * Retrieve team classification
-     */
-    retrieveClassification: builder.query<TeamClassification, string>({
-      query: (teamUid) => ({
-        url: apiUrls.TEAM_CLASSIFICATION(teamUid),
-      }),
-      transformResponse: (response: ConvertToSnakeCase<TeamClassification>) => {
-        return camelizeKeys(response) as TeamClassification;
-      },
-    }),
-    /**
-     * Update team classification
-     */
-    updateClassifications: builder.mutation<
-      TeamClassification,
-      TeamClassification
-    >({
-      query: (body) => ({
-        url: apiUrls.TEAM_CLASSIFICATION(body.teamUid),
-        method: "PATCH",
-        body: decamelizeKeys(body),
-      }),
-    }),
-    /**
-     * List competitors for a team
-     */
-    // TODO: Remove
-    teamCompetitors: builder.query<CompetitorResponse[], string>({
-      query: (teamId) => ({
-        url: apiUrls.TEAM_COMPETITORS(teamId),
-      }),
-      providesTags: [TAG_TYPES.TEAMS],
-      transformResponse: (response: ConvertToSnakeCase<CompetitorResponse>[]) =>
-        response.map((c) => camelizeKeys(c) as CompetitorResponse).filter((c) => c.active),
-    }),
-    /**
-     * List seed keywords for a team
-     */
-    // listSeedKeywords: builder.query<SeedKeywords[], string>({
-    //   query: (teamUid) => ({
-    //     url: apiUrls.TEAM_SEED_KEYWORDS(teamUid),
-    //   }),
-    //   providesTags: [TAG_TYPES.TEAMS],
-    //   transformResponse: (response: ConvertToSnakeCase<SeedKeywords>[]) =>
-    //     response.map((c) => camelizeKeys(c) as SeedKeywords),
-    // }),
-    /**
      * Bulk create seed keywords for a team
      */
     // TODO: Remove
@@ -175,24 +133,6 @@ export const teamApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [TAG_TYPES.TEAMS],
     }),
-    // /**
-    //  * Create competitors for a team
-    //  */
-    // createCompetitors: builder.mutation<
-    //   CompetitorResponse[],
-    //   {
-    //     competitorName: string;
-    //     competitorUrl: string;
-    //     team: number;
-    //   }[]
-    // >({
-    //   query: (body) => ({
-    //     url: apiUrls.TEAM_COMPETITORS(),
-    //     method: "POST",
-    //     body: decamelizeKeys(body),
-    //   }),
-    //   invalidatesTags: [TAG_TYPES.TEAMS],
-    // }),
     /**
      * Bulk Update the team's competitors
      */
@@ -214,6 +154,23 @@ export const teamApi = baseApi.injectEndpoints({
         method: "POST",
         body: decamelizeKeys(body),
       }),
+    }),
+    /**
+     * Get a team's performance
+     */
+    teamPerformance: builder.query<TeamPerformance, TeamPerformanceRequestParams>({
+      query: ({ teamUid }) => ({
+        url: apiUrls.TEAM_PERFORMANCE(teamUid),
+      }),
+      transformResponse: (response: TeamPerformance) => camelizeKeys(response) as TeamPerformance,
+    }),
+    /**
+     * List team members
+     */
+    teamMembers: builder.query<TeamMember[], { teamId: number }>({
+      query: ({ teamId }) => ({
+        url: apiUrls.TEAM_MEMBERS(teamId),
+      }),
     })
   }),
 });
@@ -225,12 +182,9 @@ export const {
   useUpdateTeamMutation,
   useDeleteTeamMutation,
   useCreateTeamMutation,
-  useRetrieveClassificationQuery,
-  useTeamCompetitorsQuery,
-  useUpdateClassificationsMutation,
-  // useListSeedKeywordsQuery,
   useBulkCreateSeedKeywordsMutation,
-  // useCreateCompetitorsMutation,
   useBulkUpdateCompetitorsMutation,
-  useGenerateBroadKeywordsMutation
+  useGenerateBroadKeywordsMutation,
+  useTeamPerformanceQuery,
+  useTeamMembersQuery,
 } = teamApi;

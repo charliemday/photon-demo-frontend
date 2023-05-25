@@ -2,16 +2,14 @@ import { useToast } from "@chakra-ui/react";
 import { CodeResponse, useGoogleLogin } from "@react-oauth/google";
 import { useCompleteOauthMutation } from "api/auth.api";
 import { useUserDetailsQuery } from "api/user.api";
+import { ProductCard } from "components/cards";
 import React, { useEffect } from "react";
-import DashboardCard from "./dashboard-card";
 
 interface Props {}
 
 export const GscConnectCard: React.FC<Props> = () => {
-  const { data: user, refetch: refetchUserDetails } =
-    useUserDetailsQuery(undefined);
-  const [completeOauth, { isLoading, isSuccess, isError }] =
-    useCompleteOauthMutation();
+  const { data: user, refetch: refetchUserDetails } = useUserDetailsQuery(undefined);
+  const [completeOauth, { isLoading, isSuccess, isError }] = useCompleteOauthMutation();
 
   const toast = useToast();
 
@@ -51,7 +49,7 @@ export const GscConnectCard: React.FC<Props> = () => {
 
   if (user?.connectedSearchConsole) {
     return (
-      <DashboardCard
+      <ProductCard
         title="Connected to Google Search Console"
         description="You are already connected to Google Search Console"
         buttonLabel="Reconnect"
@@ -63,7 +61,7 @@ export const GscConnectCard: React.FC<Props> = () => {
   }
 
   return (
-    <DashboardCard
+    <ProductCard
       title="Connect Google Search Console"
       description="Connect your Google Search Console account to get started"
       buttonLabel="Connect"
