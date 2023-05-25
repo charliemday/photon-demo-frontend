@@ -1,4 +1,13 @@
-import { FormControl, FormLabel, HStack, Input, Select, Stack, useToast } from "@chakra-ui/react";
+import {
+  FormControl,
+  FormLabel,
+  HStack,
+  Input,
+  Select,
+  Stack,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import {
   useCreateTaskMutation,
   useListStatusesQuery,
@@ -104,7 +113,17 @@ export const TaskCreate: FC<Props> = ({ goToNamedStep }) => {
   };
 
   if (teamMembers?.length == 0) {
-    return null;
+    return (
+      <Stack m="auto" w="50%" py={6} alignItems="center">
+        <Text textAlign="center" fontWeight="semibold">
+          {activeTeam?.name} has no Team Members. You need to ensure at least one team member exists
+          to assign them to a task.
+        </Text>
+        <Button size="sm" onClick={() => goToNamedStep && goToNamedStep("Task List")}>
+          Back
+        </Button>
+      </Stack>
+    );
   }
 
   return (
