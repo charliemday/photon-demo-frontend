@@ -17,14 +17,14 @@ export const OnboardingModal: FC<Props> = ({ isOpen, onClose, onComplete }) => {
   const [updateOnboardingStep] = useUpdateOnboardingStepMutation();
   const toast = useToast();
 
-  const handleCompleteOnboarding = async () => {
+  const handleCompleteOnboarding = async (openModal?: boolean) => {
     await updateOnboardingStep({
       onboardingStep: 1,
     })
       .unwrap()
       .then(() => {
         onClose();
-        if (onComplete) onComplete();
+        if (onComplete && openModal) onComplete();
       })
       .catch((err: any) => {
         toast({

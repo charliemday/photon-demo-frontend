@@ -16,7 +16,7 @@ import { FC, useEffect } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 
 interface Props extends Partial<StepWizardChildProps> {
-  onCompleted?: () => void;
+  onCompleted?: (openModal?: boolean) => void;
 }
 
 export const OnboardingStep3Content: FC<Props> = (props) => {
@@ -36,7 +36,7 @@ export const OnboardingStep3Content: FC<Props> = (props) => {
 
         refetchUserDetails();
         if (props.onCompleted) {
-          props.onCompleted();
+          props.onCompleted(true);
         }
       }
 
@@ -63,7 +63,7 @@ export const OnboardingStep3Content: FC<Props> = (props) => {
 
   const onSkip = () => {
     if (props.onCompleted) {
-      props.onCompleted();
+      props.onCompleted(false);
     }
   };
 

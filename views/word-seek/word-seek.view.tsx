@@ -56,7 +56,7 @@ export const WordSeekView: FC<Props> = () => {
       onOnboardingModalToggle();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userDetails]);
 
   const activeTeam: Team = useSelector((state: RootState) => state.team.activeTeam);
 
