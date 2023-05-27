@@ -1,5 +1,9 @@
 export enum Features {
     /**
+     * DEPRECATED: WordSeek
+     */
+    WORD_SEEK = "word_seek",
+    /**
      * The user can access the standard Word Seek
      */
     WORD_SEEK_FREE = "word_seek_free",
