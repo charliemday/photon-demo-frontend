@@ -1,4 +1,5 @@
 import { Box, Flex, HStack, Stack, Text } from "@chakra-ui/react";
+import { Body } from "components/text";
 import React from "react";
 
 interface Props {
@@ -46,16 +47,11 @@ export const SnapshotCard: React.FC<Props> = ({
       </Text>
       {listItems?.map((item, index) => (
         <HStack key={index}>
-          <Text
-            fontSize="xs"
-            fontWeight="bold"
-            textColor={isSelected ? "white" : "gray.500"}
-          >
+          <Body fontWeight="semibold" textColor={isSelected ? "white" : "gray.500"}>
             {item.prefix}
-          </Text>
-          <Text fontSize="xs" textColor={isSelected ? "white" : "gray.500"}>
-            {item.suffix}
-          </Text>
+          </Body>
+
+          <Body textColor={isSelected ? "white" : "gray.500"}>{item.suffix}</Body>
         </HStack>
       ))}
     </Stack>

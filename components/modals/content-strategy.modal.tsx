@@ -1,7 +1,7 @@
 import { Modal, Stack, Text } from "@chakra-ui/react";
 import { ModalField } from "./modal.field";
 import { FC } from "react";
-import { Label } from "components/text";
+import { Body, Label } from "components/text";
 
 interface Props {
   heading: string;
@@ -20,7 +20,7 @@ export const ContentStrategyModal: FC<Props> = ({
     <Stack spacing="16px">
       <Stack maxWidth="400px" spacing="4px">
         <Label>{heading}</Label>
-        <Text fontSize="xs">{text}</Text>
+        <Body>{text}</Body>
       </Stack>
 
       <ModalField label="www.climbingtapes.com" />

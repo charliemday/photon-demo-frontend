@@ -1,5 +1,6 @@
 import { Flex, Stack, Text } from "@chakra-ui/react";
 import { Tag } from "components/tag";
+import { Body } from "components/text";
 import { FC } from "react";
 
 interface Props {
@@ -15,9 +16,7 @@ export const DataEmptyCard: FC<Props> = ({ title }) => (
     spacing="4px"
     w="full"
   >
-    <Text fontSize="xs" fontWeight="semibold" lineHeight="1">
-      {title}
-    </Text>
+    <Body>{title}</Body>
 
     <Text fontSize="2xl" fontWeight="bold" lineHeight="1">
       n/a

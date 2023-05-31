@@ -1,6 +1,6 @@
 import { Box, Checkbox, HStack, Input, Stack, Text } from "@chakra-ui/react";
 import { Image } from "components/image";
-import { Label } from "components/text";
+import { Body, Label } from "components/text";
 import { FC, useEffect, useState } from "react";
 
 interface Props {
@@ -62,11 +62,7 @@ const InputSection: FC<Props> = ({
             </Text>
           </Checkbox>
 
-          {subtitle && (
-            <Text fontSize="xs" opacity={0.75}>
-              {subtitle}
-            </Text>
-          )}
+          {subtitle && <Body opacity={0.75}>{subtitle}</Body>}
         </Stack>
       )}
 
@@ -85,11 +81,8 @@ const InputSection: FC<Props> = ({
             fontSize="sm"
           />
         </HStack>
-        {helperText && (
-          <Text fontSize="xs" opacity={0.75}>
-            {helperText}
-          </Text>
-        )}
+
+        {helperText && <Body opacity={0.75}>{helperText}</Body>}
       </Stack>
     </Stack>
   );

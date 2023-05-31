@@ -21,7 +21,7 @@ import { RootState } from "store";
 import { Team } from "types";
 import { typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
-import { Label } from "components/text";
+import { Body, Label } from "components/text";
 
 interface Props {
   isDisabled?: boolean;
@@ -97,11 +97,11 @@ export const SearchConsoleReport: React.FC<Props> = ({ isDisabled, isOpen, onClo
     <ModalStepWrapper isOpen={isOpen} onClose={onClose}>
       <Stack spacing={6} pointerEvents={isDisabled ? "none" : "auto"}>
         <Heading fontSize="lg">4. Google Search Console Report for {activeTeam?.name}</Heading>
-        <Text fontSize="xs" opacity={0.5}>
+        <Body opacity={0.5}>
           {isDisabled
             ? "You need to connect to Google Search Console to use this automation"
             : "Get the search console report sent to info@getbaser.com"}
-        </Text>
+        </Body>
         <Stack opacity={isDisabled ? 0.25 : 1}>
           <HStack>
             <Stack w="full">
@@ -156,9 +156,7 @@ export const SearchConsoleReport: React.FC<Props> = ({ isDisabled, isOpen, onClo
             <Checkbox size="sm" onChange={(e) => setSaveReport(e.target.checked)}>
               Save Report
             </Checkbox>
-            <Text fontSize="xs" opacity={0.75}>
-              This will save the report to the Database for this Team.
-            </Text>
+            <Body opacity={0.75}>This will save the report to the Database for this Team.</Body>
           </Stack>
         </Stack>
         <Flex justifyContent="flex-end">

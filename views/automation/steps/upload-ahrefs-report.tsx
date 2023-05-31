@@ -1,17 +1,16 @@
 import React, { useState, useRef, FC, useEffect } from "react";
 import { ModalStepWrapper } from "./modal-step-wrapper";
-import { Flex, Stack, HStack, Text, Box, Heading, Input, useToast } from "@chakra-ui/react";
+import { Flex, Stack, HStack, Text, Box, Heading, Input, useToast, Link } from "@chakra-ui/react";
 import { BarLoader } from "react-spinners";
 import { BsCheckCircle } from "react-icons/bs";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { useUploadAhrefsReportMutation } from "api/vendor.api";
-
 import { BRAND_COLOR } from "config";
 import { typeCheckError } from "utils";
 import { Button } from "components/button";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
-import { Label } from "components/text";
+import { Body, Label } from "components/text";
 
 interface Props {
   isOpen: boolean;
@@ -116,22 +115,23 @@ export const UploadAhrefsReport: FC<Props> = (props) => {
     <ModalStepWrapper {...props}>
       <Box>
         <Heading fontSize="lg">6. Upload Ahrefs Report {activeTeam?.name}</Heading>
-        <Text fontSize="xs" my={6} opacity={0.75}>
-          Upload custom Ahrefs report for {activeTeam?.name}. This will be saved on the Database as
-          an Ahref report.
-        </Text>
-        <a download href="/demo/ahrefs-report/demo.csv">
-          <Text
-            opacity={0.75}
-            fontSize="xs"
-            cursor="pointer"
-            _hover={{
-              textDecoration: "underline",
-            }}
-          >
-            See the correct structure of a single input file here
-          </Text>
-        </a>
+        <Box my={6} opacity={0.75}>
+          <Body>
+            Upload custom Ahrefs report for {activeTeam?.name}. This will be saved on the Database
+            as an Ahref report.
+          </Body>
+        </Box>
+        <Link
+          download
+          href="/demo/ahrefs-report/demo.csv"
+          opacity={0.75}
+          cursor="pointer"
+          _hover={{
+            textDecoration: "underline",
+          }}
+        >
+          <Body>See the correct structure of a single input file here</Body>
+        </Link>
         <Input
           type="file"
           onInput={(e: any) => setFiles(Object.values(e.target.files))}

@@ -8,7 +8,7 @@ import { BsCheckCircle } from "react-icons/bs";
 import { GoogleLoginButton } from "react-social-login-buttons";
 import { typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
-import { Label } from "components/text";
+import { Body, Label } from "components/text";
 
 interface Props {
   isOpen: boolean;
@@ -62,9 +62,12 @@ const SearchConsoleConnectModal: FC<Props> = (props) => {
         <Heading fontSize="lg" mb={6}>
           3. Connect up your Google Search Console
         </Heading>
-        <Text fontSize="xs" my={6} opacity={0.5}>
-          {`This will allow Baser to access your Google Search Console data through Google's API so we can show your site metrics on your SEO hub.`}
-        </Text>
+        <Box my={6} opacity={0.5}>
+          <Body>
+            This will allow Baser to access your Google Search Console data through Google’s API so
+            we can show your site metrics on your SEO hub.
+          </Body>
+        </Box>
         {user?.connectedSearchConsole && (
           <HStack mb={6} color="green.400">
             <BsCheckCircle />

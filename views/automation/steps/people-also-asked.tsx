@@ -5,6 +5,7 @@ import {
   Heading,
   HStack,
   Input,
+  Link,
   Stack,
   Text,
   useToast,
@@ -23,7 +24,7 @@ import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import { typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
 import { InputSection } from "./seed-keywords";
-import { Label } from "components/text";
+import { Body, Label } from "components/text";
 
 interface Props {
   isOpen: boolean;
@@ -146,21 +147,23 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
     <ModalStepWrapper {...props} size="6xl">
       <Box>
         <Heading fontSize="lg">2. Questions Asked for {activeTeam?.name}</Heading>
-        <Text fontSize="xs" my={6} opacity={0.75}>
-          {`This will take a CSV file with the first column of sorted keywords and get the "People Also Asked" questions for each keyword`}
-        </Text>
-        <a download href="/demo/people-also-ask/demo.csv">
-          <Text
-            opacity={0.75}
-            fontSize="xs"
-            cursor="pointer"
-            _hover={{
-              textDecoration: "underline",
-            }}
-          >
-            See the correct structure of an input file here
-          </Text>
-        </a>
+        <Box my={3} opacity={0.75}>
+          <Body>
+            This will take a CSV file with the first column of sorted keywords and get the “People
+            Also Asked” questions for each keyword
+          </Body>
+        </Box>
+        <Link
+          download
+          href="/demo/people-also-ask/demo.csv"
+          opacity={0.75}
+          cursor="pointer"
+          _hover={{
+            textDecoration: "underline",
+          }}
+        >
+          <Body>See the correct structure of an input file here</Body>
+        </Link>
         <Input
           type="file"
           onInput={(e: any) => setAlsoAskedFile(e.target.files[0])}
@@ -209,11 +212,12 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
               <Text fontSize="md" fontWeight="bold">
                 ✂️ Keywords to Exclude (Optional)
               </Text>
-              <Text fontSize="xs" opacity={0.75}>
-                {`Optionally add some target keywords you want to remove from the PAA output. For example if you
-            add "mint" to the list, all the PAA questions that contain the word "mint" will be
-            set as "Non-relevant" e.g. "How do you mint an NFT?" would be labeled "Non-relevant".`}
-              </Text>
+              <Body opacity={0.75}>
+                Optionally add some target keywords you want to remove from the PAA output. For
+                example if you add “mint” to the list, all the PAA questions that contain the word
+                “mint” will be set as “Non-relevant” e.g. “How do you mint an NFT?” would be labeled
+                “Non-relevant”
+              </Body>
             </Stack>
             <GridInputForm
               onChange={(e) => setExclusionKeywords(e.filter((f) => f.length))}

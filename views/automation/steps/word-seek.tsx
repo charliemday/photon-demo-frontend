@@ -7,6 +7,7 @@ import { RootState } from "store";
 import { Team } from "types";
 import { typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
+import { Body } from "components/text";
 
 interface Props {
   isDisabled?: boolean;
@@ -15,24 +16,15 @@ interface Props {
 }
 
 export const WordSeek: React.FC<Props> = ({ isDisabled, isOpen, onClose }) => {
-  const activeTeam: Team = useSelector(
-    (state: RootState) => state.team.activeTeam
-  );
+  const activeTeam: Team = useSelector((state: RootState) => state.team.activeTeam);
 
-  const [wordseekType, setWordseekType] = React.useState<"team" | "all">(
-    "team"
-  );
+  const [wordseekType, setWordseekType] = React.useState<"team" | "all">("team");
 
   const toast = useToast();
 
   const [
     compareReport,
-    {
-      isLoading: isComparing,
-      isSuccess: hasComparedSuccessfully,
-      error,
-      isError,
-    },
+    { isLoading: isComparing, isSuccess: hasComparedSuccessfully, error, isError },
   ] = useCompareSearchConsoleReportMutation();
 
   useEffect(() => {
@@ -72,11 +64,11 @@ export const WordSeek: React.FC<Props> = ({ isDisabled, isOpen, onClose }) => {
     <ModalStepWrapper isOpen={isOpen} onClose={onClose}>
       <Stack spacing={6} pointerEvents={isDisabled ? "none" : "auto"}>
         <Heading fontSize="lg">5. Run WordSeek</Heading>
-        <Text fontSize="xs" opacity={0.5}>
+        <Body opacity={0.5}>
           {isDisabled
             ? `You need to connect to Google Search Console to use this automation`
             : `Compare the Search Console Results to see if they exist on specific pages, the engine will extract the latest pages that have not been checked. The output will be saved on the drive.`}
-        </Text>
+        </Body>
         <Flex justifyContent="space-between">
           <Button
             size="sm"

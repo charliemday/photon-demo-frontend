@@ -1,4 +1,5 @@
 import { Box, Stack, Text } from "@chakra-ui/react";
+import { Body } from "components/text";
 import { FC } from "react";
 
 interface Props {
@@ -15,9 +16,7 @@ export const ModalField: FC<Props> = ({ label }) => (
     borderWidth="1px"
   >
     <Stack direction="row" justify="space-between" align="center" spacing="15px">
-      <Text fontSize="xs" fontWeight="medium">
-        {label}
-      </Text>
+      <Body>{label}</Body>
     </Stack>
   </Box>
 );

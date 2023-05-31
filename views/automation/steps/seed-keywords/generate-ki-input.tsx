@@ -1,13 +1,4 @@
-import {
-  Box,
-  Divider,
-  Flex,
-  Heading,
-  HStack,
-  Stack,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Divider, Flex, Heading, HStack, Stack, Text, useToast } from "@chakra-ui/react";
 import { useGenerateKIInputMutation } from "api/engine.api";
 // import { useBulkCreateSeedKeywordsMutation } from "api/team.api";
 import { useCreateSeedKeywordMutation } from "api/strategies.api";
@@ -21,6 +12,7 @@ import DatabaseSection from "./database-section";
 import InputSection from "./input-section";
 import SliderInputSection from "./slider-input-section";
 import TargetKeywordsSection from "./target-keywords-section";
+import { Body } from "components/text";
 
 interface Props {
   isOpen: boolean;
@@ -42,11 +34,7 @@ export const GenerateKIInput: React.FC<Props> = (props) => {
     useGenerateKIInputMutation();
   const [
     bulkCreateSeedKeywords,
-    {
-      isLoading: bulkCreateIsLoading,
-      isError: bulkCreateIsError,
-      error: bulkCreateError,
-    },
+    { isLoading: bulkCreateIsLoading, isError: bulkCreateIsError, error: bulkCreateError },
   ] = useCreateSeedKeywordMutation();
 
   useEffect(() => {
@@ -65,8 +53,7 @@ export const GenerateKIInput: React.FC<Props> = (props) => {
     if (!isLoading && isError) {
       toast({
         title: "Broad Keywords Error",
-        description:
-          typeCheckError(error) || "Broad keywords failed to generate.",
+        description: typeCheckError(error) || "Broad keywords failed to generate.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -79,8 +66,7 @@ export const GenerateKIInput: React.FC<Props> = (props) => {
     if (!bulkCreateIsLoading && bulkCreateIsError) {
       toast({
         title: "Seed Keywords Error",
-        description:
-          typeCheckError(bulkCreateError) || "Could not save Seed Keywords.",
+        description: typeCheckError(bulkCreateError) || "Could not save Seed Keywords.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -114,16 +100,19 @@ export const GenerateKIInput: React.FC<Props> = (props) => {
     });
   };
 
-  const isButtonDisabled =
-    !targetKeywords.length || !maxBroadResults || isLoading;
+  const isButtonDisabled = !targetKeywords.length || !maxBroadResults || isLoading;
 
   return (
     <ModalStepWrapper {...props} size="6xl">
       <Box>
         <Heading fontSize="lg">(🌱 + 🔍) Run both Step 1 and 2</Heading>
-        <Text fontSize="xs" my={6} opacity={0.75} w="75%">
-          {`This takes a list of keywords and runs them through the SEMRush Broad Keywords API. This will return a list of broad keywords which we can pass through the PAA. All results will be saved in the Drive as normal.`}
-        </Text>
+        <Box my={6} opacity={0.75} w="75%">
+          <Body>
+            This takes a list of keywords and runs them through the SEMRush Broad Keywords API. This
+            will return a list of broad keywords which we can pass through the PAA. All results will
+            be saved in the Drive as normal.
+          </Body>
+        </Box>
 
         <Divider my={6} />
       </Box>
@@ -141,13 +130,11 @@ export const GenerateKIInput: React.FC<Props> = (props) => {
         <HStack>
           <Flex flex={1}>
             <InputSection
-              title={`Max Broad Keyword Results (Est. max cost: $${calculateSemrushCost(
-                {
-                  costPerLine: 20,
-                  noOfLines: maxBroadResults,
-                  noOfRequests: targetKeywords.length,
-                }
-              )})`}
+              title={`Max Broad Keyword Results (Est. max cost: $${calculateSemrushCost({
+                costPerLine: 20,
+                noOfLines: maxBroadResults,
+                noOfRequests: targetKeywords.length,
+              })})`}
               onChange={(value) => setMaxBroadResults(value as number)}
               defaultValue={maxBroadResults}
               helperText={`This is the number of broad keyword match results to return for each of the keywords.`}
@@ -155,9 +142,7 @@ export const GenerateKIInput: React.FC<Props> = (props) => {
             />
           </Flex>
           <Flex flex={1}>
-            <SliderInputSection
-              onChange={(value) => setTopPercent(value as number)}
-            />
+            <SliderInputSection onChange={(value) => setTopPercent(value as number)} />
           </Flex>
         </HStack>
         <HStack justifyContent="flex-end">

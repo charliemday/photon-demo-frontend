@@ -1,6 +1,6 @@
 import { FC, useRef, useState } from "react";
 
-import { Flex, Heading, HStack, Input, Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, HStack, Input, Stack, Text } from "@chakra-ui/react";
 import { Button } from "components/button";
 
 import { AiOutlineCloudDownload } from "react-icons/ai";
@@ -8,7 +8,7 @@ import { BsCheckCircle } from "react-icons/bs";
 import { BarLoader } from "react-spinners";
 
 import { BRAND_COLOR } from "config";
-import { Label } from "components/text";
+import { Body, Label } from "components/text";
 
 interface Props {
   title: string;
@@ -90,9 +90,9 @@ export const UploadZone: FC<Props> = ({
     <Stack spacing={6}>
       <Heading fontSize="lg">{title}</Heading>
       {headerComponent}
-      <Text fontSize="xs" my={6} opacity={0.75}>
-        {subtitle}
-      </Text>
+      <Box my={6} opacity={0.75}>
+        <Body>{subtitle}</Body>
+      </Box>
       <Input
         type="file"
         onInput={(e: any) => setFiles(Object.values(e.target.files))}

@@ -1,5 +1,6 @@
 import { Flex, Skeleton, Stack, Text } from "@chakra-ui/react";
 import { Tag } from "components/tag";
+import { Body } from "components/text";
 import { BRAND_COLOR } from "config";
 import { OverviewStat } from "hooks/useBuildOverviewStats.hook";
 import { FC } from "react";
@@ -50,9 +51,7 @@ export const DataCard: FC<Props> = ({
       spacing="4px"
       w="full"
     >
-      <Text fontSize="xs" fontWeight="semibold" color={textColor} lineHeight="1">
-        {title}
-      </Text>
+      <Body color={textColor}>{title}</Body>
 
       <Text fontSize="2xl" fontWeight="bold" color={textColor} lineHeight="1">
         {formatValue(value || 0)}

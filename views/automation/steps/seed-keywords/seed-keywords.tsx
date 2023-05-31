@@ -1,12 +1,4 @@
-import {
-  Box,
-  Divider,
-  Heading,
-  HStack,
-  Stack,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Divider, Heading, HStack, Stack, Text, useToast } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import { useGenerateSeedKeywordsMutation } from "api/engine.api";
@@ -15,10 +7,7 @@ import { Button } from "components/button";
 import { SeedKeywordSource, SemrushDatabase } from "types";
 import { ModalStepWrapper } from "../modal-step-wrapper";
 
-import {
-  useCreateCompetitorsMutation,
-  useCreateSeedKeywordMutation,
-} from "api/strategies.api";
+import { useCreateCompetitorsMutation, useCreateSeedKeywordMutation } from "api/strategies.api";
 import { CompetitorInterface } from "forms/competitors";
 import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import { calculateSemrushCost, typeCheckError } from "utils";
@@ -29,6 +18,7 @@ import {
   NavTab,
   TargetKeywordsSection,
 } from "views/automation/steps/seed-keywords";
+import { Body } from "components/text";
 
 interface Props {
   isOpen: boolean;
@@ -71,11 +61,7 @@ export const SeedKeywords: React.FC<Props> = (props) => {
   }, [props.isOpen]);
 
   useEffect(() => {
-    if (
-      !isGeneratingSeedKeywords &&
-      hasErrorGeneratingSeedKeywords &&
-      generateSeedKeywordsError
-    ) {
+    if (!isGeneratingSeedKeywords && hasErrorGeneratingSeedKeywords && generateSeedKeywordsError) {
       toast({
         title: "Error",
         description:
@@ -85,12 +71,7 @@ export const SeedKeywords: React.FC<Props> = (props) => {
         isClosable: true,
       });
     }
-  }, [
-    isGeneratingSeedKeywords,
-    hasErrorGeneratingSeedKeywords,
-    generateSeedKeywordsError,
-    toast,
-  ]);
+  }, [isGeneratingSeedKeywords, hasErrorGeneratingSeedKeywords, generateSeedKeywordsError, toast]);
 
   const handleSubmit = async () => {
     /**
@@ -174,8 +155,7 @@ export const SeedKeywords: React.FC<Props> = (props) => {
       content: renderSeedKeywordSection(),
       onClick: handleSubmit,
       buttonLabel: "Submit",
-      buttonDisabled:
-        (!targetKeywords.length && !competitors.length) || !database,
+      buttonDisabled: (!targetKeywords.length && !competitors.length) || !database,
       isButtonLoading: isLoading,
     },
   ];
@@ -190,15 +170,14 @@ export const SeedKeywords: React.FC<Props> = (props) => {
   return (
     <ModalStepWrapper {...props} size={"6xl"}>
       <Box>
-        <Heading fontSize="lg">
-          1. 🌱 Generate Seed Keywords through SEMRush
-        </Heading>
-        <Text fontSize="xs" my={6} opacity={0.75} w="75%">
-          {`This automates the original Ahref's step. This will take a list of competitors
-          and generate a list of seed keywords from the SEMRush API to use for the next
-          step. We can optionally classify the keywords into categories for
-          deeper analysis.`}
-        </Text>
+        <Heading fontSize="lg">1. 🌱 Generate Seed Keywords through SEMRush</Heading>
+        <Box my={6} opacity={0.75} w="75%">
+          <Body>
+            This automates the original Ahref’s step. This will take a list of competitors and
+            generate a list of seed keywords from the SEMRush API to use for the next step. We can
+            optionally classify the keywords into categories for deeper analysis.
+          </Body>
+        </Box>
         <Divider my={6} />
 
         <HStack alignItems="flex-start" spacing={12}>
