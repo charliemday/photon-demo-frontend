@@ -48,7 +48,7 @@ export const ProductCard: FC<Props> = ({
             {title}
           </Heading>
 
-          <Label>{description}</Label>
+          <Label fontWeight="medium">{description}</Label>
         </Flex>
       </Flex>
 
