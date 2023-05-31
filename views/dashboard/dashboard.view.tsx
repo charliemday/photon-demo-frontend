@@ -1,4 +1,4 @@
-import { Divider, Grid, Heading, Stack } from "@chakra-ui/react";
+import { Divider, Grid, Stack } from "@chakra-ui/react";
 import { ProductCard } from "components/cards";
 import { Table } from "components/table";
 import { HeaderItem } from "components/table/table.header";
@@ -7,6 +7,7 @@ import { useBuildTaskTableData } from "hooks";
 import { useRouter } from "next/router";
 import { FC } from "react";
 import { OverviewStats } from "./overview-stats";
+import { Heading } from "components/text";
 
 const rowHeaders: HeaderItem[] = [
   {
@@ -35,16 +36,12 @@ export const DashboardView: FC = () => {
   return (
     <Stack spacing={12}>
       <Stack spacing={4}>
-        <Heading fontSize="xl" lineHeight="1">
-          SEO Overview
-        </Heading>
+        <Heading>SEO Overview</Heading>
         <OverviewStats />
       </Stack>
 
       <Stack spacing={4}>
-        <Heading fontSize="xl" lineHeight="1">
-          Task List
-        </Heading>
+        <Heading>Task List</Heading>
         <Table
           rowItems={rowItems}
           headers={rowHeaders}

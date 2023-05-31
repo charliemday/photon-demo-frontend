@@ -1,6 +1,6 @@
 import { Flex, Stack, Text } from "@chakra-ui/react";
 import { Tag } from "components/tag";
-import { Body } from "components/text";
+import { Body, Heading } from "components/text";
 import { FC } from "react";
 
 interface Props {
@@ -8,22 +8,20 @@ interface Props {
 }
 
 export const DataEmptyCard: FC<Props> = ({ title }) => (
-  <Stack
+  <Flex
+    direction="column"
     background="#F6F5FA"
     padding="12px"
     borderRadius="8px"
     justify="space-between"
-    spacing="4px"
+    gap="2"
     w="full"
   >
     <Body>{title}</Body>
-
-    <Text fontSize="2xl" fontWeight="bold" lineHeight="1">
-      n/a
-    </Text>
+    <Heading fontSize="2xl">n/a</Heading>
 
     <Flex>
       <Tag text="+0%" size="sm" />
     </Flex>
-  </Stack>
+  </Flex>
 );

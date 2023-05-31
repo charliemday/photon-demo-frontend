@@ -2,6 +2,7 @@ import { Box, Flex, HStack, Stack, Text } from "@chakra-ui/react";
 import { DropdownAvatar } from "components/avatar";
 import { Breadcrumb, Breadcrumbs } from "components/breadcrumbs";
 import { SidebarV2 as Sidebar } from "components/sidebar";
+import { Heading } from "components/text";
 import Head from "next/head";
 import React from "react";
 
@@ -26,13 +27,13 @@ export const SidebarLayout: React.FC<Props> = ({ children, title, headerTitle, b
 
         <Flex flexGrow="1" px="4" py="12">
           <Box maxWidth="1098px" mx={8}>
-            <Stack spacing="8">
+            <Stack spacing="10">
               {title || breadcrumbs ? (
                 <Stack spacing="4">
                   {title ? (
-                    <Text fontSize="2xl" fontWeight="bold" lineHeight="1">
+                    <Heading level="h1" fontSize="2xl">
                       {title}
-                    </Text>
+                    </Heading>
                   ) : null}
 
                   {breadcrumbs ? (

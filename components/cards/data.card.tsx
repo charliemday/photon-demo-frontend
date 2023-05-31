@@ -1,6 +1,6 @@
 import { Flex, Skeleton, Stack, Text } from "@chakra-ui/react";
 import { Tag } from "components/tag";
-import { Body } from "components/text";
+import { Body, Heading } from "components/text";
 import { BRAND_COLOR } from "config";
 import { OverviewStat } from "hooks/useBuildOverviewStats.hook";
 import { FC } from "react";
@@ -43,23 +43,23 @@ export const DataCard: FC<Props> = ({
   }
 
   return (
-    <Stack
+    <Flex
+      direction="column"
       background={color}
       padding="12px"
       borderRadius="8px"
       justify="space-between"
-      spacing="4px"
+      gap="2"
       w="full"
     >
       <Body color={textColor}>{title}</Body>
-
-      <Text fontSize="2xl" fontWeight="bold" color={textColor} lineHeight="1">
+      <Heading fontSize="2xl" color={textColor}>
         {formatValue(value || 0)}
-      </Text>
+      </Heading>
 
       <Flex>
         <Tag text={delta ? formatDelta(delta) : "-"} size="sm" />
       </Flex>
-    </Stack>
+    </Flex>
   );
 };
