@@ -30,7 +30,16 @@ interface SetPasswordReturnProps {
     token: string;
 }
 
-const { LOGIN, SIGNUP, COMPLETE_OAUTH, SET_PASSWORD, GENERATE_MAGIC_TOKEN } = authUrls;
+interface CompleteSignupRequestProps {
+    token: string;
+    firstName: string;
+    lastName: string;
+    password: string;
+}
+
+interface CompleteSignupReturnProps extends SetPasswordReturnProps { }
+
+const { LOGIN, SIGNUP, COMPLETE_OAUTH, SET_PASSWORD, GENERATE_MAGIC_TOKEN, COMPLETE_SIGNUP } = authUrls;
 
 // Define a service using a base URL and expected endpoints
 export const authApi = baseApi.injectEndpoints({
@@ -74,6 +83,16 @@ export const authApi = baseApi.injectEndpoints({
             }),
             transformResponse: (response: MagicTokenUrl) => camelizeKeys(response) as MagicTokenUrl,
         }),
+        /**
+         * Complete signup
+         */
+        completeSignup: builder.mutation<CompleteSignupReturnProps, CompleteSignupRequestProps>({
+            query: (values) => ({
+                url: COMPLETE_SIGNUP,
+                method: "POST",
+                body: decamelizeKeys(values),
+            })
+        })
     }),
 });
 
@@ -85,4 +104,5 @@ export const {
     useCompleteOauthMutation,
     useSetPasswordMutation,
     useGenerateMagicTokenMutation,
+    useCompleteSignupMutation,
 } = authApi;

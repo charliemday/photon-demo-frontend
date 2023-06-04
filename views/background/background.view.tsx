@@ -49,7 +49,6 @@ export const BackgroundView: React.FC<Props> = () => {
     if (isSuccess && !isLoading && !isLoadingUserTiers && hasLoadedUserTiers) {
       // Initialize the active team if the user has one
       dispatch(setActiveTeam(teams?.[0]));
-
       if (userDetails?.isStaff) {
         router.push(ROUTES.AUTOMATION);
       } else {

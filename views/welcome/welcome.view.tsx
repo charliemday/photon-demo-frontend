@@ -37,9 +37,7 @@ export const WelcomeView: React.FC = () => {
       })
       .catch((e) => {
         const error = typeCheckError(e);
-        setSignupError(
-          typeof error === "string" ? error : "Unable to signup with details"
-        );
+        setSignupError(typeof error === "string" ? error : "Unable to signup with details");
       });
   };
 
@@ -51,9 +49,7 @@ export const WelcomeView: React.FC = () => {
       })
       .catch((e) => {
         const error = typeCheckError(e);
-        setLoginError(
-          typeof error === "string" ? error : "Unable to login with credentials"
-        );
+        setLoginError(typeof error === "string" ? error : "Unable to login with credentials");
       });
   };
 
@@ -64,13 +60,7 @@ export const WelcomeView: React.FC = () => {
   return (
     <Flex h="100vh">
       <Box flex={1}>
-        <Flex
-          h="full"
-          w="full"
-          flexDir="column"
-          alignItems="center"
-          justifyContent="center"
-        >
+        <Flex h="full" w="full" flexDir="column" alignItems="center" justifyContent="center">
           <Box w={["80%", "50%"]}>
             {authView === "login" ? (
               <LoginForm
@@ -92,12 +82,7 @@ export const WelcomeView: React.FC = () => {
       </Box>
       <Box flex={1} bgColor="#F2F5F9" display={{ base: "none", md: "block" }}>
         <Flex alignItems="center" justifyContent="center" h="full">
-          <Image
-            src="/welcome-image.png"
-            alt="Welcome"
-            height={IMAGE_HEIGHT}
-            width={IMAGE_WIDTH}
-          />
+          <Image src="/welcome-image.png" alt="Welcome" height={IMAGE_HEIGHT} width={IMAGE_WIDTH} />
         </Flex>
       </Box>
     </Flex>

@@ -7,5 +7,6 @@ export const authUrls = {
         if (appName) return `get-auth-url/?app=${appName}`;
         return 'get-auth-url/';
     },
-    GENERATE_MAGIC_TOKEN: "generate-magic-token/"
+    GENERATE_MAGIC_TOKEN: "generate-magic-token/",
+    COMPLETE_SIGNUP: "complete-signup/",
 }
