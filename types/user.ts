@@ -1,6 +1,6 @@
 export enum Features {
     /**
-     * DEPRECATED: WordSeek
+     * DEPRECATED: WordSeek old feature flag
      */
     WORD_SEEK = "word_seek",
     /**
