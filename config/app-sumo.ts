@@ -5,7 +5,6 @@ export enum APPSUMO_PLAN_IDS {
     TIER3 = "wordseek_tier3",
 }
 
-// TODO: Update these with the correct features
 export const APPSUMO_TIERS = [
     {
         name: "License Tier 1 ($49)",
