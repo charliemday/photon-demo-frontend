@@ -16,10 +16,10 @@ import { Button } from "components/button";
 import { Modal } from "components/modals";
 import { Select } from "components/select";
 import { MAX_FREE_RESULTS } from "config";
-import { useHasProductAccess } from "hooks";
+import { useFeatureFlag, useHasProductAccess } from "hooks";
 import { FC, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState, Team } from "types";
+import { Features, RootState, Team } from "types";
 import { cleanUrl, typeCheckError } from "utils";
 
 interface Props {
@@ -40,17 +40,18 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
     skip: !activeTeam?.id,
   });
 
-  const {
-    data: wordSeekResults,
-    refetch,
-    isFetching,
-  } = useWordSeekResultsQuery(activeTeam?.uid, {
+  const { refetch, isFetching } = useWordSeekResultsQuery(activeTeam?.uid, {
     skip: !activeTeam?.uid,
   });
 
   const [showAwaitEmail, setShowAwaitEmail] = useState(false);
 
-  const { hasAccess } = useHasProductAccess();
+  const { hasAccess: hasProductAccess } = useHasProductAccess();
+  const { hasAccess: hasFeatureAccess } = useFeatureFlag();
+
+  const hasAccess = useMemo(() => {
+    return hasProductAccess || hasFeatureAccess({ features: [Features.WORD_SEEK_PREMIUM] });
+  }, [hasProductAccess, hasFeatureAccess]);
 
   const resetModal = () => {
     setShowAwaitEmail(false);

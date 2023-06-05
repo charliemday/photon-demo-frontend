@@ -1,18 +1,17 @@
 import { Grid, Stack, useDisclosure } from "@chakra-ui/react";
 import { ProductCard } from "components/cards/product.card";
-import { useFathom } from "hooks";
-import { FC, useEffect, useState } from "react";
+import { useFathom, useFeatureFlag } from "hooks";
+import { FC, useEffect, useMemo, useState } from "react";
 import { GscConnectModal, PricingModal, WordSeekModal, WordSeekResultsModal } from ".";
 import { OnboardingModal } from "./onboarding";
 
 import { useWordSeekResultsQuery } from "api/engine.api";
 import { useListTeamsQuery } from "api/team.api";
 import { useUserDetailsQuery } from "api/user.api";
-import { useGetAppSumoDetailsQuery } from "api/vendor.api";
 import { FATHOM_EVENTS } from "config";
 import { useHasProductAccess } from "hooks";
 import { useSelector } from "react-redux";
-import { RootState, Team } from "types";
+import { Features, RootState, Team } from "types";
 
 interface Props {}
 
@@ -22,11 +21,14 @@ export const WordSeekView: FC<Props> = () => {
   const { data: userDetails } = useUserDetailsQuery(undefined);
   const [defaultPage, setDefaultPage] = useState<string | null>(null);
 
-  const { data: appSumoDetails } = useGetAppSumoDetailsQuery();
-
   const { data: teams } = useListTeamsQuery({});
 
-  const { hasAccess: hasWordSeekAccess } = useHasProductAccess();
+  const { hasAccess: hasProductAccess } = useHasProductAccess();
+  const { hasAccess: hasFeatureAccess } = useFeatureFlag();
+
+  const hasWordSeekAccess = useMemo(() => {
+    return hasProductAccess || hasFeatureAccess({ features: [Features.WORD_SEEK_PREMIUM] });
+  }, [hasProductAccess, hasFeatureAccess]);
 
   const {
     isOpen: isWordSeekOpen,
@@ -110,7 +112,7 @@ export const WordSeekView: FC<Props> = () => {
           />
         )}
         {/* We don't allow AppSumo users to upgrade */}
-        {!hasWordSeekAccess && !appSumoDetails && (
+        {!hasWordSeekAccess && (
           <ProductCard
             onClick={() => {
               onPricingModalToggle();
