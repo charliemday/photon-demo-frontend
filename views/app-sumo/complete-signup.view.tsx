@@ -1,6 +1,7 @@
 import { Box, Flex, HStack, useToast } from "@chakra-ui/react";
 import { useCompleteSignupMutation } from "api/auth.api";
 import { Image } from "components/image";
+import { AppSumoLogo } from "components/logos";
 import { CompleteSignupForm, CompleteSignupFormValues } from "forms/complete-signup";
 import { FC, useEffect, useState } from "react";
 import { typeCheckError } from "utils";
@@ -95,12 +96,7 @@ export const CompleteSignupView: FC = () => {
           </Box>
 
           <Box>
-            <Image
-              src="/appsumo_partners.png"
-              alt="Welcome"
-              height={APP_SUMO_IMAGE_HEIGHT}
-              width={APP_SUMO_IMAGE_WIDTH}
-            />
+            <AppSumoLogo />
           </Box>
         </HStack>
       </Box>

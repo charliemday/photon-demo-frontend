@@ -23,6 +23,18 @@ export enum Features {
      * The user can access everything
      */
     ALL = "*",
+    /**
+     * The user can create a single workspace
+     */
+    WORKSPACE_ONE = "1_workspace",
+    /**
+     * The user can create ten workspaces
+     */
+    WORKSPACE_TEN = "10_workspaces",
+    /**
+     * The user can create unlimited workspaces
+    */
+    WORKSPACE_UNLIMITED = "unlimited_workspaces",
 }
 
 export interface User {

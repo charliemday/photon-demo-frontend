@@ -2,6 +2,7 @@ import { HStack, Stack, Text, Textarea, useToast } from "@chakra-ui/react";
 import { useSubmitFeedbackMutation } from "api/user.api";
 import { Button } from "components/button";
 import React, { useEffect, useState } from "react";
+import { VscFeedback } from "react-icons/vsc";
 import { typeCheckError } from "utils";
 import { Modal } from "./modal";
 
@@ -15,8 +16,7 @@ export const FeedbackModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
   const toast = useToast();
 
-  const [submitFeedback, { isLoading, isSuccess, isError, error }] =
-    useSubmitFeedbackMutation();
+  const [submitFeedback, { isLoading, isSuccess, isError, error }] = useSubmitFeedbackMutation();
 
   useEffect(() => {
     if (!isLoading && isSuccess) {
@@ -49,9 +49,12 @@ export const FeedbackModal: React.FC<Props> = ({ isOpen, onClose }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <Stack spacing={12}>
-        <Text fontSize="lg" fontWeight="bold">
-          📝 Feedback
-        </Text>
+        <HStack>
+          <VscFeedback size={32} />
+          <Text fontSize="lg" fontWeight="bold">
+            Feedback
+          </Text>
+        </HStack>
         <Textarea
           value={feedback}
           p={4}
