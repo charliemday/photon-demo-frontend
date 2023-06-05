@@ -1,10 +1,11 @@
 import { Box, Divider, HStack, ModalHeader, Stack, Text } from "@chakra-ui/react";
+import { useUserTiersQuery } from "api/user.api";
 import { useGetAppSumoDetailsQuery } from "api/vendor.api";
 import { Button } from "components/button";
 import { AppSumoLogo } from "components/logos";
 import { BRAND_COLOR } from "config";
 import { APPSUMO_PLAN_IDS, APPSUMO_TIERS } from "config/app-sumo";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { BsCheck2, BsCheckCircleFill } from "react-icons/bs";
 import { Modal } from "./modal";
 
@@ -20,7 +21,14 @@ interface TierBlock {
 }
 
 export const AppSumoSubscriptionModal: FC<Props> = ({ isOpen, onClose }) => {
-  const { data } = useGetAppSumoDetailsQuery();
+  const { data, refetch } = useGetAppSumoDetailsQuery();
+  const { refetch: refetchUserTiers } = useUserTiersQuery();
+
+  useEffect(() => {
+    refetch();
+    refetchUserTiers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   const navigateToAppSumoPortal = () => {
     if (data) {
