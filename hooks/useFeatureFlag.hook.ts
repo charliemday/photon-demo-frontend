@@ -20,7 +20,6 @@ export const useFeatureFlag = (): ReturnProps => {
 
         if (!userTier) return false;
 
-
         const { featureAccess } = userTier?.tier;
 
         if (featureAccess.includes(Features.ALL)) return true;

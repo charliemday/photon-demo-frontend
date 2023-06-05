@@ -1,4 +1,5 @@
 export { AddTeamModal } from "./add-team.modal";
+export { AddWorkspaceModal } from "./add-workspace.modal";
 export { AppSumoSubscriptionModal } from "./app-sumo-subscription.modal";
 export { ConfirmationModal } from "./confirmation.modal";
 export { ContentStrategyCompetitorsModal } from "./content-strategy-competitors.modal";

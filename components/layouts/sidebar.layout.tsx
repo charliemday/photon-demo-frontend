@@ -1,6 +1,7 @@
 import { Box, Flex, HStack, Stack, Text } from "@chakra-ui/react";
 import { DropdownAvatar } from "components/avatar";
 import { Breadcrumb, Breadcrumbs } from "components/breadcrumbs";
+import { TeamDropdown } from "components/dropdown";
 import { SidebarV2 as Sidebar } from "components/sidebar";
 import { ROUTES } from "config";
 import Head from "next/head";
@@ -67,6 +68,7 @@ export const SidebarLayout: React.FC<Props> = ({ children, title, headerTitle, b
 
       <Box position="absolute" right={5} top={5}>
         <HStack>
+          <TeamDropdown />
           <DropdownAvatar />
         </HStack>
       </Box>
