@@ -1,4 +1,5 @@
 export { AddTeamModal } from "./add-team.modal";
+export { AppSumoSubscriptionModal } from "./app-sumo-subscription.modal";
 export { ConfirmationModal } from "./confirmation.modal";
 export { ContentStrategyCompetitorsModal } from "./content-strategy-competitors.modal";
 export { ContentStrategyModal } from "./content-strategy.modal";
@@ -9,5 +10,5 @@ export { OAuthConnectingModal } from "./oauth-connecting.modal";
 export { OptimisationTaskModal } from "./optimisation-task.modal";
 export { PlaceholderModal } from "./placeholder.modal";
 export { SimpleModal } from "./simple.modal";
-export { WordSeekModal } from "./wordseek.modal";
 export { WordSeekResultsModal } from "./wordseek-results.modal";
+export { WordSeekModal } from "./wordseek.modal";

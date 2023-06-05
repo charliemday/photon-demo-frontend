@@ -8,6 +8,7 @@ import { OnboardingModal } from "./onboarding";
 import { useWordSeekResultsQuery } from "api/engine.api";
 import { useListTeamsQuery } from "api/team.api";
 import { useUserDetailsQuery } from "api/user.api";
+import { useGetAppSumoDetailsQuery } from "api/vendor.api";
 import { FATHOM_EVENTS } from "config";
 import { useHasProductAccess } from "hooks";
 import { useSelector } from "react-redux";
@@ -20,6 +21,8 @@ const MIN_ONBOARDING_STEP = 1;
 export const WordSeekView: FC<Props> = () => {
   const { data: userDetails } = useUserDetailsQuery(undefined);
   const [defaultPage, setDefaultPage] = useState<string | null>(null);
+
+  const { data: appSumoDetails } = useGetAppSumoDetailsQuery();
 
   const { data: teams } = useListTeamsQuery({});
 
@@ -106,7 +109,8 @@ export const WordSeekView: FC<Props> = () => {
             emoji="🏁"
           />
         )}
-        {!hasWordSeekAccess && (
+        {/* We don't allow AppSumo users to upgrade */}
+        {!hasWordSeekAccess && !appSumoDetails && (
           <ProductCard
             onClick={() => {
               onPricingModalToggle();
