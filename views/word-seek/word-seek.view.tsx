@@ -111,7 +111,6 @@ export const WordSeekView: FC<Props> = () => {
             emoji="🏁"
           />
         )}
-        {/* We don't allow AppSumo users to upgrade */}
         {!hasWordSeekAccess && (
           <ProductCard
             onClick={() => {
