@@ -45,6 +45,12 @@ export const AddWorkspaceModal: FC<Props> = ({ isOpen, onClose }) => {
   const { refetch } = useUserTiersQuery();
 
   useEffect(() => {
+    if (isOpen) {
+      setRestrictedMessage(null);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     if (teams) {
       if (
         teams.length > 0 &&
