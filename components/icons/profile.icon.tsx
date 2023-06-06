@@ -8,12 +8,12 @@ interface Props {
 }
 
 export const ProfileIcon: FC<Props> = ({ initials, size = "base" }) => {
-  let width: string = "";
-  let height: string = "";
-  let paddingX: string = "";
-  let paddingY: string = "";
-  let borderRadius: string = "";
-  let fontSize: string = "";
+  let width = "";
+  let height = "";
+  let paddingX = "";
+  let paddingY = "";
+  let borderRadius = "";
+  let fontSize = "";
 
   switch (size) {
     case "base":

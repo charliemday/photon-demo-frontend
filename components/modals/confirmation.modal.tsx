@@ -13,6 +13,7 @@ import {
   Divider,
   Flex,
 } from "@chakra-ui/react";
+import { Label } from "components/text";
 
 interface Props {
   isOpen: boolean;
@@ -45,18 +46,13 @@ export const ConfirmationModal: React.FC<Props> = ({
         <Divider />
         <ModalCloseButton />
         <ModalBody py={6}>
-          <Text fontSize="sm">{body}</Text>
+          <Label>{body}</Label>
         </ModalBody>
         <Divider />
         <ModalFooter>
           <Flex flexDir="column" w="100%">
             <Stack direction="row">
-              <Button
-                onClick={handleConfirm}
-                isLoading={isLoading}
-                colorScheme="red"
-                size="sm"
-              >
+              <Button onClick={handleConfirm} isLoading={isLoading} colorScheme="red" size="sm">
                 {confirmButtonLabel}
               </Button>
               <Button variant="outline" size="sm" onClick={onClose}>
@@ -65,9 +61,7 @@ export const ConfirmationModal: React.FC<Props> = ({
             </Stack>
             {error && (
               <Flex mt={2.5}>
-                <Text color="red" fontSize="sm">
-                  {error}
-                </Text>
+                <Label color="red">{error}</Label>
               </Flex>
             )}
           </Flex>

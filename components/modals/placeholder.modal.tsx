@@ -1,6 +1,7 @@
 import { Stack, Text } from "@chakra-ui/react";
 import { FC } from "react";
 import { Modal } from "./modal";
+import { Label } from "components/text";
 
 interface Props {
   icon: string;
@@ -12,8 +13,8 @@ interface Props {
 
 export const PlaceholderModal: FC<Props> = ({ icon, heading, text, isOpen, onClose }) => (
   <Modal isOpen={isOpen} onClose={onClose} size="md">
-    <Stack align="center" spacing="10px">
-      <Text fontSize="2xl" fontWeight="medium" textAlign="center">
+    <Stack align="center" spacing="10px" textAlign="center">
+      <Text fontSize="2xl" fontWeight="medium">
         {icon}
       </Text>
 
@@ -21,9 +22,7 @@ export const PlaceholderModal: FC<Props> = ({ icon, heading, text, isOpen, onClo
         {heading}
       </Text>
 
-      <Text fontSize="sm" fontWeight="semi" textAlign="center">
-        {text}
-      </Text>
+      <Label>{text}</Label>
     </Stack>
   </Modal>
 );

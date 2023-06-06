@@ -21,6 +21,7 @@ import { useLogout } from "hooks";
 import { RootState } from "store";
 import { setActiveTeam } from "store/slices";
 import { Team } from "types";
+import { Label } from "components/text";
 
 interface Props {}
 
@@ -41,7 +42,7 @@ export const ProfileCard: React.FC<Props> = () => {
     {},
     {
       skip: !authToken,
-    }
+    },
   );
   const fullName = `${userData?.firstName} ${userData?.lastName}`;
 
@@ -68,16 +69,13 @@ export const ProfileCard: React.FC<Props> = () => {
           </HStack>
         </MenuButton>
         <MenuList>
-          <Text fontSize="sm" pb={2} pl={2}>
+          <Label pb={2} pl={2}>
             Select Team:
-          </Text>
+          </Label>
           {teamsData?.map((team) => (
             <MenuItem key={team.id} onClick={() => handleTeamClick(team)}>
               <HStack>
-                <BiCheck
-                  color="green"
-                  opacity={activeTeam?.id === team.id ? 1 : 0}
-                />
+                <BiCheck color="green" opacity={activeTeam?.id === team.id ? 1 : 0} />
                 <Text fontWeight="medium">{team.name}</Text>
               </HStack>
             </MenuItem>

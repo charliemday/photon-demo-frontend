@@ -1,4 +1,5 @@
 import { HStack, Text } from "@chakra-ui/react";
+import { Label } from "components/text";
 import React from "react";
 import { Blog, BlogStatus } from "types/blog";
 
@@ -31,8 +32,8 @@ export const BlogItem: React.FC<Props> = ({ item: { title, status }, onClick }) 
     onClick={onClick}
   >
     <Text>{title}</Text>
-    <Text fontSize="sm" fontWeight="semibold" color={BlogStatusColor[status]}>
+    <Label fontWeight="semibold" color={BlogStatusColor[status]}>
       {status?.toUpperCase()}
-    </Text>
+    </Label>
   </HStack>
 );

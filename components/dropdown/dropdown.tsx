@@ -1,4 +1,5 @@
 import { Box, Stack, Text } from "@chakra-ui/react";
+import { Label } from "components/text";
 import { FC } from "react";
 import { FiChevronDown } from "react-icons/fi";
 
@@ -18,10 +19,7 @@ export const Dropdown: FC<Props> = ({ label, maxWidth }) => (
     borderWidth="1px"
   >
     <Stack direction="row" justify="space-between" align="center" spacing="15px">
-      <Text fontSize="sm" fontWeight="medium">
-        {label}
-      </Text>
-
+      <Label>{label}</Label>
       <FiChevronDown />
     </Stack>
   </Box>

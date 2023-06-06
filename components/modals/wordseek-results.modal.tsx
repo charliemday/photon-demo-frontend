@@ -4,6 +4,7 @@ import { Modal } from "./modal";
 import { FC } from "react";
 import { Button } from "components/button";
 import { SECONDARY_COLOR } from "config";
+import { Body } from "components/text";
 
 interface Props {
   missingQueries: number;
@@ -16,9 +17,7 @@ export const WordSeekResultsModal: FC<Props> = ({ missingQueries, size, isOpen, 
   <Modal isOpen={isOpen} onClose={onClose} size={size}>
     <Stack align="center" spacing="16px">
       <Stack direction="row" justify="space-between" align="center" spacing="16px">
-        <Text fontSize="xs" fontWeight="semibold" maxWidth="725px">
-          🎉 {missingQueries} missing queries found for this page
-        </Text>
+        <Body>🎉 {missingQueries} missing queries found for this page</Body>
 
         <Button bgColor={SECONDARY_COLOR} textColor="white" borderColor="black" borderWidth="1px">
           Close

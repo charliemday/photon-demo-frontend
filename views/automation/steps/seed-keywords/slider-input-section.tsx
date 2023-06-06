@@ -11,16 +11,14 @@ import {
 } from "@chakra-ui/react";
 
 import { MdGraphicEq } from "react-icons/md";
+import { Body, Label } from "components/text";
 
 interface Props {
   defaultValue?: number;
   onChange?: (value: number) => void;
 }
 
-const SliderInputSection: React.FC<Props> = ({
-  defaultValue = 0.1,
-  onChange,
-}) => {
+const SliderInputSection: React.FC<Props> = ({ defaultValue = 0.1, onChange }) => {
   const [value, setValue] = useState(defaultValue);
 
   useEffect(() => {
@@ -30,11 +28,11 @@ const SliderInputSection: React.FC<Props> = ({
   return (
     <Stack w="full" spacing={12}>
       <Stack>
-        <Text fontWeight="bold">{`📐 Percentage of results to run through PAA`}</Text>
-        <Text fontSize="xs" opacity={0.75}>
-          This will send the top {Math.floor(value * 100)}% broad keywords based
-          on volume through PAA.
-        </Text>
+        <Label>📐 Percentage of results to run through PAA</Label>
+        <Body opacity={0.75}>
+          This will send the top {Math.floor(value * 100)}% broad keywords based on volume through
+          PAA.
+        </Body>
       </Stack>
       <Box w="full">
         <Slider

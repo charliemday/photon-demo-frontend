@@ -1,21 +1,14 @@
 import { FC, useEffect, useState } from "react";
 import { ModalStepWrapper } from "./modal-step-wrapper";
 
-import {
-  Flex,
-  HStack,
-  Input,
-  Select,
-  Stack,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
+import { Flex, HStack, Input, Select, Stack, Text, useToast } from "@chakra-ui/react";
 import { useCreateKeywordInsightOrderMutation } from "api/engine.api";
 import { useGenerateContentStrategyPart2ManualMutation } from "api/strategies.api";
 import { typeCheckError } from "utils";
 
 import { Button } from "components/button";
 import { useActiveContentStrategy } from "hooks";
+import { Label } from "components/text";
 
 interface Props {
   isOpen: boolean;
@@ -33,8 +26,7 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
   const [openaiModel, setOpenaiModel] = useState<string>("gpt-3.5");
   const [sheetUrl, setSheetUrl] = useState<string>("");
 
-  const [createOrder, { isLoading: isCreating }] =
-    useCreateKeywordInsightOrderMutation();
+  const [createOrder, { isLoading: isCreating }] = useCreateKeywordInsightOrderMutation();
 
   const [triggerManualStep, { isLoading, isSuccess, isError, error }] =
     useGenerateContentStrategyPart2ManualMutation();
@@ -108,9 +100,9 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
               onChange={(e) => setSheetUrl(e.target.value)}
               value={sheetUrl}
             />
-            <Text fontSize="sm" opacity={0.75}>
+            <Label opacity={0.75}>
               {`It needs to be of the form  https://docs.google.com/spreadsheets/d/<SHEET_ID>/copy`}
-            </Text>
+            </Label>
           </Stack>
         </Flex>
       </HStack>
@@ -118,14 +110,10 @@ export const KeywordInsightsUpload: FC<Props> = (props) => {
       <HStack justifyContent="space-between">
         <HStack>
           <Flex>
-            <Text fontSize="sm">OpenAI Model:</Text>
+            <Label>OpenAI Model:</Label>
           </Flex>
           <Flex>
-            <Select
-              size="sm"
-              value={openaiModel}
-              onChange={(e) => setOpenaiModel(e.target.value)}
-            >
+            <Select size="sm" value={openaiModel} onChange={(e) => setOpenaiModel(e.target.value)}>
               {GPT_MODELS.map((model, index) => (
                 <option value={model.value} key={index}>
                   {model.label}

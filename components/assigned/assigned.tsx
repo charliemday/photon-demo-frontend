@@ -1,5 +1,6 @@
-import { Stack, Text } from "@chakra-ui/react";
+import { Box, Stack, Text } from "@chakra-ui/react";
 import { ProfileIcon } from "components/icons";
+import { Body } from "components/text";
 import { useInitials } from "hooks";
 import { FC } from "react";
 
@@ -12,9 +13,10 @@ export const Assigned: FC<Props> = ({ name }) => {
   return (
     <Stack direction="row" align="center" spacing="6px">
       <ProfileIcon initials={initials} size="sm" />
-      <Text maxWidth="108px" fontSize="xs" fontWeight="semibold" textOverflow="ellipsis">
+
+      <Body maxWidth="108px" fontWeight="semibold" textOverflow="ellipsis">
         {name}
-      </Text>
+      </Body>
     </Stack>
   );
 };

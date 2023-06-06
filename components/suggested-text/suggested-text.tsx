@@ -1,4 +1,5 @@
 import { Stack, Text } from "@chakra-ui/react";
+import { Body, Label } from "components/text";
 import { FC } from "react";
 
 interface Props {
@@ -8,12 +9,7 @@ interface Props {
 
 export const SuggestedText: FC<Props> = ({ heading, text }) => (
   <Stack background="#F6F5FA" paddingX="20px" paddingY="12px" borderRadius="10px" spacing="12px">
-    <Text fontSize="sm" fontWeight="medium">
-      {heading}
-    </Text>
-
-    <Text fontSize="xs" fontWeight="medium">
-      {text}
-    </Text>
+    <Label>{heading}</Label>
+    <Body>{text}</Body>
   </Stack>
 );

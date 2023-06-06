@@ -14,6 +14,7 @@ import {
 import { SemrushDatabaseMenu } from "components/menus";
 import { CompetitorInterface } from "forms/competitors";
 import { typeCheckError } from "utils";
+import { Label } from "components/text";
 
 interface Props extends Partial<StepWizardChildProps> {
   contentStrategyId: number | null;
@@ -52,7 +53,7 @@ export const Step2: FC<Props> = ({
     },
     {
       skip: !contentStrategyId,
-    }
+    },
   );
 
   const [
@@ -74,10 +75,7 @@ export const Step2: FC<Props> = ({
       nextStep && nextStep();
     }
 
-    if (
-      !isGeneratingCompetitorsKeywords &&
-      isCompetitorsKeywordsGenerateError
-    ) {
+    if (!isGeneratingCompetitorsKeywords && isCompetitorsKeywordsGenerateError) {
       setIsLoading(false);
       toast({
         title:
@@ -103,7 +101,7 @@ export const Step2: FC<Props> = ({
         contentStrategyCompetitors.reduce((acc: any, competitor, index) => {
           acc[index] = competitor;
           return acc;
-        }, {})
+        }, {}),
       );
     }
   }, [contentStrategyCompetitors]);
@@ -141,7 +139,7 @@ export const Step2: FC<Props> = ({
 
     // Filter out any competitors that don't have a name
     const filteredCompetitors = Object.values(competitors).filter(
-      (competitor) => competitor.name !== ""
+      (competitor) => competitor.name !== "",
     );
 
     if (contentStrategyId) {
@@ -160,7 +158,7 @@ export const Step2: FC<Props> = ({
       // Update the content strategy with the geography
       if (geography) {
         const targetGeography = geographies?.find(
-          (geo) => geo.name.toLowerCase() === geography.toLowerCase()
+          (geo) => geo.name.toLowerCase() === geography.toLowerCase(),
         )?.id;
 
         if (targetGeography) {
@@ -175,10 +173,9 @@ export const Step2: FC<Props> = ({
           if ("error" in updateContentStrategyResponse) return;
 
           // Generate the keywords for the competitors
-          const generateCompetitorKeywordsResponse =
-            await generateCompetitorsKeywords({
-              contentStrategyId: contentStrategyId as number,
-            });
+          const generateCompetitorKeywordsResponse = await generateCompetitorsKeywords({
+            contentStrategyId: contentStrategyId as number,
+          });
 
           // If there is an error, stop here
           if ("error" in generateCompetitorKeywordsResponse) {
@@ -235,9 +232,7 @@ export const Step2: FC<Props> = ({
     if (!isCreatingCompetitors && isCompetitorsCreateError) {
       setIsLoading(false);
       toast({
-        title:
-          typeCheckError(createCompetitorsError) ||
-          "Error Creating Competitors",
+        title: typeCheckError(createCompetitorsError) || "Error Creating Competitors",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -287,9 +282,9 @@ export const Step2: FC<Props> = ({
         <Text fontSize="xl" fontWeight="bold">
           Competitor Analysis
         </Text>
-        <Text fontSize="sm" fontWeight="light" color="gray.500">
+        <Label color="gray.500">
           Step {currentStep} of {totalSteps}
-        </Text>
+        </Label>
       </Stack>
 
       <Stack spacing={6}>

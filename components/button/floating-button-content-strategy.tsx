@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useListContentStrategiesQuery } from "api/strategies.api";
 import { AddTeamModal } from "components/modals";
+import { Label } from "components/text";
 import FuseJS from "fuse.js";
 import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import debounce from "lodash/debounce";
@@ -32,13 +33,10 @@ export const FloatingButtonContentStrategy: FC = () => {
     teamId: activeTeam?.id,
   });
 
-  const [selectedStrategy, setSelectedStrategy] =
-    useState<ContentStrategy | null>(
-      activeContentStrategy || contentStrategies?.[0] || null
-    );
-  const [searchResults, setSearchResults] = useState<ContentStrategy[]>(
-    contentStrategies || []
+  const [selectedStrategy, setSelectedStrategy] = useState<ContentStrategy | null>(
+    activeContentStrategy || contentStrategies?.[0] || null,
   );
+  const [searchResults, setSearchResults] = useState<ContentStrategy[]>(contentStrategies || []);
 
   useEffect(() => {
     /**
@@ -98,9 +96,7 @@ export const FloatingButtonContentStrategy: FC = () => {
       <AddTeamModal isOpen={isOpen} onClose={onClose} />
       <HStack position="relative">
         <Stack zIndex={101}>
-          <Text fontWeight="semibold" fontSize="sm">
-            Select a Content Strategy
-          </Text>
+          <Label>Select a Content Strategy</Label>
           <Menu>
             <MenuButton
               as={Button}
@@ -110,9 +106,7 @@ export const FloatingButtonContentStrategy: FC = () => {
               onClick={refetch}
             >
               <Flex alignItems="center">
-                <Text color="black">
-                  {formatName(selectedStrategy?.name || "")}
-                </Text>
+                <Text color="black">{formatName(selectedStrategy?.name || "")}</Text>
               </Flex>
             </MenuButton>
             <MenuList>
@@ -123,9 +117,7 @@ export const FloatingButtonContentStrategy: FC = () => {
                   placeholder={
                     contentStrategies?.length
                       ? `${contentStrategies.length} ${
-                          contentStrategies.length > 1
-                            ? "strategies..."
-                            : "strategy..."
+                          contentStrategies.length > 1 ? "strategies..." : "strategy..."
                         }`
                       : `No Content Strategies Found`
                   }
@@ -136,11 +128,8 @@ export const FloatingButtonContentStrategy: FC = () => {
               <MenuDivider />
               <Box maxH="30vh" overflow="auto">
                 {searchResults?.map((strategy) => (
-                  <MenuItem
-                    key={strategy.id}
-                    onClick={() => onSelect(strategy)}
-                  >
-                    <Text fontSize="sm">{strategy.name}</Text>
+                  <MenuItem key={strategy.id} onClick={() => onSelect(strategy)}>
+                    <Label>{strategy.name}</Label>
                   </MenuItem>
                 ))}
               </Box>

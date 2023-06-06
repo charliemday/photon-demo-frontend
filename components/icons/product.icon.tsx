@@ -9,12 +9,12 @@ interface Props {
 }
 
 export const ProductIcon: FC<Props> = ({ icon, size = "base", inactive }) => {
-  let width: string = "";
-  let height: string = "";
-  let paddingX: string = "";
-  let paddingY: string = "";
-  let borderRadius: string = "";
-  let boxShadow: string = "";
+  let width = "";
+  let height = "";
+  let paddingX = "";
+  let paddingY = "";
+  let borderRadius = "";
+  let boxShadow = "";
 
   switch (size) {
     case "base":

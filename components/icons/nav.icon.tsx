@@ -1,4 +1,5 @@
 import { Box, Stack, Text } from "@chakra-ui/react";
+import { Label } from "components/text";
 import { FC, ReactNode } from "react";
 
 interface Props {
@@ -9,9 +10,6 @@ interface Props {
 export const NavIcon: FC<Props> = ({ label = "Performance Data", icon }) => (
   <Stack direction="row" align="center" spacing="10px">
     <Box>{icon}</Box>
-
-    <Text fontSize="sm" fontWeight="medium" textAlign="center">
-      {label}
-    </Text>
+    <Label textAlign="center">{label}</Label>
   </Stack>
 );

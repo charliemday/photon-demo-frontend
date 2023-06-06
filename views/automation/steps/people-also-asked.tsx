@@ -5,6 +5,7 @@ import {
   Heading,
   HStack,
   Input,
+  Link,
   Stack,
   Text,
   useToast,
@@ -23,6 +24,7 @@ import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import { typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
 import { InputSection } from "./seed-keywords";
+import { Body, Label } from "components/text";
 
 interface Props {
   isOpen: boolean;
@@ -38,9 +40,7 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
   const [useVolumeThreshold, setUseVolumeThreshold] = useState<boolean>(false);
 
   const alsoAskedInputRef = useRef<HTMLInputElement>(null);
-  const [alsoAskedFile, setAlsoAskedFile] = useState<File | null | undefined>(
-    null
-  );
+  const [alsoAskedFile, setAlsoAskedFile] = useState<File | null | undefined>(null);
   const [language, setLanguage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -95,10 +95,7 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
 
     formData.append("file", alsoAskedFile);
     formData.append("language", language || "en");
-    formData.append(
-      "content_strategy_id",
-      activeContentStrategy?.id.toString()
-    );
+    formData.append("content_strategy_id", activeContentStrategy?.id.toString());
 
     if (useVolumeThreshold) {
       formData.append("volume_threshold", volumeThreshold.toString());
@@ -133,16 +130,14 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
         <Stack alignItems="center" spacing={6}>
           <HStack>
             <BsCheckCircle fontSize={18} color="green" />
-            <Text fontSize="sm" color="green.500">
-              {alsoAskedFile.name} ready for submission
-            </Text>
+            <Label color="green.500">{alsoAskedFile.name} ready for submission</Label>
           </HStack>
           {isLoading && <BarLoader color={BRAND_COLOR} />}
         </Stack>
       ) : (
         <HStack>
           <AiOutlineCloudDownload fontSize={18} />
-          <Text fontSize="sm">Click here to upload keyword data</Text>
+          <Label>Click here to upload keyword data</Label>
         </HStack>
       )}
     </Flex>
@@ -151,24 +146,24 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
   return (
     <ModalStepWrapper {...props} size="6xl">
       <Box>
-        <Heading fontSize="lg">
-          2. Questions Asked for {activeTeam?.name}
-        </Heading>
-        <Text fontSize="xs" my={6} opacity={0.75}>
-          {`This will take a CSV file with the first column of sorted keywords and get the "People Also Asked" questions for each keyword`}
-        </Text>
-        <a download href="/demo/people-also-ask/demo.csv">
-          <Text
-            opacity={0.75}
-            fontSize="xs"
-            cursor="pointer"
-            _hover={{
-              textDecoration: "underline",
-            }}
-          >
-            See the correct structure of an input file here
-          </Text>
-        </a>
+        <Heading fontSize="lg">2. Questions Asked for {activeTeam?.name}</Heading>
+        <Box my={3} opacity={0.75}>
+          <Body>
+            This will take a CSV file with the first column of sorted keywords and get the “People
+            Also Asked” questions for each keyword
+          </Body>
+        </Box>
+        <Link
+          download
+          href="/demo/people-also-ask/demo.csv"
+          opacity={0.75}
+          cursor="pointer"
+          _hover={{
+            textDecoration: "underline",
+          }}
+        >
+          <Body>See the correct structure of an input file here</Body>
+        </Link>
         <Input
           type="file"
           onInput={(e: any) => setAlsoAskedFile(e.target.files[0])}
@@ -201,11 +196,7 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
 
             <Box>
               <BaserMenu
-                defaultValue={
-                  langOptions[
-                    langOptions.findIndex(({ value }) => value === "en")
-                  ]
-                }
+                defaultValue={langOptions[langOptions.findIndex(({ value }) => value === "en")]}
                 onChange={(e: any) => setLanguage(e.value)}
                 data={langOptions as any}
               />
@@ -221,11 +212,12 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
               <Text fontSize="md" fontWeight="bold">
                 ✂️ Keywords to Exclude (Optional)
               </Text>
-              <Text fontSize="xs" opacity={0.75}>
-                {`Optionally add some target keywords you want to remove from the PAA output. For example if you
-            add "mint" to the list, all the PAA questions that contain the word "mint" will be
-            set as "Non-relevant" e.g. "How do you mint an NFT?" would be labeled "Non-relevant".`}
-              </Text>
+              <Body opacity={0.75}>
+                Optionally add some target keywords you want to remove from the PAA output. For
+                example if you add “mint” to the list, all the PAA questions that contain the word
+                “mint” will be set as “Non-relevant” e.g. “How do you mint an NFT?” would be labeled
+                “Non-relevant”
+              </Body>
             </Stack>
             <GridInputForm
               onChange={(e) => setExclusionKeywords(e.filter((f) => f.length))}
@@ -236,11 +228,7 @@ export const PeopleAlsoAsked: React.FC<Props> = (props) => {
         </HStack>
 
         <Flex justifyContent="flex-end" pt={6}>
-          <Button
-            size="lg"
-            onClick={() => setAlsoAskedFile(null)}
-            color="white"
-          >
+          <Button size="lg" onClick={() => setAlsoAskedFile(null)} color="white">
             Clear
           </Button>
           <Button

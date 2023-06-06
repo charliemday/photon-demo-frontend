@@ -19,6 +19,7 @@ import { useCreateTeamMutation } from "api/team.api";
 import { useFormik } from "formik";
 import { typeCheckError } from "utils";
 import * as Yup from "yup";
+import { Label } from "components/text";
 
 interface Props extends Partial<StepWizardChildProps> {
   onCompleted?: () => void;
@@ -78,9 +79,7 @@ export const OnboardingStep2: FC<Props> = (props) => {
     <>
       <ModalHeader>
         Create Workspace
-        <Text fontSize="sm" color="gray.400">
-          Step 1 of 2
-        </Text>
+        <Label color="gray.400">Step 1 of 2</Label>
       </ModalHeader>
       <ModalBody py={6}>
         <Stack spacing={6}>

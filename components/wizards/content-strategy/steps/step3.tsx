@@ -1,17 +1,7 @@
-import {
-  Grid,
-  GridItem,
-  HStack,
-  Input,
-  Stack,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
-import {
-  useCreateSeedKeywordMutation,
-  useListSeedKeywordsQuery,
-} from "api/strategies.api";
+import { Grid, GridItem, HStack, Input, Stack, Text, useToast } from "@chakra-ui/react";
+import { useCreateSeedKeywordMutation, useListSeedKeywordsQuery } from "api/strategies.api";
 import { Button } from "components/button";
+import { Label } from "components/text";
 import { FC, useEffect, useState } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 import { typeCheckError } from "utils";
@@ -35,15 +25,14 @@ export const Step3: FC<Props> = ({
 
   const toast = useToast();
 
-  const { data: seedKeywords, isLoading: isFetchingSeedKeywords } =
-    useListSeedKeywordsQuery(
-      {
-        contentStrategyId: contentStrategyId || 0,
-      },
-      {
-        skip: !contentStrategyId,
-      }
-    );
+  const { data: seedKeywords, isLoading: isFetchingSeedKeywords } = useListSeedKeywordsQuery(
+    {
+      contentStrategyId: contentStrategyId || 0,
+    },
+    {
+      skip: !contentStrategyId,
+    },
+  );
 
   useEffect(() => {
     if (seedKeywords) {
@@ -51,7 +40,7 @@ export const Step3: FC<Props> = ({
         seedKeywords.reduce((acc: any, seedKeyword, index) => {
           acc[index] = seedKeyword.keyword;
           return acc;
-        }, {})
+        }, {}),
       );
     }
   }, [seedKeywords, isFetchingSeedKeywords]);
@@ -69,7 +58,7 @@ export const Step3: FC<Props> = ({
   const handleCreateTargetKeywords = () => {
     // Filter out empty target keywords
     const filteredTargetKeywords = Object.values(targetKeywords).filter(
-      (targetKeyword) => targetKeyword !== ""
+      (targetKeyword) => targetKeyword !== "",
     );
 
     // if (filteredTargetKeywords.length && contentStrategyId) {
@@ -89,8 +78,7 @@ export const Step3: FC<Props> = ({
 
     if (!isCreatingSeedKeywords && isSeedKeywordsCreateError) {
       toast({
-        title:
-          typeCheckError(createSeedKeywordsError) || "Something went wrong",
+        title: typeCheckError(createSeedKeywordsError) || "Something went wrong",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -111,9 +99,9 @@ export const Step3: FC<Props> = ({
         <Text fontSize="xl" fontWeight="bold">
           Extra Competitors
         </Text>
-        <Text fontSize="sm" fontWeight="light" color="gray.500">
+        <Label color="gray.500">
           Step {currentStep} of {totalSteps}
-        </Text>
+        </Label>
       </Stack>
 
       <Stack spacing={4}>
@@ -121,9 +109,8 @@ export const Step3: FC<Props> = ({
           Add Target Keywords
         </Text>
         <Text>
-          We use these keywords to check for more competitors and classify
-          results using AI, to make sure that your strategy is hyper-focused on
-          your theme.
+          We use these keywords to check for more competitors and classify results using AI, to make
+          sure that your strategy is hyper-focused on your theme.
         </Text>
 
         <Grid templateColumns="repeat(2, 1fr)" gap={3}>
@@ -145,10 +132,7 @@ export const Step3: FC<Props> = ({
 
       <HStack>
         <Button onClick={previousStep}>Previous Step</Button>
-        <Button
-          onClick={handleCreateTargetKeywords}
-          isLoading={isCreatingSeedKeywords}
-        >
+        <Button onClick={handleCreateTargetKeywords} isLoading={isCreatingSeedKeywords}>
           Check for more competitors
         </Button>
       </HStack>

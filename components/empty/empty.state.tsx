@@ -1,5 +1,6 @@
 import { ButtonProps, Stack, Text } from "@chakra-ui/react";
 import { Button } from "components/button";
+import { Body } from "components/text";
 import { SECONDARY_COLOR } from "config/brand";
 import { FC } from "react";
 
@@ -21,9 +22,9 @@ export const EmptyState: FC<Props> = ({ icon, heading, text, button }) => (
         {heading}
       </Text>
 
-      <Text maxWidth="302px" fontSize="xs" fontWeight="medium" textAlign="center" color="#252525">
+      <Body maxWidth="302px" textAlign="center">
         {text}
-      </Text>
+      </Body>
     </Stack>
 
     <Button

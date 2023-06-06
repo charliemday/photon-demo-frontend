@@ -3,6 +3,7 @@ import { Dropdown } from "components/dropdown";
 import { FC } from "react";
 import { Modal } from "./modal";
 import { ModalField } from "./modal.field";
+import { Body, Label } from "components/text";
 
 interface Props {
   isOpen: boolean;
@@ -14,11 +15,8 @@ export const ContentStrategyCompetitorsModal: FC<Props> = ({ isOpen, onClose }) 
     <Stack spacing="30px">
       <Stack spacing="20px">
         <Stack spacing="7px">
-          <Text fontSize="14px" fontWeight="medium">
-            Competitors
-          </Text>
-
-          <Text fontSize="xs">Enter the URLs of your competitors in this space.</Text>
+          <Label>Competitors</Label>
+          <Body>Enter the URLs of your competitors in this space.</Body>
         </Stack>
 
         <Stack spacing="10px">
@@ -33,13 +31,8 @@ export const ContentStrategyCompetitorsModal: FC<Props> = ({ isOpen, onClose }) 
 
       <Stack spacing="20px">
         <Stack spacing="7px">
-          <Text fontSize="sm" fontWeight="medium">
-            Geography
-          </Text>
-
-          <Text fontSize="12px" fontWeight="regular">
-            Select the geography that you are competing in.
-          </Text>
+          <Label>Geography</Label>
+          <Body>Select the geography that you are competing in.</Body>
         </Stack>
 
         <Dropdown label="Select Geography" />

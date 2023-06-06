@@ -2,6 +2,7 @@ import { Stack, Text, Checkbox } from "@chakra-ui/react";
 import { FC } from "react";
 import { Modal } from "./modal";
 import { SuggestedText } from "components/suggested-text";
+import { Body, Label } from "components/text";
 
 interface Props {
   isOpen: boolean;
@@ -21,29 +22,26 @@ export const OptimisationTaskModal: FC<Props> = ({ isOpen, onClose }) => (
         spacing="30px"
       >
         <Stack spacing="8px">
-          <Text fontWeight="medium">Write about clustered themes</Text>
+          <Label>Write about clustered themes</Label>
 
-          <Text fontSize="xs">
+          <Body>
             We have clustered the missing keywords into themes. We have generated some sample text
             that covers the keywords within themed headings:
-          </Text>
+          </Body>
         </Stack>
 
         <Stack spacing="16px">
           <Stack direction="row" justify="space-between">
             <Stack direction="row" align="center" spacing="8px">
               <Checkbox />
-
-              <Text fontSize="xs" fontWeight="semibold">
-                Best chalk bag for beginners
-              </Text>
+              <Body>Best chalk bag for beginners</Body>
             </Stack>
           </Stack>
 
           <Stack paddingX="24px" spacing="10px">
-            <Text fontSize="xs">Beginner chalk bags</Text>
-            <Text fontSize="xs">Beginner chalk bag</Text>
-            <Text fontSize="xs">First chalk bag</Text>
+            <Body>Beginner chalk bags</Body>
+            <Body>Beginner chalk bag</Body>
+            <Body>First chalk bag</Body>
           </Stack>
 
           <SuggestedText
@@ -56,17 +54,14 @@ export const OptimisationTaskModal: FC<Props> = ({ isOpen, onClose }) => (
           <Stack direction="row" justify="space-between">
             <Stack direction="row" align="center" spacing="8px">
               <Checkbox />
-
-              <Text fontSize="xs" fontWeight="semibold">
-                Best chalk bag for beginners
-              </Text>
+              <Body>Best chalk bag for beginners</Body>
             </Stack>
           </Stack>
 
           <Stack paddingX="24px" spacing="10px">
-            <Text fontSize="xs">Beginner chalk bags</Text>
-            <Text fontSize="xs">Beginner chalk bag</Text>
-            <Text fontSize="xs">First chalk bag</Text>
+            <Body>Beginner chalk bags</Body>
+            <Body>Beginner chalk bag</Body>
+            <Body>First chalk bag</Body>
           </Stack>
 
           <SuggestedText
@@ -88,20 +83,17 @@ export const OptimisationTaskModal: FC<Props> = ({ isOpen, onClose }) => (
         <Stack spacing="8px">
           <Text fontWeight="medium">Add FAQs</Text>
 
-          <Text fontSize="xs">
+          <Body>
             The following missing keywords are good candidates for short FAQs at the end of your
             blog post. We have added some AI content (max 140 characters including spaces:
-          </Text>
+          </Body>
         </Stack>
 
         <Stack spacing="16px">
           <Stack direction="row" justify="space-between">
             <Stack direction="row" align="center" spacing="8px">
               <Checkbox />
-
-              <Text fontSize="xs" fontWeight="semibold">
-                Best chalk bag for beginners
-              </Text>
+              <Body>Best chalk bag for beginners</Body>
             </Stack>
           </Stack>
 
@@ -115,10 +107,7 @@ export const OptimisationTaskModal: FC<Props> = ({ isOpen, onClose }) => (
           <Stack direction="row" justify="space-between">
             <Stack direction="row" align="center" spacing="8px">
               <Checkbox />
-
-              <Text fontSize="xs" fontWeight="semibold">
-                Best chalk bag for beginners
-              </Text>
+              <Body>Best chalk bag for beginners</Body>
             </Stack>
           </Stack>
 

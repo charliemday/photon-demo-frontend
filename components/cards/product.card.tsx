@@ -1,5 +1,6 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 import { Button } from "components/button";
+import { Heading, Label } from "components/text";
 import { FC } from "react";
 
 interface Props {
@@ -28,36 +29,34 @@ export const ProductCard: FC<Props> = ({
     borderRadius="xl"
     boxShadow="md"
   >
-    <Flex flexDir="column" justifyContent="space-between" h="full">
-      <Flex
-        w={41}
-        height={41}
-        bgColor="purple.300"
-        justifyContent="center"
-        alignItems="center"
-        borderRadius="md"
-        border="solid 2px black"
-        mb={3}
-      >
-        <Text fontSize="xl">{emoji}</Text>
+    <Flex direction="column" justifyContent="space-between" gap="4" h="full">
+      <Flex direction="column" gap="4">
+        <Flex
+          w={41}
+          height={41}
+          bgColor="purple.300"
+          justifyContent="center"
+          alignItems="center"
+          borderRadius="md"
+          border="solid 2px black"
+        >
+          <Text fontSize="xl">{emoji}</Text>
+        </Flex>
+
+        <Flex direction="column" gap="3">
+          <Heading level="h3" fontSize="lg">
+            {title}
+          </Heading>
+
+          <Label fontWeight="medium">{description}</Label>
+        </Flex>
       </Flex>
-      <Box>
-        <Box>
-          <Text fontWeight="semibold">{title}</Text>
-        </Box>
-        <Box my={4}>
-          <Text fontSize="sm" letterSpacing={0.25}>
-            {description}
-          </Text>
-        </Box>
-      </Box>
-      <Box>
-        {buttonLabel && onClick && (
-          <Button w="full" onClick={onClick} isLoading={isLoading} border="solid 2px black">
-            {buttonLabel}
-          </Button>
-        )}
-      </Box>
+
+      {buttonLabel && onClick && (
+        <Button w="full" onClick={onClick} isLoading={isLoading} border="solid 2px black">
+          {buttonLabel}
+        </Button>
+      )}
     </Flex>
   </Box>
 );

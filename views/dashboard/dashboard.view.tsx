@@ -39,16 +39,12 @@ export const DashboardView: FC = () => {
   return (
     <Stack spacing={12}>
       <Stack spacing={4}>
-        <Heading fontSize="xl" lineHeight="1">
-          SEO Overview
-        </Heading>
+        <Heading>SEO Overview</Heading>
         <OverviewStats />
       </Stack>
 
       <Stack spacing={4}>
-        <Heading fontSize="xl" lineHeight="1">
-          Task List
-        </Heading>
+        <Heading>Task List</Heading>
         <Table
           rowItems={rowItems}
           headers={rowHeaders}

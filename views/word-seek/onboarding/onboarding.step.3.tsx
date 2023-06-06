@@ -11,6 +11,7 @@ import { CodeResponse, GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/
 import { useCompleteOauthMutation } from "api/auth.api";
 import { useUserDetailsQuery } from "api/user.api";
 import { Button } from "components/button";
+import { Label } from "components/text";
 import { GOOGLE_EXTERNAL_CLIENT_ID, GOOGLE_EXTERNAL_SCOPES } from "config";
 import { FC, useEffect } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
@@ -71,9 +72,7 @@ export const OnboardingStep3Content: FC<Props> = (props) => {
     <>
       <ModalHeader>
         Connect Search Console
-        <Text fontSize="sm" color="gray.400">
-          Step 2 of 2
-        </Text>
+        <Label color="gray.400">Step 2 of 2</Label>
       </ModalHeader>
 
       <ModalBody py={12}>

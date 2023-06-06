@@ -1,10 +1,10 @@
-import { extendTheme } from '@chakra-ui/react'
+import { extendTheme } from "@chakra-ui/react";
 
 const theme = extendTheme({
-    fonts: {
-        heading: `'ClashGrotesk', sans-serif`,
-        body: `'ClashGrotesk', sans-serif`,
-    },
-})
+  fonts: {
+    heading: `'ClashGrotesk', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif`,
+    body: `'Inter', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif`,
+  },
+});
 
-export default theme
+export default theme;

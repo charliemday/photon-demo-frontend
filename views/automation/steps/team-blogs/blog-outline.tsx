@@ -1,6 +1,7 @@
 import { Divider, HStack, Stack, Text } from "@chakra-ui/react";
 import { BlogSectionItem } from "components/blog/blog-section-item";
 import { Button } from "components/button";
+import { Label } from "components/text";
 import React from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { StepWizardChildProps } from "react-step-wizard";
@@ -35,7 +36,7 @@ export const BlogOutline: React.FC<Props> = ({
           }}
         >
           <FaArrowLeft fontSize={12} />
-          <Text fontSize="sm">Back to Blogs</Text>
+          <Label>Back to Blogs</Label>
         </HStack>
 
         <Text fontSize="lg" fontWeight="medium">
@@ -49,7 +50,7 @@ export const BlogOutline: React.FC<Props> = ({
         <>
           <Divider />
           <HStack justifyContent="space-between">
-            <Text fontSize="sm">Click to copy the text to your clipboard</Text>
+            <Label>Click to copy the text to your clipboard</Label>
             <Button onClick={nextStep}>Edit</Button>
           </HStack>
         </>

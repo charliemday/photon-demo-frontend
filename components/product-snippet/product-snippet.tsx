@@ -1,6 +1,7 @@
-import { Stack, Text } from "@chakra-ui/react";
-import { ProductIcon } from "components/product-icon";
+import { Stack } from "@chakra-ui/react";
+import { ProductIcon } from "components/icons";
 import { Tag } from "components/tag";
+import { Label } from "components/text";
 import { FC } from "react";
 
 interface Props {
@@ -14,9 +15,9 @@ export const ProductSnippet: FC<Props> = ({ name, icon, tag }) => (
     <ProductIcon icon={icon} />
 
     <Stack justify="center" spacing="2px">
-      <Text fontSize="sm" fontWeight="semibold" textAlign="center">
+      <Label fontWeight="semibold" textAlign="center">
         {name}
-      </Text>
+      </Label>
 
       <Tag text={tag} />
     </Stack>

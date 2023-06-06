@@ -1,5 +1,6 @@
 import { Checkbox, Flex, HStack, Stack, Text } from "@chakra-ui/react";
 import { Button } from "components/button";
+import { Label } from "components/text";
 import { CompetitorInterface } from "forms/competitors";
 import { FC, useState } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
@@ -21,12 +22,7 @@ const testData: CompetitorInterface[] = [
   },
 ];
 
-export const Step4: FC<Props> = ({
-  nextStep,
-  currentStep = 0,
-  totalSteps,
-  previousStep,
-}) => {
+export const Step4: FC<Props> = ({ nextStep, currentStep = 0, totalSteps, previousStep }) => {
   const [competitors, setCompetitors] = useState<{
     [key: number]: CompetitorInterface;
   }>({
@@ -42,18 +38,16 @@ export const Step4: FC<Props> = ({
         <Text fontSize="xl" fontWeight="bold">
           Review Competitors
         </Text>
-        <Text fontSize="sm" fontWeight="light" color="gray.500">
+        <Label color="gray.500">
           Step {currentStep} of {totalSteps}
-        </Text>
+        </Label>
       </Stack>
 
       <Stack spacing={4}>
         <Text fontSize="lg" fontWeight="bold">
           Add Competitors
         </Text>
-        <Text>
-          Would you like to add any of these competitors into the mix?
-        </Text>
+        <Text>Would you like to add any of these competitors into the mix?</Text>
         <Stack>
           {testData.map(({ name, url }, index) => (
             <HStack key={index} spacing={4}>
@@ -78,13 +72,7 @@ export const Step4: FC<Props> = ({
                   <Text fontWeight="semibold">{name}</Text>
                 </Checkbox>
               </Flex>
-              <Flex
-                flex={1}
-                p={2}
-                border="solid 1px #E7E7E7"
-                rounded="md"
-                bgColor="gray.50"
-              >
+              <Flex flex={1} p={2} border="solid 1px #E7E7E7" rounded="md" bgColor="gray.50">
                 <Text fontWeight="semibold">{url}</Text>
               </Flex>
             </HStack>

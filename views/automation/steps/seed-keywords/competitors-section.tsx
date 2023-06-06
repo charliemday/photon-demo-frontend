@@ -4,6 +4,7 @@ import { CompetitorInterface, CompetitorsForm } from "forms/competitors";
 import { Image } from "components/image";
 import React, { useEffect, useState } from "react";
 import { Team } from "types";
+import { Body } from "components/text";
 
 interface Props {
   onChangeCompetitors: (competitors: CompetitorInterface[]) => void;
@@ -41,13 +42,7 @@ const CompetitorsSection: React.FC<Props> = ({
       }}
     >
       <HStack>
-        <Box
-          width={18}
-          height={18}
-          position="relative"
-          borderRadius={4}
-          overflow="hidden"
-        >
+        <Box width={18} height={18} position="relative" borderRadius={4} overflow="hidden">
           <Image src="steps/semrush.jpeg" layout="fill" alt="Semrush Logo" />
         </Box>
         <Heading fontSize="md">Competitors</Heading>
@@ -63,10 +58,9 @@ const CompetitorsSection: React.FC<Props> = ({
           Use Custom Competitors
         </Switch>
       )}
-      <Text fontSize="xs" opacity={0.75} py={3}>
-        List the competitor names and urls you want to compare against via
-        SEMRush
-      </Text>
+      <Box opacity={0.75} py={3}>
+        <Body>List the competitor names and urls you want to compare against via SEMRush</Body>
+      </Box>
       <Box pt={6}>
         <CompetitorsForm onChange={setCompetitors} team={activeTeam} />
       </Box>

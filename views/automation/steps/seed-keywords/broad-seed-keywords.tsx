@@ -1,13 +1,4 @@
-import {
-  Box,
-  Divider,
-  Flex,
-  Heading,
-  HStack,
-  Stack,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Divider, Flex, Heading, HStack, Stack, Text, useToast } from "@chakra-ui/react";
 import { useCreateSeedKeywordMutation } from "api/strategies.api";
 import {
   // useBulkCreateSeedKeywordsMutation,
@@ -21,6 +12,7 @@ import { ModalStepWrapper } from "../modal-step-wrapper";
 import DatabaseSection from "./database-section";
 import InputSection from "./input-section";
 import TargetKeywordsSection from "./target-keywords-section";
+import { Body } from "components/text";
 
 interface Props {
   isOpen: boolean;
@@ -56,8 +48,7 @@ export const BroadSeedKeywords: React.FC<Props> = (props) => {
     if (!isLoading && isError) {
       toast({
         title: "Broad Keywords Error",
-        description:
-          typeCheckError(error) || "Broad keywords failed to generate.",
+        description: typeCheckError(error) || "Broad keywords failed to generate.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -93,18 +84,17 @@ export const BroadSeedKeywords: React.FC<Props> = (props) => {
     });
   };
 
-  const isButtonDisabled =
-    !targetKeywords.length || !maxBroadResults || isLoading;
+  const isButtonDisabled = !targetKeywords.length || !maxBroadResults || isLoading;
 
   return (
     <ModalStepWrapper {...props} size="6xl">
       <Box>
-        <Heading fontSize="lg">
-          🌱 Generate Broad Keywords through SEMRush
-        </Heading>
-        <Text fontSize="xs" my={6} opacity={0.75} w="75%">
-          {`This takes a list of keywords and runs them through the SEMRush Broad Keywords API.`}
-        </Text>
+        <Heading fontSize="lg">🌱 Generate Broad Keywords through SEMRush</Heading>
+        <Box my={6} opacity={0.75} w="75%">
+          <Body>
+            This takes a list of keywords and runs them through the SEMRush Broad Keywords API.
+          </Body>
+        </Box>
 
         <Divider my={6} />
       </Box>
@@ -122,13 +112,11 @@ export const BroadSeedKeywords: React.FC<Props> = (props) => {
         <HStack>
           <Flex flex={1}>
             <InputSection
-              title={`Max Broad Keyword Results (Est. max cost: $${calculateSemrushCost(
-                {
-                  costPerLine: 20,
-                  noOfLines: maxBroadResults,
-                  noOfRequests: targetKeywords.length,
-                }
-              )})`}
+              title={`Max Broad Keyword Results (Est. max cost: $${calculateSemrushCost({
+                costPerLine: 20,
+                noOfLines: maxBroadResults,
+                noOfRequests: targetKeywords.length,
+              })})`}
               onChange={(value) => setMaxBroadResults(value as number)}
               defaultValue={maxBroadResults}
               helperText={`This is the number of broad keyword match results to return for each of the keywords.`}
