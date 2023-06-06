@@ -62,7 +62,7 @@ export const AddWorkspaceModal: FC<Props> = ({ isOpen, onClose }) => {
          * If the user has more than 1 team, we want to restrict them from creating more teams
          * unless they have the feature flag enabled
          */
-        setRestrictedMessage("You can only create 1 team. Upgrade to create more.");
+        setRestrictedMessage("You can only create 1 Workspace. Upgrade to create more.");
       }
 
       if (
@@ -75,7 +75,7 @@ export const AddWorkspaceModal: FC<Props> = ({ isOpen, onClose }) => {
          * If the user has more than 10 teams, we want to restrict them from creating more teams
          * unless they have the feature flag enabled
          */
-        setRestrictedMessage("You can create a maximum of 10 teams. Upgrade to create more.");
+        setRestrictedMessage("You can create a maximum of 10 Workspaces. Upgrade to create more.");
       }
     }
   }, [teams, hasAccess]);
