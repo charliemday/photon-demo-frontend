@@ -2,11 +2,6 @@ import { TeamType } from "types";
 
 // TODO: Place these in their own folders with their RTK endpoints
 export const apiUrls = {
-    // Authentication
-    LOGIN: 'login/',
-    SIGNUP: 'signup/',
-    COMPLETE_OAUTH: 'complete-oauth/',
-    SET_PASSWORD: 'set-password/',
     // Teams
     TEAMS: (teamType?: TeamType) => `teams/${teamType ? `?team_type=${teamType}` : ''}`,
     TEAM: (id: number) => `teams/${id}/`,
@@ -15,15 +10,7 @@ export const apiUrls = {
     TEAM_COMPETITORS_BULK: "teams/team/competitors/bulk-update", // TODO: DEPRECATE
     TEAM_SEED_KEYWORDS: (teamUid: string) => `teams/team/${teamUid}/seed-keywords`, // TODO: DEPRECATE
     TEAM_PERFORMANCE: (teamUid: string) => `teams/performance/weekly?team_uid=${teamUid}`,
-    // User
-    USER: 'user/',
-    ONBOARDING_STEP: 'onboarding-step/',
-    FEEDBACK: 'feedback/',
-    // Vendors
-    AUTH_URL: (appName: string | null) => {
-        if (appName) return `get-auth-url/?app=${appName}`;
-        return 'get-auth-url/';
-    },
+    TEAM_MEMBERS: (teamId: number) => `teams/team/${teamId}/members`,
     // Google
     GOOGLE_SITES: (teamUid: string) => `google/sites?team_uid=${teamUid}`,
     POPULATE_REPORTS: 'google/populate-reports',
@@ -32,6 +19,8 @@ export const apiUrls = {
     // WordSeek
     WORD_SEEK: 'engine/word-seek/',
     WORD_SEEK_RESULTS: (teamUid: string) => `/engine/word-seek/results?team_uid=${teamUid}`,
+    WORD_SEEK_JOBS: (teamId?: number) => `engine/word-seek/jobs${teamId ? `?team_id=${teamId}` : ''}`,
+    WORD_SEEK_TRIGGER_JOB: "engine/word-seek/trigger-job",
     // Engine
     MISSING_KEYWORDS: 'engine/missing-keywords-job',
     PEOPLE_ALSO_ASK: 'engine/people-also-ask/',

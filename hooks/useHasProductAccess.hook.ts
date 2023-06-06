@@ -14,6 +14,9 @@ export const useHasProductAccess = (): ReturnProps => {
     )
 
     return {
+        // TODO: Switch over to new feature flags once we have implemented
+        // them with payments correctly on the backend 
+        // @ts-ignore
         hasAccess: data?.features?.includes(Features.WORD_SEEK) ?? false
     }
 

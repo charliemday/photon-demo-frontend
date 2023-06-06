@@ -19,6 +19,9 @@ interface Props {
   contentProps?: {
     [key: string]: any;
   };
+  showContentStrategy?: boolean;
+  showTeam?: boolean;
+  title?: string | null;
 }
 
 export const ModalStepWrapper: FC<Props> = ({
@@ -27,6 +30,9 @@ export const ModalStepWrapper: FC<Props> = ({
   children,
   size = "2xl",
   contentProps,
+  showContentStrategy = true,
+  showTeam = true,
+  title = null,
 }) => {
   const activeTeam = useActiveTeam();
   const activeContentStrategy = useActiveContentStrategy();
@@ -38,49 +44,48 @@ export const ModalStepWrapper: FC<Props> = ({
       <ModalOverlay />
       <ModalContent p={12} {...contentProps}>
         <ModalCloseButton />
-        <Box
-          h={10}
-          w={10}
-          position="absolute"
-          top={5}
-          left={8}
-          borderRadius={4}
-          overflow="hidden"
-        >
-          {imageError ? null : (
-            <Image
-              src={activeTeam?.logo || ""}
-              alt={activeTeam?.name || ""}
-              layout="fill"
-              onError={() => setImageError(true)}
-            />
-          )}
-        </Box>
-
-        <Box position="absolute" left={20} top={7}>
-          <Text fontSize="lg" fontWeight="bold">
-            {activeTeam?.name}
+        {title && (
+          <Text fontSize="xl" fontWeight="bold">
+            {title}
           </Text>
-        </Box>
+        )}
+        {showTeam && (
+          <>
+            <Box
+              h={10}
+              w={10}
+              position="absolute"
+              top={5}
+              left={8}
+              borderRadius={4}
+              overflow="hidden"
+            >
+              {imageError ? null : (
+                <Image
+                  src={activeTeam?.logo || ""}
+                  alt={activeTeam?.name || ""}
+                  layout="fill"
+                  onError={() => setImageError(true)}
+                />
+              )}
+            </Box>
 
-        <Box
-          position="absolute"
-          right={20}
-          top={7}
-          overflow="hidden"
-          maxW={400}
-        >
-          <Text
-            fontSize="lg"
-            fontWeight="bold"
-            isTruncated
-            title="Name of Content Strategy"
-          >
-            {activeContentStrategy
-              ? `📝 ${activeContentStrategy?.name}`
-              : "⚠️ No Content Strategy Selected"}
-          </Text>
-        </Box>
+            <Box position="absolute" left={20} top={7}>
+              <Text fontSize="lg" fontWeight="bold">
+                {activeTeam?.name}
+              </Text>
+            </Box>
+          </>
+        )}
+        {showContentStrategy && (
+          <Box position="absolute" right={20} top={7} overflow="hidden" maxW={400}>
+            <Text fontSize="lg" fontWeight="bold" isTruncated title="Name of Content Strategy">
+              {activeContentStrategy
+                ? `📝 ${activeContentStrategy?.name}`
+                : "⚠️ No Content Strategy Selected"}
+            </Text>
+          </Box>
+        )}
 
         <Divider my={6} />
         {children}

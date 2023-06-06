@@ -38,13 +38,17 @@ import {
   BroadSeedKeywords,
   KeywordInsightsResults,
   KeywordInsightsUpload,
+  MagicUrl,
   PeopleAlsoAsked,
   PopulateSCReports,
   SearchConsoleConnect,
   SearchConsoleReport,
   SeedKeywords,
+  TaskModal,
   TeamBlogs,
+  TeamContentStrategies,
   WordSeek,
+  WordSeekJobs,
 } from "./steps";
 import { GenerateKIInput } from "./steps/seed-keywords";
 
@@ -166,7 +170,7 @@ export const AutomationView: React.FC = () => {
         </HStack>
       </HStack>
 
-      <HStack alignItems="flex-end" border="solid 2px black" borderRadius="md" p={5}>
+      <HStack alignItems="flex-end" border="solid 1px lightgray" borderRadius="xl" p={5}>
         <Stack flex={1} my={4}>
           <HStack>
             <Text>Current Team:</Text>
@@ -201,13 +205,22 @@ export const AutomationView: React.FC = () => {
           </HStack>
         </Stack>
 
-        <Stack h="full" justifyContent="flex-end">
+        <HStack h="full" justifyContent="flex-end">
+          <ChakraButton
+            variant="outline"
+            onClick={() => {
+              setActiveStep(KEY.TEAM_CONTENT_STRATEGIES);
+              onOpen();
+            }}
+          >
+            View All Content Strategies
+          </ChakraButton>
           {activeContentStrategy && (
             <ChakraButton variant="outline" colorScheme="red" onClick={onOpenConfirmDelete}>
               Delete Content Strategy
             </ChakraButton>
           )}
-        </Stack>
+        </HStack>
       </HStack>
 
       <Divider my={8} />
@@ -299,6 +312,13 @@ export const AutomationView: React.FC = () => {
         isOpen={isOpen && activeStep === KEY.POPULATE_SC_REPORTS}
         onClose={onClose}
       />
+      <TeamContentStrategies
+        isOpen={isOpen && activeStep === KEY.TEAM_CONTENT_STRATEGIES}
+        onClose={onClose}
+      />
+      <TaskModal isOpen={isOpen && activeStep === KEY.TASK_MODAL} onClose={onClose} />
+      <WordSeekJobs isOpen={isOpen && activeStep === KEY.WORD_SEEK_JOBS} onClose={onClose} />
+      <MagicUrl isOpen={isOpen && activeStep === KEY.MAGIC_URL} onClose={onClose} />
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import { Divider, Grid, Stack } from "@chakra-ui/react";
+import { Divider, Grid, Heading, Stack, useDisclosure } from "@chakra-ui/react";
 import { ProductCard } from "components/cards";
 import { Table } from "components/table";
 import { HeaderItem } from "components/table/table.header";
@@ -6,8 +6,8 @@ import { ROUTES } from "config";
 import { useBuildTaskTableData } from "hooks";
 import { useRouter } from "next/router";
 import { FC } from "react";
+import { GscConnectModal } from "views/word-seek";
 import { OverviewStats } from "./overview-stats";
-import { Heading } from "components/text";
 
 const rowHeaders: HeaderItem[] = [
   {
@@ -32,7 +32,10 @@ const rowHeaders: HeaderItem[] = [
 
 export const DashboardView: FC = () => {
   const router = useRouter();
-  const { rowItems, isLoading } = useBuildTaskTableData();
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { rowItems, isLoading } = useBuildTaskTableData({
+    onOnboardingClick: onOpen,
+  });
   return (
     <Stack spacing={12}>
       <Stack spacing={4}>
@@ -68,6 +71,7 @@ export const DashboardView: FC = () => {
           buttonLabel="Run a Word Seek Report"
         />
       </Grid>
+      <GscConnectModal isOpen={isOpen} onClose={onClose} />
     </Stack>
   );
 };

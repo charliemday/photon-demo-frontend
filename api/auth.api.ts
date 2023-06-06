@@ -1,18 +1,18 @@
+import { baseApi } from "api/base-query";
+import { LoginFormValues } from "forms/login";
+import { SignupFormValues } from "forms/signup";
+import { camelizeKeys, decamelizeKeys } from "humps";
 
-import { baseApi } from 'api/base-query';
-import { LoginFormValues } from 'forms/login';
-import { SignupFormValues } from 'forms/signup';
-import { decamelizeKeys } from 'humps';
-
-import { apiUrls } from 'api/urls.api';
+import { authUrls } from "api/urls";
+import { MagicTokenUrl } from "types";
 
 interface LoginReturnProps {
     token: string;
-};
+}
 
 interface SignupReturnProps {
     token: string;
-};
+}
 
 interface OAuthReturnProps { }
 
@@ -30,41 +30,79 @@ interface SetPasswordReturnProps {
     token: string;
 }
 
+interface CompleteSignupRequestProps {
+    token: string;
+    firstName: string;
+    lastName: string;
+    password: string;
+}
+
+interface CompleteSignupReturnProps extends SetPasswordReturnProps { }
+
+const { LOGIN, SIGNUP, COMPLETE_OAUTH, SET_PASSWORD, GENERATE_MAGIC_TOKEN, COMPLETE_SIGNUP } = authUrls;
+
 // Define a service using a base URL and expected endpoints
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         login: builder.mutation<LoginReturnProps, LoginFormValues>({
             query: (values) => ({
-                url: apiUrls.LOGIN,
-                method: 'POST',
+                url: LOGIN,
+                method: "POST",
                 body: { ...values },
-            })
+            }),
         }),
         signup: builder.mutation<SignupReturnProps, SignupFormValues>({
             query: (values) => ({
-                url: apiUrls.SIGNUP,
-                method: 'POST',
+                url: SIGNUP,
+                method: "POST",
                 body: { ...decamelizeKeys(values) },
             }),
         }),
         completeOauth: builder.mutation<OAuthReturnProps, OAuthProps>({
             query: (values) => ({
-                url: apiUrls.COMPLETE_OAUTH,
-                method: 'POST',
+                url: COMPLETE_OAUTH,
+                method: "POST",
                 body: { ...values },
-            })
+            }),
         }),
         setPassword: builder.mutation<SetPasswordReturnProps, SetPasswordRequestProps>({
             query: (values) => ({
-                url: apiUrls.SET_PASSWORD,
-                method: 'POST',
-                body: { ...decamelizeKeys(values) }
+                url: SET_PASSWORD,
+                method: "POST",
+                body: { ...decamelizeKeys(values) },
+            }),
+        }),
+        /**
+         * Generate a magic token
+         */
+        generateMagicToken: builder.mutation<MagicTokenUrl, { userId: number }>({
+            query: (values) => ({
+                url: GENERATE_MAGIC_TOKEN,
+                method: "POST",
+                body: decamelizeKeys(values),
+            }),
+            transformResponse: (response: MagicTokenUrl) => camelizeKeys(response) as MagicTokenUrl,
+        }),
+        /**
+         * Complete signup
+         */
+        completeSignup: builder.mutation<CompleteSignupReturnProps, CompleteSignupRequestProps>({
+            query: (values) => ({
+                url: COMPLETE_SIGNUP,
+                method: "POST",
+                body: decamelizeKeys(values),
             })
         })
     }),
-})
+});
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useLoginMutation, useSignupMutation, useCompleteOauthMutation, useSetPasswordMutation } = authApi
-
+export const {
+    useLoginMutation,
+    useSignupMutation,
+    useCompleteOauthMutation,
+    useSetPasswordMutation,
+    useGenerateMagicTokenMutation,
+    useCompleteSignupMutation,
+} = authApi;

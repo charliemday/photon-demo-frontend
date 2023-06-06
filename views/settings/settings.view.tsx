@@ -10,22 +10,27 @@ import {
 } from "@chakra-ui/react";
 import { useCreateCustomerPortalMutation } from "api/payment.api";
 import { useDeleteAccountMutation, useUserDetailsQuery } from "api/user.api";
-import { Image } from "components/image";
-import { ConfirmationModal } from "components/modals";
+import { useGetAppSumoDetailsQuery } from "api/vendor.api";
+import { AppSumoSubscriptionModal, ConfirmationModal } from "components/modals";
 import { BRAND_COLOR, SUPPORT_EMAIL } from "config";
 import { BASE_FRONTEND_URL } from "config/urls";
 import { useLogout } from "hooks";
 import React from "react";
+import { IconType } from "react-icons";
+import { AiFillDelete } from "react-icons/ai";
+import { BiUserCircle } from "react-icons/bi";
+import { BsCreditCard2BackFill } from "react-icons/bs";
+import { FiMail } from "react-icons/fi";
 import { typeCheckError } from "utils";
 import { GscConnectModal } from "views/word-seek";
 
-interface Props {}
-
-export const SettingsView: React.FC<Props> = () => {
+export const SettingsView: React.FC = () => {
   const { data: userDetails } = useUserDetailsQuery(undefined);
   const [deleteAccount, { isLoading: isDeletingAccount }] = useDeleteAccountMutation();
   const [createCustomerPortal, { isLoading: isCreatingCustomerPortal }] =
     useCreateCustomerPortalMutation();
+
+  const { data: appSumoDetails } = useGetAppSumoDetailsQuery();
 
   const { logout } = useLogout();
   const toast = useToast();
@@ -36,22 +41,28 @@ export const SettingsView: React.FC<Props> = () => {
     onOpen: onGscModalOpen,
     onClose: onGscModalClose,
   } = useDisclosure();
+  const {
+    isOpen: isAppSumoSubscriptionOpen,
+    onOpen: onAppSumoSubscriptionOpen,
+    onClose: onAppSumoSubscriptionClose,
+  } = useDisclosure();
 
-  const renderHeading = (heading: string, imgSrc?: string) => (
-    <Stack w="full">
-      <HStack>
-        {imgSrc && (
-          <Box h={6} w={6} position="relative">
-            <Image layout="fill" objectFit="contain" src={imgSrc} alt="Button Image" />
-          </Box>
-        )}
-        <Text fontSize="lg" fontWeight="semibold">
-          {heading}
-        </Text>
-      </HStack>
-      <Divider />
-    </Stack>
-  );
+  const renderHeading = (heading: string, icon?: IconType) => {
+    const Icon = icon;
+
+    return (
+      <Stack w="full">
+        <HStack>
+          {/* @ts-ignore */}
+          {icon && <Icon size={20} />}
+          <Text fontSize="lg" fontWeight="semibold">
+            {heading}
+          </Text>
+        </HStack>
+        <Divider />
+      </Stack>
+    );
+  };
 
   const handleDeleteAccount = async () => {
     await deleteAccount(undefined)
@@ -101,13 +112,9 @@ export const SettingsView: React.FC<Props> = () => {
     <>
       <Stack spacing={16} minW="50vw" py={6}>
         <Stack spacing={6}>
-          {renderHeading("📝 Account Details")}
+          {renderHeading("Account Details", BiUserCircle)}
           {renderLabelValue("Name", fullName || "")}
           {renderLabelValue("Email", userDetails?.email || "")}
-        </Stack>
-
-        <Stack spacing={6}>
-          {renderHeading("GSC Connection", "/steps/search-console.svg")}
           <Box>
             <Button
               variant="solid"
@@ -120,33 +127,54 @@ export const SettingsView: React.FC<Props> = () => {
             </Button>
           </Box>
         </Stack>
-
         <GscConnectModal isOpen={isGscModalOpen} onClose={onGscModalClose} />
 
-        <Stack spacing={6}>
-          {renderHeading("💸 Subscription Settings")}
-          <Box>
-            <Button
-              variant="solid"
-              color="white"
-              bgColor={BRAND_COLOR}
-              _hover={{ bgColor: BRAND_COLOR, boxShadow: "lg" }}
-              onClick={handleCreateCustomerPortal}
-              isLoading={isCreatingCustomerPortal}
-              isDisabled={
-                userDetails?.products
-                  ? Object.values(userDetails?.products).length
-                    ? false
+        {appSumoDetails ? (
+          <Stack spacing={6}>
+            {renderHeading("AppSumo Subscription", BsCreditCard2BackFill)}
+
+            <Box>
+              <Button
+                variant="solid"
+                color="white"
+                bgColor={BRAND_COLOR}
+                border={`solid 2px ${BRAND_COLOR}`}
+                _hover={{
+                  bgColor: "white",
+                  color: BRAND_COLOR,
+                }}
+                onClick={onAppSumoSubscriptionOpen}
+              >
+                Manage AppSumo Subscription
+              </Button>
+            </Box>
+          </Stack>
+        ) : (
+          <Stack spacing={6}>
+            {renderHeading("Subscription Settings", BsCreditCard2BackFill)}
+            <Box>
+              <Button
+                variant="solid"
+                color="white"
+                bgColor={BRAND_COLOR}
+                _hover={{ bgColor: BRAND_COLOR, boxShadow: "lg" }}
+                onClick={handleCreateCustomerPortal}
+                isLoading={isCreatingCustomerPortal}
+                isDisabled={
+                  userDetails?.products
+                    ? Object.values(userDetails?.products).length
+                      ? false
+                      : true
                     : true
-                  : true
-              }
-            >
-              Manage Subscription
-            </Button>
-          </Box>
-        </Stack>
+                }
+              >
+                Manage Subscription
+              </Button>
+            </Box>
+          </Stack>
+        )}
         <Stack spacing={6}>
-          {renderHeading("📨 Contact Us")}
+          {renderHeading("Contact Us", FiMail)}
           <Box>
             <Button
               color={BRAND_COLOR}
@@ -161,7 +189,7 @@ export const SettingsView: React.FC<Props> = () => {
           </Box>
         </Stack>
         <Stack spacing={6} borderRadius="xl">
-          {renderHeading("☢️ Account Removal")}
+          {renderHeading("Account Removal", AiFillDelete)}
           <Box>
             <Button colorScheme="red" variant="outline" onClick={onOpen} borderWidth="2px">
               Delete Account
@@ -178,6 +206,10 @@ export const SettingsView: React.FC<Props> = () => {
         confirmButtonLabel="Delete"
         cancelButtonLabel="Cancel"
         isLoading={isDeletingAccount}
+      />
+      <AppSumoSubscriptionModal
+        isOpen={isAppSumoSubscriptionOpen}
+        onClose={onAppSumoSubscriptionClose}
       />
     </>
   );

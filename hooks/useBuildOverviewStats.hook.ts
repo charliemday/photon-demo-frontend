@@ -71,14 +71,14 @@ export const useBuildOverviewStats = (): ReturnProps => {
         title: 'Clicks',
         value: teamPerformance?.clicks || 0,
         delta: calculateDelta(teamPerformance?.clicks || 0, teamPerformance?.previousClicks || 0),
-        color: "#F7C994",
+        color: "#C3E8DA",
     }
 
     const tasksComplete = {
         title: 'Tasks Complete',
         value: 0,
         delta: 0,
-        color: "#978FEF",
+        color: "#B698E2",
     }
 
     const overviewStats = [

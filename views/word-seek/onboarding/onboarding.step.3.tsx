@@ -17,7 +17,7 @@ import { FC, useEffect } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 
 interface Props extends Partial<StepWizardChildProps> {
-  onCompleted?: () => void;
+  onCompleted?: (openModal?: boolean) => void;
 }
 
 export const OnboardingStep3Content: FC<Props> = (props) => {
@@ -37,7 +37,7 @@ export const OnboardingStep3Content: FC<Props> = (props) => {
 
         refetchUserDetails();
         if (props.onCompleted) {
-          props.onCompleted();
+          props.onCompleted(true);
         }
       }
 
@@ -62,6 +62,12 @@ export const OnboardingStep3Content: FC<Props> = (props) => {
     },
   });
 
+  const onSkip = () => {
+    if (props.onCompleted) {
+      props.onCompleted(false);
+    }
+  };
+
   return (
     <>
       <ModalHeader>
@@ -78,9 +84,22 @@ export const OnboardingStep3Content: FC<Props> = (props) => {
         </Stack>
       </ModalBody>
       <ModalFooter>
-        <Button w="full" isLoading={isLoading} onClick={googleLogin}>
-          Connect Search Console
-        </Button>
+        <Stack w="full" alignItems="center" spacing={4}>
+          <Button w="full" isLoading={isLoading} onClick={googleLogin}>
+            Connect Search Console
+          </Button>
+          <Text
+            fontSize="sm"
+            cursor="pointer"
+            _hover={{
+              textDecoration: "underline",
+              color: "blue.500",
+            }}
+            onClick={onSkip}
+          >
+            Skip
+          </Text>
+        </Stack>
       </ModalFooter>
     </>
   );

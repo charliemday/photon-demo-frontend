@@ -1,7 +1,7 @@
+import { authUrls, vendorUrls } from "api/urls";
 import { camelizeKeys } from "humps";
-import { ConvertToSnakeCase } from "types";
+import { ConvertToSnakeCase, User } from "types";
 import { apiUrls, baseApi, TAG_TYPES } from ".";
-
 export interface GetAuthUrlRequest {
     appName: string | null;
 }
@@ -58,12 +58,20 @@ export interface GoogleClientResponse {
     clientId: string;
 }
 
+export interface AppSumoDetailsResponse {
+    user: Partial<User>;
+    planId: string;
+    invoiceItemUuid: string;
+}
+
+const { APPSUMO_DETAILS } = vendorUrls;
+
 // Define a service using a base URL and expected endpoints
 export const vendorApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getAuthUrl: builder.query<GetAuthUrlResponse, GetAuthUrlRequest>({
             query: ({ appName }) => ({
-                url: apiUrls.AUTH_URL(appName)
+                url: authUrls.AUTH_URL(appName)
             }),
         }),
         /**
@@ -163,6 +171,16 @@ export const vendorApi = baseApi.injectEndpoints({
                 method: "GET",
             }),
             transformResponse: (response: ConvertToSnakeCase<GoogleClientResponse>) => camelizeKeys(response) as GoogleClientResponse,
+        }),
+        /**
+         * Gets the AppSumo Details for the User
+         */
+        getAppSumoDetails: builder.query<AppSumoDetailsResponse, void>({
+            query: () => ({
+                url: APPSUMO_DETAILS,
+                method: "GET",
+            }),
+            transformResponse: (response: ConvertToSnakeCase<AppSumoDetailsResponse>) => camelizeKeys(response) as AppSumoDetailsResponse,
         })
     }),
 });
@@ -179,4 +197,5 @@ export const {
     usePopulateSearchConsoleReportsMutation,
     useGetGoogleExternalClientQuery,
     useGetGoogleInternalClientQuery,
+    useGetAppSumoDetailsQuery
 } = vendorApi;

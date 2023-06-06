@@ -1,8 +1,10 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, HStack, Text, useDisclosure } from "@chakra-ui/react";
 import { Assigned } from "components/assigned";
 import { Tag } from "components/tag";
 import { GREEN } from "config";
 import { FC } from "react";
+import { TaskStatusEnum } from "types";
+import { GscConnectModal } from "views/word-seek";
 
 export enum RowItemTypes {
   text = "text",
@@ -20,6 +22,8 @@ interface Props {
   onClick?: () => void;
 }
 export const TableRow: FC<Props> = ({ items, onClick }) => {
+  const { isOpen, onClose, onOpen } = useDisclosure();
+
   const renderRowItem = (text: string, type: RowItemTypes) => {
     if (type === RowItemTypes.text) {
       return (
@@ -35,7 +39,7 @@ export const TableRow: FC<Props> = ({ items, onClick }) => {
           key={text}
           fontSize="xs"
           text={text}
-          bgColor={["Completed", "Done"].includes(text) ? GREEN : undefined}
+          bgColor={[TaskStatusEnum.done].includes(text as TaskStatusEnum) ? GREEN : undefined}
         />
       );
     }
@@ -46,24 +50,27 @@ export const TableRow: FC<Props> = ({ items, onClick }) => {
   };
 
   return (
-    <Flex
-      direction="row"
-      justify="space-between"
-      _hover={{
-        cursor: "pointer",
-        bgColor: "gray.50",
-      }}
-      p={2}
-      borderRadius="md"
-      onClick={onClick && onClick}
-    >
-      {items.map(({ text, type, flex }, key) => {
-        return (
-          <Flex key={key} flex={flex || 1} alignItems="center">
-            {renderRowItem(text, type)}
-          </Flex>
-        );
-      })}
-    </Flex>
+    <>
+      <HStack
+        direction="row"
+        justify="space-between"
+        _hover={{
+          cursor: "pointer",
+          bgColor: "gray.50",
+        }}
+        p={2}
+        borderRadius="md"
+        onClick={onClick && onClick}
+      >
+        {items.map(({ text, type, flex }, key) => {
+          return (
+            <Flex key={key} flex={flex || 1} alignItems="center">
+              {renderRowItem(text, type)}
+            </Flex>
+          );
+        })}
+      </HStack>
+      <GscConnectModal isOpen={isOpen} onClose={onClose} onComplete={onClose} />
+    </>
   );
 };

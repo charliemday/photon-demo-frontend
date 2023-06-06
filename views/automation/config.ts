@@ -13,6 +13,10 @@ export enum KEY {
     KEYWORD_INSIGHTS_RESULTS = "keyword-insights-results",
     TEAM_BLOGS = "team-blogs",
     ADMIN_USER = "admin-user",
+    TEAM_CONTENT_STRATEGIES = "team-content-strategies",
+    TASK_MODAL = "task-modal",
+    WORD_SEEK_JOBS = "word-seek-jobs",
+    MAGIC_URL = "magic-url",
 }
 
 export interface STEP {
@@ -90,8 +94,15 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
         ],
     },
     {
-        title: "📊 Reporting",
+        title: "📊 Reporting & Tasks",
         steps: [
+            {
+                title: "Tasks",
+                description: "Manually view, create, update, and remove tasks for a team",
+                key: KEY.TASK_MODAL,
+                image: "/logos/baser.png",
+                isNew: true,
+            },
             {
                 title: "Populate SC Reports",
                 description: `This will populate the Search Console reports for *all* the teams.`,
@@ -110,12 +121,19 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
                 image: "/steps/google.jpeg",
             },
             {
-                title: "WordSeek",
+                title: "Word Seek",
                 description: `Take the GSC keywords and check whether they exist on the
           pages they're associated with. The output will be saved to the drive.`,
                 key: KEY.COMPARE_CONSOLE_REPORT,
                 image: "/steps/search-console.svg",
             },
+            {
+                title: "Word Seek Jobs",
+                description: "View the Word Seek jobs that are not currently complete",
+                key: KEY.WORD_SEEK_JOBS,
+                image: "/steps/search-console.svg",
+
+            }
         ],
     },
     {
@@ -125,8 +143,15 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
                 title: "Admin User",
                 description: "For admin use",
                 key: KEY.ADMIN_USER,
-                image: "/steps/search-console.svg",
+                isDisabled: true,
             },
+            {
+                title: "🪄 Generate Magic URL",
+                description: "Generate a magic URL for a user",
+                key: KEY.MAGIC_URL,
+                isNew: true,
+            }
+
         ],
     },
 ];
