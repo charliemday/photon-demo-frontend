@@ -269,6 +269,7 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
                 value: site.value,
               }))}
               isLoading={isSitesLoading}
+              noOptionsMessage={() => "No sites found"}
             />
           </Box>
 
@@ -300,6 +301,7 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
                       setSelectedPage(value);
                     }}
                     placeholder="🔍 Search for a page..."
+                    noOptionsMessage={() => "No pages found"}
                   />
                 </>
               )}

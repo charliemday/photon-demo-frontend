@@ -1,12 +1,12 @@
-import { Box, Flex } from "@chakra-ui/react";
-import { Image } from "components/image";
+import { Box, Flex, HStack } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 import { useLoginMutation, useSignupMutation } from "api/auth.api";
 import { LoginForm, LoginFormValues } from "forms/login";
 import { SignupForm, SignupFormValues } from "forms/signup";
 
-import { FATHOM_EVENTS } from "config";
+import { WordSeekLogo } from "components/logos";
+import { BRAND_COLOR, FATHOM_EVENTS } from "config";
 import { useFathom } from "hooks";
 import { typeCheckError } from "utils";
 import { BackgroundView } from "views/background";
@@ -80,10 +80,12 @@ export const WelcomeView: React.FC = () => {
           </Box>
         </Flex>
       </Box>
-      <Box flex={1} bgColor="#F2F5F9" display={{ base: "none", md: "block" }}>
-        <Flex alignItems="center" justifyContent="center" h="full">
-          <Image src="/welcome-image.png" alt="Welcome" height={IMAGE_HEIGHT} width={IMAGE_WIDTH} />
-        </Flex>
+      <Box flex={1} bgColor={BRAND_COLOR} display={{ base: "none", md: "block" }}>
+        <HStack spacing={12} w="full" justifyContent="center" h="full">
+          <Box>
+            <WordSeekLogo />
+          </Box>
+        </HStack>
       </Box>
     </Flex>
   );
