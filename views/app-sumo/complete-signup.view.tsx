@@ -1,19 +1,11 @@
 import { Box, Flex, HStack, useToast } from "@chakra-ui/react";
 import { useCompleteSignupMutation } from "api/auth.api";
-import { Image } from "components/image";
-import { AppSumoLogo } from "components/logos";
+import { AppSumoLogo, WordSeekLogo } from "components/logos";
+import { BRAND_LIGHT_GRAY } from "config";
 import { CompleteSignupForm, CompleteSignupFormValues } from "forms/complete-signup";
 import { FC, useEffect, useState } from "react";
 import { typeCheckError } from "utils";
 import { BackgroundView } from "views/background";
-
-const IMAGE_RATIO = 480 / 480;
-const IMAGE_WIDTH = 75;
-const IMAGE_HEIGHT = IMAGE_WIDTH * IMAGE_RATIO;
-
-const APP_SUMO_IMAGE_RATIO = 74 / 1000;
-const APP_SUMO_IMAGE_WIDTH = 300;
-const APP_SUMO_IMAGE_HEIGHT = APP_SUMO_IMAGE_WIDTH * APP_SUMO_IMAGE_RATIO;
 
 export const CompleteSignupView: FC = () => {
   const [showBackground, setShowBackground] = useState(false);
@@ -83,18 +75,11 @@ export const CompleteSignupView: FC = () => {
           </Box>
         </Flex>
       </Box>
-      <Box flex={1} bgColor="#F2F5F9" display={{ base: "none", md: "block" }}>
-        <HStack alignItems="center" justifyContent="center" h="full" spacing={6}>
-          <Box
-            borderRadius="lg"
-            overflow="hidden"
-            h={IMAGE_HEIGHT}
-            w={IMAGE_WIDTH}
-            position="relative"
-          >
-            <Image src="/logos/baser.png" alt="Welcome" layout="fill" objectFit="contain" />
+      <Box flex={1} bgColor={BRAND_LIGHT_GRAY} display={{ base: "none", md: "block" }}>
+        <HStack alignItems="center" justifyContent="center" h="full" spacing={12}>
+          <Box>
+            <WordSeekLogo />
           </Box>
-
           <Box>
             <AppSumoLogo />
           </Box>

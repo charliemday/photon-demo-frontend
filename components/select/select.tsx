@@ -14,6 +14,7 @@ interface Props {
   defaultValue?: any;
   isMulti?: boolean;
   isLoading?: boolean;
+  noOptionsMessage?: () => string;
 }
 
 export const Select: React.FC<Props> = ({
@@ -23,6 +24,7 @@ export const Select: React.FC<Props> = ({
   defaultValue = [],
   isMulti = false,
   isLoading = false,
+  noOptionsMessage = () => "No options",
 }) =>
   isLoading ? (
     <Flex justifyContent="center" w="full">
@@ -38,5 +40,6 @@ export const Select: React.FC<Props> = ({
       filterOption={createFilter({
         ignoreAccents: false,
       })}
+      noOptionsMessage={noOptionsMessage}
     />
   );
