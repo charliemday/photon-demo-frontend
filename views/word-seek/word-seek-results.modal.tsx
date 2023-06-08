@@ -174,7 +174,7 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage =
           </HStack>
         </HStack>
       </Stack>
-      <ModalBody>
+      <ModalBody overflowY="hidden">
         <Divider mb={6} />
         {isLoading ? (
           <Flex alignItems="center" justifyContent="center" h="40vh">

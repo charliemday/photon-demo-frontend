@@ -1,5 +1,5 @@
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
-import { chakra, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { chakra, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import {
   ColumnDef,
   flexRender,
@@ -30,49 +30,52 @@ export const WordSeekResultsTable: FC<Props> = ({ data, columns }) => {
   });
 
   return (
-    <Table variant="striped" size="sm">
-      <Thead>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <Tr key={headerGroup.id}>
-            {headerGroup.headers.map((header) => {
-              // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-              const meta: any = header.column.columnDef.meta;
-              return (
-                <Th
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                  isNumeric={meta?.isNumeric}
-                >
-                  {flexRender(header.column.columnDef.header, header.getContext())}
+    <TableContainer overflowX="unset" overflowY="unset" pr={4}>
+      <Table variant="striped" size="sm" cellSpacing={20}>
+        <Thead pos="sticky" top={0} zIndex="docked" bgColor="white">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <Tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                const meta: any = header.column.columnDef.meta;
+                return (
+                  <Th
+                    key={header.id}
+                    onClick={header.column.getToggleSortingHandler()}
+                    isNumeric={meta?.isNumeric}
+                    py={3}
+                  >
+                    {flexRender(header.column.columnDef.header, header.getContext())}
 
-                  <chakra.span pl="4" cursor="pointer">
-                    {header.column.getIsSorted() === "desc" ? (
-                      <TriangleDownIcon aria-label="sorted descending" />
-                    ) : (
-                      <TriangleUpIcon aria-label="sorted ascending" />
-                    )}
-                  </chakra.span>
-                </Th>
-              );
-            })}
-          </Tr>
-        ))}
-      </Thead>
-      <Tbody>
-        {table.getRowModel().rows.map((row) => (
-          <Tr key={row.id}>
-            {row.getVisibleCells().map((cell) => {
-              // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-              const meta: any = cell.column.columnDef.meta;
-              return (
-                <Td key={cell.id} isNumeric={meta?.isNumeric}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </Td>
-              );
-            })}
-          </Tr>
-        ))}
-      </Tbody>
-    </Table>
+                    <chakra.span pl="4" cursor="pointer">
+                      {header.column.getIsSorted() === "desc" ? (
+                        <TriangleDownIcon aria-label="sorted descending" />
+                      ) : (
+                        <TriangleUpIcon aria-label="sorted ascending" />
+                      )}
+                    </chakra.span>
+                  </Th>
+                );
+              })}
+            </Tr>
+          ))}
+        </Thead>
+        <Tbody>
+          {table.getRowModel().rows.map((row) => (
+            <Tr key={row.id}>
+              {row.getVisibleCells().map((cell) => {
+                // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                const meta: any = cell.column.columnDef.meta;
+                return (
+                  <Td key={cell.id} isNumeric={meta?.isNumeric}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </Td>
+                );
+              })}
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </TableContainer>
   );
 };

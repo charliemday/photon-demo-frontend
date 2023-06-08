@@ -131,13 +131,6 @@ export const HubItems: React.FC<Props> = (props) => {
     [resultCount],
   );
 
-  const { hubCount, spokeCount, themeCount, keywordCount } = resultCount;
-
-  // console.log("Hub Count", hubCount);
-  // console.log("Spoke Count", spokeCount);
-  // console.log("Theme Count", themeCount);
-  // console.log("Keyword Count", keywordCount);
-
   return (
     <Stack>
       <HStack justifyContent="space-between">
