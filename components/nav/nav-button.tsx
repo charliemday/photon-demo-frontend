@@ -1,4 +1,4 @@
-import { Box, Stack, Text } from "@chakra-ui/react";
+import { Box, Stack } from "@chakra-ui/react";
 import { Label } from "components/text";
 import { FC, ReactNode } from "react";
 
@@ -25,6 +25,7 @@ export const NavButton: FC<Props> = ({ label = "Performance Data", icon, onClick
       fontWeight={isActive ? "semibold" : "medium"}
       textAlign="center"
       whiteSpace="nowrap"
+      size="md"
     >
       {label}
     </Label>

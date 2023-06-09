@@ -1,151 +1,103 @@
-import {
-  Box,
-  Flex,
-  HStack,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  MenuOptionGroup,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { useListTeamsQuery } from "api/team.api";
-import { Image } from "components/image";
-import { useActiveTeam } from "hooks";
-import React from "react";
-import { BiCheck } from "react-icons/bi";
-import { FiChevronDown } from "react-icons/fi";
-import { useDispatch } from "react-redux";
-import { setActiveTeam } from "store/slices";
-import { Team } from "types";
+import { Box, Stack } from "@chakra-ui/react";
+import { NavButton } from "components/nav";
+import { TopIcon } from "./top-icon";
 
-interface ItemInterface {
+import { FiGrid, FiHelpCircle, FiPenTool, FiPieChart, FiZap } from "react-icons/fi";
+
+import { ROUTES } from "config/routes";
+import { useFeatureFlag } from "hooks";
+import { useRouter } from "next/router";
+import { FC } from "react";
+import { Features } from "types";
+
+interface SidebarItem {
   label: string;
+  isActive: boolean;
+  icon: React.ReactNode;
   onClick: () => void;
-  isActive?: boolean;
-  icon?: React.ReactNode;
-  badge?: React.ReactNode;
+  isHidden?: boolean;
 }
 
-interface Props {
-  width?: string | number;
-  items?: ItemInterface[];
-  footerItems?: ItemInterface[];
-}
+const ICON_SIZE = 18;
 
-const SIDEBAR_COLOR = "#FAF7F3";
+export const Sidebar: FC = () => {
+  const router = useRouter();
+  const { hasAccess } = useFeatureFlag();
 
-const LOGO_DIM = 6;
-
-export const Sidebar: React.FC<Props> = ({ width = "50%", items = [], footerItems = [] }) => {
-  const activeTeam = useActiveTeam();
-  const dispatch = useDispatch();
-  const { data: teams } = useListTeamsQuery({});
-
-  const onSelectWorkspace = (team: Team) => {
-    dispatch(setActiveTeam(team));
-  };
-
-  const renderTeamMenu = () => (
-    <Box>
-      <Menu>
-        <MenuButton pt={8} pb={4} pl={8}>
-          <HStack>
-            <Box position="relative" h={LOGO_DIM} w={LOGO_DIM} overflow="hidden" borderRadius="md">
-              {activeTeam?.logo && (
-                <Image src={activeTeam?.logo} objectFit="cover" alt="Team Logo" layout="fill" />
-              )}
-            </Box>
-            <Text fontWeight="semibold" fontSize="lg">
-              {activeTeam?.name}
-            </Text>
-            <FiChevronDown fontSize={24} />
-          </HStack>
-        </MenuButton>
-        <MenuList w="full" ml={5}>
-          <MenuOptionGroup title="Select a Workspace">
-            {teams?.map((team, key) => (
-              <MenuItem key={key} onClick={() => onSelectWorkspace(team)}>
-                <HStack>
-                  <Box>{activeTeam?.id === team.id && <BiCheck fontSize={24} />}</Box>
-
-                  <Text>{team.name}</Text>
-                </HStack>
-              </MenuItem>
-            ))}
-          </MenuOptionGroup>
-        </MenuList>
-      </Menu>
-    </Box>
-  );
+  const SIDEBAR_ITEMS: SidebarItem[] = [
+    {
+      label: "Home",
+      isActive: router.route === ROUTES.DASHBOARD,
+      icon: <FiGrid fontSize={ICON_SIZE} />,
+      onClick: () => router.push(ROUTES.DASHBOARD),
+      isHidden: !hasAccess({
+        features: [Features.CONTENT_STRATEGY_WIZARD],
+      }),
+    },
+    {
+      label: "Content Strategy",
+      isActive: router.route === ROUTES.CONTENT_STRATEGY,
+      icon: <FiPenTool fontSize={ICON_SIZE} />,
+      onClick: () => router.push(ROUTES.CONTENT_STRATEGY),
+      isHidden: !hasAccess({
+        features: [Features.CONTENT_STRATEGY_WIZARD],
+      }),
+    },
+    {
+      label: "Performance",
+      isActive: router.route === ROUTES.PERFORMANCE,
+      icon: <FiPieChart fontSize={ICON_SIZE} />,
+      onClick: () => router.push(ROUTES.PERFORMANCE),
+      isHidden: !hasAccess({
+        features: [Features.PERFORMANCE_DASHBOARD],
+      }),
+    },
+    {
+      label: "Word Seek",
+      isActive: router.route === ROUTES.WORD_SEEK,
+      icon: <FiZap fontSize={ICON_SIZE} />,
+      onClick: () => router.push(ROUTES.WORD_SEEK),
+    },
+    {
+      label: "FAQs",
+      isActive: router.route === ROUTES.FAQS,
+      icon: <FiHelpCircle fontSize={ICON_SIZE} />,
+      onClick: () => {
+        router.push(ROUTES.FAQS);
+        // TODO: Uncomment when page complete
+        // window.open(FAQ_PAGE, "_blank");
+      },
+    },
+  ];
 
   return (
-    <Flex flexDir="column" width={width} h="full" position="fixed" bgColor={SIDEBAR_COLOR}>
-      {renderTeamMenu()}
-      <Stack position="relative" overflow="hidden" flex={1}>
-        {items?.length > 0 &&
-          items.map(({ label, onClick, icon, isActive, badge }, key) => (
-            <HStack
-              cursor="pointer"
-              _hover={{
-                backgroundColor: "gray.200",
-              }}
-              key={key}
-              px={6}
-              py={2}
-              onClick={onClick}
-            >
-              <Flex
-                border={isActive ? "solid 1px black" : "none"}
-                p={1}
-                borderRadius="md"
-                w={8}
-                h={8}
-                alignItems="center"
-                justifyContent="center"
-                bgColor={isActive ? "purple.500" : "gray.200"}
-                boxShadow="xl"
-              >
-                {icon}
-              </Flex>
-              <Text fontWeight={isActive ? "bold" : "semibold"}>{label}</Text>
-              {badge}
-            </HStack>
-          ))}
+    <Box
+      background="white"
+      padding="24px"
+      width="240px"
+      height="100dvh"
+      flexShrink="0"
+      borderRight="1px solid #ECECEC"
+      position="sticky"
+      top="0"
+      zIndex={100}
+    >
+      <Stack justify="space-between" align="flex-start" spacing="100%" height="100%" w="full">
+        <Stack justify="center" align="flex-start" spacing="60px" w="full">
+          <TopIcon />
+          <Stack justify="flex-start" align="flex-start" spacing="16px" width="full" height="100%">
+            {SIDEBAR_ITEMS.filter((s) => !s.isHidden).map((item) => (
+              <NavButton
+                key={item.label}
+                label={item.label}
+                icon={item.icon}
+                isActive={item.isActive}
+                onClick={item.onClick}
+              />
+            ))}
+          </Stack>
+        </Stack>
       </Stack>
-      <Stack h="full" flex={1} justifyContent="flex-end" pb={12}>
-        {footerItems.length > 0 &&
-          footerItems.map(({ label, onClick, icon, isActive }, key) => (
-            <HStack
-              px={6}
-              py={2}
-              bottom={10}
-              cursor="pointer"
-              _hover={{
-                backgroundColor: "gray.200",
-              }}
-              w="full"
-              key={key}
-              onClick={onClick}
-            >
-              <Flex
-                border={isActive ? "solid 1px black" : "none"}
-                p={1}
-                borderRadius="md"
-                w={8}
-                h={8}
-                alignItems="center"
-                justifyContent="center"
-                bgColor={isActive ? "purple.500" : "gray.200"}
-                boxShadow="xl"
-              >
-                {icon}
-              </Flex>
-              <Text fontWeight={isActive ? "bold" : "semibold"}>{label}</Text>
-            </HStack>
-          ))}
-      </Stack>
-    </Flex>
+    </Box>
   );
 };

@@ -23,7 +23,7 @@ import { BiRefresh } from "react-icons/bi";
 import { BsDownload } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { MissingKeyword, RootState, Team } from "types";
-import { WordSeekResultsTable } from "./word-seek-results.table";
+import { WordSeekResultsTable } from "../word-seek-results.table";
 
 interface Props {
   isOpen: boolean;
