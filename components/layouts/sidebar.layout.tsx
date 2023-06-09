@@ -2,7 +2,7 @@ import { Box, Flex, HStack, Stack } from "@chakra-ui/react";
 import { DropdownAvatar } from "components/avatar";
 import { Breadcrumb, Breadcrumbs } from "components/breadcrumbs";
 import { TeamDropdown } from "components/dropdown";
-import { SidebarV2 as Sidebar } from "components/sidebar";
+import { Sidebar } from "components/sidebar";
 import { Heading } from "components/text";
 import { ROUTES } from "config";
 import Head from "next/head";

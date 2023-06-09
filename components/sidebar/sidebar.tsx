@@ -20,7 +20,7 @@ interface SidebarItem {
 
 const ICON_SIZE = 18;
 
-export const SidebarV2: FC = () => {
+export const Sidebar: FC = () => {
   const router = useRouter();
   const { hasAccess } = useFeatureFlag();
 

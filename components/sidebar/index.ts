@@ -1,2 +1,3 @@
-export { SidebarV2 } from './sidebar.v2';
+export { Sidebar } from './sidebar';
 export { TopIcon } from "./top-icon";
+
