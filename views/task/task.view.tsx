@@ -4,7 +4,7 @@ import { ROUTES } from "config";
 import { useRouter } from "next/router";
 import { FC } from "react";
 import { Blog, TaskTypeSlugEnum } from "types";
-import { GscConnectModal } from "views/word-seek";
+import { GscConnectModal } from "views/word-seek/modals";
 import { BlogTask } from "./task_types";
 
 interface Props {

@@ -4,7 +4,7 @@ import { Tag } from "components/tag";
 import { GREEN } from "config";
 import { FC } from "react";
 import { TaskStatusEnum } from "types";
-import { GscConnectModal } from "views/word-seek";
+import { GscConnectModal } from "views/word-seek/modals";
 
 export enum RowItemTypes {
   text = "text",

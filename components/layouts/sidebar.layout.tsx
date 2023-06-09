@@ -7,7 +7,8 @@ import { Heading } from "components/text";
 import { ROUTES } from "config";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ReactNode, useEffect } from "react";
+import { FC, ReactNode, useEffect, useState } from "react";
+import { IoPhonePortraitOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { RootState } from "types";
 
@@ -18,9 +19,28 @@ interface Props {
   breadcrumbs?: Breadcrumb[];
 }
 
-export const SidebarLayout: React.FC<Props> = ({ children, title, headerTitle, breadcrumbs }) => {
+const MAX_MOBILE_WIDTH = 768;
+
+export const SidebarLayout: FC<Props> = ({ children, title, headerTitle, breadcrumbs }) => {
   const authToken = useSelector((state: RootState) => state.auth.token);
   const router = useRouter();
+
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (!authToken && router.isReady) {
@@ -30,6 +50,17 @@ export const SidebarLayout: React.FC<Props> = ({ children, title, headerTitle, b
       router.push(ROUTES.BASE);
     }
   }, [router, authToken]);
+
+  if (windowSize.width < MAX_MOBILE_WIDTH) {
+    return (
+      <Stack alignItems="center" justifyContent="center" py={32} spacing={6} px={8}>
+        <Box>
+          <IoPhonePortraitOutline fontSize={40} />
+        </Box>
+        <Heading textAlign="center">{`We're not yet optimised for mobile yet! For the best experience use a laptop or desktop`}</Heading>
+      </Stack>
+    );
+  }
 
   return (
     <>
@@ -43,7 +74,7 @@ export const SidebarLayout: React.FC<Props> = ({ children, title, headerTitle, b
         <Sidebar />
 
         <Flex flexGrow="1" px="4" py="12">
-          <Box maxWidth="1098px" mx={8}>
+          <Box maxWidth="1098px" mx={8} w="full">
             <Stack spacing="10">
               {title || breadcrumbs ? (
                 <Stack spacing="4">
@@ -60,7 +91,6 @@ export const SidebarLayout: React.FC<Props> = ({ children, title, headerTitle, b
                   ) : null}
                 </Stack>
               ) : null}
-
               {children}
             </Stack>
           </Box>

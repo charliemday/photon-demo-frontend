@@ -6,7 +6,7 @@ import { ROUTES } from "config";
 import { useBuildTaskTableData } from "hooks";
 import { useRouter } from "next/router";
 import { FC } from "react";
-import { GscConnectModal } from "views/word-seek";
+import { GscConnectModal } from "views/word-seek/modals";
 import { OverviewStats } from "./overview-stats";
 
 const rowHeaders: HeaderItem[] = [

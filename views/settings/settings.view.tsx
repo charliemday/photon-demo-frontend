@@ -6,7 +6,7 @@ import {
   Stack,
   Text,
   useDisclosure,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import { useCreateCustomerPortalMutation } from "api/payment.api";
 import { useDeleteAccountMutation, useUserDetailsQuery } from "api/user.api";
@@ -22,7 +22,7 @@ import { BiUserCircle } from "react-icons/bi";
 import { BsCreditCard2BackFill } from "react-icons/bs";
 import { FiMail } from "react-icons/fi";
 import { typeCheckError } from "utils";
-import { GscConnectModal } from "views/word-seek";
+import { GscConnectModal } from "views/word-seek/modals";
 
 export const SettingsView: React.FC = () => {
   const { data: userDetails } = useUserDetailsQuery(undefined);

@@ -10,8 +10,6 @@ import { useRouter } from "next/router";
 import { FC } from "react";
 import { Features } from "types";
 
-interface Props {}
-
 interface SidebarItem {
   label: string;
   isActive: boolean;
@@ -20,7 +18,9 @@ interface SidebarItem {
   isHidden?: boolean;
 }
 
-export const SidebarV2: FC<Props> = () => {
+const ICON_SIZE = 18;
+
+export const SidebarV2: FC = () => {
   const router = useRouter();
   const { hasAccess } = useFeatureFlag();
 
@@ -28,7 +28,7 @@ export const SidebarV2: FC<Props> = () => {
     {
       label: "Home",
       isActive: router.route === ROUTES.DASHBOARD,
-      icon: <FiGrid />,
+      icon: <FiGrid fontSize={ICON_SIZE} />,
       onClick: () => router.push(ROUTES.DASHBOARD),
       isHidden: !hasAccess({
         features: [Features.CONTENT_STRATEGY_WIZARD],
@@ -37,7 +37,7 @@ export const SidebarV2: FC<Props> = () => {
     {
       label: "Content Strategy",
       isActive: router.route === ROUTES.CONTENT_STRATEGY,
-      icon: <FiPenTool />,
+      icon: <FiPenTool fontSize={ICON_SIZE} />,
       onClick: () => router.push(ROUTES.CONTENT_STRATEGY),
       isHidden: !hasAccess({
         features: [Features.CONTENT_STRATEGY_WIZARD],
@@ -46,7 +46,7 @@ export const SidebarV2: FC<Props> = () => {
     {
       label: "Performance",
       isActive: router.route === ROUTES.PERFORMANCE,
-      icon: <FiPieChart />,
+      icon: <FiPieChart fontSize={ICON_SIZE} />,
       onClick: () => router.push(ROUTES.PERFORMANCE),
       isHidden: !hasAccess({
         features: [Features.PERFORMANCE_DASHBOARD],
@@ -55,14 +55,18 @@ export const SidebarV2: FC<Props> = () => {
     {
       label: "Word Seek",
       isActive: router.route === ROUTES.WORD_SEEK,
-      icon: <FiZap />,
+      icon: <FiZap fontSize={ICON_SIZE} />,
       onClick: () => router.push(ROUTES.WORD_SEEK),
     },
     {
       label: "FAQs",
       isActive: router.route === ROUTES.FAQS,
-      icon: <FiHelpCircle />,
-      onClick: () => router.push(ROUTES.FAQS),
+      icon: <FiHelpCircle fontSize={ICON_SIZE} />,
+      onClick: () => {
+        router.push(ROUTES.FAQS);
+        // TODO: Uncomment when page complete
+        // window.open(FAQ_PAGE, "_blank");
+      },
     },
   ];
 
