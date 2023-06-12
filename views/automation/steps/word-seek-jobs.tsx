@@ -1,4 +1,6 @@
 import {
+  Box,
+  Progress,
   Stack,
   Table,
   TableCaption,
@@ -14,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useReRunWordSeekJobMutation, useWordSeekJobsQuery } from "api/engine.api";
 import { Button } from "components/button";
+import { Body } from "components/text";
 import { FC, useEffect, useState } from "react";
 import { ellipsizeText, typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
@@ -23,11 +26,11 @@ interface Props {
   onClose: () => void;
 }
 
-const headers = ["Page", "Job Type", "Job Status", "Team/Workspace", "User"];
+const headers = ["Site", "Job Progress", "Team/Workspace", "User", "Job Started"];
 
 export const WordSeekJobs: FC<Props> = (props) => {
   const toast = useToast();
-  const [selectedJob, setSelectedJob] = useState<number | null>(null);
+  const [selectedJob, setSelectedJob] = useState<string | null>(null);
 
   const { data: wordSeekJobs, isLoading, isError, error, refetch } = useWordSeekJobsQuery();
   const [triggerJob, { isLoading: isTriggering, error: triggeredError }] =
@@ -40,9 +43,9 @@ export const WordSeekJobs: FC<Props> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props]);
 
-  const handleTriggerJob = (jobId: number) => {
-    setSelectedJob(jobId);
-    triggerJob({ jobId }).then((res) => {
+  const handleTriggerJob = (jobGroupUuid: string) => {
+    setSelectedJob(jobGroupUuid);
+    triggerJob({ jobGroupUuid }).then((res) => {
       if ("error" in res) {
         toast({
           title: typeCheckError(triggeredError) || "An error occurred.",
@@ -81,16 +84,6 @@ export const WordSeekJobs: FC<Props> = (props) => {
     }
   };
 
-  const renderJobType = (jobType: string) => {
-    if (jobType === "single_page") {
-      return <Text>Single Page</Text>;
-    }
-
-    if (jobType === "full_site") {
-      return <Text>Full Site</Text>;
-    }
-  };
-
   return (
     <ModalStepWrapper
       {...props}
@@ -103,7 +96,7 @@ export const WordSeekJobs: FC<Props> = (props) => {
         {wordSeekJobs?.length ? (
           <TableContainer>
             <Table variant="simple">
-              <TableCaption>All Word Seek jobs that have not completed</TableCaption>
+              <TableCaption>All Word Seek jobs that have are in progress.</TableCaption>
               <Thead>
                 <Tr>
                   {headers.map((header, key) => (
@@ -112,28 +105,57 @@ export const WordSeekJobs: FC<Props> = (props) => {
                 </Tr>
               </Thead>
               <Tbody>
-                {wordSeekJobs?.map((job, key) => (
-                  <Tr key={key}>
-                    <Td>
-                      <Tooltip label={job.page} hasArrow>
-                        <Text isTruncated>{ellipsizeText(job.page, 30)}</Text>
-                      </Tooltip>
-                    </Td>
-                    <Td>{renderJobType(job.jobType)}</Td>
-                    <Td>{renderStatus(job.jobStatus)}</Td>
-                    <Td>{job.team.name}</Td>
-                    <Td>{`${job.user.firstName} ${job.user.firstName}`}</Td>
-                    <Td>
-                      <Button
-                        size="sm"
-                        onClick={() => handleTriggerJob(job.id)}
-                        isLoading={isTriggering && selectedJob === job.id}
-                      >
-                        Re-run Job
-                      </Button>
-                    </Td>
-                  </Tr>
-                ))}
+                {wordSeekJobs?.map(({ progress, jobsRemaining, site }, key) => {
+                  const user = jobsRemaining[0].user;
+                  const team = jobsRemaining[0].team;
+                  const jobGroupUuid = jobsRemaining[0].jobGroupUuid;
+                  const dateStarted = jobsRemaining[0].created;
+
+                  return (
+                    <Tr key={key}>
+                      <Td>
+                        <Tooltip label={site} hasArrow>
+                          <Box>
+                            <Body isTruncated>{ellipsizeText(site, 30)}</Body>
+                          </Box>
+                        </Tooltip>
+                      </Td>
+                      <Td>
+                        <Tooltip label={`Job is ${progress * 100}% complete`} hasArrow>
+                          <Progress value={progress * 100} borderRadius="sm" />
+                        </Tooltip>
+                      </Td>
+                      <Td>
+                        <Body>{team.name}</Body>
+                      </Td>
+                      <Td>
+                        <Body>{`${user.firstName} ${user.firstName}`}</Body>
+                      </Td>
+                      <Td>
+                        <Body>
+                          {new Date(dateStarted).toLocaleDateString("en-GB", {
+                            hour: "numeric",
+                            minute: "numeric",
+
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                            hour12: true,
+                          })}
+                        </Body>
+                      </Td>
+                      <Td>
+                        <Button
+                          size="sm"
+                          onClick={() => handleTriggerJob(jobGroupUuid)}
+                          isLoading={isTriggering && selectedJob === jobGroupUuid}
+                        >
+                          Resume Job
+                        </Button>
+                      </Td>
+                    </Tr>
+                  );
+                })}
               </Tbody>
             </Table>
           </TableContainer>

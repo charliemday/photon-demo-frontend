@@ -35,4 +35,5 @@ export interface WordSeekJob {
     jobStatus: string;
     team: TeamMin;
     user: UserMin;
+    jobGroupUuid: string;
 }
