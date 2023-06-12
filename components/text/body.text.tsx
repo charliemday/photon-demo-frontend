@@ -1,7 +1,7 @@
 import { Text, TextProps } from "@chakra-ui/react";
 import { Font } from "types/fonts";
 
-interface Props extends Omit<TextProps, "fontSize"> {
+interface Props extends TextProps {
   fontFamily?: Font;
   fontWeight?: "medium" | "semibold";
 }
@@ -10,12 +10,13 @@ export const Body = ({
   fontFamily = "Inter",
   fontWeight = "medium",
   lineHeight = "1.25",
+  fontSize = "xs",
   children,
   ...rest
 }: Props) => (
   <Text
     fontFamily={fontFamily}
-    fontSize="xs"
+    fontSize={fontSize}
     fontWeight={fontWeight}
     lineHeight={lineHeight}
     my="-1"

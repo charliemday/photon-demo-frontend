@@ -1,71 +1,35 @@
-import {
-  Box,
-  Divider,
-  Flex,
-  HStack,
-  ModalBody,
-  ModalFooter,
-  Spinner,
-  Stack,
-  TableContainer,
-  Text,
-} from "@chakra-ui/react";
-import { createColumnHelper } from "@tanstack/react-table";
+import { Box, Flex, HStack, ModalBody, ModalFooter, Spinner, Stack, Text } from "@chakra-ui/react";
 import { useWordSeekResultsQuery } from "api/engine.api";
 import { Button } from "components/button";
-import { Image } from "components/image";
 import { Modal } from "components/modals";
 import { Select } from "components/select";
+import { Tab } from "components/tab";
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { CSVLink } from "react-csv";
-import { AiOutlineTeam } from "react-icons/ai";
 import { BiRefresh } from "react-icons/bi";
 import { BsDownload } from "react-icons/bs";
 import { useSelector } from "react-redux";
-import { MissingKeyword, RootState, Team } from "types";
-import { WordSeekResultsTable } from "../word-seek-results.table";
-
+import { RootState, Team } from "types";
+import { ActionsTab } from "./actions.tab";
+import { DataTab } from "./data.tab";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   defaultPage?: string | null;
 }
 
-const columnHelper = createColumnHelper<MissingKeyword>();
-
-const columns = [
-  columnHelper.accessor("keyword", {
-    cell: (info) => info.getValue(),
-    header: "Keyword",
-  }),
-  columnHelper.accessor("clicks", {
-    cell: (info) => info.getValue(),
-    header: "Clicks",
-    meta: {
-      isNumeric: true,
-    },
-  }),
-  columnHelper.accessor("impressions", {
-    cell: (info) => info.getValue(),
-    header: "Impressions",
-    meta: {
-      isNumeric: true,
-    },
-  }),
-  columnHelper.accessor("position", {
-    cell: (info) => info.getValue(),
-    header: "Average Position",
-    meta: {
-      isNumeric: true,
-    },
-  }),
-];
+enum TAB {
+  data = "data",
+  suggestions = "suggestions",
+}
 
 export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage = null }) => {
   const [selectedPage, setSelectedPage] = useState<string | null>(defaultPage);
 
   const csvData = useRef<any>([]);
   const activeTeam: Team = useSelector((state: RootState) => state.team.activeTeam);
+
+  const [activeTab, setActiveTab] = useState<TAB>(TAB.data);
 
   const {
     data: wordSeekResults,
@@ -118,41 +82,56 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage =
     return results;
   };
 
+  const renderTab = () => {
+    if (activeTab === TAB.data) {
+      return <DataTab selectedPage={selectedPage} data={wordSeekResults} />;
+    }
+
+    return <ActionsTab />;
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl">
-      <Stack p={4}>
-        <HStack justifyContent="space-between" alignItems="flex-end">
-          <HStack spacing={4} w="75%">
-            <Box w={12} h={12} position="relative" borderRadius="md" overflow="hidden">
-              <Image
-                src={activeTeam?.logo || ""}
-                alt={activeTeam?.name}
-                layout="fill"
-                fallbackComponent={<AiOutlineTeam fontSize={32} />}
+      <Stack spacing={6}>
+        <HStack spacing={4}>
+          <Text fontSize="xl" fontWeight="semibold">
+            {activeTeam?.name}
+          </Text>
+          {pages && pages?.length > 0 && (
+            <Flex w="60%">
+              <Select
+                options={
+                  pages
+                    ? pages.map((page) => ({
+                        label: page,
+                        value: page,
+                      }))
+                    : []
+                }
+                onChange={({ value }) => setSelectedPage(value)}
+                placeholder="🔍 Search for a page..."
               />
-            </Box>
-            <Stack w="full" flex={1}>
-              <Text fontSize="xl" fontWeight="semibold">
-                {activeTeam?.name}
-              </Text>
-              {pages && pages?.length > 0 && (
-                <Select
-                  options={
-                    pages
-                      ? pages.map((page) => ({
-                          label: page,
-                          value: page,
-                        }))
-                      : []
-                  }
-                  onChange={({ value }) => setSelectedPage(value)}
-                  placeholder="🔍 Search for a page..."
-                />
-              )}
-            </Stack>
+            </Flex>
+          )}
+        </HStack>
+
+        <HStack justifyContent="space-between" alignItems="flex-end">
+          <HStack>
+            <HStack>
+              <Tab
+                label="Missing Query Data"
+                onClick={() => setActiveTab(TAB.data)}
+                isActive={activeTab === TAB.data}
+              />
+              <Tab
+                label="Optimisation Suggestion"
+                onClick={() => setActiveTab(TAB.suggestions)}
+                isActive={activeTab === TAB.suggestions}
+              />
+            </HStack>
           </HStack>
           <HStack spacing={2}>
-            <Button isLoading={isFetching} onClick={refetch}>
+            <Button isLoading={isFetching} onClick={refetch} size="sm">
               <Text mr={2}>Refresh</Text>
               <BiRefresh fontSize={18} />
             </Button>
@@ -165,6 +144,7 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage =
               onClick={() => {
                 csvData.current.link.click();
               }}
+              size="sm"
             >
               CSV{" "}
               <Box ml={2}>
@@ -174,8 +154,7 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage =
           </HStack>
         </HStack>
       </Stack>
-      <ModalBody overflowY="hidden">
-        <Divider mb={6} />
+      <ModalBody overflowY="hidden" pt={12}>
         {isLoading ? (
           <Flex alignItems="center" justifyContent="center" h="40vh">
             <Spinner size="lg" />
@@ -190,17 +169,7 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage =
             </Stack>
           </Flex>
         ) : (
-          <TableContainer h="50vh" overflowY="auto">
-            <Flex alignItems="center" justifyContent="space-between" pb={6}>
-              <Text fontSize="sm" fontWeight="bold">{`${tableData?.length} missing keyword${
-                tableData?.length > 1 ? "s" : ""
-              } found for this page`}</Text>
-              <Text fontWeight="semibold" fontSize="sm">
-                Word Seek has run on {pages?.length} page{pages?.length === 1 ? "" : "s"}
-              </Text>
-            </Flex>
-            <WordSeekResultsTable data={tableData} columns={columns} />
-          </TableContainer>
+          renderTab()
         )}
       </ModalBody>
       <ModalFooter></ModalFooter>

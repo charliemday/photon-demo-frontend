@@ -134,6 +134,12 @@ export interface CreateKeywordInsightsOrderBody {
   status?: string;
 }
 
+export interface WordSeekJobsResponse {
+  progress: number;
+  jobsRemaining: WordSeekJob[]
+  site: string;
+}
+
 
 // Define a service using a base URL and expected endpoints
 export const engineApi = baseApi.injectEndpoints({
@@ -232,20 +238,20 @@ export const engineApi = baseApi.injectEndpoints({
     /**
      * Fetches the Word Seek Jobs
      */
-    wordSeekJobs: builder.query<WordSeekJob[], number | void>({
+    wordSeekJobs: builder.query<WordSeekJobsResponse[], number | void>({
       query: (teamId) => ({
         url: apiUrls.WORD_SEEK_JOBS(teamId || undefined),
       }),
-      transformResponse: (response: ConvertToSnakeCase<WordSeekJob[]>) => response.map((job) => camelizeKeys(job)) as WordSeekJob[]
+      transformResponse: (response: ConvertToSnakeCase<WordSeekJobsResponse[]>) => response.map((job) => camelizeKeys(job)) as WordSeekJobsResponse[]
     }),
     /**
      * Triggers a single word seek job to be re-run
      */
     reRunWordSeekJob: builder.mutation<WordSeekJob, {
-      jobId: number;
+      jobGroupUuid: string;
     }>({
       query: (body) => ({
-        url: apiUrls.WORD_SEEK_TRIGGER_JOB,
+        url: apiUrls.WORD_SEEK_RESUME,
         body: decamelizeKeys(body),
         method: "POST",
       }),
