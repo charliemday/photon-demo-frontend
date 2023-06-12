@@ -121,8 +121,8 @@ export const WordSeekJobs: FC<Props> = (props) => {
                     </Td>
                     <Td>{renderJobType(job.jobType)}</Td>
                     <Td>{renderStatus(job.jobStatus)}</Td>
-                    <Td>{job.team.name}</Td>
-                    <Td>{`${job.user.firstName} ${job.user.firstName}`}</Td>
+                    <Td>{job.team?.name}</Td>
+                    <Td>{`${job.user?.firstName} ${job.user?.firstName}`}</Td>
                     <Td>
                       <Button
                         size="sm"
