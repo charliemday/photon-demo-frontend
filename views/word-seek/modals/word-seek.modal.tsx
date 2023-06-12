@@ -40,7 +40,7 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
     skip: !activeTeam?.id,
   });
 
-  const { refetch, isFetching } = useWordSeekResultsQuery(activeTeam?.uid, {
+  const { refetch, isLoading: isLoadingResults } = useWordSeekResultsQuery(activeTeam?.uid, {
     skip: !activeTeam?.uid,
   });
 
@@ -88,7 +88,7 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
     data: pagesData,
     refetch: refetchPages,
     isLoading: isPagesLoading,
-    isFetching: isPagesFetching,
+    isLoading: isPagesFetching,
     isError: isPagesError,
     error: pagesError,
   } = useGetSearchConsolePagesQuery(
@@ -310,8 +310,8 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
         </Box>
       </ModalBody>
       <ModalFooter position="relative">
-        {isFetching ? (
-          <Skeleton height="20px" />
+        {isLoadingResults ? (
+          <Skeleton height="20px" w="full" />
         ) : hasAccess || (wordSeekJobs && wordSeekJobs?.length < MAX_FREE_RESULTS) ? (
           <Button
             onClick={handleRunWordSeek}
