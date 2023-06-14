@@ -8,8 +8,8 @@ import { TaskTypeSlugEnum } from "types";
 
 export interface TaskRowItem {
     rowData: RowItem[];
-    rowClick: () => void;
-    rowType: string;
+    rowClick?: () => void;
+    rowType?: string;
 }
 
 interface ReturnProps {

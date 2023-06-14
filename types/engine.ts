@@ -37,3 +37,8 @@ export interface WordSeekJob {
     user: UserMin;
     jobGroupUuid: string;
 }
+
+export enum WordSeekJobType {
+    SINGLE_PAGE = "single_page",
+    FULL_SITE = "full_site",
+}

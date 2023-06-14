@@ -32,7 +32,7 @@ export const WordSeekJobs: FC<Props> = (props) => {
   const toast = useToast();
   const [selectedJob, setSelectedJob] = useState<string | null>(null);
 
-  const { data: wordSeekJobs, isLoading, isError, error, refetch } = useWordSeekJobsQuery();
+  const { data: wordSeekJobs, refetch } = useWordSeekJobsQuery();
   const [triggerJob, { isLoading: isTriggering, error: triggeredError }] =
     useReRunWordSeekJobMutation();
 
@@ -105,57 +105,53 @@ export const WordSeekJobs: FC<Props> = (props) => {
                 </Tr>
               </Thead>
               <Tbody>
-                {wordSeekJobs?.map(({ progress, jobsRemaining, site }, key) => {
-                  const user = jobsRemaining[0].user;
-                  const team = jobsRemaining[0].team;
-                  const jobGroupUuid = jobsRemaining[0].jobGroupUuid;
-                  const dateStarted = jobsRemaining[0].created;
-
-                  return (
-                    <Tr key={key}>
-                      <Td>
-                        <Tooltip label={site} hasArrow>
-                          <Box>
-                            <Body isTruncated>{ellipsizeText(site, 30)}</Body>
-                          </Box>
-                        </Tooltip>
-                      </Td>
-                      <Td>
-                        <Tooltip label={`Job is ${progress * 100}% complete`} hasArrow>
-                          <Progress value={progress * 100} borderRadius="sm" />
-                        </Tooltip>
-                      </Td>
-                      <Td>
-                        <Body>{team.name}</Body>
-                      </Td>
-                      <Td>
-                        <Body>{`${user.firstName} ${user.firstName}`}</Body>
-                      </Td>
-                      <Td>
-                        <Body>
-                          {new Date(dateStarted).toLocaleDateString("en-GB", {
-                            hour: "numeric",
-                            minute: "numeric",
-
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                            hour12: true,
-                          })}
-                        </Body>
-                      </Td>
-                      <Td>
-                        <Button
-                          size="sm"
-                          onClick={() => handleTriggerJob(jobGroupUuid)}
-                          isLoading={isTriggering && selectedJob === jobGroupUuid}
-                        >
-                          Resume Job
-                        </Button>
-                      </Td>
-                    </Tr>
-                  );
-                })}
+                {wordSeekJobs?.map(
+                  ({ progress, team, site, user, jobGroupUuid, jobCreated }, key) => {
+                    return (
+                      <Tr key={key}>
+                        <Td>
+                          <Tooltip label={site} hasArrow>
+                            <Box>
+                              <Body isTruncated>{ellipsizeText(site, 30)}</Body>
+                            </Box>
+                          </Tooltip>
+                        </Td>
+                        <Td>
+                          <Tooltip label={`Job is ${progress * 100}% complete`} hasArrow>
+                            <Progress value={progress * 100} borderRadius="sm" />
+                          </Tooltip>
+                        </Td>
+                        <Td>
+                          <Body>{team.name}</Body>
+                        </Td>
+                        <Td>
+                          <Body>{`${user.firstName} ${user.firstName}`}</Body>
+                        </Td>
+                        <Td>
+                          <Body>
+                            {new Date(jobCreated).toLocaleDateString("en-GB", {
+                              hour: "numeric",
+                              minute: "numeric",
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                              hour12: true,
+                            })}
+                          </Body>
+                        </Td>
+                        <Td>
+                          <Button
+                            size="sm"
+                            onClick={() => handleTriggerJob(jobGroupUuid)}
+                            isLoading={isTriggering && selectedJob === jobGroupUuid}
+                          >
+                            Resume Job
+                          </Button>
+                        </Td>
+                      </Tr>
+                    );
+                  },
+                )}
               </Tbody>
             </Table>
           </TableContainer>

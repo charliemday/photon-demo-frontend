@@ -1,0 +1,94 @@
+import { useWordSeekJobsQuery } from "api/engine.api";
+import { RowItem, RowItemTypes } from "components/table/table.row";
+import { useActiveTeam } from "hooks/useActiveTeam.hook";
+import { useMemo } from "react";
+import { TaskTypeSlugEnum } from "types";
+import { WordSeekJobType } from "types/engine";
+
+export interface JobRowItem {
+    rowData: RowItem[];
+    rowClick?: () => void;
+    rowType?: TaskTypeSlugEnum;
+}
+
+interface ReturnProps {
+    rowItems: JobRowItem[];
+    isLoading: boolean;
+    isError: boolean;
+}
+
+interface Props {
+    onClick: (jobGroupUuid: string) => void;
+}
+
+export const useBuildJobTableData = (props: Props): ReturnProps => {
+    const activeTeam = useActiveTeam();
+    const { data: wordSeekJobs, isLoading, isError } = useWordSeekJobsQuery({
+        teamId: activeTeam?.id
+    }, {
+        refetchOnMountOrArgChange: true,
+        skip: !activeTeam?.id
+    })
+
+    const jobTableData = useMemo(() => wordSeekJobs?.map(({
+        jobsRemaining,
+        progress,
+        jobsCompleted,
+        jobType,
+        user,
+        site,
+        jobGroupUuid,
+    }) => {
+        const firstName = user?.firstName || "";
+        const lastName = user?.lastName || "";
+
+        const rowData: RowItem[] = [
+            {
+                text: site,
+                type: RowItemTypes.text,
+                flex: 2,
+                size: "sm"
+            },
+            {
+                text: jobType === WordSeekJobType.SINGLE_PAGE ? "Single Page" : "Full Site",
+                type: RowItemTypes.text,
+                size: "sm"
+            },
+            {
+                text: (jobsRemaining + jobsCompleted).toString(),
+                type: RowItemTypes.text,
+                size: "sm"
+            },
+            {
+                text: progress * 100,
+                type: RowItemTypes.progress,
+                size: "sm"
+            },
+            {
+                text: `${firstName} ${lastName}`,
+                type: RowItemTypes.avatar,
+                size: "sm"
+            },
+            {
+                text: "View",
+                type: RowItemTypes.button,
+                size: "sm"
+            },
+        ]
+        return {
+            rowData,
+            rowClick: () => props.onClick(jobGroupUuid),
+        }
+
+    }), [
+        wordSeekJobs,
+        props,
+    ]);
+
+
+    return {
+        rowItems: jobTableData || [],
+        isLoading,
+        isError
+    }
+};

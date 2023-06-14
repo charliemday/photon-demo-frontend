@@ -36,13 +36,19 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
 
   const activeTeam: Team = useSelector((state: RootState) => state.team.activeTeam);
 
-  const { data: wordSeekJobs, refetch: refetchJobs } = useWordSeekJobsQuery(activeTeam?.id, {
-    skip: !activeTeam?.id,
-  });
+  const { data: wordSeekJobs, refetch: refetchJobs } = useWordSeekJobsQuery(
+    { teamId: activeTeam?.id },
+    {
+      skip: !activeTeam?.id,
+    },
+  );
 
-  const { refetch, isLoading: isLoadingResults } = useWordSeekResultsQuery(activeTeam?.uid, {
-    skip: !activeTeam?.uid,
-  });
+  const { refetch, isLoading: isLoadingResults } = useWordSeekResultsQuery(
+    { teamUid: activeTeam?.uid },
+    {
+      skip: !activeTeam?.uid,
+    },
+  );
 
   const [showAwaitEmail, setShowAwaitEmail] = useState(false);
 

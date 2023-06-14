@@ -45,7 +45,7 @@ export const Table: FC<Props> = ({
         <Stack justify="space-between">
           <TableHeader headers={headers} />
           {rowItems?.length ? (
-            rowItems.map(({ rowData, rowClick, rowType }, key) => (
+            rowItems.map(({ rowData, rowClick }, key) => (
               <TableRow key={key} items={rowData} onClick={rowClick} />
             ))
           ) : (
