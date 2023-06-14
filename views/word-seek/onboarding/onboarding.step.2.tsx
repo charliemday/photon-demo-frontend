@@ -8,7 +8,6 @@ import {
   ModalFooter,
   ModalHeader,
   Stack,
-  Text,
   useToast,
 } from "@chakra-ui/react";
 import { Button } from "components/button";
@@ -16,10 +15,10 @@ import { FC } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 
 import { useCreateTeamMutation } from "api/team.api";
+import { Label } from "components/text";
 import { useFormik } from "formik";
 import { typeCheckError } from "utils";
 import * as Yup from "yup";
-import { Label } from "components/text";
 
 interface Props extends Partial<StepWizardChildProps> {
   onCompleted?: () => void;

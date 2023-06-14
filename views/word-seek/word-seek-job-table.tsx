@@ -1,5 +1,5 @@
 import { Flex, Stack, useDisclosure } from "@chakra-ui/react";
-import { useWordSeekResultsQuery } from "api/engine.api";
+import { useWordSeekJobsQuery } from "api/engine.api";
 import { useListTeamsQuery } from "api/team.api";
 import { useUserDetailsQuery } from "api/user.api";
 import { Button } from "components/button";
@@ -8,8 +8,15 @@ import { Table } from "components/table";
 import { HeaderItem } from "components/table/table.header";
 import { Heading } from "components/text";
 import { FATHOM_EVENTS } from "config";
-import { useActiveTeam, useBuildJobTableData, useFathom } from "hooks";
-import { FC, useEffect, useState } from "react";
+import {
+  useActiveTeam,
+  useBuildJobTableData,
+  useFathom,
+  useFeatureFlag,
+  useHasProductAccess,
+} from "hooks";
+import { FC, useEffect, useMemo, useState } from "react";
+import { Features } from "types";
 import { GscConnectModal, PricingModal, WordSeekModal, WordSeekResultsModal } from "./modals";
 import { OnboardingModal } from "./onboarding";
 
@@ -42,25 +49,32 @@ export const WordSeekJobTable: FC = () => {
   // Custom hooks
   const activeTeam = useActiveTeam();
   const fathom = useFathom();
+  const { hasAccess: hasProductAccess } = useHasProductAccess();
+  const { hasAccess: hasFeatureAccess } = useFeatureFlag();
+  const hasWordSeekAccess = useMemo(() => {
+    return hasProductAccess || hasFeatureAccess({ features: [Features.WORD_SEEK_PREMIUM] });
+  }, [hasProductAccess, hasFeatureAccess]);
 
   // Local State
   const [defaultPage, setDefaultPage] = useState<string | null>(null);
   const [selectedJobGroupUuid, setSelectedJobGroupUuid] = useState<string | null>(null);
 
   // RTK Queries
-  const { data: userDetails } = useUserDetailsQuery();
-  const { data: wordSeekResults, isLoading: isLoadingResults } = useWordSeekResultsQuery(
+  const { data: userDetails, refetch } = useUserDetailsQuery();
+  const { data: wordSeekJobs } = useWordSeekJobsQuery(
     {
-      teamUid: activeTeam?.uid,
+      teamId: activeTeam?.id,
     },
     {
-      skip: !activeTeam,
+      skip: !activeTeam?.id,
     },
   );
   const { data: teams } = useListTeamsQuery({});
 
   // useEffects
   useEffect(() => {
+    console.log("User Details have changed", userDetails);
+
     if (
       userDetails &&
       userDetails.onboardingStep !== undefined &&
@@ -137,6 +151,7 @@ export const WordSeekJobTable: FC = () => {
         defaultPage={defaultPage}
         jobGroupUuid={selectedJobGroupUuid}
       />
+      <PricingModal isOpen={isPricingModalOpen} onClose={onPricingModalClose} />
       <OnboardingModal
         isOpen={isOnboardingModalOpen}
         onClose={onOnboardingModalClose}
@@ -144,36 +159,45 @@ export const WordSeekJobTable: FC = () => {
           onWordSeekToggle();
         }}
       />
-      <PricingModal isOpen={isPricingModalOpen} onClose={onPricingModalClose} />
     </>
   );
 
   // We show the empty state if the user has no results
-  const showEmptyState = (!wordSeekResults || wordSeekResults.length === 0) && !isLoading;
-
-  if (showEmptyState) {
-    return (
-      <>
-        <WordSeekEmpty onClick={handleStartWordSeek} />
-        {renderModals()}
-      </>
-    );
-  }
+  const showEmptyState = (!wordSeekJobs || wordSeekJobs.length === 0) && !isLoading;
 
   return (
     <Stack>
       <Heading>Word Seek Jobs</Heading>
       <Flex w="full" justifyContent="flex-end">
-        <Button size="sm" onClick={onWordSeekToggle} isDisabled={isLoading}>
+        <Button
+          size="sm"
+          onClick={() => {
+            if (activeTeam) {
+              onWordSeekToggle();
+            } else {
+              onOnboardingModalToggle();
+            }
+          }}
+          isDisabled={isLoading}
+        >
           Run WordSeek
         </Button>
+        {!hasWordSeekAccess && (
+          <Button size="sm" onClick={onPricingModalToggle} isDisabled={isLoading}>
+            💰 Upgrade
+          </Button>
+        )}
       </Flex>
-      <Table
-        rowItems={rowItems}
-        headers={rowHeaders}
-        isLoading={isLoading}
-        emptyText="You have no tasks to display."
-      />
+      {showEmptyState ? (
+        <WordSeekEmpty onClick={handleStartWordSeek} />
+      ) : (
+        <Table
+          rowItems={rowItems}
+          headers={rowHeaders}
+          isLoading={isLoading}
+          emptyText="You have no tasks to display."
+        />
+      )}
       {renderModals()}
     </Stack>
   );
