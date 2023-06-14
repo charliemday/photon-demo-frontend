@@ -17,14 +17,14 @@ export enum RowItemTypes {
 }
 
 export type RowSize = "xs" | "sm" | "md" | "lg";
-export interface RowItem {
+export interface RowDataItem {
   text: string | number;
   type: RowItemTypes;
   flex?: number;
   size?: RowSize;
 }
 interface Props {
-  items: RowItem[];
+  items: RowDataItem[];
   /**
    * What happens when the row is clicked or a specific row component is clicked?
    */
@@ -91,7 +91,7 @@ export const TableRow: FC<Props> = ({ items, onClick, isClickable = true }) => {
         direction="row"
         justify="space-between"
         _hover={{
-          cursor: "pointer",
+          cursor: isClickable && "pointer",
           bgColor: "gray.50",
         }}
         p={2}

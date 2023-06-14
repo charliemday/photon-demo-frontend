@@ -1,18 +1,12 @@
 import { useWordSeekJobsQuery } from "api/engine.api";
-import { RowItem, RowItemTypes } from "components/table/table.row";
+import { RowItem } from "components/table/table";
+import { RowDataItem, RowItemTypes } from "components/table/table.row";
 import { useActiveTeam } from "hooks/useActiveTeam.hook";
 import { useMemo } from "react";
-import { TaskTypeSlugEnum } from "types";
 import { WordSeekJobType } from "types/engine";
 
-export interface JobRowItem {
-    rowData: RowItem[];
-    rowClick?: () => void;
-    rowType?: TaskTypeSlugEnum;
-}
-
 interface ReturnProps {
-    rowItems: JobRowItem[];
+    rowItems: RowItem[];
     isLoading: boolean;
     isError: boolean;
 }
@@ -42,7 +36,7 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
         const firstName = user?.firstName || "";
         const lastName = user?.lastName || "";
 
-        const rowData: RowItem[] = [
+        const rowData: RowDataItem[] = [
             {
                 text: site,
                 type: RowItemTypes.text,
@@ -78,6 +72,7 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
         return {
             rowData,
             rowClick: () => props.onClick(jobGroupUuid),
+            rowClickable: false
         }
 
     }), [

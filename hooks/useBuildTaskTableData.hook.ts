@@ -1,19 +1,14 @@
 import { useListTasksQuery } from "api/tasks.api";
-import { RowItem, RowItemTypes } from "components/table/table.row";
+import { RowItem } from "components/table/table";
+import { RowItemTypes } from "components/table/table.row";
 import { ROUTES } from "config";
 import { useActiveTeam } from "hooks/useActiveTeam.hook";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { TaskTypeSlugEnum } from "types";
 
-export interface TaskRowItem {
-    rowData: RowItem[];
-    rowClick?: () => void;
-    rowType?: string;
-}
-
 interface ReturnProps {
-    rowItems: TaskRowItem[];
+    rowItems: RowItem[];
     isLoading: boolean;
     isError: boolean;
 }
