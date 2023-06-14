@@ -17,7 +17,7 @@ import {
 import { useReRunWordSeekJobMutation, useWordSeekJobsQuery } from "api/engine.api";
 import { Button } from "components/button";
 import { Body } from "components/text";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { ellipsizeText, typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
 
@@ -63,26 +63,10 @@ export const WordSeekJobs: FC<Props> = (props) => {
     });
   };
 
-  const renderStatus = (status: string) => {
-    if (status === "in_progress") {
-      return (
-        <Tooltip
-          label="This job is currently in progress and may not have been completed."
-          hasArrow
-        >
-          <Text color="blue.500">⌛ In Progress</Text>
-        </Tooltip>
-      );
-    }
-
-    if (status === "incomplete") {
-      return (
-        <Tooltip label="This job is incomplete and may not have been completed.">
-          <Text color="red.500">⛔ Incomplete</Text>
-        </Tooltip>
-      );
-    }
-  };
+  const wordSeekJobsIncomplete = useMemo(
+    () => wordSeekJobs?.filter(({ progress }) => progress < 1),
+    [wordSeekJobs],
+  );
 
   return (
     <ModalStepWrapper
@@ -93,7 +77,7 @@ export const WordSeekJobs: FC<Props> = (props) => {
       title="👀 Outstanding Word Seek Jobs"
     >
       <Stack>
-        {wordSeekJobs?.length ? (
+        {wordSeekJobsIncomplete?.length ? (
           <TableContainer>
             <Table variant="simple">
               <TableCaption>All Word Seek jobs that have are in progress.</TableCaption>
@@ -105,7 +89,7 @@ export const WordSeekJobs: FC<Props> = (props) => {
                 </Tr>
               </Thead>
               <Tbody>
-                {wordSeekJobs?.map(
+                {wordSeekJobsIncomplete?.map(
                   ({ progress, team, site, user, jobGroupUuid, jobCreated }, key) => {
                     return (
                       <Tr key={key}>
