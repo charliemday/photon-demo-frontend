@@ -1,14 +1,9 @@
 import { CompetitorInterface } from "forms/competitors";
 import { camelizeKeys, decamelizeKeys } from "humps";
-import { ConvertToSnakeCase, WordSeekItem, WordSeekJob } from "types";
+import { ConvertToSnakeCase, Team, User, WordSeekItem, WordSeekJob, WordSeekJobType } from "types";
 import { apiUrls, baseApi } from ".";
 
-interface ProcessAhrefsDataBody extends FormData { }
-
 interface PeopleAlsoAskBody extends FormData { }
-
-interface UploadKeywordInsightsOutputBody extends FormData { }
-
 export interface SeedKeywordsBody {
   /**
    * The ID of the team to which the keywords belong
@@ -136,8 +131,14 @@ export interface CreateKeywordInsightsOrderBody {
 
 export interface WordSeekJobsResponse {
   progress: number;
-  jobsRemaining: WordSeekJob[]
+  jobsRemaining: number; //WordSeekJob[];
+  jobsCompleted: number; //WordSeekJob[];
+  user: Partial<User>;
+  jobType: WordSeekJobType;
+  jobCreated: string;
   site: string;
+  jobGroupUuid: string;
+  team: Team;
 }
 
 
@@ -195,9 +196,9 @@ export const engineApi = baseApi.injectEndpoints({
     /**
      * Fetches the WordSeek results
      */
-    wordSeekResults: builder.query<WordSeekItem[], string>({
-      query: (teamUid) => ({
-        url: apiUrls.WORD_SEEK_RESULTS(teamUid),
+    wordSeekResults: builder.query<WordSeekItem[], { teamUid: string, jobGroupUuid?: string | null }>({
+      query: ({ teamUid, jobGroupUuid }) => ({
+        url: apiUrls.WORD_SEEK_RESULTS(teamUid, jobGroupUuid),
       }),
       transformResponse: (response: ConvertToSnakeCase<WordSeekResultsResponse>) => {
         if (response.success) {
@@ -238,9 +239,9 @@ export const engineApi = baseApi.injectEndpoints({
     /**
      * Fetches the Word Seek Jobs
      */
-    wordSeekJobs: builder.query<WordSeekJobsResponse[], number | void>({
-      query: (teamId) => ({
-        url: apiUrls.WORD_SEEK_JOBS(teamId || undefined),
+    wordSeekJobs: builder.query<WordSeekJobsResponse[], { teamId: number | undefined } | void>({
+      query: (body) => ({
+        url: apiUrls.WORD_SEEK_JOBS(body?.teamId || undefined),
       }),
       transformResponse: (response: ConvertToSnakeCase<WordSeekJobsResponse[]>) => response.map((job) => camelizeKeys(job)) as WordSeekJobsResponse[]
     }),

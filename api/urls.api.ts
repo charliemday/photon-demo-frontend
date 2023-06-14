@@ -18,7 +18,7 @@ export const apiUrls = {
     GOOGLE_INTERNAL_CLIENT: "google/clients/internal",
     // WordSeek
     WORD_SEEK: 'engine/word-seek/',
-    WORD_SEEK_RESULTS: (teamUid: string) => `/engine/word-seek/results?team_uid=${teamUid}`,
+    WORD_SEEK_RESULTS: (teamUid: string, jobGroupUuid?: string | null) => `/engine/word-seek/results?team_uid=${teamUid}${jobGroupUuid ? `&job_group_uuid=${jobGroupUuid}` : ''}`,
     WORD_SEEK_JOBS: (teamId?: number) => `engine/word-seek/jobs${teamId ? `?team_id=${teamId}` : ''}`,
     WORD_SEEK_TRIGGER_JOB: "engine/word-seek/trigger-job",
     WORD_SEEK_RESUME: "engine/word-seek/resume",

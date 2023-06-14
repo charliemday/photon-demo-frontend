@@ -16,6 +16,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   defaultPage?: string | null;
+  jobGroupUuid: string | null;
 }
 
 enum TAB {
@@ -23,7 +24,12 @@ enum TAB {
   suggestions = "suggestions",
 }
 
-export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage = null }) => {
+export const WordSeekResultsModal: FC<Props> = ({
+  isOpen,
+  onClose,
+  jobGroupUuid,
+  defaultPage = null,
+}) => {
   const [selectedPage, setSelectedPage] = useState<string | null>(defaultPage);
 
   const csvData = useRef<any>([]);
@@ -36,9 +42,15 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage =
     refetch,
     isLoading,
     isFetching,
-  } = useWordSeekResultsQuery(activeTeam?.uid, {
-    skip: !activeTeam?.uid,
-  });
+  } = useWordSeekResultsQuery(
+    {
+      teamUid: activeTeam?.uid,
+      jobGroupUuid,
+    },
+    {
+      skip: !activeTeam?.uid,
+    },
+  );
 
   useEffect(() => {
     if (isOpen) {
@@ -47,10 +59,14 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage =
   }, [isOpen, refetch]);
 
   useEffect(() => {
-    if (selectedPage === null && wordSeekResults && wordSeekResults?.length > 0) {
+    /**
+     * Set the selected page to the first page in the list
+     * when the results change
+     */
+    if (wordSeekResults && wordSeekResults?.length > 0) {
       setSelectedPage(wordSeekResults[0].page);
     }
-  }, [wordSeekResults, selectedPage]);
+  }, [wordSeekResults]);
 
   const pages = wordSeekResults?.map((res) => res.page);
 
@@ -110,6 +126,12 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, defaultPage =
                 }
                 onChange={({ value }) => setSelectedPage(value)}
                 placeholder="🔍 Search for a page..."
+                {...(selectedPage && {
+                  defaultValue: {
+                    label: selectedPage,
+                    value: selectedPage,
+                  },
+                })}
               />
             </Flex>
           )}

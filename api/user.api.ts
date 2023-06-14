@@ -18,7 +18,7 @@ export const userApi = baseApi.injectEndpoints({
     /**
      * Get the user's details
      */
-    userDetails: builder.query<User, undefined>({
+    userDetails: builder.query<User, void>({
       query: () => ({
         url: USER,
       }),
