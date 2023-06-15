@@ -18,7 +18,7 @@ import {
 } from "hooks";
 import { FC, useEffect, useMemo, useState } from "react";
 import { Features } from "types";
-import { GscConnectModal, PricingModal, WordSeekModal, WordSeekResultsModal } from "./modals";
+import { GscConnectModal, PricingModal, WordSeekResultsModal } from "./modals";
 import { OnboardingModal } from "./onboarding";
 
 const rowHeaders: HeaderItem[] = [
@@ -37,6 +37,9 @@ const rowHeaders: HeaderItem[] = [
   },
   {
     text: "User",
+  },
+  {
+    text: "Created",
   },
   {
     text: "Result",
@@ -61,7 +64,7 @@ export const WordSeekJobTable: FC = () => {
   const [selectedJobGroupUuid, setSelectedJobGroupUuid] = useState<string | null>(null);
 
   // RTK Queries
-  const { data: userDetails, refetch } = useUserDetailsQuery();
+  const { data: userDetails } = useUserDetailsQuery();
   const { data: wordSeekJobs } = useWordSeekJobsQuery(
     {
       teamId: activeTeam?.id,
@@ -114,11 +117,6 @@ export const WordSeekJobTable: FC = () => {
     },
   });
 
-  const handleShowResults = (page: string) => {
-    setDefaultPage(page);
-    onWordSeekResultsToggle();
-  };
-
   const handleStartWordSeek = () => {
     if (activeTeam) {
       onWordSeekToggle();
@@ -131,20 +129,10 @@ export const WordSeekJobTable: FC = () => {
   const renderModals = () => (
     <>
       {userDetails?.connectedSearchConsole ? (
-        <WordSeekModal
-          // isOpen={isWordSeekOpen}
-          // onClose={onWordSeekClose}
-          onShowResults={handleShowResults}
-          onUpgrade={() => {
-            onWordSeekClose();
-            onPricingModalToggle();
-          }}
-        />
+        <WordSeekWizard isOpen={isWordSeekOpen} onClose={onWordSeekClose} />
       ) : (
         <GscConnectModal isOpen={isWordSeekOpen} onClose={onWordSeekClose} />
       )}
-
-      <WordSeekWizard isOpen={isWordSeekOpen} onClose={onWordSeekClose} />
 
       <WordSeekResultsModal
         isOpen={isWordSeekResultsOpen}
