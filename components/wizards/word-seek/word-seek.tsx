@@ -1,7 +1,8 @@
 import { Modal } from "components/modals";
-import { useActiveTeam, useRunWordSeek } from "hooks";
-import { FC, useState } from "react";
+import { useActiveTeam, useFeatureFlag, useHasProductAccess, useRunWordSeek } from "hooks";
+import { FC, useMemo, useState } from "react";
 import StepWizard from "react-step-wizard";
+import { Features } from "types";
 import { Step1, Step2, Step3 } from "./steps";
 
 interface Props {
@@ -15,6 +16,12 @@ export const WordSeekWizard: FC<Props> = ({ isOpen, onClose }) => {
   const [selectedPages, setSelectedPages] = useState<string[]>([]);
 
   const activeTeam = useActiveTeam();
+  const { hasAccess: hasProductAccess } = useHasProductAccess();
+  const { hasAccess: hasFeatureAccess } = useFeatureFlag();
+
+  const hasAccess = useMemo(() => {
+    return hasProductAccess || hasFeatureAccess({ features: [Features.WORD_SEEK_PREMIUM] });
+  }, [hasProductAccess, hasFeatureAccess]);
 
   const { runWordSeek, isLoading } = useRunWordSeek({
     site: selectedSite,
@@ -48,6 +55,9 @@ export const WordSeekWizard: FC<Props> = ({ isOpen, onClose }) => {
           onChangeSite={(site) => setSelectedSite(site)}
           onChangePage={(path) => setSelectedPath(path)}
           runAllPages={() => handleRunWordSeek([])}
+          hasAccess={hasAccess}
+          runWordSeek={runWordSeek}
+          isRunningWordSeek={isLoading}
         />
         <Step2
           selectedSite={selectedSite}

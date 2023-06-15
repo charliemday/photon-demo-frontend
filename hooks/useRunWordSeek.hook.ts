@@ -7,7 +7,7 @@ import { useActiveTeam } from './useActiveTeam.hook';
 
 
 interface ReturnProps {
-    runWordSeek: (pages: string[]) => void;
+    runWordSeek: (pages: string[], callback?: () => void) => void;
     isLoading: boolean;
     isSuccess: boolean;
 }
@@ -30,7 +30,7 @@ export const useRunWordSeek = (args: Props): ReturnProps => {
         skip: !activeTeam?.uid || !site,
     });
 
-    const runWordSeek = async (pages: string[]) => {
+    const runWordSeek = async (pages: string[], callback?: () => void) => {
         if (!activeTeam?.id || !site) return;
 
         if (!pagesData?.pages) return;
@@ -58,6 +58,8 @@ export const useRunWordSeek = (args: Props): ReturnProps => {
             status: "success",
             isClosable: true,
         })
+
+        callback && callback();
     };
 
     return {

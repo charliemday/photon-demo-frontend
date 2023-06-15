@@ -3,7 +3,7 @@ import { Font } from "types/fonts";
 
 interface Props extends TextProps {
   fontFamily?: Font;
-  fontWeight?: "medium" | "semibold";
+  fontWeight?: "medium" | "semibold" | "bold";
 }
 
 export const Body = ({
