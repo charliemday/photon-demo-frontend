@@ -51,6 +51,15 @@ export const Select: FC<Props> = ({
           ignoreAccents: false,
         })}
         noOptionsMessage={noOptionsMessage}
+        /**
+         * These styles prevent underflowing of the dropdown menu
+         * if the selects are on top of one another
+         */
+        menuPortalTarget={document.querySelector("body")}
+        styles={{
+          menu: (base) => ({ ...base, zIndex: 9999 }),
+          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+        }}
       />
     </div>
   );

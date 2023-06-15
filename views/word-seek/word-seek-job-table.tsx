@@ -7,6 +7,7 @@ import { WordSeekEmpty } from "components/empty";
 import { Table } from "components/table";
 import { HeaderItem } from "components/table/table.header";
 import { Heading } from "components/text";
+import { WordSeekWizard } from "components/wizards/word-seek";
 import { FATHOM_EVENTS } from "config";
 import {
   useActiveTeam,
@@ -73,8 +74,6 @@ export const WordSeekJobTable: FC = () => {
 
   // useEffects
   useEffect(() => {
-    console.log("User Details have changed", userDetails);
-
     if (
       userDetails &&
       userDetails.onboardingStep !== undefined &&
@@ -133,8 +132,8 @@ export const WordSeekJobTable: FC = () => {
     <>
       {userDetails?.connectedSearchConsole ? (
         <WordSeekModal
-          isOpen={isWordSeekOpen}
-          onClose={onWordSeekClose}
+          // isOpen={isWordSeekOpen}
+          // onClose={onWordSeekClose}
           onShowResults={handleShowResults}
           onUpgrade={() => {
             onWordSeekClose();
@@ -144,6 +143,8 @@ export const WordSeekJobTable: FC = () => {
       ) : (
         <GscConnectModal isOpen={isWordSeekOpen} onClose={onWordSeekClose} />
       )}
+
+      <WordSeekWizard isOpen={isWordSeekOpen} onClose={onWordSeekClose} />
 
       <WordSeekResultsModal
         isOpen={isWordSeekResultsOpen}
