@@ -34,12 +34,11 @@ const rowHeaders: HeaderItem[] = [
   },
   {
     text: "Status",
+    flex: 2,
   },
   {
     text: "User",
-  },
-  {
-    text: "Created",
+    flex: 2,
   },
   {
     text: "Result",

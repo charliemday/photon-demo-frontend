@@ -67,17 +67,14 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
             {
                 text: progress * 100,
                 type: RowItemTypes.progress,
-                size: "sm"
+                size: "sm",
+                flex: 2,
             },
             {
                 text: `${firstName} ${lastName}`,
                 type: RowItemTypes.avatar,
-                size: "sm"
-            },
-            {
-                text: dayjs(jobCreated).format("MM/DD/YYYY"),
-                type: RowItemTypes.tag,
-                size: "xs"
+                size: "sm",
+                flex: 2,
             },
             {
                 text: "View",
@@ -94,6 +91,7 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
     }), [
         wordSeekJobs,
         props,
+        sortedJobsByCreated
     ]);
 
 
