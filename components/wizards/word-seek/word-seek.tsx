@@ -1,3 +1,4 @@
+import { useWordSeekJobsQuery } from "api/engine.api";
 import { Modal } from "components/modals";
 import { useActiveTeam, useFeatureFlag, useHasProductAccess, useRunWordSeek } from "hooks";
 import { FC, useMemo, useState } from "react";
@@ -23,6 +24,10 @@ export const WordSeekWizard: FC<Props> = ({ isOpen, onClose }) => {
     return hasProductAccess || hasFeatureAccess({ features: [Features.WORD_SEEK_PREMIUM] });
   }, [hasProductAccess, hasFeatureAccess]);
 
+  const { refetch: refetchJobs } = useWordSeekJobsQuery({
+    teamId: activeTeam?.id,
+  });
+
   const { runWordSeek, isLoading } = useRunWordSeek({
     site: selectedSite,
   });
@@ -38,6 +43,7 @@ export const WordSeekWizard: FC<Props> = ({ isOpen, onClose }) => {
      * Because we use hashes to keep track of the steps, we need to reset the hash
      */
     window.location.hash = "";
+    refetchJobs();
     onClose();
   };
 
