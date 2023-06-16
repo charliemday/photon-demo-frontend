@@ -1,4 +1,4 @@
-import { Flex, HStack, Progress, Text, useDisclosure } from "@chakra-ui/react";
+import { Flex, HStack, Progress, Text, Tooltip, useDisclosure } from "@chakra-ui/react";
 import { Assigned } from "components/assigned";
 import { Button } from "components/button";
 import { Tag } from "components/tag";
@@ -40,9 +40,11 @@ export const TableRow: FC<Props> = ({ items, onClick, isClickable = true }) => {
   const renderRowItem = (value: string | number, type: RowItemTypes, size: RowSize = "xs") => {
     if (type === RowItemTypes.text && typeof value === "string") {
       return (
-        <Text fontSize={size} fontWeight="semibold" key={value}>
-          {value}
-        </Text>
+        <Tooltip label={value} hasArrow>
+          <Text fontSize={size} fontWeight="semibold" key={value} isTruncated>
+            {value}
+          </Text>
+        </Tooltip>
       );
     }
 
@@ -104,7 +106,7 @@ export const TableRow: FC<Props> = ({ items, onClick, isClickable = true }) => {
       >
         {items.map(({ text, type, flex, size }, key) => {
           return (
-            <Flex key={key} flex={flex || 1} alignItems="center">
+            <Flex key={key} flex={flex || 1} alignItems="center" overflow="hidden">
               {renderRowItem(text, type, size)}
             </Flex>
           );

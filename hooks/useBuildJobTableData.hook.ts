@@ -1,6 +1,7 @@
 import { useWordSeekJobsQuery } from "api/engine.api";
 import { RowItem } from "components/table/table";
 import { RowDataItem, RowItemTypes } from "components/table/table.row";
+import dayjs from "dayjs";
 import { useActiveTeam } from "hooks/useActiveTeam.hook";
 import { useMemo } from "react";
 import { WordSeekJobType } from "types/engine";
@@ -24,7 +25,16 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
         skip: !activeTeam?.id
     })
 
-    const jobTableData = useMemo(() => wordSeekJobs?.map(({
+
+    const sortedJobsByCreated = useMemo(() => {
+        if (!wordSeekJobs) return [];
+        return [...wordSeekJobs]?.sort((a, b) => {
+            return dayjs(a.jobCreated).isBefore(dayjs(b.jobCreated)) ? 1 : -1;
+        })
+    }, [wordSeekJobs])
+
+
+    const jobTableData = useMemo(() => sortedJobsByCreated?.map(({
         jobsRemaining,
         progress,
         jobsCompleted,
@@ -32,6 +42,7 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
         user,
         site,
         jobGroupUuid,
+        jobCreated,
     }) => {
         const firstName = user?.firstName || "";
         const lastName = user?.lastName || "";
@@ -56,12 +67,14 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
             {
                 text: progress * 100,
                 type: RowItemTypes.progress,
-                size: "sm"
+                size: "sm",
+                flex: 2,
             },
             {
                 text: `${firstName} ${lastName}`,
                 type: RowItemTypes.avatar,
-                size: "sm"
+                size: "sm",
+                flex: 2,
             },
             {
                 text: "View",
@@ -78,6 +91,7 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
     }), [
         wordSeekJobs,
         props,
+        sortedJobsByCreated
     ]);
 
 

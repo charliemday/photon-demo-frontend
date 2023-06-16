@@ -3,5 +3,7 @@ export { calculateSemrushCost } from "./calculateSemrushCost";
 export { capitalizeFirstLetter } from './capitalizeFirstLetter';
 export { cleanUrl } from './cleanUrl';
 export { ellipsizeText } from './ellipsizeText';
+export { nestUrls } from "./nestUrls";
+export { recursiveCount } from './recursiveCount';
 export { resetQueryParams } from './resetQueryParams';
 export { typeCheckError } from './typeCheckError';

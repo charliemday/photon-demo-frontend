@@ -7,6 +7,7 @@ import { WordSeekEmpty } from "components/empty";
 import { Table } from "components/table";
 import { HeaderItem } from "components/table/table.header";
 import { Heading } from "components/text";
+import { WordSeekWizard } from "components/wizards/word-seek";
 import { FATHOM_EVENTS } from "config";
 import {
   useActiveTeam,
@@ -17,7 +18,7 @@ import {
 } from "hooks";
 import { FC, useEffect, useMemo, useState } from "react";
 import { Features } from "types";
-import { GscConnectModal, PricingModal, WordSeekModal, WordSeekResultsModal } from "./modals";
+import { GscConnectModal, PricingModal, WordSeekResultsModal } from "./modals";
 import { OnboardingModal } from "./onboarding";
 
 const rowHeaders: HeaderItem[] = [
@@ -33,9 +34,11 @@ const rowHeaders: HeaderItem[] = [
   },
   {
     text: "Status",
+    flex: 2,
   },
   {
     text: "User",
+    flex: 2,
   },
   {
     text: "Result",
@@ -60,7 +63,7 @@ export const WordSeekJobTable: FC = () => {
   const [selectedJobGroupUuid, setSelectedJobGroupUuid] = useState<string | null>(null);
 
   // RTK Queries
-  const { data: userDetails, refetch } = useUserDetailsQuery();
+  const { data: userDetails } = useUserDetailsQuery();
   const { data: wordSeekJobs } = useWordSeekJobsQuery(
     {
       teamId: activeTeam?.id,
@@ -73,8 +76,6 @@ export const WordSeekJobTable: FC = () => {
 
   // useEffects
   useEffect(() => {
-    console.log("User Details have changed", userDetails);
-
     if (
       userDetails &&
       userDetails.onboardingStep !== undefined &&
@@ -115,11 +116,6 @@ export const WordSeekJobTable: FC = () => {
     },
   });
 
-  const handleShowResults = (page: string) => {
-    setDefaultPage(page);
-    onWordSeekResultsToggle();
-  };
-
   const handleStartWordSeek = () => {
     if (activeTeam) {
       onWordSeekToggle();
@@ -132,15 +128,7 @@ export const WordSeekJobTable: FC = () => {
   const renderModals = () => (
     <>
       {userDetails?.connectedSearchConsole ? (
-        <WordSeekModal
-          isOpen={isWordSeekOpen}
-          onClose={onWordSeekClose}
-          onShowResults={handleShowResults}
-          onUpgrade={() => {
-            onWordSeekClose();
-            onPricingModalToggle();
-          }}
-        />
+        <WordSeekWizard isOpen={isWordSeekOpen} onClose={onWordSeekClose} />
       ) : (
         <GscConnectModal isOpen={isWordSeekOpen} onClose={onWordSeekClose} />
       )}

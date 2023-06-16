@@ -258,7 +258,7 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
       <ModalHeader>
         <HStack>
           <Text>👀</Text>
-          <Text>WordSeek: Missing Keywords Report</Text>
+          <Text>WordSeek</Text>
         </HStack>
       </ModalHeader>
       <ModalBody>

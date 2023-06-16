@@ -10,4 +10,5 @@ export { useFeatureFlag } from './useFeatureFlag.hook';
 export { useHasProductAccess } from "./useHasProductAccess.hook";
 export { useInitials } from './useInitials.hook';
 export { useLogout } from './useLogout.hook';
+export { useRunWordSeek } from './useRunWordSeek.hook';
 
