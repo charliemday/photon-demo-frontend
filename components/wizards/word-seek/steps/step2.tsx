@@ -87,6 +87,20 @@ export const Step2: FC<Props> = ({
     return `${parsedPath.protocol}://${host}`;
   }, [selectedSite]);
 
+  const pageCount = useMemo(() => recursiveCount(pathUrls), [pathUrls]);
+
+  const renderHeader = () => {
+    if (pagesChecked.length === 0) {
+      return "Select Pages";
+    }
+
+    if (pagesChecked.length === 1) {
+      return `Select Pages (${pagesChecked.length} page selected)`;
+    }
+
+    return `Select Pages (${pagesChecked.length} pages selected)`;
+  };
+
   return (
     <Stack>
       <Stack pb={6}>
@@ -98,8 +112,13 @@ export const Step2: FC<Props> = ({
 
       <Stack spacing={12}>
         <Stack spacing={6}>
-          <Heading>Select Pages ({recursiveCount(pathUrls)})</Heading>
           <Stack>
+            <Heading>{renderHeader()}</Heading>
+            <Body>
+              {pageCount} page{pageCount === 1 ? "" : "s"} found
+            </Body>
+          </Stack>
+          <Stack overflow="auto" maxH="60vh" pl={2}>
             <RecursiveChecklist
               recursiveObject={pathUrls}
               keys={Object.keys(pathUrls)}
