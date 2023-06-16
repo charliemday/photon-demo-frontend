@@ -1,6 +1,6 @@
 import { useListTasksQuery } from "api/tasks.api";
+import { RowItemTypes } from "components/table";
 import { RowItem } from "components/table/table";
-import { RowItemTypes } from "components/table/table.row";
 import { ROUTES } from "config";
 import { useActiveTeam } from "hooks/useActiveTeam.hook";
 import { useRouter } from "next/router";
@@ -52,23 +52,23 @@ export const useBuildTaskTableData = (props: Props): ReturnProps => {
 
         const rowData = [
             {
-                text: title,
+                value: title,
                 type: RowItemTypes.text,
                 flex: 3,
             }, {
-                text: name,
+                value: name,
                 type: RowItemTypes.tag,
                 flex: 2,
             },
             {
-                text: `${firstName} ${lastName}`,
+                value: `${firstName} ${lastName}`,
                 type: RowItemTypes.avatar,
             },
             {
-                text: dateString,
+                value: dateString,
                 type: RowItemTypes.tag,
             }, {
-                text: status.value,
+                value: status.value,
                 type: RowItemTypes.tag,
             }
         ]

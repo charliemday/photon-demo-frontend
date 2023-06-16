@@ -5,8 +5,7 @@ import { MissingKeyword, WordSeekItem } from "types";
 import { WordSeekResultsTable } from "./word-seek-results.table";
 
 interface Props {
-  selectedPage: string | null;
-  data?: WordSeekItem[];
+  data?: WordSeekItem | null;
 }
 
 const columnHelper = createColumnHelper<MissingKeyword>();
@@ -39,18 +38,14 @@ const columns = [
   }),
 ];
 
-export const DataTab: FC<Props> = ({ selectedPage, data }) => {
+export const DataTab: FC<Props> = ({ data }) => {
   const tableData = useMemo(() => {
-    const item = data?.find((i) => i.page === selectedPage);
-
-    if (item) {
-      return item.missingKeywords.map((i) => i);
+    if (data) {
+      return data.missingKeywords.map((i) => i);
     }
 
     return [];
-  }, [data, selectedPage]);
-
-  const pages = data?.map((res) => res.page);
+  }, [data]);
 
   return (
     <TableContainer h="50vh" overflowY="auto">
@@ -58,9 +53,6 @@ export const DataTab: FC<Props> = ({ selectedPage, data }) => {
         <Text fontSize="sm" fontWeight="bold">{`🎉 ${tableData?.length} missing quer${
           tableData?.length != 1 ? "ies" : "y"
         } found for this page`}</Text>
-        <Text fontWeight="semibold" fontSize="sm">
-          Word Seek has run on {pages?.length} page{pages?.length === 1 ? "" : "s"}
-        </Text>
       </Flex>
       <WordSeekResultsTable data={tableData} columns={columns} />
     </TableContainer>

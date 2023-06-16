@@ -42,3 +42,15 @@ export enum WordSeekJobType {
     SINGLE_PAGE = "single_page",
     FULL_SITE = "full_site",
 }
+
+export interface Faq {
+    id: number;
+    question: string;
+    impressions: number;
+    clicks: number;
+    position: number;
+    answer: string;
+    team: number;
+    result: number;
+    is_active: boolean;
+}

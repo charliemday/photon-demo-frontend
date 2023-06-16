@@ -98,12 +98,24 @@ export const WordSeekResultsModal: FC<Props> = ({
     return results;
   };
 
-  const renderTab = () => {
-    if (activeTab === TAB.data) {
-      return <DataTab selectedPage={selectedPage} data={wordSeekResults} />;
+  const selectedResult = useMemo(() => {
+    if (wordSeekResults) {
+      return wordSeekResults.find((i) => i.page === selectedPage);
     }
 
-    return <ActionsTab />;
+    return null;
+  }, [wordSeekResults, selectedPage]);
+
+  const renderTab = () => {
+    if (activeTab === TAB.data) {
+      return <DataTab data={selectedResult} />;
+    }
+
+    if (selectedResult) {
+      return <ActionsTab resultId={selectedResult?.id} />;
+    }
+
+    return null;
   };
 
   return (

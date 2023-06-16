@@ -1,146 +1,21 @@
-import { CompetitorInterface } from "forms/competitors";
+import {
+  CreateKeywordInsightsOrderBody,
+  GenerateFaqsQueryParams,
+  GenerateFaqsResponse,
+  GenerateKIInputBody,
+  GenerateSeedKeywordsBody,
+  KeywordInsightsOrder,
+  KeywordInsightsResult,
+  KeywordInsightsResultsRequest,
+  PeopleAlsoAskBody,
+  SeedKeywordsBody,
+  WordSeekBody,
+  WordSeekJobsResponse,
+  WordSeekResultsResponse
+} from "api/types";
 import { camelizeKeys, decamelizeKeys } from "humps";
-import { ConvertToSnakeCase, Team, User, WordSeekItem, WordSeekJob, WordSeekJobType } from "types";
+import { ConvertToSnakeCase, WordSeekItem, WordSeekJob } from "types";
 import { apiUrls, baseApi } from ".";
-
-interface PeopleAlsoAskBody extends FormData { }
-export interface SeedKeywordsBody {
-  /**
-   * The ID of the team to which the keywords belong
-   */
-  teamId: string;
-  /**
-   * Optional list of competitors to use for keyword research
-   */
-  competitors?: CompetitorInterface[];
-  /**
-   * Optional list of keywords to use for keyword research
-   */
-  keywords?: string[];
-  classificationCategory?: string;
-  positivePrompts?: string[];
-  negativePrompts?: string[];
-  /**
-   * The SEMRUSH database to use for keyword research
-   */
-  database?: string; // TODO: Type this to the SEMRUSH_DATABASES
-  /**
-   * Number of broad keywords to generate when creating clusters
-   */
-  limit?: number;
-  /**
-   * The maximum number of themes to return
-   */
-  max_themes?: number;
-  /**
-   * The max position to return
-   */
-  maxPosition?: number;
-  /**
-   * The max number of organic results to return
-  §*/
-  maxOrganicResults?: number;
-}
-
-
-export interface GenerateKIInputBody {
-  contentStrategyId: number;
-  keywords: string[];
-  limit?: number;
-  topPercentage?: number;
-  database?: string; // TODO: Type this to the SEMRUSH_DATABASES
-}
-
-export interface GenerateSeedKeywordsBody {
-  contentStrategyId: number;
-  maxOrganicResults?: number;
-  maxPosition?: number;
-  database?: string; // TODO: Type this to the SEMRUSH_DATABASES
-}
-
-export interface CreateKeywordsThemesBody { teamId: string, themes: string[] }
-
-export interface KeywordTheme {
-  /**
-   * The keyword theme
-   */
-  theme: string;
-  /**
-   * The number of times it appears in the dataset
-   */
-  volume: number;
-}
-
-export interface WordSeekBody {
-  /**
-   * The ID of the team to which the keywords belong
-   */
-  teamId: number;
-  /**
-   * The page to run the WordSeek process on
-   */
-  pages: string[];
-  /**
-   * The site to run the WordSeek process on
-   */
-  site: string;
-}
-
-export interface WordSeekResultsResponse {
-  success?: boolean;
-  data: WordSeekItem[];
-}
-
-
-export interface KeywordItem {
-  keyword: string;
-  search_volume: number;
-}
-
-
-export interface KeywordInsightsResult {
-  id: number;
-  hub: string;
-  // TODO: Humps doesn't support depth options and we don't want to corrupt
-  // the format of the keywords
-  hub_data: {
-    [key: string]: {
-      [key: string]: KeywordItem[];
-    }
-  },
-}
-
-export interface KeywordInsightsOrder {
-  contentStrategy: number;
-  id: number;
-  sheetsUrl: string;
-  status: string;
-  orderId: string;
-}
-
-export interface KeywordInsightsResultsRequest {
-  orderId: number;
-}
-
-export interface CreateKeywordInsightsOrderBody {
-  contentStrategyId: number;
-  orderId?: string;
-  sheetsUrl?: string;
-  status?: string;
-}
-
-export interface WordSeekJobsResponse {
-  progress: number;
-  jobsRemaining: number; //WordSeekJob[];
-  jobsCompleted: number; //WordSeekJob[];
-  user: Partial<User>;
-  jobType: WordSeekJobType;
-  jobCreated: string;
-  site: string;
-  jobGroupUuid: string;
-  team: Team;
-}
-
 
 // Define a service using a base URL and expected endpoints
 export const engineApi = baseApi.injectEndpoints({
@@ -149,14 +24,13 @@ export const engineApi = baseApi.injectEndpoints({
      * API for uploading the Ahrefs CSV
      */
 
-
     // // TODO: This might be the "unused" endpoint (keyword-research)
     seedKeywords: builder.mutation<undefined, SeedKeywordsBody>({
       query: (body) => ({
         url: apiUrls.SEED_KEYWORDS,
         method: "POST",
         body: decamelizeKeys(body),
-      })
+      }),
     }),
     // Old Version (e.g. Step 1.1)
     generateSeedKeywords: builder.mutation<undefined, GenerateSeedKeywordsBody>({
@@ -164,14 +38,14 @@ export const engineApi = baseApi.injectEndpoints({
         url: apiUrls.GENERATE_SEED_KEYWORDS,
         method: "POST",
         body: decamelizeKeys(body),
-      })
+      }),
     }),
     peopleAlsoAsk: builder.mutation<undefined, PeopleAlsoAskBody>({
       query: (body) => ({
         url: apiUrls.PEOPLE_ALSO_ASK,
         method: "POST",
         body,
-      })
+      }),
     }),
     /**
      * Runs both the Seed Keywords and PAA steps (Step 1 + 2)
@@ -181,7 +55,7 @@ export const engineApi = baseApi.injectEndpoints({
         url: apiUrls.GENERATE_KI_INPUT,
         method: "POST",
         body: decamelizeKeys(body),
-      })
+      }),
     }),
     /**
      * Runs the WordSeek process
@@ -191,12 +65,15 @@ export const engineApi = baseApi.injectEndpoints({
         url: apiUrls.WORD_SEEK,
         method: "POST",
         body: decamelizeKeys(body),
-      })
+      }),
     }),
     /**
      * Fetches the WordSeek results
      */
-    wordSeekResults: builder.query<WordSeekItem[], { teamUid: string, jobGroupUuid?: string | null }>({
+    wordSeekResults: builder.query<
+      WordSeekItem[],
+      { teamUid: string; jobGroupUuid?: string | null }
+    >({
       query: ({ teamUid, jobGroupUuid }) => ({
         url: apiUrls.WORD_SEEK_RESULTS(teamUid, jobGroupUuid),
       }),
@@ -205,7 +82,7 @@ export const engineApi = baseApi.injectEndpoints({
           return camelizeKeys(response.data) as WordSeekItem[];
         }
         return [];
-      }
+      },
     }),
     /**
      * Fetches the Keyword Insights results
@@ -219,13 +96,17 @@ export const engineApi = baseApi.injectEndpoints({
     /**
      * Creates the Keyword Insights Order
      */
-    createKeywordInsightOrder: builder.mutation<KeywordInsightsOrder, CreateKeywordInsightsOrderBody>({
+    createKeywordInsightOrder: builder.mutation<
+      KeywordInsightsOrder,
+      CreateKeywordInsightsOrderBody
+    >({
       query: (body) => ({
         url: apiUrls.CREATE_KEYWORD_INSIGHTS_ORDER,
         method: "POST",
         body: decamelizeKeys(body),
       }),
-      transformResponse: (response: ConvertToSnakeCase<KeywordInsightsOrder>) => camelizeKeys(response) as KeywordInsightsOrder
+      transformResponse: (response: ConvertToSnakeCase<KeywordInsightsOrder>) =>
+        camelizeKeys(response) as KeywordInsightsOrder,
     }),
     /**
      * Fetch the Keyword Insights output
@@ -234,7 +115,8 @@ export const engineApi = baseApi.injectEndpoints({
       query: (contentStrategyId) => ({
         url: apiUrls.KEYWORD_INSIGHTS_ORDER(contentStrategyId),
       }),
-      transformResponse: (response: ConvertToSnakeCase<KeywordInsightsOrder[]>) => camelizeKeys(response) as KeywordInsightsOrder[]
+      transformResponse: (response: ConvertToSnakeCase<KeywordInsightsOrder[]>) =>
+        camelizeKeys(response) as KeywordInsightsOrder[],
     }),
     /**
      * Fetches the Word Seek Jobs
@@ -243,22 +125,35 @@ export const engineApi = baseApi.injectEndpoints({
       query: (body) => ({
         url: apiUrls.WORD_SEEK_JOBS(body?.teamId || undefined),
       }),
-      transformResponse: (response: ConvertToSnakeCase<WordSeekJobsResponse[]>) => response.map((job) => camelizeKeys(job)) as WordSeekJobsResponse[]
+      transformResponse: (response: ConvertToSnakeCase<WordSeekJobsResponse[]>) =>
+        response.map((job) => camelizeKeys(job)) as WordSeekJobsResponse[],
     }),
     /**
      * Triggers a single word seek job to be re-run
      */
-    reRunWordSeekJob: builder.mutation<WordSeekJob, {
-      jobGroupUuid: string;
-    }>({
+    reRunWordSeekJob: builder.mutation<
+      WordSeekJob,
+      {
+        jobGroupUuid: string;
+      }
+    >({
       query: (body) => ({
         url: apiUrls.WORD_SEEK_RESUME,
         body: decamelizeKeys(body),
         method: "POST",
       }),
     }),
-
-  })
+    /**
+     * Generates or fetches the latest FAQs
+     */
+    generateFaqs: builder.query<GenerateFaqsResponse, GenerateFaqsQueryParams>({
+      query: ({ teamId, resultId }) => ({
+        url: apiUrls.GENERATE_FAQS(teamId, resultId),
+        transformResponse: (response: ConvertToSnakeCase<GenerateFaqsResponse>) =>
+          camelizeKeys(response) as GenerateFaqsResponse,
+      }),
+    }),
+  }),
 });
 
 // Export hooks for usage in functional components, which are
@@ -276,4 +171,5 @@ export const {
   useCreateKeywordInsightOrderMutation,
   useWordSeekJobsQuery,
   useReRunWordSeekJobMutation,
+  useGenerateFaqsQuery,
 } = engineApi;
