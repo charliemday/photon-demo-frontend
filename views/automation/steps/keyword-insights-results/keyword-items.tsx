@@ -1,16 +1,8 @@
-import {
-  Box,
-  HStack,
-  Stack,
-  Tag,
-  Text,
-  useClipboard,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, HStack, Stack, Tag, Text, useClipboard, useToast } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import { useGenerateBlogOutlinesMutation } from "api/blog.api";
-import { KeywordItem } from "api/engine.api";
+import { KeywordItem } from "api/types/engine.types";
 import { RootState } from "types";
 
 import { Button } from "components/button";
@@ -59,8 +51,7 @@ export const KeywordItems: React.FC<Props> = (props) => {
     if (!isGenerating && isGenerated) {
       toast({
         title: "Success",
-        description:
-          "Keywords have been sent and your blog outline will be generated shortly!",
+        description: "Keywords have been sent and your blog outline will be generated shortly!",
         status: "success",
         duration: 5000,
         isClosable: true,
@@ -121,14 +112,10 @@ export const KeywordItems: React.FC<Props> = (props) => {
                   cursor: "pointer",
                   boxShadow: "0 0 0 2px #3182ce",
                 }}
-                colorScheme={
-                  selectedKeywords.includes(keyword) ? "green" : undefined
-                }
+                colorScheme={selectedKeywords.includes(keyword) ? "green" : undefined}
                 onClick={() => {
                   if (selectedKeywords.includes(keyword)) {
-                    setSelectedKeywords(
-                      selectedKeywords.filter((k) => k !== keyword)
-                    );
+                    setSelectedKeywords(selectedKeywords.filter((k) => k !== keyword));
                   } else {
                     setSelectedKeywords([...selectedKeywords, keyword]);
                   }
@@ -137,11 +124,7 @@ export const KeywordItems: React.FC<Props> = (props) => {
                 {keyword}
               </Tag>
 
-              <Tag
-                colorScheme={
-                  selectedKeywords?.includes(keyword) ? "green" : "gray"
-                }
-              >
+              <Tag colorScheme={selectedKeywords?.includes(keyword) ? "green" : "gray"}>
                 Search Volume: {search_volume}
               </Tag>
             </HStack>
