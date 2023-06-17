@@ -1,19 +1,54 @@
-import { Stack } from "@chakra-ui/react";
+import { Checkbox, HStack, Stack } from "@chakra-ui/react";
 import { SuggestionsTable } from "components/table";
+import { Body } from "components/text";
 import { useBuildFaqsTableData } from "hooks";
-import { FC } from "react";
+import { FC, useState } from "react";
 
 interface Props {
   resultId: number;
 }
 
 export const ActionsTab: FC<Props> = ({ resultId }) => {
+  const [maxPosition, setMaxPosition] = useState<number | null>(null);
+  const [minPosition, setMinPosition] = useState<number | null>(null);
+
   const { rowHeaders, rowItems, isLoading, isError } = useBuildFaqsTableData({
     resultId,
+    maxPosition,
+    minPosition,
   });
 
   return (
     <Stack alignItems="center" justifyContent="center" w="full" spacing={6}>
+      <Stack alignItems="flex-end" w="full">
+        <HStack w="full" justifyContent="flex-end" spacing={6}>
+          <Checkbox
+            size="sm"
+            onChange={({ target }) => {
+              setMinPosition(target.checked ? 1 : null);
+              setMaxPosition(target.checked ? 5 : null);
+            }}
+            isChecked={minPosition === 1 && maxPosition === 5}
+          >{`1 -> 5`}</Checkbox>
+          <Checkbox
+            size="sm"
+            onChange={({ target }) => {
+              setMinPosition(target.checked ? 6 : null);
+              setMaxPosition(target.checked ? 20 : null);
+            }}
+            isChecked={minPosition === 6 && maxPosition === 20}
+          >{`6 -> 20`}</Checkbox>
+          <Checkbox
+            size="sm"
+            onChange={({ target }) => {
+              setMinPosition(target.checked ? 21 : null);
+              setMaxPosition(target.checked ? null : null);
+            }}
+            isChecked={minPosition === 21 && maxPosition === null}
+          >{`20+`}</Checkbox>
+        </HStack>
+        <Body>Filter by position</Body>
+      </Stack>
       <SuggestionsTable
         rowHeaders={rowHeaders}
         rowItems={rowItems}

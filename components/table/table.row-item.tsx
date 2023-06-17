@@ -22,33 +22,42 @@ export interface RowDataItem {
   flex?: number;
   size?: RowSize;
   tagColor?: string;
+  onClick?: () => void;
+  tooltip?: boolean;
 }
 
 interface Props extends RowDataItem {
   onClick?: () => void;
 }
 
-export const TableRowItem: FC<Props> = ({ value, type, onClick, tagColor, size = "xs" }) => {
+export const TableRowItem: FC<Props> = ({
+  value,
+  type,
+  onClick,
+  tagColor,
+  tooltip = true,
+  size = "xs",
+}) => {
   if (type === RowItemTypes.text && typeof value === "string") {
+    if (tooltip) {
+      return (
+        <Tooltip label={value} hasArrow>
+          <Text fontSize={size} key={value} isTruncated>
+            {value}
+          </Text>
+        </Tooltip>
+      );
+    }
+
     return (
-      <Tooltip label={value} hasArrow>
-        <Text fontSize={size} fontWeight="semibold" key={value} isTruncated>
-          {value}
-        </Text>
-      </Tooltip>
+      <Text fontSize={size} key={value} isTruncated>
+        {value}
+      </Text>
     );
   }
 
   if (type === RowItemTypes.tag && typeof value === "string") {
-    return (
-      <Tag
-        key={value}
-        fontSize={size}
-        text={value}
-        bgColor={tagColor}
-        // bgColor={[TaskStatusEnum.done].includes(value as TaskStatusEnum) ? GREEN : undefined}
-      />
-    );
+    return <Tag key={value} fontSize={size} text={value} bgColor={tagColor} />;
   }
 
   if (type === RowItemTypes.avatar && typeof value === "string") {

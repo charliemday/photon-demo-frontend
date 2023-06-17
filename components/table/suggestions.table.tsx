@@ -18,6 +18,8 @@ interface Props {
   onLinkClick?: () => void;
 }
 
+const ITEM_HEIGHT = 39;
+
 export const SuggestionsTable: FC<Props> = ({
   title,
   description,
@@ -31,7 +33,6 @@ export const SuggestionsTable: FC<Props> = ({
   emptyMessage = "No suggestions found",
 }) => {
   const [showAll, setShowAll] = useState(false);
-
   const renderHeaders = () => {
     return (
       <HStack
@@ -40,19 +41,38 @@ export const SuggestionsTable: FC<Props> = ({
         divider={<Divider orientation="vertical" />}
         h="39px"
       >
-        {rowHeaders.map((header, key) => (
-          <Body key={key} flex={header.flex || 1} p={3}>
-            {header.text}
-          </Body>
-        ))}
+        {rowHeaders.map((header, key) => {
+          const Icon = header.icon || null;
+
+          return (
+            <HStack
+              key={key}
+              flex={header.flex || 1}
+              p={3}
+              cursor={header.onClick ? "pointer" : "default"}
+              onClick={() => header.onClick && header.onClick()}
+              alignItems="center"
+            >
+              <Body fontWeight="semibold">{header.text}</Body>
+              {Icon && <Icon size={14} style={{ marginLeft: 4 }} />}
+            </HStack>
+          );
+        })}
       </HStack>
     );
   };
 
   const renderRows = (row: RowDataItem[]) => (
-    <HStack justifyContent="space-evenly" divider={<Divider orientation="vertical" />} h="39px">
+    <HStack
+      justifyContent="space-evenly"
+      divider={<Divider orientation="vertical" />}
+      h={rowItems?.length < previewCount ? "full" : ITEM_HEIGHT}
+    >
       {row.map((row, key) => (
-        <Box key={key} flex={row.flex || 1} p={3}>
+        <Box key={key} flex={row.flex || 1} p={3}
+          cursor={row.onClick ? "pointer" : "default"}
+          onClick={() => row.onClick && row.onClick()}
+        >
           <TableRowItem {...row} />
         </Box>
       ))}
@@ -83,11 +103,21 @@ export const SuggestionsTable: FC<Props> = ({
     );
   };
 
-  const renderAll = () => (
-    <Stack spacing={0} divider={<Divider />} flex={1}>
-      {rowItems?.map(({ rowData }) => renderRows(rowData))}
-    </Stack>
-  );
+  const renderAll = () => {
+    if (rowItems.length === 0) {
+      return (
+        <HStack alignItems="center" justifyContent="center" h="full">
+          <Body fontSize="sm">{emptyMessage}</Body>
+        </HStack>
+      );
+    }
+
+    return (
+      <Stack spacing={0} divider={<Divider />} flex={1}>
+        {rowItems?.map(({ rowData }) => renderRows(rowData))}
+      </Stack>
+    );
+  };
 
   const renderShowButton = () => {
     if (showAll) {
@@ -108,7 +138,9 @@ export const SuggestionsTable: FC<Props> = ({
     );
   };
 
-  const tableSize = showAll ? (rowItems?.length + 1) * 40 : 157;
+  const tableSize = showAll
+    ? (Math.max(rowItems?.length || 0, previewCount) + 1) * ITEM_HEIGHT + rowItems?.length
+    : 157;
 
   if (isLoading) {
     return (
@@ -119,7 +151,7 @@ export const SuggestionsTable: FC<Props> = ({
   }
 
   return (
-    <Stack w="full">
+    <Stack w="full" pointerEvents={comingSoon ? "none" : "auto"}>
       <Flex
         border="solid 1px lightgray"
         w="full"

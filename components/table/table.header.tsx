@@ -1,10 +1,21 @@
-import { Flex, Stack, Text } from "@chakra-ui/react";
+import { Flex, Stack } from "@chakra-ui/react";
 import { Label } from "components/text";
 import { FC } from "react";
+import { IconType } from "react-icons";
 
 export interface HeaderItem {
   text: string;
   flex?: number;
+  /**
+   * Optional onClick handler for the header
+   * for example, to sort the table
+   */
+  onClick?: () => void;
+  /**
+   * Optional icon to display next to the header
+   * e.g. an arrow to indicate sorting
+   */
+  icon?: IconType | null;
 }
 
 interface Props {
