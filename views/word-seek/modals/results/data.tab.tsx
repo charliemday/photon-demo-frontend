@@ -1,11 +1,16 @@
-import { Flex, TableContainer, Text } from "@chakra-ui/react";
+import { Flex, HStack, TableContainer, Text } from "@chakra-ui/react";
 import { createColumnHelper } from "@tanstack/react-table";
-import { FC, useMemo } from "react";
+import { Button } from "components/button";
+import { Body } from "components/text";
+import { FC, useMemo, useRef } from "react";
+import { CSVLink } from "react-csv";
+import { BsDownload } from "react-icons/bs";
 import { MissingKeyword, WordSeekItem } from "types";
 import { WordSeekResultsTable } from "./word-seek-results.table";
 
 interface Props {
   data?: WordSeekItem | null;
+  exportData?: string[][];
 }
 
 const columnHelper = createColumnHelper<MissingKeyword>();
@@ -38,7 +43,9 @@ const columns = [
   }),
 ];
 
-export const DataTab: FC<Props> = ({ data }) => {
+export const DataTab: FC<Props> = ({ data, exportData }) => {
+  const csvData = useRef<any>([]);
+
   const tableData = useMemo(() => {
     if (data) {
       return data.missingKeywords.map((i) => i);
@@ -49,10 +56,26 @@ export const DataTab: FC<Props> = ({ data }) => {
 
   return (
     <TableContainer h="50vh" overflowY="auto">
-      <Flex alignItems="center" justifyContent="space-between" pb={6}>
+      <Flex alignItems="center" justifyContent="space-between" pb={4}>
         <Text fontSize="sm" fontWeight="bold">{`🎉 ${tableData?.length} missing quer${
           tableData?.length != 1 ? "ies" : "y"
         } found for this page`}</Text>
+        <CSVLink
+          data={exportData || []}
+          filename="word-seek-results.csv"
+          ref={(r: any) => (csvData.current = r)}
+        />
+        <Button
+          onClick={() => {
+            csvData.current.link.click();
+          }}
+          size="sm"
+        >
+          <HStack>
+            <BsDownload />
+            <Body>CSV</Body>
+          </HStack>
+        </Button>
       </Flex>
       <WordSeekResultsTable data={tableData} columns={columns} />
     </TableContainer>
