@@ -63,9 +63,7 @@ export const Sidebar: FC = () => {
       isActive: router.route === ROUTES.FAQS,
       icon: <FiHelpCircle fontSize={ICON_SIZE} />,
       onClick: () => {
-        router.push(ROUTES.FAQS);
-        // TODO: Uncomment when page complete
-        // window.open(FAQ_PAGE, "_blank");
+        window.open("https://wordseek.getbaser.com/faqs", "_blank");
       },
     },
   ];

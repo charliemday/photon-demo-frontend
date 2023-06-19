@@ -20,34 +20,33 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
 
   const handleLinkClick = (link: string) => window.open(link, "_blank");
 
+  const renderCheckbox = (label: string, max: number | null, min: number | null, color: string) => (
+    <Checkbox
+      size="sm"
+      onChange={({ target }) => {
+        setMinPosition(target.checked ? min : null);
+        setMaxPosition(target.checked ? max : null);
+      }}
+      colorScheme={color}
+      iconColor="black"
+      sx={{
+        "[data-checked]": {
+          borderColor: color,
+        },
+      }}
+      isChecked={minPosition === min && maxPosition === max}
+    >
+      {label}
+    </Checkbox>
+  );
+
   return (
     <Stack alignItems="center" justifyContent="center" w="full" spacing={6}>
       <Stack alignItems="flex-end" w="full">
         <HStack w="full" justifyContent="flex-end" spacing={6}>
-          <Checkbox
-            size="sm"
-            onChange={({ target }) => {
-              setMinPosition(target.checked ? 1 : null);
-              setMaxPosition(target.checked ? 5 : null);
-            }}
-            isChecked={minPosition === 1 && maxPosition === 5}
-          >{`1 -> 5`}</Checkbox>
-          <Checkbox
-            size="sm"
-            onChange={({ target }) => {
-              setMinPosition(target.checked ? 6 : null);
-              setMaxPosition(target.checked ? 20 : null);
-            }}
-            isChecked={minPosition === 6 && maxPosition === 20}
-          >{`6 -> 20`}</Checkbox>
-          <Checkbox
-            size="sm"
-            onChange={({ target }) => {
-              setMinPosition(target.checked ? 21 : null);
-              setMaxPosition(target.checked ? null : null);
-            }}
-            isChecked={minPosition === 21 && maxPosition === null}
-          >{`20+`}</Checkbox>
+          {renderCheckbox("1 -> 5", 5, 1, "brand.checkbox1")}
+          {renderCheckbox("6 -> 20", 20, 6, "brand.checkbox2")}
+          {renderCheckbox("20+", null, 21, "brand.checkbox3")}
         </HStack>
         <Body>Filter by position</Body>
       </Stack>
