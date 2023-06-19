@@ -4,31 +4,46 @@ import { FC, useMemo } from "react";
 import { Select } from "./select";
 
 interface Props {
-  domain: string;
   onChange: (page: string) => void;
+  subdomain?: string;
 }
 
-export const PageSelect: FC<Props> = ({ domain, onChange }) => {
+export const PageSelect: FC<Props> = ({ onChange, subdomain }) => {
   const activeTeam = useActiveTeam();
+  const gscUrl = activeTeam?.gscUrl || "";
 
   const { data: pagesData, isLoading } = useGetSearchConsolePagesQuery(
     {
       teamUid: activeTeam?.uid || "",
-      domain,
+      domain: gscUrl || "",
     },
     {
-      skip: !activeTeam,
+      skip: !activeTeam || !gscUrl,
     },
   );
 
-  const pagesOptionData = useMemo(
-    () =>
-      pagesData?.pages.map((page) => ({
+  const pagesOptionData = useMemo(() => {
+    const checkSubdomain = (page: string) => {
+      if (subdomain) {
+        return page.includes(subdomain);
+      }
+      return true;
+    };
+
+    if (!pagesData?.pages) {
+      return [];
+    }
+
+    // Sort the pages alphabetically
+    const sortedPages = [...pagesData?.pages].sort((a, b) => a.localeCompare(b));
+
+    return (
+      sortedPages.filter(checkSubdomain).map((page) => ({
         value: page,
         label: page,
-      })) || [],
-    [pagesData],
-  );
+      })) || []
+    );
+  }, [pagesData, subdomain]);
 
   return (
     <Select

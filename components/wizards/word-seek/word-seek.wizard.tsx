@@ -1,5 +1,6 @@
 import { useWordSeekJobsQuery } from "api/engine.api";
 import { Modal } from "components/modals";
+import { LinkSiteStep } from "components/wizards/onboarding";
 import { useActiveTeam, useFeatureFlag, useHasProductAccess, useRunWordSeek } from "hooks";
 import { FC, useMemo, useState } from "react";
 import StepWizard from "react-step-wizard";
@@ -12,11 +13,11 @@ interface Props {
 }
 
 export const WordSeekWizard: FC<Props> = ({ isOpen, onClose }) => {
-  const [selectedSite, setSelectedSite] = useState<string | null>(null);
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [selectedPages, setSelectedPages] = useState<string[]>([]);
 
   const activeTeam = useActiveTeam();
+  const gscUrl = activeTeam?.gscUrl;
   const { hasAccess: hasProductAccess } = useHasProductAccess();
   const { hasAccess: hasFeatureAccess } = useFeatureFlag();
 
@@ -29,7 +30,7 @@ export const WordSeekWizard: FC<Props> = ({ isOpen, onClose }) => {
   });
 
   const { runWordSeek, isLoading } = useRunWordSeek({
-    site: selectedSite,
+    site: activeTeam?.gscUrl,
   });
 
   const handleRunWordSeek = (pages: string[]) => {
@@ -47,6 +48,41 @@ export const WordSeekWizard: FC<Props> = ({ isOpen, onClose }) => {
     onClose();
   };
 
+  const renderSteps = (): JSX.Element[] => {
+    const steps = [];
+
+    if (!gscUrl) {
+      steps.push(<LinkSiteStep />);
+    }
+
+    steps.push(
+      <Step1
+        onChangePage={(path) => setSelectedPath(path)}
+        runAllPages={() => handleRunWordSeek([])}
+        hasAccess={hasAccess}
+        runWordSeek={runWordSeek}
+        isRunningWordSeek={isLoading}
+      />,
+    );
+
+    steps.push(
+      <Step2
+        selectedPath={selectedPath}
+        onComplete={(pages: string[]) => {
+          handleRunWordSeek(pages);
+          setSelectedPages(pages);
+        }}
+        isLoading={isLoading}
+      />,
+    );
+
+    steps.push(<Step3 completeWizard={handleCompleteWizard} pageCount={selectedPages.length} />);
+
+    console.log("Steps", steps);
+
+    return steps;
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -56,30 +92,28 @@ export const WordSeekWizard: FC<Props> = ({ isOpen, onClose }) => {
         overflowY: "visible",
       }}
     >
-      <StepWizard isHashEnabled={true}>
-        <Step1
-          onChangeSite={(site) => setSelectedSite(site)}
-          onChangePage={(path) => setSelectedPath(path)}
-          runAllPages={() => handleRunWordSeek([])}
-          hasAccess={hasAccess}
-          runWordSeek={runWordSeek}
-          isRunningWordSeek={isLoading}
-        />
-        <Step2
-          selectedSite={selectedSite}
-          selectedPath={selectedPath}
-          onComplete={(pages: string[]) => {
-            handleRunWordSeek(pages);
-            setSelectedPages(pages);
-          }}
-          isLoading={isLoading}
-        />
-        <Step3
-          completeWizard={handleCompleteWizard}
-          site={selectedSite}
-          pageCount={selectedPages.length}
-        />
-      </StepWizard>
+      {gscUrl ? (
+        <StepWizard isHashEnabled={true}>
+          <Step1
+            onChangePage={(path) => setSelectedPath(path)}
+            runAllPages={() => handleRunWordSeek([])}
+            hasAccess={hasAccess}
+            runWordSeek={runWordSeek}
+            isRunningWordSeek={isLoading}
+          />
+          <Step2
+            selectedPath={selectedPath}
+            onComplete={(pages: string[]) => {
+              handleRunWordSeek(pages);
+              setSelectedPages(pages);
+            }}
+            isLoading={isLoading}
+          />
+          <Step3 completeWizard={handleCompleteWizard} pageCount={selectedPages.length} />
+        </StepWizard>
+      ) : (
+        <LinkSiteStep />
+      )}
     </Modal>
   );
 };

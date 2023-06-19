@@ -1,16 +1,6 @@
-import { TeamType } from "types";
 
 // TODO: Place these in their own folders with their RTK endpoints
 export const apiUrls = {
-    // Teams
-    TEAMS: (teamType?: TeamType) => `teams/${teamType ? `?team_type=${teamType}` : ''}`,
-    TEAM: (id: number) => `teams/${id}/`,
-    TEAM_CLASSIFICATION: (teamUid: string) => `teams/team/${teamUid}/classifications`, // TODO: DEPRECATE
-    TEAM_COMPETITORS: (teamUid?: string) => `teams/team/competitors${teamUid ? `?team_uid=${teamUid}` : ''}`, // TODO: DEPRECATE
-    TEAM_COMPETITORS_BULK: "teams/team/competitors/bulk-update", // TODO: DEPRECATE
-    TEAM_SEED_KEYWORDS: (teamUid: string) => `teams/team/${teamUid}/seed-keywords`, // TODO: DEPRECATE
-    TEAM_PERFORMANCE: (teamUid: string) => `teams/performance/weekly?team_uid=${teamUid}`,
-    TEAM_MEMBERS: (teamId: number) => `teams/team/${teamId}/members`,
     // Google
     GOOGLE_SITES: (teamUid: string) => `google/sites?team_uid=${teamUid}`,
     POPULATE_REPORTS: 'google/populate-reports',
