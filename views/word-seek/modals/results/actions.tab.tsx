@@ -18,6 +18,8 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
     minPosition,
   });
 
+  const handleLinkClick = (link: string) => window.open(link, "_blank");
+
   return (
     <Stack alignItems="center" justifyContent="center" w="full" spacing={6}>
       <Stack alignItems="flex-end" w="full">
@@ -57,6 +59,7 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
         link="Find out more"
         isLoading={isLoading}
         emptyMessage="No FAQs suggested"
+        onLinkClick={() => handleLinkClick("https://wordseek.getbaser.com/faqs/adding-faqs")}
       />
       <SuggestionsTable
         rowHeaders={rowHeaders}
@@ -67,6 +70,7 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
         isLoading={isLoading}
         emptyMessage="No Suggested Content to Add"
         comingSoon
+        onLinkClick={() => handleLinkClick("https://wordseek.getbaser.com/faqs/adding-content")}
       />
       <SuggestionsTable
         rowHeaders={rowHeaders}
@@ -77,6 +81,7 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
         isLoading={isLoading}
         emptyMessage="No suggested New Content"
         comingSoon
+        onLinkClick={() => handleLinkClick("https://wordseek.getbaser.com/faqs/new-pages")}
       />
     </Stack>
   );
