@@ -10,7 +10,6 @@ import { StepWizardChildProps } from "react-step-wizard";
 import { nestUrls, recursiveCount } from "utils";
 
 interface Props extends Partial<StepWizardChildProps> {
-  selectedSite: string | null;
   selectedPath: string | null;
   onComplete: (pages: string[]) => void;
   isLoading?: boolean;
@@ -19,15 +18,17 @@ interface Props extends Partial<StepWizardChildProps> {
 export const Step2: FC<Props> = ({
   currentStep = 0,
   totalSteps,
-  selectedSite,
   selectedPath,
   nextStep,
   previousStep,
   onComplete,
   isLoading,
+  isActive,
 }) => {
   const activeTeam = useActiveTeam();
+  const selectedSite = activeTeam?.gscUrl || "";
   const [pagesChecked, setPagesChecked] = useState<string[]>([]);
+
   const { data: pagesData } = useGetSearchConsolePagesQuery(
     {
       domain: selectedSite || "",
@@ -101,6 +102,16 @@ export const Step2: FC<Props> = ({
     return `Select Pages (${pagesChecked.length} pages selected)`;
   };
 
+  const renderEmptyPage = () => (
+    <Stack py={12} alignItems="center" justifyContent="center">
+      <Body fontSize="sm">No pages found for the path {selectedPath}</Body>
+    </Stack>
+  );
+
+  if (!isActive) {
+    return null;
+  }
+
   return (
     <Stack>
       <Stack pb={6}>
@@ -114,18 +125,24 @@ export const Step2: FC<Props> = ({
         <Stack spacing={6}>
           <Stack>
             <Heading>{renderHeader()}</Heading>
-            <Body>
-              {pageCount} page{pageCount === 1 ? "" : "s"} found
-            </Body>
+            {pageCount === 0 ? null : (
+              <Body>
+                {pageCount} page{pageCount === 1 ? "" : "s"} found
+              </Body>
+            )}
           </Stack>
           <Stack overflow="auto" maxH="60vh" pl={2}>
-            <RecursiveChecklist
-              recursiveObject={pathUrls}
-              keys={Object.keys(pathUrls)}
-              parentString={formattedSelectedSite}
-              depth={0}
-              onChange={handleItemChange}
-            />
+            {pageCount === 0 ? (
+              renderEmptyPage()
+            ) : (
+              <RecursiveChecklist
+                recursiveObject={pathUrls}
+                keys={Object.keys(pathUrls)}
+                parentString={formattedSelectedSite}
+                depth={0}
+                onChange={handleItemChange}
+              />
+            )}
           </Stack>
         </Stack>
         <HStack w="full">

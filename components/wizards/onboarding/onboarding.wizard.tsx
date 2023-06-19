@@ -5,7 +5,7 @@ import StepWizard from "react-step-wizard";
 import { useUpdateOnboardingStepMutation } from "api/user.api";
 import { Modal } from "components/modals";
 import { typeCheckError } from "utils";
-import { OnboardingStep1, OnboardingStep2, OnboardingStep3 } from ".";
+import { ConnectGscStep, CreateWorkspaceStep, LinkSiteStep, OnboardingStep1 } from ".";
 
 interface Props {
   isOpen: boolean;
@@ -13,18 +13,18 @@ interface Props {
   onComplete?: () => void;
 }
 
-export const OnboardingModal: FC<Props> = ({ isOpen, onClose, onComplete }) => {
+export const Onboarding: FC<Props> = ({ isOpen, onClose, onComplete }) => {
   const [updateOnboardingStep] = useUpdateOnboardingStepMutation();
   const toast = useToast();
 
-  const handleCompleteOnboarding = async (openModal?: boolean) => {
+  const handleCompleteOnboarding = async () => {
     await updateOnboardingStep({
       onboardingStep: 1,
     })
       .unwrap()
       .then(() => {
         onClose();
-        if (onComplete && openModal) onComplete();
+        onComplete?.();
       })
       .catch((err: any) => {
         toast({
@@ -47,8 +47,9 @@ export const OnboardingModal: FC<Props> = ({ isOpen, onClose, onComplete }) => {
     >
       <StepWizard>
         <OnboardingStep1 />
-        <OnboardingStep2 />
-        <OnboardingStep3 onCompleted={handleCompleteOnboarding} />
+        <ConnectGscStep />
+        <CreateWorkspaceStep />
+        <LinkSiteStep onCompleted={handleCompleteOnboarding} />
       </StepWizard>
     </Modal>
   );

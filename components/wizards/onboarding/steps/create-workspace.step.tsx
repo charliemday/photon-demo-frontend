@@ -28,7 +28,7 @@ interface FormValues {
   name: string;
 }
 
-export const OnboardingStep2: FC<Props> = (props) => {
+export const CreateWorkspaceStep: FC<Props> = (props) => {
   const [createTeam, { isLoading }] = useCreateTeamMutation();
 
   const toast = useToast();
@@ -53,9 +53,8 @@ export const OnboardingStep2: FC<Props> = (props) => {
         .then(() => {
           if (props.onCompleted) {
             props.onCompleted();
-          }
-          if (props.nextStep) {
-            props.nextStep();
+          } else {
+            props.nextStep?.();
           }
         })
         .catch((err) => {
@@ -78,7 +77,9 @@ export const OnboardingStep2: FC<Props> = (props) => {
     <>
       <ModalHeader>
         Create Workspace
-        <Label color="gray.400">Step 1 of 2</Label>
+        <Label color="gray.400">
+          Step {props.currentStep} of {props.totalSteps}
+        </Label>
       </ModalHeader>
       <ModalBody py={6}>
         <Stack spacing={6}>

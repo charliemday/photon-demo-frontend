@@ -12,6 +12,7 @@ export interface Team {
   driveFolderId: string | null;
   uid: string;
   teamType: TeamType;
+  gscUrl: string | null;
 }
 
 export interface TeamMin {

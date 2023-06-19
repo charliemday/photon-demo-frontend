@@ -1,1 +1,1 @@
-export { WordSeekWizard } from "./word-seek";
+export { WordSeekWizard } from "./word-seek.wizard";

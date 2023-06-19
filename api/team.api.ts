@@ -1,70 +1,23 @@
 import { camelizeKeys, decamelizeKeys } from "humps";
-import { APIErrorResponse, ConvertToSnakeCase, Team, TeamPerformance, TeamType } from "types";
+import { APIErrorResponse, Team, TeamPerformance } from "types";
 import { baseApi, TAG_TYPES } from ".";
 
-import { apiUrls } from "api/urls.api";
+import {
+  BroadKeywordBody,
+  BulkUpdateCompetitorsInterface,
+  CompetitorResponse,
+  CreateTeamInterface,
+  ListTeamRequestParams,
+  SeedKeywords,
+  TeamPerformanceRequestParams,
+  TeamResponse,
+  UpdateTeamInterface
+} from "api/types";
 import { TeamMember } from "types/team";
+import { apiUrls } from ".";
+import { teamUrls } from "./urls";
 
-interface CreateTeamInterface {
-  body: Partial<Team>;
-}
-
-interface UpdateTeamInterface extends CreateTeamInterface {
-  teamId: number;
-}
-
-export interface TeamClassification {
-  id?: number;
-  created?: string;
-  modified?: string;
-  targetKeywords?: string | null;
-  avoidanceKeywords?: string | null;
-  category?: string | null;
-  geography?: string | null;
-  language?: string | null;
-  autoClassify?: boolean;
-  teamUid: string;
-}
-
-interface CompetitorResponse {
-  competitorName: string;
-  competitorUrl: string;
-  active?: boolean;
-}
-
-export interface BulkUpdateCompetitorsInterface {
-  competitors: {
-    name: string;
-    url: string;
-  }[];
-  teamUid: string;
-}
-
-type TeamResponse = ConvertToSnakeCase<Team>;
-
-export interface SeedKeywords {
-  id: number;
-  created: string;
-  modified: string;
-  keyword: string;
-  searchVolume: number;
-  team: number;
-}
-
-interface BroadKeywordBody {
-  keywords: string[];
-  contentStrategyId: number;
-  database: string;
-  limit: number;
-}
-
-interface ListTeamRequestParams {
-  teamType?: TeamType;
-}
-
-interface TeamPerformanceRequestParams {
-  teamUid: string;
-}
+const { TEAMS, TEAM, TEAM_PERFORMANCE, TEAM_MEMBERS, TEAM_COMPETITORS_BULK } = teamUrls;
 
 // Define a service using a base URL and expected endpoints
 export const teamApi = baseApi.injectEndpoints({
@@ -73,47 +26,42 @@ export const teamApi = baseApi.injectEndpoints({
      * List teams
      */
     listTeams: builder.query<Team[], ListTeamRequestParams>({
-      query: ({
-        teamType
-      }) => ({
-        url: apiUrls.TEAMS(teamType),
+      query: ({ teamType }) => ({
+        url: TEAMS(teamType),
       }),
       providesTags: [TAG_TYPES.TEAMS],
-      transformResponse: (response: TeamResponse[]) =>
-        response.map((t) => camelizeKeys(t) as Team),
+      transformResponse: (response: TeamResponse[]) => response.map((t) => camelizeKeys(t) as Team),
     }),
     /**
      * Create a team
      */
     createTeam: builder.mutation<Team | APIErrorResponse, CreateTeamInterface>({
       query: ({ body }) => ({
-        url: apiUrls.TEAMS(),
+        url: TEAMS(),
         method: "POST",
         body,
       }),
       invalidatesTags: [TAG_TYPES.TEAMS],
-      transformResponse: (response: TeamResponse) =>
-        camelizeKeys(response) as Team,
+      transformResponse: (response: TeamResponse) => camelizeKeys(response) as Team,
     }),
     /**
      * Update a team
      */
     updateTeam: builder.mutation<Team, UpdateTeamInterface>({
       query: ({ teamId, body }) => ({
-        url: apiUrls.TEAM(teamId),
+        url: TEAM(teamId),
         method: "PATCH",
-        body,
+        body: decamelizeKeys(body),
       }),
       invalidatesTags: [TAG_TYPES.TEAMS],
-      transformResponse: (response: TeamResponse) =>
-        camelizeKeys(response) as Team,
+      transformResponse: (response: TeamResponse) => camelizeKeys(response) as Team,
     }),
     /**
      * Delete a team
      */
     deleteTeam: builder.mutation<Team, number>({
       query: (teamId) => ({
-        url: apiUrls.TEAM(teamId),
+        url: TEAM(teamId),
         method: "DELETE",
       }),
       invalidatesTags: [TAG_TYPES.TEAMS],
@@ -136,12 +84,12 @@ export const teamApi = baseApi.injectEndpoints({
     /**
      * Bulk Update the team's competitors
      */
-    // TODO: Remove 
+    // TODO: Remove
     bulkUpdateCompetitors: builder.mutation<CompetitorResponse[], BulkUpdateCompetitorsInterface>({
       query: (body) => ({
-        url: apiUrls.TEAM_COMPETITORS_BULK,
+        url: TEAM_COMPETITORS_BULK,
         method: "PATCH",
-        body: decamelizeKeys(body)
+        body: decamelizeKeys(body),
       }),
     }),
     /**
@@ -160,7 +108,7 @@ export const teamApi = baseApi.injectEndpoints({
      */
     teamPerformance: builder.query<TeamPerformance, TeamPerformanceRequestParams>({
       query: ({ teamUid }) => ({
-        url: apiUrls.TEAM_PERFORMANCE(teamUid),
+        url: TEAM_PERFORMANCE(teamUid),
       }),
       transformResponse: (response: TeamPerformance) => camelizeKeys(response) as TeamPerformance,
     }),
@@ -169,9 +117,9 @@ export const teamApi = baseApi.injectEndpoints({
      */
     teamMembers: builder.query<TeamMember[], { teamId: number }>({
       query: ({ teamId }) => ({
-        url: apiUrls.TEAM_MEMBERS(teamId),
+        url: TEAM_MEMBERS(teamId),
       }),
-    })
+    }),
   }),
 });
 
