@@ -1,15 +1,14 @@
 import { HStack, Stack } from "@chakra-ui/react";
 import { useWordSeekJobsQuery } from "api/engine.api";
 import { Button } from "components/button";
-import { PageSelect, SiteSelect } from "components/select";
+import { PageSelect, SubdomainSelect } from "components/select";
 import { Body, Heading, Label } from "components/text";
 import { MAX_FREE_RESULTS } from "config";
 import { useActiveTeam } from "hooks";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 
 interface Props extends Partial<StepWizardChildProps> {
-  onChangeSite: (site: string) => void;
   onChangePage: (page: string) => void;
   runAllPages: () => void;
   runWordSeek?: (pages: string[], callback?: () => void) => void;
@@ -21,25 +20,32 @@ export const Step1: FC<Props> = ({
   currentStep = 0,
   totalSteps,
   nextStep,
-  onChangeSite,
   onChangePage,
   runAllPages,
   lastStep,
   hasAccess,
   runWordSeek,
   isRunningWordSeek,
+  isActive,
 }) => {
-  const [selectedSite, setSelectedSite] = useState<string>("");
   const [selectedPath, setSelectedPath] = useState<string>("");
+  const [selectedSubdomain, setSelectedSubdomain] = useState<string>("");
   const activeTeam = useActiveTeam();
+
+  const [isLoadingNextStep, setIsLoadingNextStep] = useState<boolean>(false);
 
   const { data: wordSeekJobs, refetch } = useWordSeekJobsQuery({
     teamId: activeTeam?.id,
   });
 
-  const handleSiteChange = (site: string) => {
-    setSelectedSite(site);
-    onChangeSite(site);
+  useEffect(() => {
+    if (isActive) {
+      setIsLoadingNextStep(false);
+    }
+  }, [isActive]);
+
+  const handleSubdomainChange = (subdomain: string) => {
+    setSelectedSubdomain(subdomain);
   };
 
   const renderPremiumButton = () => (
@@ -49,12 +55,20 @@ export const Step1: FC<Props> = ({
           runAllPages();
           lastStep?.();
         }}
-        isDisabled={!selectedSite}
+        isDisabled={!selectedSubdomain}
         flex={1}
       >
         Run all pages
       </Button>
-      <Button onClick={nextStep} isDisabled={!selectedSite} flex={1}>
+      <Button
+        onClick={() => {
+          setIsLoadingNextStep(true);
+          nextStep?.();
+        }}
+        isLoading={isLoadingNextStep}
+        isDisabled={!selectedSubdomain}
+        flex={1}
+      >
         Select Pages
       </Button>
     </HStack>
@@ -93,11 +107,11 @@ export const Step1: FC<Props> = ({
       </Stack>
       <Stack spacing={12}>
         <Stack spacing={4}>
-          <Heading>Select a site</Heading>
-          <SiteSelect onChange={handleSiteChange} />
+          <Heading>Select a Subdomain</Heading>
+          <SubdomainSelect onChange={handleSubdomainChange} />
         </Stack>
 
-        {selectedSite && (
+        {selectedSubdomain && (
           <Stack spacing={4}>
             <Heading>{hasAccess ? "Select path" : "Select page"}</Heading>
             <Body fontSize="sm">
@@ -107,11 +121,11 @@ export const Step1: FC<Props> = ({
                 : `Find the page you want to run WordSeek on. This will identify all the queries that don't exist on this page.`}
             </Body>
             <PageSelect
-              domain={selectedSite}
               onChange={(page) => {
                 onChangePage(page);
                 setSelectedPath(page);
               }}
+              subdomain={selectedSubdomain}
             />
           </Stack>
         )}

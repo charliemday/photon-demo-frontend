@@ -1,16 +1,6 @@
-import { TeamType } from "types";
 
 // TODO: Place these in their own folders with their RTK endpoints
 export const apiUrls = {
-    // Teams
-    TEAMS: (teamType?: TeamType) => `teams/${teamType ? `?team_type=${teamType}` : ''}`,
-    TEAM: (id: number) => `teams/${id}/`,
-    TEAM_CLASSIFICATION: (teamUid: string) => `teams/team/${teamUid}/classifications`, // TODO: DEPRECATE
-    TEAM_COMPETITORS: (teamUid?: string) => `teams/team/competitors${teamUid ? `?team_uid=${teamUid}` : ''}`, // TODO: DEPRECATE
-    TEAM_COMPETITORS_BULK: "teams/team/competitors/bulk-update", // TODO: DEPRECATE
-    TEAM_SEED_KEYWORDS: (teamUid: string) => `teams/team/${teamUid}/seed-keywords`, // TODO: DEPRECATE
-    TEAM_PERFORMANCE: (teamUid: string) => `teams/performance/weekly?team_uid=${teamUid}`,
-    TEAM_MEMBERS: (teamId: number) => `teams/team/${teamId}/members`,
     // Google
     GOOGLE_SITES: (teamUid: string) => `google/sites?team_uid=${teamUid}`,
     POPULATE_REPORTS: 'google/populate-reports',
@@ -22,6 +12,7 @@ export const apiUrls = {
     WORD_SEEK_JOBS: (teamId?: number) => `engine/word-seek/jobs${teamId ? `?team_id=${teamId}` : ''}`,
     WORD_SEEK_TRIGGER_JOB: "engine/word-seek/trigger-job",
     WORD_SEEK_RESUME: "engine/word-seek/resume",
+    GENERATE_FAQS: (teamId: number, resultId: number) => `wordseek/generate-faqs/?team_id=${teamId}&result_id=${resultId}`,
     // Engine
     MISSING_KEYWORDS: 'engine/missing-keywords-job',
     PEOPLE_ALSO_ASK: 'engine/people-also-ask/',

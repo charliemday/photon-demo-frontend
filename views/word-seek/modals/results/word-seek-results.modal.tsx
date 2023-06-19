@@ -1,13 +1,9 @@
-import { Box, Flex, HStack, ModalBody, ModalFooter, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Flex, HStack, ModalBody, Spinner, Stack, Text } from "@chakra-ui/react";
 import { useWordSeekResultsQuery } from "api/engine.api";
-import { Button } from "components/button";
 import { Modal } from "components/modals";
 import { Select } from "components/select";
 import { Tab } from "components/tab";
-import { FC, useEffect, useMemo, useRef, useState } from "react";
-import { CSVLink } from "react-csv";
-import { BiRefresh } from "react-icons/bi";
-import { BsDownload } from "react-icons/bs";
+import { FC, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, Team } from "types";
 import { ActionsTab } from "./actions.tab";
@@ -31,8 +27,6 @@ export const WordSeekResultsModal: FC<Props> = ({
   defaultPage = null,
 }) => {
   const [selectedPage, setSelectedPage] = useState<string | null>(defaultPage);
-
-  const csvData = useRef<any>([]);
   const activeTeam: Team = useSelector((state: RootState) => state.team.activeTeam);
 
   const [activeTab, setActiveTab] = useState<TAB>(TAB.data);
@@ -80,7 +74,7 @@ export const WordSeekResultsModal: FC<Props> = ({
     return [];
   }, [wordSeekResults, selectedPage]);
 
-  const buildExportData = (): string[][] => {
+  const exportData = useMemo((): string[][] => {
     const results = [["Page", "Keyword", "Clicks", "Impressions"]];
     if (wordSeekResults?.length) {
       wordSeekResults.forEach((page) => {
@@ -96,14 +90,26 @@ export const WordSeekResultsModal: FC<Props> = ({
     }
 
     return results;
-  };
+  }, [wordSeekResults]);
+
+  const selectedResult = useMemo(() => {
+    if (wordSeekResults) {
+      return wordSeekResults.find((i) => i.page === selectedPage);
+    }
+
+    return null;
+  }, [wordSeekResults, selectedPage]);
 
   const renderTab = () => {
     if (activeTab === TAB.data) {
-      return <DataTab selectedPage={selectedPage} data={wordSeekResults} />;
+      return <DataTab data={selectedResult} exportData={exportData} />;
     }
 
-    return <ActionsTab />;
+    if (selectedResult) {
+      return <ActionsTab resultId={selectedResult?.id} />;
+    }
+
+    return null;
   };
 
   return (
@@ -152,31 +158,9 @@ export const WordSeekResultsModal: FC<Props> = ({
               />
             </HStack>
           </HStack>
-          <HStack spacing={2}>
-            <Button isLoading={isFetching} onClick={refetch} size="sm">
-              <Text mr={2}>Refresh</Text>
-              <BiRefresh fontSize={18} />
-            </Button>
-            <CSVLink
-              data={buildExportData()}
-              filename="word-seek-results.csv"
-              ref={(r: any) => (csvData.current = r)}
-            />
-            <Button
-              onClick={() => {
-                csvData.current.link.click();
-              }}
-              size="sm"
-            >
-              CSV{" "}
-              <Box ml={2}>
-                <BsDownload />
-              </Box>
-            </Button>
-          </HStack>
         </HStack>
       </Stack>
-      <ModalBody overflowY="hidden" pt={12}>
+      <ModalBody overflowY="hidden" pt={6}>
         {isLoading ? (
           <Flex alignItems="center" justifyContent="center" h="40vh">
             <Spinner size="lg" />
@@ -194,7 +178,6 @@ export const WordSeekResultsModal: FC<Props> = ({
           renderTab()
         )}
       </ModalBody>
-      <ModalFooter></ModalFooter>
     </Modal>
   );
 };

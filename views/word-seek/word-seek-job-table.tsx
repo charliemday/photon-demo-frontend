@@ -7,6 +7,7 @@ import { WordSeekEmpty } from "components/empty";
 import { Table } from "components/table";
 import { HeaderItem } from "components/table/table.header";
 import { Heading } from "components/text";
+import { Onboarding } from "components/wizards";
 import { WordSeekWizard } from "components/wizards/word-seek";
 import { FATHOM_EVENTS } from "config";
 import {
@@ -19,7 +20,6 @@ import {
 import { FC, useEffect, useMemo, useState } from "react";
 import { Features } from "types";
 import { GscConnectModal, PricingModal, WordSeekResultsModal } from "./modals";
-import { OnboardingModal } from "./onboarding";
 
 const rowHeaders: HeaderItem[] = [
   {
@@ -82,7 +82,7 @@ export const WordSeekJobTable: FC = () => {
       userDetails.onboardingStep < MIN_ONBOARDING_STEP &&
       teams?.length === 0
     ) {
-      onOnboardingModalToggle();
+      onOnboardingToggle();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userDetails]);
@@ -99,9 +99,9 @@ export const WordSeekJobTable: FC = () => {
     onToggle: onWordSeekResultsToggle,
   } = useDisclosure();
   const {
-    isOpen: isOnboardingModalOpen,
-    onClose: onOnboardingModalClose,
-    onToggle: onOnboardingModalToggle,
+    isOpen: isOnboardingOpen,
+    onClose: onOnboardingClose,
+    onToggle: onOnboardingToggle,
   } = useDisclosure();
   const {
     isOpen: isPricingModalOpen,
@@ -121,7 +121,7 @@ export const WordSeekJobTable: FC = () => {
       onWordSeekToggle();
       fathom.trackEvent(FATHOM_EVENTS.WORD_SEEK_CLICK);
     } else {
-      onOnboardingModalToggle();
+      onOnboardingToggle();
     }
   };
 
@@ -140,9 +140,9 @@ export const WordSeekJobTable: FC = () => {
         jobGroupUuid={selectedJobGroupUuid}
       />
       <PricingModal isOpen={isPricingModalOpen} onClose={onPricingModalClose} />
-      <OnboardingModal
-        isOpen={isOnboardingModalOpen}
-        onClose={onOnboardingModalClose}
+      <Onboarding
+        isOpen={isOnboardingOpen}
+        onClose={onOnboardingClose}
         onComplete={() => {
           onWordSeekToggle();
         }}
@@ -163,7 +163,7 @@ export const WordSeekJobTable: FC = () => {
             if (activeTeam) {
               onWordSeekToggle();
             } else {
-              onOnboardingModalToggle();
+              onOnboardingToggle();
             }
           }}
           isDisabled={isLoading}

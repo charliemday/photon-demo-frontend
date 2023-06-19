@@ -1,9 +1,8 @@
 import { HStack, Stack } from "@chakra-ui/react";
 import { useListTasksQuery } from "api/tasks.api";
 import { Button } from "components/button";
-import { Table } from "components/table";
+import { RowItemTypes, Table } from "components/table";
 import { HeaderItem } from "components/table/table.header";
-import { RowItemTypes } from "components/table/table.row";
 import { useActiveTeam } from "hooks";
 import React, { useMemo } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
@@ -64,25 +63,25 @@ export const TaskList: React.FC<Props> = ({ nextStep, setSelectedTask, goToNamed
 
       const rowData = [
         {
-          text: title,
+          value: title,
           type: RowItemTypes.text,
           flex: 3,
         },
         {
-          text: name,
+          value: name,
           type: RowItemTypes.tag,
           flex: 2,
         },
         {
-          text: `${firstName} ${lastName}`,
+          value: `${firstName} ${lastName}`,
           type: RowItemTypes.avatar,
         },
         {
-          text: dateString,
+          value: dateString,
           type: RowItemTypes.tag,
         },
         {
-          text: status.value,
+          value: status.value,
           type: RowItemTypes.tag,
         },
       ];

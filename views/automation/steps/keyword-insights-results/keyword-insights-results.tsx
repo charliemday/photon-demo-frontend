@@ -2,7 +2,8 @@ import { FC, useEffect, useState } from "react";
 import { ModalStepWrapper } from "../modal-step-wrapper";
 
 import { Spinner, Stack } from "@chakra-ui/react";
-import { KeywordItem, useKeywordInsightsOrderQuery } from "api/engine.api";
+import { useKeywordInsightsOrderQuery } from "api/engine.api";
+import { KeywordItem } from "api/types/engine.types";
 import { useActiveContentStrategy } from "hooks";
 import StepWizard from "react-step-wizard";
 import { HubItems } from "./hub-items";

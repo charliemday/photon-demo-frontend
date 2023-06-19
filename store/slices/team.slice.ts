@@ -34,6 +34,14 @@ export const teamSlice = createSlice({
                         state.activeTeam = action.payload;
                     }
                 }
+            ),
+            builder.addMatcher(
+                teamApi.endpoints.updateTeam.matchFulfilled,
+                (state, action) => {
+                    if ("id" in action.payload) {
+                        state.activeTeam = action.payload;
+                    }
+                }
             );
     },
 });

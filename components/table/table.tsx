@@ -1,7 +1,8 @@
 import { Skeleton, Stack, Text } from "@chakra-ui/react";
 import { FC } from "react";
 import { HeaderItem, TableHeader } from "./table.header";
-import { RowDataItem, TableRow } from "./table.row";
+import { TableRow } from "./table.row";
+import { RowDataItem } from "./table.row-item";
 
 export interface RowItem {
   rowData: RowDataItem[];

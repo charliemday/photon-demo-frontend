@@ -1,15 +1,18 @@
 import { HStack, Stack, Text } from "@chakra-ui/react";
 import { Button } from "components/button";
+import { useActiveTeam } from "hooks";
 import { FC } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 
 interface Props extends Partial<StepWizardChildProps> {
   completeWizard: () => void;
   pageCount: number;
-  site: string | null;
 }
 
-export const Step3: FC<Props> = ({ completeWizard, firstStep, pageCount, site }) => {
+export const Step3: FC<Props> = ({ completeWizard, firstStep, pageCount }) => {
+  const activeTeam = useActiveTeam();
+  const site = activeTeam?.gscUrl || "";
+
   const renderMessage = () => {
     if (!site) return "";
 

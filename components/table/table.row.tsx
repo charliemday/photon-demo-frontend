@@ -1,28 +1,8 @@
-import { Flex, HStack, Progress, Text, Tooltip, useDisclosure } from "@chakra-ui/react";
-import { Assigned } from "components/assigned";
-import { Button } from "components/button";
-import { Tag } from "components/tag";
-import { Body } from "components/text";
-import { GREEN } from "config";
+import { Flex, HStack, useDisclosure } from "@chakra-ui/react";
 import { FC } from "react";
-import { TaskStatusEnum } from "types";
 import { GscConnectModal } from "views/word-seek/modals";
+import { RowDataItem, TableRowItem } from "./table.row-item";
 
-export enum RowItemTypes {
-  text = "text",
-  tag = "tag",
-  avatar = "avatar",
-  progress = "progress",
-  button = "button",
-}
-
-export type RowSize = "xs" | "sm" | "md" | "lg";
-export interface RowDataItem {
-  text: string | number;
-  type: RowItemTypes;
-  flex?: number;
-  size?: RowSize;
-}
 interface Props {
   items: RowDataItem[];
   /**
@@ -36,57 +16,6 @@ interface Props {
 }
 export const TableRow: FC<Props> = ({ items, onClick, isClickable = true }) => {
   const { isOpen, onClose } = useDisclosure();
-
-  const renderRowItem = (value: string | number, type: RowItemTypes, size: RowSize = "xs") => {
-    if (type === RowItemTypes.text && typeof value === "string") {
-      return (
-        <Tooltip label={value} hasArrow>
-          <Text fontSize={size} fontWeight="semibold" key={value} isTruncated>
-            {value}
-          </Text>
-        </Tooltip>
-      );
-    }
-
-    if (type === RowItemTypes.tag && typeof value === "string") {
-      return (
-        <Tag
-          key={value}
-          fontSize={size}
-          text={value}
-          bgColor={[TaskStatusEnum.done].includes(value as TaskStatusEnum) ? GREEN : undefined}
-        />
-      );
-    }
-
-    if (type === RowItemTypes.avatar && typeof value === "string") {
-      return <Assigned key={value} name={value} size={size} />;
-    }
-
-    if (type === RowItemTypes.progress && typeof value === "number") {
-      if (value === 100) {
-        return <Tag key={value} fontSize={size} text={"✅ Complete"} bgColor={GREEN} />;
-      }
-
-      return (
-        <HStack>
-          <Flex>
-            <Progress value={value} size="md" width={75} borderRadius="md" />
-          </Flex>
-          <Body>{value}%</Body>
-        </HStack>
-      );
-    }
-
-    if (type === RowItemTypes.button && typeof value === "string") {
-      return (
-        <Button onClick={onClick} size={size}>
-          {value}
-        </Button>
-      );
-    }
-  };
-
   return (
     <>
       <HStack
@@ -104,10 +33,10 @@ export const TableRow: FC<Props> = ({ items, onClick, isClickable = true }) => {
           }
         }}
       >
-        {items.map(({ text, type, flex, size }, key) => {
+        {items.map((row, key) => {
           return (
-            <Flex key={key} flex={flex || 1} alignItems="center" overflow="hidden">
-              {renderRowItem(text, type, size)}
+            <Flex key={key} flex={row.flex || 1} alignItems="center" overflow="hidden">
+              <TableRowItem onClick={onClick} {...row} />
             </Flex>
           );
         })}

@@ -1,0 +1,57 @@
+[
+  {
+    "firstName": "Paul",
+    "lastName": "Baran",
+    "email": "paul@baran.com"
+  },
+  {
+    "firstName": "Tim",
+    "lastName": "Berners-Lee",
+    "email": "tim@berners-Lee.com"
+  },
+  {
+    "firstName": "Vint",
+    "lastName": "Cerf",
+    "email": "vint@cerf.com"
+  },
+  {
+    "firstName": "Robert",
+    "lastName": "Kahn",
+    "email": "robert@kahn.com"
+  },
+  {
+    "firstName": "Larry",
+    "lastName": "Roberts",
+    "email": "larry@roberts.com"
+  },
+  {
+    "firstName": "Leonard",
+    "lastName": "Kleinrock",
+    "email": "leonard@kleinrock.com"
+  },
+  {
+    "firstName": "Lawrence G.",
+    "lastName": "Roberts",
+    "email": "lawrence@roberts.com"
+  },
+  {
+    "firstName": "J.C.R.",
+    "lastName": "Licklider",
+    "email": "jcr@licklider.com"
+  },
+  {
+    "firstName": "Danny",
+    "lastName": "Cohen",
+    "email": "danny@cohen.com"
+  },
+  {
+    "firstName": "Robert",
+    "lastName": "Metcalfe",
+    "email": "robert@metcalfe.com"
+  },
+  {
+    "firstName": "Claude",
+    "lastName": "Shannon",
+    "email": "claude@shannon.com"
+  }
+]

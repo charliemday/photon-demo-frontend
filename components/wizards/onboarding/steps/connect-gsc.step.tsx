@@ -9,7 +9,6 @@ import {
 } from "@chakra-ui/react";
 import { CodeResponse, GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import { useCompleteOauthMutation } from "api/auth.api";
-import { useUserDetailsQuery } from "api/user.api";
 import { Button } from "components/button";
 import { Label } from "components/text";
 import { GOOGLE_EXTERNAL_CLIENT_ID, GOOGLE_EXTERNAL_SCOPES } from "config";
@@ -17,13 +16,17 @@ import { FC, useEffect } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 
 interface Props extends Partial<StepWizardChildProps> {
-  onCompleted?: (openModal?: boolean) => void;
+  /**
+   * Optional function ot call if this is the
+   * last step in the wizard
+   */
+  onCompleted?: () => void;
 }
 
-export const OnboardingStep3Content: FC<Props> = (props) => {
+export const ConnectGscStepContent: FC<Props> = (props) => {
   const [completeOauth, { isLoading, isSuccess, isError, error }] = useCompleteOauthMutation();
   const toast = useToast();
-  const { refetch: refetchUserDetails } = useUserDetailsQuery(undefined);
+  // const { refetch: refetchUserDetails } = useUserDetailsQuery(undefined);
 
   useEffect(() => {
     if (!isLoading) {
@@ -35,9 +38,11 @@ export const OnboardingStep3Content: FC<Props> = (props) => {
           isClosable: true,
         });
 
-        refetchUserDetails();
+        // refetchUserDetails();
         if (props.onCompleted) {
-          props.onCompleted(true);
+          props.onCompleted();
+        } else {
+          props.nextStep?.();
         }
       }
 
@@ -51,7 +56,7 @@ export const OnboardingStep3Content: FC<Props> = (props) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, isSuccess, isError, toast, refetchUserDetails]);
+  }, [isLoading, isSuccess, isError, toast]);
 
   const googleLogin = useGoogleLogin({
     flow: "auth-code",
@@ -62,17 +67,13 @@ export const OnboardingStep3Content: FC<Props> = (props) => {
     },
   });
 
-  const onSkip = () => {
-    if (props.onCompleted) {
-      props.onCompleted(false);
-    }
-  };
-
   return (
     <>
       <ModalHeader>
         Connect Search Console
-        <Label color="gray.400">Step 2 of 2</Label>
+        <Label color="gray.400">
+          Step {props.currentStep} of {props.totalSteps}
+        </Label>
       </ModalHeader>
 
       <ModalBody py={12}>
@@ -88,25 +89,14 @@ export const OnboardingStep3Content: FC<Props> = (props) => {
           <Button w="full" isLoading={isLoading} onClick={googleLogin}>
             Connect Search Console
           </Button>
-          <Text
-            fontSize="sm"
-            cursor="pointer"
-            _hover={{
-              textDecoration: "underline",
-              color: "blue.500",
-            }}
-            onClick={onSkip}
-          >
-            Skip
-          </Text>
         </Stack>
       </ModalFooter>
     </>
   );
 };
 
-export const OnboardingStep3: FC<Props> = (props) => (
+export const ConnectGscStep: FC<Props> = (props) => (
   <GoogleOAuthProvider clientId={GOOGLE_EXTERNAL_CLIENT_ID}>
-    <OnboardingStep3Content {...props} />
+    <ConnectGscStepContent {...props} />
   </GoogleOAuthProvider>
 );

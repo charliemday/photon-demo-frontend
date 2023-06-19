@@ -1,7 +1,7 @@
 export type { RootState } from 'store';
 export { BlogStatus } from "./blog";
 export type { Blog } from "./blog";
-export type { MissingKeyword, WordSeekItem, WordSeekJob, WordSeekJobType } from "./engine";
+export type { Faq, MissingKeyword, WordSeekItem, WordSeekJob, WordSeekJobType } from "./engine";
 export { SeedKeywordSource } from "./strategies";
 export type { ContentStrategy, Geography, SeedKeyword } from "./strategies";
 export { TaskStatusEnum, TaskStatusNameEnum, TaskTypeNameEnum, TaskTypeSlugEnum } from "./tasks";

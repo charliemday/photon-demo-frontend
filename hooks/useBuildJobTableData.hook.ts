@@ -1,6 +1,6 @@
 import { useWordSeekJobsQuery } from "api/engine.api";
+import { RowDataItem, RowItemTypes } from "components/table";
 import { RowItem } from "components/table/table";
-import { RowDataItem, RowItemTypes } from "components/table/table.row";
 import dayjs from "dayjs";
 import { useActiveTeam } from "hooks/useActiveTeam.hook";
 import { useMemo } from "react";
@@ -41,43 +41,42 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
         jobType,
         user,
         site,
-        jobGroupUuid,
-        jobCreated,
+        jobGroupUuid
     }) => {
         const firstName = user?.firstName || "";
         const lastName = user?.lastName || "";
 
         const rowData: RowDataItem[] = [
             {
-                text: site,
+                value: site,
                 type: RowItemTypes.text,
                 flex: 2,
                 size: "sm"
             },
             {
-                text: jobType === WordSeekJobType.SINGLE_PAGE ? "Single Page" : "Full Site",
+                value: jobType === WordSeekJobType.SINGLE_PAGE ? "Single Page" : "Full Site",
                 type: RowItemTypes.text,
                 size: "sm"
             },
             {
-                text: (jobsRemaining + jobsCompleted).toString(),
+                value: (jobsRemaining + jobsCompleted).toString(),
                 type: RowItemTypes.text,
                 size: "sm"
             },
             {
-                text: progress * 100,
+                value: progress * 100,
                 type: RowItemTypes.progress,
                 size: "sm",
                 flex: 2,
             },
             {
-                text: `${firstName} ${lastName}`,
+                value: `${firstName} ${lastName}`,
                 type: RowItemTypes.avatar,
                 size: "sm",
                 flex: 2,
             },
             {
-                text: "View",
+                value: "View",
                 type: RowItemTypes.button,
                 size: "sm"
             },
@@ -89,7 +88,6 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
         }
 
     }), [
-        wordSeekJobs,
         props,
         sortedJobsByCreated
     ]);

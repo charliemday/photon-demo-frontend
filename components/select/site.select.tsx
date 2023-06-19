@@ -26,7 +26,7 @@ export const SiteSelect: FC<Props> = ({ onChange }) => {
   return (
     <Select
       onChange={({ value }) => onChange(value)}
-      placeholder="🔍 Select for a site..."
+      placeholder="🔍 Search for a site..."
       options={siteOptionData.map((site) => ({
         label: site.label.replace("sc-domain:", "https://www."),
         value: site.value,

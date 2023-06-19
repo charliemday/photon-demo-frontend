@@ -15,6 +15,7 @@ import {
 import { Button } from "components/button";
 import { PasswordInput } from "components/inputs";
 import { PRIVACY_POLICY_URL, TERMS_OF_SERVICE_URL } from "config";
+import pioneers from "config/data/pioneers.json";
 import { useFormik } from "formik";
 import { FC, useState } from "react";
 import * as Yup from "yup";
@@ -26,6 +27,8 @@ export interface SignupFormValues {
   password: string;
   confirmPassword: string;
 }
+
+const pioneersIndex = Math.floor(Math.random() * pioneers.length);
 
 interface Props {
   onLinkClick?: () => void;
@@ -46,12 +49,7 @@ const SignupSchema = Yup.object().shape({
     .required("Confirm Password Required"),
 });
 
-export const SignupForm: FC<Props> = ({
-  onLinkClick,
-  handleSignup,
-  isLoading,
-  formErrorMsg,
-}) => {
+export const SignupForm: FC<Props> = ({ onLinkClick, handleSignup, isLoading, formErrorMsg }) => {
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
 
   const formik = useFormik<SignupFormValues>({
@@ -80,24 +78,20 @@ export const SignupForm: FC<Props> = ({
         <Heading as="h2">Signup</Heading>
 
         <HStack spacing={6}>
-          <FormControl
-            isInvalid={!!formik.errors?.firstName && formik.touched.firstName}
-          >
+          <FormControl isInvalid={!!formik.errors?.firstName && formik.touched.firstName}>
             <FormLabel>First Name</FormLabel>
             <Input
-              placeholder="Steve"
+              placeholder={pioneers[pioneersIndex].firstName}
               name="firstName"
               onChange={formik.handleChange}
             />
             <FormErrorMessage>{formik.errors?.firstName}</FormErrorMessage>
           </FormControl>
 
-          <FormControl
-            isInvalid={!!formik.errors?.lastName && formik.touched.lastName}
-          >
+          <FormControl isInvalid={!!formik.errors?.lastName && formik.touched.lastName}>
             <FormLabel>Last Name</FormLabel>
             <Input
-              placeholder="McQueen"
+              placeholder={pioneers[pioneersIndex].lastName}
               name="lastName"
               onChange={formik.handleChange}
             />
@@ -110,15 +104,13 @@ export const SignupForm: FC<Props> = ({
           <Input
             type="email"
             name="email"
-            placeholder="steve@mcqueen.com"
+            placeholder={pioneers[pioneersIndex].email}
             onChange={formik.handleChange}
           />
           <FormErrorMessage>{formik.errors?.email}</FormErrorMessage>
         </FormControl>
 
-        <FormControl
-          isInvalid={!!formik.errors?.password && formik.touched.password}
-        >
+        <FormControl isInvalid={!!formik.errors?.password && formik.touched.password}>
           <FormLabel>Password</FormLabel>
           <PasswordInput
             name="password"
@@ -126,16 +118,10 @@ export const SignupForm: FC<Props> = ({
             onChange={formik.handleChange}
           />
           <FormErrorMessage>{formik.errors?.password}</FormErrorMessage>
-          <FormHelperText>
-            ( Must be at least 6 characters long )
-          </FormHelperText>
+          <FormHelperText>( Must be at least 6 characters long )</FormHelperText>
         </FormControl>
 
-        <FormControl
-          isInvalid={
-            !!formik.errors?.confirmPassword && formik.touched.confirmPassword
-          }
-        >
+        <FormControl isInvalid={!!formik.errors?.confirmPassword && formik.touched.confirmPassword}>
           <FormLabel>Confirm Password</FormLabel>
           <PasswordInput
             name="confirmPassword"

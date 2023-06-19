@@ -25,11 +25,8 @@ import { useEffect, useState } from "react";
 
 import { Team } from "types";
 
-import {
-  KeywordItem,
-  useKeywordInsightsOrderQuery,
-  useKeywordInsightsResultsQuery,
-} from "api/engine.api";
+import { useKeywordInsightsOrderQuery, useKeywordInsightsResultsQuery } from "api/engine.api";
+import { KeywordItem } from "api/types/engine.types";
 import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import { useRef } from "react";
 
