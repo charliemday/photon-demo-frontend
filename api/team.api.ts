@@ -39,7 +39,7 @@ export const teamApi = baseApi.injectEndpoints({
       query: ({ body }) => ({
         url: TEAMS(),
         method: "POST",
-        body,
+        body: decamelizeKeys(body),
       }),
       invalidatesTags: [TAG_TYPES.TEAMS],
       transformResponse: (response: TeamResponse) => camelizeKeys(response) as Team,

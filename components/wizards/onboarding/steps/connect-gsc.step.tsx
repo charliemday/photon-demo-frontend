@@ -80,7 +80,7 @@ export const ConnectGscStepContent: FC<Props> = (props) => {
         <Stack alignItems="center" textAlign="center" w="75%" m="auto">
           <Heading>🤖</Heading>
           <Text fontSize="lg" fontWeight="medium">
-            Baser will need to read your Search Console data to give you the fastest SEO insights
+            WordSeek will need to read your Search Console data to give you the fastest SEO insights
           </Text>
         </Stack>
       </ModalBody>

@@ -6,7 +6,7 @@ let ROOT_URL = 'http://localhost:8000';
 let BASE_FRONTEND_URL = 'http://localhost:3000';
 let ENGINE_URL = 'http://localhost:8001';
 let BASE_URL = `${ROOT_URL}/api`;
-let MARKETING_SITE_URL = 'https://getbaser.com';
+let MARKETING_SITE_URL = 'https://wordseek.getbaser.com';
 
 
 // Production Development
@@ -20,7 +20,7 @@ if (IS_PROD) {
     MARKETING_SITE_URL = process.env.NEXT_PUBLIC_PROD_MARKETING_URL || MARKETING_SITE_URL
 }
 
-const PRIVACY_POLICY_URL = `${MARKETING_SITE_URL}/privacy-policy`;
-const TERMS_OF_SERVICE_URL = `${MARKETING_SITE_URL}/terms-and-conditions`;
+const PRIVACY_POLICY_URL = `${MARKETING_SITE_URL}/faqs/privacy-policy`;
+const TERMS_OF_SERVICE_URL = `${MARKETING_SITE_URL}/faqs/terms-conditions`;
 
 export { BASE_URL, ROOT_URL, ENGINE_URL, BASE_FRONTEND_URL, PRIVACY_POLICY_URL, TERMS_OF_SERVICE_URL, MARKETING_SITE_URL };

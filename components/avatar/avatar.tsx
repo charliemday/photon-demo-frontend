@@ -4,7 +4,7 @@ import { useInitials } from "hooks";
 import { FC } from "react";
 
 export const Avatar: FC = () => {
-  const { data: userDetails } = useUserDetailsQuery(undefined);
+  const { data: userDetails } = useUserDetailsQuery();
 
   const fullName = `${userDetails?.firstName} ${userDetails?.lastName}`;
   const { initials } = useInitials();
