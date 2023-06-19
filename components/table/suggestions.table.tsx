@@ -69,7 +69,10 @@ export const SuggestionsTable: FC<Props> = ({
       h={rowItems?.length < previewCount ? "full" : ITEM_HEIGHT}
     >
       {row.map((row, key) => (
-        <Box key={key} flex={row.flex || 1} p={3}
+        <Box
+          key={key}
+          flex={row.flex || 1}
+          p={3}
           cursor={row.onClick ? "pointer" : "default"}
           onClick={() => row.onClick && row.onClick()}
         >
@@ -160,7 +163,7 @@ export const SuggestionsTable: FC<Props> = ({
         position="relative"
         opacity={comingSoon ? 0.5 : 1}
       >
-        <Stack flex={1} p={6} justifyContent="center">
+        <Stack flex={1} p={6} justifyContent="flex-start">
           <Heading>{title}</Heading>
           <Body>{description}</Body>
           <Link
