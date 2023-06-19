@@ -11,10 +11,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Button } from "components/button";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 
 import { useCreateTeamMutation } from "api/team.api";
+import { SiteSelect } from "components/select";
 import { Label } from "components/text";
 import { useFormik } from "formik";
 import { typeCheckError } from "utils";
@@ -30,6 +31,7 @@ interface FormValues {
 
 export const CreateWorkspaceStep: FC<Props> = (props) => {
   const [createTeam, { isLoading }] = useCreateTeamMutation();
+  const [selectedSite, setSelectedSite] = useState<string | null>(null);
 
   const toast = useToast();
 
@@ -47,6 +49,7 @@ export const CreateWorkspaceStep: FC<Props> = (props) => {
       createTeam({
         body: {
           ...values,
+          gscUrl: selectedSite,
         },
       })
         .unwrap()
@@ -73,6 +76,12 @@ export const CreateWorkspaceStep: FC<Props> = (props) => {
     await formik.handleSubmit();
   };
 
+  const isDisabled = selectedSite === null || formik.values.name === "";
+
+  if (props.isActive === false) {
+    return null;
+  }
+
   return (
     <>
       <ModalHeader>
@@ -83,8 +92,15 @@ export const CreateWorkspaceStep: FC<Props> = (props) => {
       </ModalHeader>
       <ModalBody py={6}>
         <Stack spacing={6}>
+          <FormControl>
+            <FormLabel>1. Select or Search for a Search Console Site</FormLabel>
+            <SiteSelect onChange={setSelectedSite} />
+            <FormHelperText fontSize="xs">
+              These are all the sites we have found for you.
+            </FormHelperText>
+          </FormControl>
           <FormControl isInvalid={!!formik.errors?.name && formik.touched?.name}>
-            <FormLabel>Workspace name</FormLabel>
+            <FormLabel>2. Workspace name</FormLabel>
             <Input
               name="name"
               placeholder="Create a memorable workspace name"
@@ -92,7 +108,7 @@ export const CreateWorkspaceStep: FC<Props> = (props) => {
             />
             <FormErrorMessage>{formik.errors?.name}</FormErrorMessage>
             <FormHelperText fontSize="xs">
-              This could be the name of your website, project, or team
+              This can be the name of your website, project, or a team
             </FormHelperText>
           </FormControl>
         </Stack>
@@ -103,7 +119,7 @@ export const CreateWorkspaceStep: FC<Props> = (props) => {
           onClick={handleSubmit}
           type="submit"
           isLoading={isLoading}
-          isDisabled={isLoading}
+          isDisabled={isLoading || isDisabled}
           w="full"
         >
           Create workspace

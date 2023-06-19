@@ -1,11 +1,6 @@
 
 // TODO: Place these in their own folders with their RTK endpoints
 export const apiUrls = {
-    // Google
-    GOOGLE_SITES: (teamUid: string) => `google/sites?team_uid=${teamUid}`,
-    POPULATE_REPORTS: 'google/populate-reports',
-    GOOGLE_EXTERNAL_CLIENT: "google/clients/external",
-    GOOGLE_INTERNAL_CLIENT: "google/clients/internal",
     // WordSeek
     WORD_SEEK: 'engine/word-seek/',
     WORD_SEEK_RESULTS: (teamUid: string, jobGroupUuid?: string | null) => `/engine/word-seek/results?team_uid=${teamUid}${jobGroupUuid ? `&job_group_uuid=${jobGroupUuid}` : ''}`,

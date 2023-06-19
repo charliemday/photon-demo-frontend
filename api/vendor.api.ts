@@ -1,101 +1,64 @@
+import {
+    AhrefsRequestData,
+    AppSumoDetailsResponse,
+    CompareConsoleData,
+    GetAuthUrlRequest,
+    GetAuthUrlResponse,
+    GetSearchConsoleData,
+    GetSearchConsolePagesRequest,
+    GetSearchConsolePagesResponse,
+    GetSearchConsoleResponse,
+    GoogleClientResponse,
+    SearchConsoleSitesResponse
+} from "api/types";
 import { authUrls, vendorUrls } from "api/urls";
 import { camelizeKeys } from "humps";
-import { ConvertToSnakeCase, User } from "types";
+import { ConvertToSnakeCase } from "types";
 import { apiUrls, baseApi, TAG_TYPES } from ".";
-export interface GetAuthUrlRequest {
-    appName: string | null;
-}
 
-export interface GetAuthUrlResponse {
-    url: string;
-}
-
-export interface GetSearchConsoleData {
-    domain: string;
-    startDate: string;
-    endDate: string;
-    dimensions?: string[];
-    /**
-     * Whether to send the report to the team
-     */
-    notify?: "true" | undefined;
-    /**
-     * Team ID to save the report to. Optional,
-     * if omitted the report will not be saved
-     */
-    team?: number;
-}
-
-export interface GetSearchConsoleResponse { }
-
-export interface SearchConsoleSite {
-    siteUrl: string;
-    permissionLevel: string;
-}
-
-export interface SearchConsoleSitesResponse {
-    siteEntry: SearchConsoleSite[];
-}
-
-export interface CompareConsoleData {
-    teamIds?: number[];
-}
-
-export interface GetSearchConsolePagesRequest {
-    domain: string;
-    teamUid: string;
-}
-
-export interface GetSearchConsolePagesResponse {
-    pages: string[];
-}
-
-export interface AhrefsRequestData extends FormData { }
-
-export interface GoogleClientResponse {
-    name: string;
-    slug: string;
-    clientId: string;
-}
-
-export interface AppSumoDetailsResponse {
-    user: Partial<User>;
-    planId: string;
-    invoiceItemUuid: string;
-}
-
-const { APPSUMO_DETAILS } = vendorUrls;
+const {
+    APPSUMO_DETAILS,
+    GOOGLE_SITES,
+    GOOGLE_EXTERNAL_CLIENT,
+    GOOGLE_INTERNAL_CLIENT,
+    POPULATE_REPORTS,
+} = vendorUrls;
 
 // Define a service using a base URL and expected endpoints
 export const vendorApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
+        /**
+         * Fetches the Auth URL for a given OAuth App
+         */
         getAuthUrl: builder.query<GetAuthUrlResponse, GetAuthUrlRequest>({
             query: ({ appName }) => ({
-                url: authUrls.AUTH_URL(appName)
+                url: authUrls.AUTH_URL(appName),
             }),
         }),
         /**
-         * Gets the sites for a given domain
+         * Get the search console sites the user has access to
          */
-        getSearchConsoleSites: builder.query<string[], {
-            teamUid: string
-        }>({
-            query: ({
-                teamUid
-            }) => apiUrls.GOOGLE_SITES(teamUid),
+        getSearchConsoleSites: builder.query<string[], void | { teamUid: string | null }>({
+            query: (args) => {
+                if (args?.teamUid) {
+                    return {
+                        url: `${GOOGLE_SITES}?team_uid=${args.teamUid}`,
+                    };
+                }
+                return {
+                    url: GOOGLE_SITES,
+                };
+            },
             transformResponse: (response: SearchConsoleSitesResponse) => {
                 const sites = response.siteEntry.map((site) => site.siteUrl);
                 return sites;
             },
         }),
         // TODO: DEPRECATE
-        createSearchConsoleReport: builder.mutation<
-            GetSearchConsoleResponse,
-            GetSearchConsoleData
-        >({
+        createSearchConsoleReport: builder.mutation<GetSearchConsoleResponse, GetSearchConsoleData>({
             query: ({ domain, startDate, endDate, dimensions, notify, team }) => ({
                 url: `/google/keyword-report?domain=${encodeURIComponent(
-                    domain
+                    domain,
                 )}&start_date=${startDate}&end_date=${endDate}&dimensions=${dimensions}&notify=${notify}&team=${team}`,
                 method: "POST",
             }),
@@ -148,7 +111,7 @@ export const vendorApi = baseApi.injectEndpoints({
          */
         populateSearchConsoleReports: builder.mutation<null, null>({
             query: () => ({
-                url: apiUrls.POPULATE_REPORTS,
+                url: POPULATE_REPORTS,
                 method: "POST",
             }),
         }),
@@ -157,20 +120,22 @@ export const vendorApi = baseApi.injectEndpoints({
          */
         getGoogleExternalClient: builder.query<GoogleClientResponse, null>({
             query: () => ({
-                url: apiUrls.GOOGLE_EXTERNAL_CLIENT,
+                url: GOOGLE_EXTERNAL_CLIENT,
                 method: "GET",
             }),
-            transformResponse: (response: ConvertToSnakeCase<GoogleClientResponse>) => camelizeKeys(response) as GoogleClientResponse,
+            transformResponse: (response: ConvertToSnakeCase<GoogleClientResponse>) =>
+                camelizeKeys(response) as GoogleClientResponse,
         }),
         /**
          * Gets the Google Internal Client
          */
         getGoogleInternalClient: builder.query<GoogleClientResponse, null>({
             query: () => ({
-                url: apiUrls.GOOGLE_INTERNAL_CLIENT,
+                url: GOOGLE_INTERNAL_CLIENT,
                 method: "GET",
             }),
-            transformResponse: (response: ConvertToSnakeCase<GoogleClientResponse>) => camelizeKeys(response) as GoogleClientResponse,
+            transformResponse: (response: ConvertToSnakeCase<GoogleClientResponse>) =>
+                camelizeKeys(response) as GoogleClientResponse,
         }),
         /**
          * Gets the AppSumo Details for the User
@@ -180,8 +145,9 @@ export const vendorApi = baseApi.injectEndpoints({
                 url: APPSUMO_DETAILS,
                 method: "GET",
             }),
-            transformResponse: (response: ConvertToSnakeCase<AppSumoDetailsResponse>) => camelizeKeys(response) as AppSumoDetailsResponse,
-        })
+            transformResponse: (response: ConvertToSnakeCase<AppSumoDetailsResponse>) =>
+                camelizeKeys(response) as AppSumoDetailsResponse,
+        }),
     }),
 });
 
@@ -197,5 +163,5 @@ export const {
     usePopulateSearchConsoleReportsMutation,
     useGetGoogleExternalClientQuery,
     useGetGoogleInternalClientQuery,
-    useGetAppSumoDetailsQuery
+    useGetAppSumoDetailsQuery,
 } = vendorApi;

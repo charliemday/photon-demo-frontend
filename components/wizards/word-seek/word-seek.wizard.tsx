@@ -1,11 +1,10 @@
 import { useWordSeekJobsQuery } from "api/engine.api";
 import { Modal } from "components/modals";
-import { LinkSiteStep } from "components/wizards/onboarding";
 import { useActiveTeam, useFeatureFlag, useHasProductAccess, useRunWordSeek } from "hooks";
 import { FC, useMemo, useState } from "react";
 import StepWizard from "react-step-wizard";
 import { Features } from "types";
-import { Step1, Step2, Step3 } from "./steps";
+import { LinkSiteStep, Step1, Step2, Step3 } from "./steps";
 
 interface Props {
   isOpen: boolean;

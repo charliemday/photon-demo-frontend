@@ -9,15 +9,9 @@ interface Props {
 
 export const SiteSelect: FC<Props> = ({ onChange }) => {
   const activeTeam = useActiveTeam();
-  const { data: sites, isLoading: isSitesLoading } = useGetSearchConsoleSitesQuery(
-    {
-      teamUid: activeTeam?.uid || "",
-    },
-    {
-      skip: !activeTeam,
-    },
-  );
-
+  const { data: sites, isLoading: isSitesLoading } = useGetSearchConsoleSitesQuery({
+    teamUid: activeTeam?.uid || null,
+  });
   const siteOptionData = useMemo(
     () => sites?.map((site) => ({ value: site, label: site })) || [],
     [sites],

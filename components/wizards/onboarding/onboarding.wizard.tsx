@@ -5,7 +5,7 @@ import StepWizard from "react-step-wizard";
 import { useUpdateOnboardingStepMutation } from "api/user.api";
 import { Modal } from "components/modals";
 import { typeCheckError } from "utils";
-import { ConnectGscStep, CreateWorkspaceStep, LinkSiteStep, OnboardingStep1 } from ".";
+import { ConnectGscStep, CreateWorkspaceStep, OnboardingStep1 } from ".";
 
 interface Props {
   isOpen: boolean;
@@ -14,26 +14,28 @@ interface Props {
 }
 
 export const Onboarding: FC<Props> = ({ isOpen, onClose, onComplete }) => {
-  const [updateOnboardingStep] = useUpdateOnboardingStepMutation();
+  const [updateOnboardingStep, { error }] = useUpdateOnboardingStepMutation();
   const toast = useToast();
 
   const handleCompleteOnboarding = async () => {
-    await updateOnboardingStep({
+    const response = await updateOnboardingStep({
       onboardingStep: 1,
-    })
-      .unwrap()
-      .then(() => {
-        onClose();
-        onComplete?.();
-      })
-      .catch((err: any) => {
-        toast({
-          title: "Error",
-          description: typeCheckError(err) || "Something went wrong",
-          status: "error",
-          duration: 5000,
-        });
+    });
+
+    if ("error" in response) {
+      toast({
+        title: "Error",
+        description: typeCheckError(error) || "Something went wrong",
+        status: "error",
+        duration: 5000,
       });
+    }
+
+    onClose();
+
+    if (onComplete) {
+      setTimeout(onComplete, 500);
+    }
   };
 
   return (
@@ -48,8 +50,7 @@ export const Onboarding: FC<Props> = ({ isOpen, onClose, onComplete }) => {
       <StepWizard>
         <OnboardingStep1 />
         <ConnectGscStep />
-        <CreateWorkspaceStep />
-        <LinkSiteStep onCompleted={handleCompleteOnboarding} />
+        <CreateWorkspaceStep onCompleted={handleCompleteOnboarding} />
       </StepWizard>
     </Modal>
   );

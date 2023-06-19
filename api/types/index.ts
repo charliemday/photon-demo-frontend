@@ -27,4 +27,18 @@ export type {
     TeamResponse,
     UpdateTeamInterface
 } from "./team.types";
+export type {
+    AhrefsRequestData,
+    AppSumoDetailsResponse,
+    CompareConsoleData,
+    GetAuthUrlRequest,
+    GetAuthUrlResponse,
+    GetSearchConsoleData,
+    GetSearchConsolePagesRequest,
+    GetSearchConsolePagesResponse,
+    GetSearchConsoleResponse,
+    GoogleClientResponse,
+    SearchConsoleSite,
+    SearchConsoleSitesResponse
+} from "./vendor.types";
 

@@ -27,9 +27,7 @@ export const LinkSiteStep: FC<Props> = (props) => {
   const { title = "Link a Google Search Console Site" } = props;
 
   const activeTeam = useActiveTeam();
-
   const [selectedSite, setSelectedSite] = useState<string | null>(null);
-
   const [updateTeam, { isLoading, error }] = useUpdateTeamMutation();
 
   const toast = useToast();
