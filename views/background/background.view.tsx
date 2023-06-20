@@ -8,7 +8,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { MoonLoader } from "react-spinners";
 import { setActiveTeam } from "store/slices";
-import { Features } from "types";
 
 interface Props {}
 
@@ -52,19 +51,7 @@ export const BackgroundView: React.FC<Props> = () => {
       if (userDetails?.isStaff) {
         router.push(ROUTES.AUTOMATION);
       } else {
-        if (hasAccess({ features: [Features.CONTENT_STRATEGY_WIZARD] })) {
-          /**
-           * For users who have access to the content strategy wizard
-           * direct them to the dashboard
-           */
-          router.push(ROUTES.DASHBOARD);
-        } else {
-          /**
-           * For users who do not have access to the content strategy wizard
-           * direct them to the word seek page
-           */
-          router.push(ROUTES.WORD_SEEK);
-        }
+        router.push(ROUTES.WORD_SEEK);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

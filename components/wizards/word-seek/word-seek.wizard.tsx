@@ -1,9 +1,9 @@
 import { useWordSeekJobsQuery } from "api/engine.api";
 import { Modal } from "components/modals";
-import { useActiveTeam, useFeatureFlag, useHasProductAccess, useRunWordSeek } from "hooks";
+import { useActiveTeam, useFeatureFlag, useRunWordSeek } from "hooks";
 import { FC, useMemo, useState } from "react";
 import StepWizard from "react-step-wizard";
-import { Features } from "types";
+import { FeatureKeys } from "types";
 import { LinkSiteStep, Step1, Step2, Step3 } from "./steps";
 
 interface Props {
@@ -17,12 +17,11 @@ export const WordSeekWizard: FC<Props> = ({ isOpen, onClose }) => {
 
   const activeTeam = useActiveTeam();
   const gscUrl = activeTeam?.gscUrl;
-  const { hasAccess: hasProductAccess } = useHasProductAccess();
   const { hasAccess: hasFeatureAccess } = useFeatureFlag();
 
   const hasAccess = useMemo(() => {
-    return hasProductAccess || hasFeatureAccess({ features: [Features.WORD_SEEK_PREMIUM] });
-  }, [hasProductAccess, hasFeatureAccess]);
+    return hasFeatureAccess({ features: [FeatureKeys.WORD_SEEK_PREMIUM] });
+  }, [hasFeatureAccess]);
 
   const { refetch: refetchJobs } = useWordSeekJobsQuery({
     teamId: activeTeam?.id,

@@ -1,15 +1,17 @@
 import { Box, Flex, HStack, Stack } from "@chakra-ui/react";
+import { useValidateTokenMutation } from "api/auth.api";
 import { DropdownAvatar } from "components/avatar";
 import { Breadcrumb, Breadcrumbs } from "components/breadcrumbs";
 import { TeamDropdown } from "components/dropdown";
 import { Sidebar } from "components/sidebar";
 import { Heading } from "components/text";
-import { ROUTES } from "config";
+import { useLogout } from "hooks";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { IoPhonePortraitOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
+import { MoonLoader } from "react-spinners";
 import { RootState } from "types";
 
 interface Props {
@@ -24,6 +26,9 @@ const MAX_MOBILE_WIDTH = 768;
 export const SidebarLayout: FC<Props> = ({ children, title, headerTitle, breadcrumbs }) => {
   const authToken = useSelector((state: RootState) => state.auth.token);
   const router = useRouter();
+  const { logout } = useLogout();
+  const [validateToken, { isLoading }] = useValidateTokenMutation();
+  const [isValidated, setIsValidated] = useState(false);
 
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
@@ -43,13 +48,33 @@ export const SidebarLayout: FC<Props> = ({ children, title, headerTitle, breadcr
   }, []);
 
   useEffect(() => {
-    if (!authToken && router.isReady) {
-      /**
-       *  If the user is not logged in, redirect to the login page
-       */
-      router.push(ROUTES.BASE);
+    /**
+     * On loading we should always validate the auth token
+     * on the backend
+     */
+
+    if (!isValidated) {
+      const checkToken = async () => {
+        const response = await validateToken();
+        if ("error" in response) {
+          // The token is invalid so log the user out
+          logout();
+        }
+      };
+
+      if (!authToken) {
+        /**
+         *  If the user is not logged in, redirect to the login page
+         */
+        logout();
+      } else {
+        checkToken();
+      }
+
+      setIsValidated(true);
     }
-  }, [router, authToken]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (windowSize.width < MAX_MOBILE_WIDTH) {
     return (
@@ -59,6 +84,25 @@ export const SidebarLayout: FC<Props> = ({ children, title, headerTitle, breadcr
         </Box>
         <Heading textAlign="center">{`We're not yet optimised for mobile yet! For the best experience use a laptop or desktop`}</Heading>
       </Stack>
+    );
+  }
+
+  if (!isValidated || isLoading) {
+    return (
+      <>
+        <Flex
+          alignItems="center"
+          justifyContent="center"
+          position="fixed"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          bgColor="rgba(255, 255, 255, 0.75)"
+        >
+          <MoonLoader size={40} />
+        </Flex>
+      </>
     );
   }
 

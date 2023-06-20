@@ -1,7 +1,7 @@
 import { Link, Stack, Text } from "@chakra-ui/react";
 import { useFeatureFlag } from "hooks";
 import { FC, ReactNode } from "react";
-import { Features } from "types";
+import { FeatureKeys } from "types";
 
 interface Props {
   children: ReactNode;
@@ -9,7 +9,7 @@ interface Props {
    * These are the features that are restricted and require
    * the user's tier to be checked against
    */
-  restrictedFeatures: Features[];
+  restrictedFeatures: FeatureKeys[];
 }
 
 export const FeatureWrapper: FC<Props> = ({ children, restrictedFeatures = [] }) => {

@@ -1,4 +1,4 @@
-export enum Features {
+export enum Features_DEPRECATED {
     /**
      * DEPRECATED: WordSeek old feature flag
      */
@@ -28,13 +28,30 @@ export enum Features {
      */
     WORKSPACE_ONE = "1_workspace",
     /**
-     * The user can create ten workspaces
+     * The user can create a maximum of five workspaces
+     */
+    WORKSPACE_FIVE = "5_workspaces",
+    /**
+     * The user can create a maximum of ten workspaces
      */
     WORKSPACE_TEN = "10_workspaces",
     /**
      * The user can create unlimited workspaces
     */
     WORKSPACE_UNLIMITED = "unlimited_workspaces",
+}
+
+
+export enum FeatureKeys {
+    WORKSPACES = "workspaces",
+    PAGES_PER_WORKSPACE = "pagesPerWorkspace",
+    WORD_SEEK_PREMIUM = "wordSeekPremium",
+}
+
+export interface Features {
+    [FeatureKeys.WORKSPACES]: number;
+    [FeatureKeys.PAGES_PER_WORKSPACE]: number;
+    [FeatureKeys.WORD_SEEK_PREMIUM]: boolean;
 }
 
 export interface User {
@@ -68,7 +85,7 @@ export interface User {
     /**
      * Features the user has access to
      */
-    features: Features[];
+    features: Features;
 }
 
 export interface UserTier {
@@ -80,7 +97,7 @@ export interface UserTier {
         name: string;
         tier: number;
         description: string;
-        featureAccess: Features[];
+        featureAccess: Features;
     };
     created: string;
     modified: string;
