@@ -75,9 +75,6 @@ export const WordSeekWizard: FC<Props> = ({ isOpen, onClose }) => {
     );
 
     steps.push(<Step3 completeWizard={handleCompleteWizard} pageCount={selectedPages.length} />);
-
-    console.log("Steps", steps);
-
     return steps;
   };
 

@@ -1,10 +1,9 @@
 import { Heading as ChakraHeading, TextProps } from "@chakra-ui/react";
 import { Font } from "types/fonts";
 
-interface Props extends Omit<TextProps, "fontSize" | "size"> {
+interface Props extends Omit<TextProps, "size"> {
   level?: "h1" | "h2" | "h3";
   fontFamily?: Font;
-  fontSize?: "2xl" | "xl" | "lg";
   fontWeight?: "regular" | "medium";
 }
 
