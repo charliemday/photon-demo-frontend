@@ -2,7 +2,7 @@ import { Divider, Grid, Heading, Stack, useDisclosure } from "@chakra-ui/react";
 import { ProductCard } from "components/cards";
 import { Table } from "components/table";
 import { HeaderItem } from "components/table/table.header";
-import { ROUTES } from "config";
+import { ROUTES, WORD_SEEK } from "config";
 import { useBuildTaskTableData } from "hooks";
 import { useRouter } from "next/router";
 import { FC } from "react";
@@ -64,11 +64,11 @@ export const DashboardView: FC = () => {
           buttonLabel="Build a Content Strategy"
         />
         <ProductCard
-          title="Word Seek"
+          title={WORD_SEEK}
           description="This is a description of the word seek card"
           emoji="🚀"
           onClick={() => router.push(ROUTES.WORD_SEEK)}
-          buttonLabel="Run a Word Seek Report"
+          buttonLabel={`Run a ${WORD_SEEK} Report`}
         />
       </Grid>
       <GscConnectModal isOpen={isOpen} onClose={onClose} />

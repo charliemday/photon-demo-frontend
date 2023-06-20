@@ -7,3 +7,4 @@ export const BRAND_LIGHT_GRAY = "#F2F5F9";
 export const GREEN = "#E1F3EC";
 export const LANDING_PAGE = "https://getbaser.com";
 export const SUPPORT_EMAIL = "info@getbaser.com";
+export const WORD_SEEK = "WordSeek";

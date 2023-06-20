@@ -4,6 +4,7 @@ import { TopIcon } from "./top-icon";
 
 import { FiHelpCircle, FiZap } from "react-icons/fi";
 
+import { WORD_SEEK } from "config/brand";
 import { ROUTES } from "config/routes";
 import { useRouter } from "next/router";
 import { FC } from "react";
@@ -51,7 +52,7 @@ export const Sidebar: FC = () => {
     //   }),
     // },
     {
-      label: "Word Seek",
+      label: WORD_SEEK,
       isActive: router.route === ROUTES.WORD_SEEK,
       icon: <FiZap fontSize={ICON_SIZE} />,
       onClick: () => router.push(ROUTES.WORD_SEEK),
