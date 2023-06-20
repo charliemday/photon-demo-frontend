@@ -1,3 +1,5 @@
+import { WORD_SEEK } from "config";
+
 export enum KEY {
     AHREFS_STEP_1 = "ahrefs-step-1",
     SEMRUSH_STEP_1 = "semrush-step-1",
@@ -121,15 +123,15 @@ export const STEPS: { title: string; steps: STEP[] }[] = [
                 image: "/steps/google.jpeg",
             },
             {
-                title: "Word Seek",
+                title: WORD_SEEK,
                 description: `Take the GSC keywords and check whether they exist on the
           pages they're associated with. The output will be saved to the drive.`,
                 key: KEY.COMPARE_CONSOLE_REPORT,
                 image: "/steps/search-console.svg",
             },
             {
-                title: "Word Seek Jobs",
-                description: "View the Word Seek jobs that are not currently complete",
+                title: `${WORD_SEEK} Jobs`,
+                description: `View the ${WORD_SEEK} jobs that are not currently complete`,
                 key: KEY.WORD_SEEK_JOBS,
                 image: "/steps/search-console.svg",
 

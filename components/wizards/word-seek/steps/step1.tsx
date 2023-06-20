@@ -3,7 +3,7 @@ import { useWordSeekJobsQuery } from "api/engine.api";
 import { Button } from "components/button";
 import { PageSelect, SubdomainSelect } from "components/select";
 import { Body, Heading, Label } from "components/text";
-import { MAX_FREE_RESULTS } from "config";
+import { MAX_FREE_RESULTS, WORD_SEEK } from "config";
 import { useActiveTeam } from "hooks";
 import { FC, useEffect, useState } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
@@ -88,7 +88,7 @@ export const Step1: FC<Props> = ({
             });
           }}
         >
-          Run Word Seek
+          Run {WORD_SEEK}
         </Button>
       </HStack>
     ) : (

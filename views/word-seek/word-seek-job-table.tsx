@@ -9,7 +9,7 @@ import { HeaderItem } from "components/table/table.header";
 import { Heading } from "components/text";
 import { Onboarding } from "components/wizards";
 import { WordSeekWizard } from "components/wizards/word-seek";
-import { FATHOM_EVENTS } from "config";
+import { FATHOM_EVENTS, WORD_SEEK } from "config";
 import { useActiveTeam, useBuildJobTableData, useFathom, useFeatureFlag } from "hooks";
 import { FC, useEffect, useState } from "react";
 import { FeatureKeys } from "types";
@@ -146,7 +146,7 @@ export const WordSeekJobTable: FC = () => {
 
   return (
     <Stack>
-      <Heading>Word Seek Jobs</Heading>
+      <Heading>{WORD_SEEK} Jobs</Heading>
       <Flex w="full" justifyContent="flex-end">
         <Button
           size="sm"

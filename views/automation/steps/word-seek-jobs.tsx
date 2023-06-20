@@ -17,6 +17,7 @@ import {
 import { useReRunWordSeekJobMutation, useWordSeekJobsQuery } from "api/engine.api";
 import { Button } from "components/button";
 import { Body } from "components/text";
+import { WORD_SEEK } from "config";
 import { FC, useEffect, useMemo, useState } from "react";
 import { ellipsizeText, typeCheckError } from "utils";
 import { ModalStepWrapper } from "./modal-step-wrapper";
@@ -74,13 +75,13 @@ export const WordSeekJobs: FC<Props> = (props) => {
       size="6xl"
       showContentStrategy={false}
       showTeam={false}
-      title="👀 Outstanding Word Seek Jobs"
+      title={`👀 Outstanding ${WORD_SEEK} Jobs`}
     >
       <Stack>
         {wordSeekJobsIncomplete?.length ? (
           <TableContainer>
             <Table variant="simple">
-              <TableCaption>All Word Seek jobs that have are in progress.</TableCaption>
+              <TableCaption>All {WORD_SEEK} jobs that have are in progress.</TableCaption>
               <Thead>
                 <Tr>
                   {headers.map((header, key) => (
