@@ -1,7 +1,6 @@
 import { useUserDetailsQuery } from "api/user.api";
 import { FeatureWrapper, SidebarLayout } from "components/layouts";
 import { FC } from "react";
-import { Features } from "types";
 import { DashboardView } from "views/dashboard";
 
 const Dashboard: FC = () => {
@@ -19,7 +18,7 @@ const Dashboard: FC = () => {
 
   return (
     <SidebarLayout headerTitle="Baser | Dashboard" title={title}>
-      <FeatureWrapper restrictedFeatures={[Features.CONTENT_STRATEGY_WIZARD]}>
+      <FeatureWrapper restrictedFeatures={[]}>
         <DashboardView />
       </FeatureWrapper>
     </SidebarLayout>
