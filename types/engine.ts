@@ -26,16 +26,15 @@ export interface WordSeekItem {
 }
 
 export interface WordSeekJob {
-    id: number;
-    created: string;
-    modified: string;
-    site: string;
-    page: string;
-    jobType: string;
-    jobStatus: string;
-    team: TeamMin;
+    progress: number;
+    jobsRemaining: number;
+    jobsCompleted: number;
     user: UserMin;
+    jobType: WordSeekJobType;
+    jobCreated: string;
+    site: string;
     jobGroupUuid: string;
+    team: TeamMin;
 }
 
 export enum WordSeekJobType {

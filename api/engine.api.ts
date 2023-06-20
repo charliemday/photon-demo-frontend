@@ -9,9 +9,7 @@ import {
   KeywordInsightsResultsRequest,
   PeopleAlsoAskBody,
   SeedKeywordsBody,
-  WordSeekBody,
-  WordSeekJobsResponse,
-  WordSeekResultsResponse
+  WordSeekBody, WordSeekResultsResponse
 } from "api/types";
 import { camelizeKeys, decamelizeKeys } from "humps";
 import { ConvertToSnakeCase, WordSeekItem, WordSeekJob } from "types";
@@ -121,12 +119,12 @@ export const engineApi = baseApi.injectEndpoints({
     /**
      * Fetches the Word Seek Jobs
      */
-    wordSeekJobs: builder.query<WordSeekJobsResponse[], { teamId: number | undefined } | void>({
+    wordSeekJobs: builder.query<WordSeekJob[], { teamId: number | undefined } | void>({
       query: (body) => ({
         url: apiUrls.WORD_SEEK_JOBS(body?.teamId || undefined),
       }),
-      transformResponse: (response: ConvertToSnakeCase<WordSeekJobsResponse[]>) =>
-        response.map((job) => camelizeKeys(job)) as WordSeekJobsResponse[],
+      transformResponse: (response: ConvertToSnakeCase<WordSeekJob[]>) =>
+        response.map((job) => camelizeKeys(job)) as WordSeekJob[],
     }),
     /**
      * Triggers a single word seek job to be re-run

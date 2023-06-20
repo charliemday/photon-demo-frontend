@@ -1,13 +1,17 @@
-import { Flex, HStack, ModalBody, Spinner, Stack, Text } from "@chakra-ui/react";
-import { useWordSeekResultsQuery } from "api/engine.api";
+import { Flex, HStack, ModalBody, Progress, Spinner, Stack, Text } from "@chakra-ui/react";
+import { useWordSeekJobsQuery, useWordSeekResultsQuery } from "api/engine.api";
 import { Modal } from "components/modals";
 import { Select } from "components/select";
 import { Tab } from "components/tab";
+import { Tag } from "components/tag";
+import { Body } from "components/text";
+import { GREEN } from "config";
+import { useActiveTeam } from "hooks";
 import { FC, useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState, Team } from "types";
+import { WordSeekJob } from "types";
 import { ActionsTab } from "./actions.tab";
 import { DataTab } from "./data.tab";
+
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -27,9 +31,25 @@ export const WordSeekResultsModal: FC<Props> = ({
   defaultPage = null,
 }) => {
   const [selectedPage, setSelectedPage] = useState<string | null>(defaultPage);
-  const activeTeam: Team = useSelector((state: RootState) => state.team.activeTeam);
-
+  const [wordSeekJob, setWordSeekJob] = useState<WordSeekJob | null>(null);
   const [activeTab, setActiveTab] = useState<TAB>(TAB.data);
+  const activeTeam = useActiveTeam();
+
+  const { data: wordSeekJobs, isLoading: isLoadingWordSeekJobs } = useWordSeekJobsQuery(
+    {
+      teamId: activeTeam?.id,
+    },
+    {
+      skip: !activeTeam?.id || !isOpen,
+    },
+  );
+
+  useEffect(() => {
+    if (!isLoadingWordSeekJobs && wordSeekJobs) {
+      const job = wordSeekJobs.find((job) => job.jobGroupUuid === jobGroupUuid);
+      if (job) setWordSeekJob(job);
+    }
+  }, [isLoadingWordSeekJobs, wordSeekJobs, jobGroupUuid]);
 
   const {
     data: wordSeekResults,
@@ -112,13 +132,54 @@ export const WordSeekResultsModal: FC<Props> = ({
     return null;
   };
 
+  const jobPercentage = useMemo(() => {
+    if (wordSeekJob) {
+      return Math.round(wordSeekJob.progress * 100);
+    }
+
+    return 0;
+  }, [wordSeekJob]);
+
+  const isLatestJob = useMemo(() => {
+    if (wordSeekJobs && wordSeekJob) {
+      const latestJob = wordSeekJobs.reduce((prev, current) =>
+        prev.jobCreated > current.jobCreated ? prev : current,
+      );
+      return latestJob.jobGroupUuid === wordSeekJob.jobGroupUuid;
+    }
+  }, [wordSeekJobs, wordSeekJob]);
+
+  const renderSubheader = () => {
+    if (jobPercentage < 100) {
+      return (
+        <>
+          <Flex>
+            <Progress value={jobPercentage} width={75} borderRadius="md" />
+          </Flex>
+          <Body ml={2} fontWeight="bold">
+            {jobPercentage}%
+          </Body>
+        </>
+      );
+    }
+
+    if (isLatestJob) {
+      return <Tag text={"Latest Job"} bgColor={GREEN} />;
+    }
+
+    return <Tag text={"✅ Complete"} bgColor={GREEN} />;
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl">
       <Stack spacing={6}>
         <HStack spacing={4}>
-          <Text fontSize="xl" fontWeight="semibold">
-            {activeTeam?.name}
-          </Text>
+          <Stack>
+            <Text fontSize="xl" fontWeight="semibold">
+              {activeTeam?.name}
+            </Text>
+            <Flex alignItems="center">{renderSubheader()}</Flex>
+          </Stack>
           {pages && pages?.length > 0 && (
             <Flex w="60%">
               <Select
