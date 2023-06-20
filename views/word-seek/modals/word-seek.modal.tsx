@@ -16,10 +16,10 @@ import { Button } from "components/button";
 import { Modal } from "components/modals";
 import { Select } from "components/select";
 import { MAX_FREE_RESULTS } from "config";
-import { useFeatureFlag, useHasProductAccess } from "hooks";
+import { useFeatureFlag } from "hooks";
 import { FC, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { Features, RootState, Team } from "types";
+import { FeatureKeys, RootState, Team } from "types";
 import { cleanUrl, typeCheckError } from "utils";
 
 interface Props {
@@ -52,12 +52,8 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
 
   const [showAwaitEmail, setShowAwaitEmail] = useState(false);
 
-  const { hasAccess: hasProductAccess } = useHasProductAccess();
   const { hasAccess: hasFeatureAccess } = useFeatureFlag();
-
-  const hasAccess = useMemo(() => {
-    return hasProductAccess || hasFeatureAccess({ features: [Features.WORD_SEEK_PREMIUM] });
-  }, [hasProductAccess, hasFeatureAccess]);
+  const hasAccess = hasFeatureAccess({ features: [FeatureKeys.WORD_SEEK_PREMIUM] });
 
   const resetModal = () => {
     setShowAwaitEmail(false);

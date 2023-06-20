@@ -17,9 +17,8 @@ import { useUserTiersQuery } from "api/user.api";
 import { Button } from "components/button";
 import { Modal } from "components/modals";
 import { useFormik } from "formik";
-import { useFeatureFlag } from "hooks";
 import { FC, useEffect, useState } from "react";
-import { Features } from "types";
+import { FeatureKeys } from "types";
 import { typeCheckError } from "utils";
 import * as Yup from "yup";
 
@@ -40,45 +39,30 @@ export const AddWorkspaceModal: FC<Props> = ({ isOpen, onClose }) => {
   const [createTeam, { isLoading, isSuccess, error, isError }] = useCreateTeamMutation();
   const { data: teams } = useListTeamsQuery({});
   const toast = useToast();
-  const { hasAccess } = useFeatureFlag();
   const [restrictedMessage, setRestrictedMessage] = useState<string | null>(null);
-  const { refetch } = useUserTiersQuery();
+  const { data: userTier, refetch } = useUserTiersQuery();
 
   useEffect(() => {
+    /**
+     * Handles limiting the user workspace count
+     * depending on their tier and feature access
+     */
     if (isOpen) {
+      if (teams && teams.length) {
+        const featureAccess = userTier?.tier.featureAccess;
+        if (featureAccess && teams.length === featureAccess[FeatureKeys.WORKSPACES]) {
+          const workspaceMax = featureAccess[FeatureKeys.WORKSPACES];
+          setRestrictedMessage(
+            `You can create a maximum of ${workspaceMax}  Workspace${
+              workspaceMax === 1 ? "" : "s"
+            }. Upgrade to create more.`,
+          );
+          return;
+        }
+      }
       setRestrictedMessage(null);
     }
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (teams) {
-      if (
-        teams.length > 0 &&
-        !hasAccess({
-          features: [Features.WORKSPACE_TEN],
-        })
-      ) {
-        /**
-         * If the user has more than 1 team, we want to restrict them from creating more teams
-         * unless they have the feature flag enabled
-         */
-        setRestrictedMessage("You can only create 1 Workspace. Upgrade to create more.");
-      }
-
-      if (
-        teams.length == 10 &&
-        !hasAccess({
-          features: [Features.WORKSPACE_UNLIMITED],
-        })
-      ) {
-        /**
-         * If the user has more than 10 teams, we want to restrict them from creating more teams
-         * unless they have the feature flag enabled
-         */
-        setRestrictedMessage("You can create a maximum of 10 Workspaces. Upgrade to create more.");
-      }
-    }
-  }, [teams, hasAccess]);
+  }, [isOpen, teams, userTier]);
 
   useEffect(() => {
     if (!isLoading) {

@@ -2,13 +2,11 @@ import { Box, Stack } from "@chakra-ui/react";
 import { NavButton } from "components/nav";
 import { TopIcon } from "./top-icon";
 
-import { FiGrid, FiHelpCircle, FiPenTool, FiPieChart, FiZap } from "react-icons/fi";
+import { FiHelpCircle, FiZap } from "react-icons/fi";
 
 import { ROUTES } from "config/routes";
-import { useFeatureFlag } from "hooks";
 import { useRouter } from "next/router";
 import { FC } from "react";
-import { Features } from "types";
 
 interface SidebarItem {
   label: string;
@@ -22,36 +20,36 @@ const ICON_SIZE = 18;
 
 export const Sidebar: FC = () => {
   const router = useRouter();
-  const { hasAccess } = useFeatureFlag();
 
   const SIDEBAR_ITEMS: SidebarItem[] = [
-    {
-      label: "Home",
-      isActive: router.route === ROUTES.DASHBOARD,
-      icon: <FiGrid fontSize={ICON_SIZE} />,
-      onClick: () => router.push(ROUTES.DASHBOARD),
-      isHidden: !hasAccess({
-        features: [Features.CONTENT_STRATEGY_WIZARD],
-      }),
-    },
-    {
-      label: "Content Strategy",
-      isActive: router.route === ROUTES.CONTENT_STRATEGY,
-      icon: <FiPenTool fontSize={ICON_SIZE} />,
-      onClick: () => router.push(ROUTES.CONTENT_STRATEGY),
-      isHidden: !hasAccess({
-        features: [Features.CONTENT_STRATEGY_WIZARD],
-      }),
-    },
-    {
-      label: "Performance",
-      isActive: router.route === ROUTES.PERFORMANCE,
-      icon: <FiPieChart fontSize={ICON_SIZE} />,
-      onClick: () => router.push(ROUTES.PERFORMANCE),
-      isHidden: !hasAccess({
-        features: [Features.PERFORMANCE_DASHBOARD],
-      }),
-    },
+    // TODO: Uncomment when we have a dashboard
+    // {
+    //   label: "Home",
+    //   isActive: router.route === ROUTES.DASHBOARD,
+    //   icon: <FiGrid fontSize={ICON_SIZE} />,
+    //   onClick: () => router.push(ROUTES.DASHBOARD),
+    //   isHidden: !hasAccess({
+    //     features: [Features.CONTENT_STRATEGY_WIZARD],
+    //   }),
+    // },
+    // {
+    //   label: "Content Strategy",
+    //   isActive: router.route === ROUTES.CONTENT_STRATEGY,
+    //   icon: <FiPenTool fontSize={ICON_SIZE} />,
+    //   onClick: () => router.push(ROUTES.CONTENT_STRATEGY),
+    //   isHidden: !hasAccess({
+    //     features: [Features.CONTENT_STRATEGY_WIZARD],
+    //   }),
+    // },
+    // {
+    //   label: "Performance",
+    //   isActive: router.route === ROUTES.PERFORMANCE,
+    //   icon: <FiPieChart fontSize={ICON_SIZE} />,
+    //   onClick: () => router.push(ROUTES.PERFORMANCE),
+    //   isHidden: !hasAccess({
+    //     features: [Features.PERFORMANCE_DASHBOARD],
+    //   }),
+    // },
     {
       label: "Word Seek",
       isActive: router.route === ROUTES.WORD_SEEK,

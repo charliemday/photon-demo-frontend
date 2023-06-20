@@ -9,8 +9,8 @@ export type { CreateUpdateTask, Task, TaskStatusType, TaskType } from "./tasks";
 export { TeamType } from "./team";
 export type { SemrushDatabase, SemrushDatabaseKeys, Team, TeamMin, TeamPerformance } from './team';
 export type { Account, Opportunity, Territory } from "./territories";
-export { Features } from './user';
-export type { MagicTokenUrl, User, UserMin, UserTier } from './user';
+export { FeatureKeys } from './user';
+export type { Features, MagicTokenUrl, User, UserMin, UserTier } from './user';
 export type {
   APIErrorResponse, CamelToSnakeCase,
   ConvertToCamelCase,

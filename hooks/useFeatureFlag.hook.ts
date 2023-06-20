@@ -1,8 +1,16 @@
 import { useUserTiersQuery } from "api/user.api";
-import { Features } from "types";
+import { FeatureKeys } from "types";
 
 interface Props {
-    features: Features[];
+    /**
+     * The features the user needs to have access to
+     */
+    features: FeatureKeys[];
+    /**
+     * The operator to use when checking the features
+     * whether the user has access to all of them or at least one
+     */
+    operator?: 'AND' | 'OR';
 }
 
 interface ReturnProps {
@@ -16,21 +24,33 @@ export const useFeatureFlag = (): ReturnProps => {
     const { data: userTier } = useUserTiersQuery();
 
     const hasAccess = (props: Props) => {
-        const { features } = props;
-
+        const { features, operator = "AND" } = props;
         if (!userTier) return false;
 
         const { featureAccess } = userTier?.tier;
-
-        if (featureAccess.includes(Features.ALL)) return true;
 
         let access = false;
         if (features.length > 0) {
             /**
              * If a feature is passed, then we need to check the user has access
-             * to all the features passed
+             * to all the features passed unless the operator is OR then we only
+             * need to check they have access to at least one of the features
              */
-            access = features.every((feature) => featureAccess.includes(feature));
+            if (operator === 'OR') {
+                for (const feature of features) {
+                    if (typeof featureAccess[feature] === "boolean" && featureAccess[feature]) {
+                        access = true;
+                        break;
+                    }
+                }
+            } else {
+                for (const feature of features) {
+                    if (typeof featureAccess[feature] !== "boolean" || !featureAccess[feature]) {
+                        access = false;
+                        break;
+                    }
+                }
+            }
         } else {
             /**
              * If no feature is passed, then we assume that the user has access to the page

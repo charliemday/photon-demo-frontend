@@ -10,15 +10,9 @@ import { Heading } from "components/text";
 import { Onboarding } from "components/wizards";
 import { WordSeekWizard } from "components/wizards/word-seek";
 import { FATHOM_EVENTS } from "config";
-import {
-  useActiveTeam,
-  useBuildJobTableData,
-  useFathom,
-  useFeatureFlag,
-  useHasProductAccess,
-} from "hooks";
-import { FC, useEffect, useMemo, useState } from "react";
-import { Features } from "types";
+import { useActiveTeam, useBuildJobTableData, useFathom, useFeatureFlag } from "hooks";
+import { FC, useEffect, useState } from "react";
+import { FeatureKeys } from "types";
 import { GscConnectModal, PricingModal, WordSeekResultsModal } from "./modals";
 
 const rowHeaders: HeaderItem[] = [
@@ -52,11 +46,8 @@ export const WordSeekJobTable: FC = () => {
   // Custom hooks
   const activeTeam = useActiveTeam();
   const fathom = useFathom();
-  const { hasAccess: hasProductAccess } = useHasProductAccess();
-  const { hasAccess: hasFeatureAccess } = useFeatureFlag();
-  const hasWordSeekAccess = useMemo(() => {
-    return hasProductAccess || hasFeatureAccess({ features: [Features.WORD_SEEK_PREMIUM] });
-  }, [hasProductAccess, hasFeatureAccess]);
+  const { hasAccess } = useFeatureFlag();
+  const hasWordSeekAccess = hasAccess({ features: [FeatureKeys.WORD_SEEK_PREMIUM] });
 
   // Local State
   const [defaultPage, setDefaultPage] = useState<string | null>(null);

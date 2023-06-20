@@ -152,7 +152,7 @@ export const WordSeekResultsModal: FC<Props> = ({
                 isActive={activeTab === TAB.data}
               />
               <Tab
-                label="Optimisation Suggestion"
+                label="Optimisation Suggestions"
                 onClick={() => setActiveTab(TAB.suggestions)}
                 isActive={activeTab === TAB.suggestions}
               />

@@ -9,4 +9,5 @@ export const authUrls = {
     },
     GENERATE_MAGIC_TOKEN: "generate-magic-token/",
     COMPLETE_SIGNUP: "complete-signup/",
+    VALIDATE_TOKEN: "validate-token/"
 }
