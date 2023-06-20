@@ -28,7 +28,6 @@ export const useFeatureFlag = (): ReturnProps => {
         if (!userTier) return false;
 
         const { featureAccess } = userTier?.tier;
-
         let access = false;
         if (features.length > 0) {
             /**
@@ -45,9 +44,11 @@ export const useFeatureFlag = (): ReturnProps => {
                 }
             } else {
                 for (const feature of features) {
-                    if (typeof featureAccess[feature] !== "boolean" || !featureAccess[feature]) {
+                    if (typeof featureAccess[feature] === "boolean" && !featureAccess[feature]) {
                         access = false;
                         break;
+                    } else {
+                        access = true;
                     }
                 }
             }
