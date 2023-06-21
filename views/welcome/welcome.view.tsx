@@ -11,10 +11,6 @@ import { useFathom } from "hooks";
 import { typeCheckError } from "utils";
 import { BackgroundView } from "views/background";
 
-const IMAGE_RATIO = 1210 / 870;
-const IMAGE_WIDTH = 400;
-const IMAGE_HEIGHT = IMAGE_WIDTH * IMAGE_RATIO;
-
 export const WelcomeView: React.FC = () => {
   const [authView, setAuthView] = useState<"login" | "signup">("login");
 

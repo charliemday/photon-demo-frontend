@@ -5,14 +5,11 @@ import { Breadcrumb, Breadcrumbs } from "components/breadcrumbs";
 import { TeamDropdown } from "components/dropdown";
 import { Sidebar } from "components/sidebar";
 import { Heading } from "components/text";
-import { useLogout } from "hooks";
+import { useAuth, useLogout } from "hooks";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { IoPhonePortraitOutline } from "react-icons/io5";
-import { useSelector } from "react-redux";
 import { MoonLoader } from "react-spinners";
-import { RootState } from "types";
 
 interface Props {
   children?: ReactNode;
@@ -24,8 +21,7 @@ interface Props {
 const MAX_MOBILE_WIDTH = 768;
 
 export const SidebarLayout: FC<Props> = ({ children, title, headerTitle, breadcrumbs }) => {
-  const authToken = useSelector((state: RootState) => state.auth.token);
-  const router = useRouter();
+  const { authToken } = useAuth();
   const { logout } = useLogout();
   const [validateToken, { isLoading }] = useValidateTokenMutation();
   const [isValidated, setIsValidated] = useState(false);
