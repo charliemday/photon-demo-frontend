@@ -1,7 +1,7 @@
-import { Box, HStack, ModalBody, ModalHeader, Text } from "@chakra-ui/react";
+import { HStack, ModalBody, ModalHeader } from "@chakra-ui/react";
 import { useUserDetailsQuery } from "api/user.api";
-import { Image } from "components/image";
 import { Modal } from "components/modals";
+import { Heading } from "components/text";
 import { PRICING_TABLE_ID, STRIPE_PUBLISHABLE_KEY } from "config";
 import React from "react";
 
@@ -28,21 +28,7 @@ export const PricingModal: React.FC<Props> = ({ isOpen, onClose }) => {
     <Modal isOpen={isOpen} onClose={onClose} size="6xl">
       <ModalHeader>
         <HStack>
-          <Box
-            w={8}
-            h={8}
-            borderRadius="md"
-            overflow="hidden"
-            position="relative"
-          >
-            <Image
-              src="/logos/stripe.png"
-              layout="fill"
-              objectFit="contain"
-              alt="Stripe logo"
-            />
-          </Box>
-          <Text>Pricing</Text>
+          <Heading fontSize="2xl">Choose a Plan</Heading>
         </HStack>
       </ModalHeader>
       <ModalBody>

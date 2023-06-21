@@ -1,4 +1,4 @@
-import { HStack, Stack } from "@chakra-ui/react";
+import { Flex, HStack, Stack } from "@chakra-ui/react";
 import { useWordSeekJobsQuery } from "api/engine.api";
 import { Button } from "components/button";
 import { PageSelect, SubdomainSelect } from "components/select";
@@ -14,6 +14,7 @@ interface Props extends Partial<StepWizardChildProps> {
   runWordSeek?: (pages: string[], callback?: () => void) => void;
   hasAccess?: boolean;
   isRunningWordSeek?: boolean;
+  onUpgradeClick?: () => void;
 }
 
 export const Step1: FC<Props> = ({
@@ -27,6 +28,7 @@ export const Step1: FC<Props> = ({
   runWordSeek,
   isRunningWordSeek,
   isActive,
+  onUpgradeClick,
 }) => {
   const [selectedPath, setSelectedPath] = useState<string>("");
   const [selectedSubdomain, setSelectedSubdomain] = useState<string>("");
@@ -92,9 +94,19 @@ export const Step1: FC<Props> = ({
         </Button>
       </HStack>
     ) : (
-      <Body fontSize="sm" fontWeight="bold">
-        Upgrade to run for more than {MAX_FREE_RESULTS} pages
-      </Body>
+      <Flex alignItems="center" justifyContent="center" pb={6}>
+        <Body
+          fontSize="sm"
+          fontWeight="bold"
+          cursor="pointer"
+          _hover={{
+            textDecoration: "underline",
+          }}
+          onClick={onUpgradeClick}
+        >
+          Upgrade to run for more than {MAX_FREE_RESULTS} pages
+        </Body>
+      </Flex>
     );
 
   return (

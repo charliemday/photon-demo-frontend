@@ -1,9 +1,11 @@
+import { useDisclosure } from "@chakra-ui/react";
 import { useWordSeekJobsQuery } from "api/engine.api";
 import { Modal } from "components/modals";
 import { useActiveTeam, useFeatureFlag, useRunWordSeek } from "hooks";
 import { FC, useMemo, useState } from "react";
 import StepWizard from "react-step-wizard";
 import { FeatureKeys } from "types";
+import { PricingModal } from "views/word-seek/modals";
 import { LinkSiteStep, Step1, Step2, Step3 } from "./steps";
 
 interface Props {
@@ -18,6 +20,12 @@ export const WordSeekWizard: FC<Props> = ({ isOpen, onClose }) => {
   const activeTeam = useActiveTeam();
   const gscUrl = activeTeam?.gscUrl;
   const { hasAccess: hasFeatureAccess } = useFeatureFlag();
+
+  const {
+    isOpen: isPricingModalOpen,
+    onOpen: onOpenPricingModal,
+    onClose: onClosePricingModal,
+  } = useDisclosure();
 
   const hasAccess = useMemo(() => {
     return hasFeatureAccess({ features: [FeatureKeys.WORD_SEEK_PREMIUM] });
@@ -46,69 +54,41 @@ export const WordSeekWizard: FC<Props> = ({ isOpen, onClose }) => {
     onClose();
   };
 
-  const renderSteps = (): JSX.Element[] => {
-    const steps = [];
-
-    if (!gscUrl) {
-      steps.push(<LinkSiteStep />);
-    }
-
-    steps.push(
-      <Step1
-        onChangePage={(path) => setSelectedPath(path)}
-        runAllPages={() => handleRunWordSeek([])}
-        hasAccess={hasAccess}
-        runWordSeek={runWordSeek}
-        isRunningWordSeek={isLoading}
-      />,
-    );
-
-    steps.push(
-      <Step2
-        selectedPath={selectedPath}
-        onComplete={(pages: string[]) => {
-          handleRunWordSeek(pages);
-          setSelectedPages(pages);
-        }}
-        isLoading={isLoading}
-      />,
-    );
-
-    steps.push(<Step3 completeWizard={handleCompleteWizard} pageCount={selectedPages.length} />);
-    return steps;
-  };
-
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      contentProps={{
-        overflowX: "hidden",
-        overflowY: "visible",
-      }}
-    >
-      {gscUrl ? (
-        <StepWizard isHashEnabled={true}>
-          <Step1
-            onChangePage={(path) => setSelectedPath(path)}
-            runAllPages={() => handleRunWordSeek([])}
-            hasAccess={hasAccess}
-            runWordSeek={runWordSeek}
-            isRunningWordSeek={isLoading}
-          />
-          <Step2
-            selectedPath={selectedPath}
-            onComplete={(pages: string[]) => {
-              handleRunWordSeek(pages);
-              setSelectedPages(pages);
-            }}
-            isLoading={isLoading}
-          />
-          <Step3 completeWizard={handleCompleteWizard} pageCount={selectedPages.length} />
-        </StepWizard>
-      ) : (
-        <LinkSiteStep />
-      )}
-    </Modal>
+    <>
+      <PricingModal isOpen={isPricingModalOpen} onClose={onClosePricingModal} />
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        contentProps={{
+          overflowX: "hidden",
+          overflowY: "visible",
+        }}
+      >
+        {gscUrl ? (
+          <StepWizard isHashEnabled={true}>
+            <Step1
+              onChangePage={(path) => setSelectedPath(path)}
+              runAllPages={() => handleRunWordSeek([])}
+              hasAccess={hasAccess}
+              runWordSeek={runWordSeek}
+              isRunningWordSeek={isLoading}
+              onUpgradeClick={onOpenPricingModal}
+            />
+            <Step2
+              selectedPath={selectedPath}
+              onComplete={(pages: string[]) => {
+                handleRunWordSeek(pages);
+                setSelectedPages(pages);
+              }}
+              isLoading={isLoading}
+            />
+            <Step3 completeWizard={handleCompleteWizard} pageCount={selectedPages.length} />
+          </StepWizard>
+        ) : (
+          <LinkSiteStep />
+        )}
+      </Modal>
+    </>
   );
 };
