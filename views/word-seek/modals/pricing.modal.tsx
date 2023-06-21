@@ -3,6 +3,7 @@ import { useUserDetailsQuery } from "api/user.api";
 import { Modal } from "components/modals";
 import { Heading } from "components/text";
 import { PRICING_TABLE_ID, STRIPE_PUBLISHABLE_KEY } from "config";
+import { useRewardful } from "hooks/useAnalytics.hook";
 import React from "react";
 
 interface Props {
@@ -23,6 +24,7 @@ declare global {
 
 export const PricingModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const { data: user } = useUserDetailsQuery(undefined);
+  const { getReferralCode } = useRewardful();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl">
@@ -36,6 +38,7 @@ export const PricingModal: React.FC<Props> = ({ isOpen, onClose }) => {
           pricing-table-id={PRICING_TABLE_ID}
           publishable-key={STRIPE_PUBLISHABLE_KEY}
           customer-email={user?.email}
+          client-reference-id={getReferralCode()}
         />
       </ModalBody>
     </Modal>
