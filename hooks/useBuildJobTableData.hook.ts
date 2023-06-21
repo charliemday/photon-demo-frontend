@@ -18,7 +18,7 @@ interface Props {
 
 export const useBuildJobTableData = (props: Props): ReturnProps => {
     const activeTeam = useActiveTeam();
-    const { data: wordSeekJobs, isLoading, isError } = useWordSeekJobsQuery({
+    const { data: wordSeekJobs, isLoading, isError, isFetching } = useWordSeekJobsQuery({
         teamId: activeTeam?.id
     }, {
         refetchOnMountOrArgChange: true,
@@ -95,7 +95,7 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
 
     return {
         rowItems: jobTableData || [],
-        isLoading,
+        isLoading: (isLoading || isFetching) && jobTableData.length === 0,
         isError
     }
 };
