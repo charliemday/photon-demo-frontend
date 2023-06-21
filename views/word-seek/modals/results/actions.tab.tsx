@@ -12,7 +12,7 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
   const [maxPosition, setMaxPosition] = useState<number | null>(null);
   const [minPosition, setMinPosition] = useState<number | null>(null);
 
-  const { rowHeaders, rowItems, isLoading, isError } = useBuildFaqsTableData({
+  const { rowHeaders, rowItems, isLoading } = useBuildFaqsTableData({
     resultId,
     maxPosition,
     minPosition,
@@ -20,20 +20,15 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
 
   const handleLinkClick = (link: string) => window.open(link, "_blank");
 
-  const renderCheckbox = (label: string, max: number | null, min: number | null, color: string) => (
+  const renderCheckbox = (label: string, max: number | null, min: number | null) => (
     <Checkbox
       size="sm"
       onChange={({ target }) => {
         setMinPosition(target.checked ? min : null);
         setMaxPosition(target.checked ? max : null);
       }}
-      colorScheme={color}
+      colorScheme="white"
       iconColor="black"
-      sx={{
-        "[data-checked]": {
-          borderColor: color,
-        },
-      }}
       isChecked={minPosition === min && maxPosition === max}
     >
       {label}
@@ -44,9 +39,9 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
     <Stack alignItems="center" justifyContent="center" w="full" spacing={6}>
       <Stack alignItems="flex-end" w="full">
         <HStack w="full" justifyContent="flex-end" spacing={6}>
-          {renderCheckbox("1 -> 5", 5, 1, "brand.checkbox1")}
-          {renderCheckbox("6 -> 20", 20, 6, "brand.checkbox2")}
-          {renderCheckbox("20+", null, 21, "brand.checkbox3")}
+          {renderCheckbox("1 -> 5", 5, 1)}
+          {renderCheckbox("6 -> 20", 20, 6)}
+          {renderCheckbox("20+", null, 21)}
         </HStack>
         <Body>Filter by position</Body>
       </Stack>

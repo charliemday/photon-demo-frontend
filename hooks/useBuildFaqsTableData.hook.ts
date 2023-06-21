@@ -66,6 +66,19 @@ export const useBuildFaqsTableData = (args: Props): ReturnProps => {
         }
     }, [hasCopied, toast, value]);
 
+
+    const getTagColour = (position: number) => {
+        if (position > 0 && position <= 5) {
+            return "brand.position1";
+        }
+
+        if (position > 5 && position <= 20) {
+            return "brand.position2";
+        }
+
+        return "brand.position3";
+    }
+
     const faqTableHeaders = useMemo(() => {
         const handleHeaderClick = (sortKeyArg: SortKey) => {
             if (sortKey === sortKeyArg) {
@@ -185,7 +198,7 @@ export const useBuildFaqsTableData = (args: Props): ReturnProps => {
                     value: `${position}`,
                     type: RowItemTypes.tag,
                     flex: 2,
-                    tagColor: "#CAE7DB",
+                    tagColor: getTagColour(position),
                 },
             ];
 

@@ -7,11 +7,9 @@ const theme = extendTheme({
   },
   colors: {
     brand: {
-      checkbox1: {
-        500: "#C3E8DA",
-      },
-      checkbox2: { 500: "#ECD8FA" },
-      checkbox3: { 500: "#F7C994" },
+      position1: "#C3E8DA",
+      position2: "#ECD8FA",
+      position3: "#F7C994",
     },
   },
 });
