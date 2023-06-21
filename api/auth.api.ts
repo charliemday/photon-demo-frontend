@@ -49,10 +49,6 @@ export const authApi = baseApi.injectEndpoints({
                 url: LOGIN,
                 method: "POST",
                 body: { ...values },
-                extraOptions: {
-                    public: true,
-                },
-                prepareHeaders: () => { },
             }),
         }),
         signup: builder.mutation<SignupReturnProps, SignupFormValues>({

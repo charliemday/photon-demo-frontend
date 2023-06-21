@@ -7,9 +7,7 @@ const publicEndpoints = ["login", "signup", "setPassword"]
 
 export const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL,
-  prepareHeaders: (headers, arg) => {
-    const { getState, endpoint } = arg
-    const token = (getState() as RootState).auth.token
+  prepareHeaders: (headers, { getState, endpoint }) => {
 
     if (publicEndpoints.includes(endpoint)) {
       // If we're hitting a public endpoint, don't pass the token.
@@ -17,6 +15,7 @@ export const baseQuery = fetchBaseQuery({
     }
 
     // If we have a token set in state, let's assume that we should be passing it.
+    const token = (getState() as RootState).auth.token
     if (token) {
       headers.set('authorization', `Token ${token}`)
     }
