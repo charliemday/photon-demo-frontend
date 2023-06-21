@@ -1,6 +1,6 @@
 import { Box, HStack, ModalBody, Spinner, Stack, Text } from "@chakra-ui/react";
 import { useVerifyPaymentMutation } from "api/payment.api";
-import { useUserDetailsQuery } from "api/user.api";
+import { useUserDetailsQuery, useUserTiersQuery } from "api/user.api";
 import { Button } from "components/button";
 import { Modal } from "components/modals";
 import { ROUTES } from "config";
@@ -9,16 +9,15 @@ import { FC, useEffect, useState } from "react";
 import { BsCheckCircle } from "react-icons/bs";
 import { typeCheckError } from "utils";
 
-interface Props {}
-
-export const PaymentSuccessModal: FC<Props> = () => {
+export const PaymentSuccessModal: FC = () => {
   const [isPaymentVerified, setIsPaymentVerified] = useState(false);
   const [showInitialLoadingState, setShowInitialLoadingState] = useState(true);
 
-  const [verifyPayment, { isLoading, isSuccess, isError, error }] =
-    useVerifyPaymentMutation();
+  const [verifyPayment, { isLoading, isSuccess, isError, error }] = useVerifyPaymentMutation();
   const { refetch: refetchUserDetails, isLoading: isLoadingUserDetails } =
     useUserDetailsQuery(undefined);
+
+  const { refetch: refetchUserTiers, isLoading: isLoadingUserTiers } = useUserTiersQuery();
 
   useEffect(() => {
     // Wait 5 seconds before verifying payment
@@ -60,9 +59,7 @@ export const PaymentSuccessModal: FC<Props> = () => {
                 Error Verifying Payment. Please try again.
               </Text>
             )}
-            {isPaymentVerified && !isLoading && (
-              <BsCheckCircle color="green" fontSize={38} />
-            )}
+            {isPaymentVerified && !isLoading && <BsCheckCircle color="green" fontSize={38} />}
           </Box>
           <HStack>
             <Button
@@ -75,10 +72,11 @@ export const PaymentSuccessModal: FC<Props> = () => {
             <Button
               onClick={async () => {
                 refetchUserDetails();
-                router.push(ROUTES.DASHBOARD);
+                refetchUserTiers();
+                router.push(ROUTES.WORD_SEEK);
               }}
-              isDisabled={isLoadingUserDetails}
-              isLoading={isLoadingUserDetails}
+              isDisabled={isLoadingUserDetails || isLoadingUserTiers}
+              isLoading={isLoadingUserDetails || isLoadingUserTiers}
             >
               Back to Dashboard
             </Button>

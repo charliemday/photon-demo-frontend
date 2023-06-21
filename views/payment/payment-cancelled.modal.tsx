@@ -5,11 +5,8 @@ import { ROUTES } from "config";
 import { useRouter } from "next/router";
 import { FC } from "react";
 
-interface Props {}
-
-export const PaymentCancelledModal: FC<Props> = () => {
+export const PaymentCancelledModal: FC = () => {
   const router = useRouter();
-
   return (
     <Modal isOpen onClose={() => {}} size="xl">
       <ModalBody>
@@ -18,12 +15,10 @@ export const PaymentCancelledModal: FC<Props> = () => {
             Payment Cancelled
           </Text>
           <Text>
-            You have cancelled your payment. You have not been charged. Please
-            try again if you wish to continue.
+            You have cancelled your payment. You have not been charged. Please try again if you wish
+            to continue.
           </Text>
-          <Button onClick={() => router.push(ROUTES.DASHBOARD)}>
-            Back to Dashboard
-          </Button>
+          <Button onClick={() => router.push(ROUTES.WORD_SEEK)}>Back to Dashboard</Button>
         </Stack>
       </ModalBody>
     </Modal>

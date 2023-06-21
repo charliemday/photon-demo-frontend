@@ -1,12 +1,11 @@
 import { SidebarLayout } from "components/layouts";
+import { WORD_SEEK } from "config";
 import React from "react";
 
 import { PaymentSuccessView } from "views/payment";
 
-interface Props {}
-
-const PaymentSuccess: React.FC<Props> = () => (
-  <SidebarLayout headerTitle="Baser | Payment Success" title="">
+const PaymentSuccess: React.FC = () => (
+  <SidebarLayout headerTitle={`${WORD_SEEK} | Payment Success`} title="">
     <PaymentSuccessView />
   </SidebarLayout>
 );

@@ -1,12 +1,6 @@
 import React from "react";
 import { PaymentSuccessModal } from ".";
 
-interface Props {}
-
-export const PaymentSuccessView: React.FC<Props> = () => {
-  return (
-    <>
-      <PaymentSuccessModal />
-    </>
-  );
+export const PaymentSuccessView: React.FC = () => {
+  return <PaymentSuccessModal />;
 };
