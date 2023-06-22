@@ -5,7 +5,6 @@ import { useUserDetailsQuery } from "api/user.api";
 import { Button } from "components/button";
 import { WordSeekEmpty } from "components/empty";
 import { Table } from "components/table";
-import { HeaderItem } from "components/table/table.header";
 import { Heading } from "components/text";
 import { Onboarding } from "components/wizards";
 import { WordSeekWizard } from "components/wizards/word-seek";
@@ -14,30 +13,6 @@ import { useActiveTeam, useBuildJobTableData, useFathom, useFeatureFlag } from "
 import { FC, useEffect, useState } from "react";
 import { FeatureKeys } from "types";
 import { GscConnectModal, PricingModal, WordSeekResultsModal } from "./modals";
-
-const rowHeaders: HeaderItem[] = [
-  {
-    text: "Job Name",
-    flex: 2,
-  },
-  {
-    text: "Job Type",
-  },
-  {
-    text: "Pages",
-  },
-  {
-    text: "Status",
-    flex: 2,
-  },
-  {
-    text: "User",
-    flex: 2,
-  },
-  {
-    text: "Result",
-  },
-];
 
 // TODO: Place this in a constants file
 const MIN_ONBOARDING_STEP = 1;
@@ -100,7 +75,7 @@ export const WordSeekJobTable: FC = () => {
     onToggle: onPricingModalToggle,
   } = useDisclosure();
 
-  const { rowItems, isLoading } = useBuildJobTableData({
+  const { rowItems, rowHeaders, isLoading } = useBuildJobTableData({
     onClick: (jobGroupUuid) => {
       setSelectedJobGroupUuid(jobGroupUuid);
       onWordSeekResultsToggle();

@@ -1,6 +1,7 @@
 import { useWordSeekJobsQuery } from "api/engine.api";
 import { RowDataItem, RowItemTypes } from "components/table";
 import { RowItem } from "components/table/table";
+import { HeaderItem } from "components/table/table.header";
 import dayjs from "dayjs";
 import { useActiveTeam } from "hooks/useActiveTeam.hook";
 import { useMemo } from "react";
@@ -8,6 +9,7 @@ import { WordSeekJobType } from "types/engine";
 
 interface ReturnProps {
     rowItems: RowItem[];
+    rowHeaders: HeaderItem[];
     isLoading: boolean;
     isError: boolean;
 }
@@ -32,6 +34,30 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
             return dayjs(a.jobCreated).isBefore(dayjs(b.jobCreated)) ? 1 : -1;
         })
     }, [wordSeekJobs])
+
+    const rowHeaders: HeaderItem[] = [
+        {
+            text: "Job Name",
+            flex: 2,
+        },
+        {
+            text: "Job Type",
+        },
+        {
+            text: "Pages",
+        },
+        {
+            text: "Status",
+            flex: 2,
+        },
+        {
+            text: "User",
+            flex: 2,
+        },
+        {
+            text: "Result",
+        },
+    ];
 
 
     const jobTableData = useMemo(() => sortedJobsByCreated?.map(({
@@ -95,6 +121,7 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
 
     return {
         rowItems: jobTableData || [],
+        rowHeaders,
         isLoading: (isLoading || isFetching) && jobTableData.length === 0,
         isError
     }

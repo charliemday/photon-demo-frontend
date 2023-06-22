@@ -21,6 +21,14 @@ function MyApp({ Component, pageProps }: AppProps) {
         data-site={process.env.NEXT_PUBLIC_FATHOM_SITE_ID}
         defer
       />
+      {/* Rewardful */}
+      <Script
+        id="rewardful"
+        dangerouslySetInnerHTML={{
+          __html: `(function(w,r){w._rwq=r;w[r]=w[r]||function(){(w[r].q=w[r].q||[]).push(arguments)}})(window,'rewardful');`,
+        }}
+      />
+      <Script src="https://r.wdfl.co/rw.js" data-rewardful="449653" />
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <ChakraProvider theme={theme}>
