@@ -146,7 +146,7 @@ export const WordSeekJobTable: FC = () => {
         <WordSeekEmpty onClick={handleStartWordSeek} />
       ) : (
         <Table
-          items={rowItems}
+          rowItems={rowItems}
           headers={rowHeaders}
           isLoading={isLoading}
           emptyText="You have no tasks to display."
