@@ -85,7 +85,7 @@ export const WordSeekJobTable: FC = () => {
   const handleStartWordSeek = () => {
     if (activeTeam) {
       onWordSeekToggle();
-      fathom.trackEvent(FATHOM_EVENTS.WORD_SEEK_CLICK);
+      fathom.trackEvent(FATHOM_EVENTS.WORD_SEEK_MODAL_OPEN);
     } else {
       onOnboardingToggle();
     }
