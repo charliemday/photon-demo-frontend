@@ -1,5 +1,5 @@
 import { Box, Flex, HStack } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useLoginMutation, useSignupMutation } from "api/auth.api";
 import { LoginForm, LoginFormValues } from "forms/login";
@@ -28,7 +28,7 @@ export const WelcomeView: React.FC = () => {
     await signup(values)
       .unwrap()
       .then(() => {
-        fathom.trackEvent(FATHOM_EVENTS.SIGNUP);
+        fathom.trackEvent(FATHOM_EVENTS.SIGNUP_COMPLETED);
         setShowBackground(true);
       })
       .catch((e) => {
@@ -36,6 +36,13 @@ export const WelcomeView: React.FC = () => {
         setSignupError(typeof error === "string" ? error : "Unable to signup with details");
       });
   };
+
+  useEffect(() => {
+    if (authView === "signup") {
+      fathom.trackEvent(FATHOM_EVENTS.SIGNUP_SWITCH);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authView]);
 
   const handleLogin = async (values: LoginFormValues) => {
     await login(values)
