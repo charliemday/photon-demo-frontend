@@ -11,13 +11,15 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Button } from "components/button";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 
 import { useCreateTeamMutation } from "api/team.api";
 import { SiteSelect } from "components/select";
 import { Label } from "components/text";
+import { FATHOM_EVENTS } from "config";
 import { useFormik } from "formik";
+import { useFathom } from "hooks";
 import { typeCheckError } from "utils";
 import * as Yup from "yup";
 
@@ -32,8 +34,14 @@ interface FormValues {
 export const CreateWorkspaceStep: FC<Props> = (props) => {
   const [createTeam, { isLoading }] = useCreateTeamMutation();
   const [selectedSite, setSelectedSite] = useState<string | null>(null);
+  const fathom = useFathom();
 
   const toast = useToast();
+
+  useEffect(() => {
+    fathom.trackEvent(FATHOM_EVENTS.ONBOARDING_CREATE_WORKSPACE);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required("Name Required"),
@@ -54,6 +62,7 @@ export const CreateWorkspaceStep: FC<Props> = (props) => {
       })
         .unwrap()
         .then(() => {
+          fathom.trackEvent(FATHOM_EVENTS.ONBOARDING_CREATED_WORKSPACE);
           if (props.onCompleted) {
             props.onCompleted();
           } else {
@@ -71,6 +80,11 @@ export const CreateWorkspaceStep: FC<Props> = (props) => {
         });
     },
   });
+
+  const handleSelectSite = (site: string) => {
+    fathom.trackEvent(FATHOM_EVENTS.ONBOARDING_SITE_SELECTED);
+    setSelectedSite(site);
+  };
 
   const handleSubmit = async () => {
     await formik.handleSubmit();
@@ -94,7 +108,7 @@ export const CreateWorkspaceStep: FC<Props> = (props) => {
         <Stack spacing={6}>
           <FormControl>
             <FormLabel>1. Select or Search for a Search Console Site</FormLabel>
-            <SiteSelect onChange={setSelectedSite} />
+            <SiteSelect onChange={handleSelectSite} />
             <FormHelperText fontSize="xs">
               These are all the sites we have found for you.
             </FormHelperText>

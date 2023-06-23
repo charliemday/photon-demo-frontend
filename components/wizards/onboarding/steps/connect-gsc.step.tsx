@@ -11,7 +11,8 @@ import { CodeResponse, GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/
 import { useCompleteOauthMutation } from "api/auth.api";
 import { Button } from "components/button";
 import { Label } from "components/text";
-import { GOOGLE_EXTERNAL_CLIENT_ID, GOOGLE_EXTERNAL_SCOPES } from "config";
+import { FATHOM_EVENTS, GOOGLE_EXTERNAL_CLIENT_ID, GOOGLE_EXTERNAL_SCOPES } from "config";
+import { useFathom } from "hooks";
 import { FC, useEffect } from "react";
 import { StepWizardChildProps } from "react-step-wizard";
 
@@ -26,7 +27,7 @@ interface Props extends Partial<StepWizardChildProps> {
 export const ConnectGscStepContent: FC<Props> = (props) => {
   const [completeOauth, { isLoading, isSuccess, isError, error }] = useCompleteOauthMutation();
   const toast = useToast();
-  // const { refetch: refetchUserDetails } = useUserDetailsQuery(undefined);
+  const fathom = useFathom();
 
   useEffect(() => {
     if (!isLoading) {
@@ -86,7 +87,14 @@ export const ConnectGscStepContent: FC<Props> = (props) => {
       </ModalBody>
       <ModalFooter>
         <Stack w="full" alignItems="center" spacing={4}>
-          <Button w="full" isLoading={isLoading} onClick={googleLogin}>
+          <Button
+            w="full"
+            isLoading={isLoading}
+            onClick={() => {
+              fathom.trackEvent(FATHOM_EVENTS.ONBOARDING_GSC_CONNECT_CLICKED);
+              googleLogin();
+            }}
+          >
             Connect Search Console
           </Button>
         </Stack>

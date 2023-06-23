@@ -4,6 +4,8 @@ import StepWizard from "react-step-wizard";
 
 import { useUpdateOnboardingStepMutation } from "api/user.api";
 import { Modal } from "components/modals";
+import { FATHOM_EVENTS } from "config";
+import { useFathom } from "hooks";
 import { typeCheckError } from "utils";
 import { ConnectGscStep, CreateWorkspaceStep, OnboardingStep1 } from ".";
 
@@ -16,11 +18,14 @@ interface Props {
 export const Onboarding: FC<Props> = ({ isOpen, onClose, onComplete }) => {
   const [updateOnboardingStep, { error }] = useUpdateOnboardingStepMutation();
   const toast = useToast();
+  const fathom = useFathom();
 
   const handleCompleteOnboarding = async () => {
     const response = await updateOnboardingStep({
       onboardingStep: 1,
     });
+
+    fathom.trackEvent(FATHOM_EVENTS.ONBOARDING_COMPLETED);
 
     if ("error" in response) {
       toast({
@@ -38,10 +43,15 @@ export const Onboarding: FC<Props> = ({ isOpen, onClose, onComplete }) => {
     }
   };
 
+  const handleClose = () => {
+    onClose();
+    fathom.trackEvent(FATHOM_EVENTS.ONBOARDING_MODAL_CLOSED);
+  };
+
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       size="xl"
       contentProps={{
         overflow: "hidden",
