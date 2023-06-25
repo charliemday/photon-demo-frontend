@@ -21,7 +21,7 @@ interface Props {
 }
 
 enum SortKey {
-    question = "question",
+    query = "query",
     impressions = "impressions",
     clicks = "clicks",
     position = "position",
@@ -32,7 +32,7 @@ enum SortDirection {
     desc = "desc",
 }
 
-export const useBuildFaqsTableData = (args: Props): ReturnProps => {
+export const useBuildExistingContentTableData = (args: Props): ReturnProps => {
     const { resultId, minPosition, maxPosition } = args;
 
     const [sortKey, setSortKey] = useState<SortKey | null>(null);
@@ -79,7 +79,7 @@ export const useBuildFaqsTableData = (args: Props): ReturnProps => {
         return "brand.position3";
     }
 
-    const faqTableHeaders = useMemo(() => {
+    const existingContentTableHeaders = useMemo(() => {
         const handleHeaderClick = (sortKeyArg: SortKey) => {
             if (sortKey === sortKeyArg) {
                 if (sortDirection === SortDirection.asc) {
@@ -109,8 +109,8 @@ export const useBuildFaqsTableData = (args: Props): ReturnProps => {
             {
                 text: "Missing Queries",
                 flex: 3,
-                onClick: () => handleHeaderClick(SortKey.question),
-                icon: renderChevron(SortKey.question),
+                onClick: () => handleHeaderClick(SortKey.query),
+                icon: renderChevron(SortKey.query),
             },
             {
                 text: "Impressions",
@@ -133,12 +133,12 @@ export const useBuildFaqsTableData = (args: Props): ReturnProps => {
         return headers;
     }, [sortKey, sortDirection]);
 
-    const faqTableData = useMemo(() => {
+    const existingContentData = useMemo(() => {
         if (!faqData?.data) {
             return [];
         }
 
-        let dataToBuildFrom = faqData.data.faqs;
+        let dataToBuildFrom = faqData.data.existing;
 
         // Handle pre-filtering
         if (minPosition && maxPosition) {
@@ -174,14 +174,15 @@ export const useBuildFaqsTableData = (args: Props): ReturnProps => {
             });
         }
 
-        return dataToBuildFrom?.map(({ question, impressions, clicks, position }) => {
+
+        return dataToBuildFrom?.map(({ query, impressions, clicks, position }) => {
             const rowData: RowDataItem[] = [
                 {
-                    value: question,
+                    value: query,
                     type: RowItemTypes.text,
                     flex: 3,
                     onClick: () => {
-                        setValue(question);
+                        setValue(query);
                         onCopy();
                     },
                     tooltip: false,
@@ -209,8 +210,8 @@ export const useBuildFaqsTableData = (args: Props): ReturnProps => {
     }, [faqData?.data, minPosition, maxPosition, sortKey, sortDirection, onCopy, setValue]);
 
     return {
-        rowItems: faqTableData || [],
-        rowHeaders: faqTableHeaders,
+        rowItems: existingContentData || [],
+        rowHeaders: existingContentTableHeaders,
         isLoading: isLoading,
         isError,
     };

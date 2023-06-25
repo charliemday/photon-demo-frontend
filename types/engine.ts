@@ -51,5 +51,17 @@ export interface Faq {
     answer: string;
     team: number;
     result: number;
-    is_active: boolean;
+    isActive: boolean;
+}
+
+
+export interface ExistingContent {
+    id: number;
+    query: string;
+    impressions: number;
+    clicks: number;
+    position: number;
+    team: number;
+    result: number;
+    isActive: boolean;
 }

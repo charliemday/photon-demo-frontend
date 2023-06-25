@@ -1,7 +1,7 @@
 import { Checkbox, HStack, Stack } from "@chakra-ui/react";
 import { SuggestionsTable } from "components/table";
 import { Body } from "components/text";
-import { useBuildFaqsTableData } from "hooks";
+import { useBuildExistingContentTableData, useBuildFaqsTableData } from "hooks";
 import { FC, useState } from "react";
 
 interface Props {
@@ -13,6 +13,16 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
   const [minPosition, setMinPosition] = useState<number | null>(null);
 
   const { rowHeaders, rowItems, isLoading } = useBuildFaqsTableData({
+    resultId,
+    maxPosition,
+    minPosition,
+  });
+
+  const {
+    rowHeaders: existingRowHeaders,
+    rowItems: existingRowItems,
+    isLoading: isLoadingExisting,
+  } = useBuildExistingContentTableData({
     resultId,
     maxPosition,
     minPosition,
@@ -56,17 +66,16 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
         onLinkClick={() => handleLinkClick("https://wordseek.getbaser.com/faqs/adding-faqs")}
       />
       <SuggestionsTable
-        rowHeaders={rowHeaders}
-        rowItems={[]}
+        rowHeaders={existingRowHeaders}
+        rowItems={existingRowItems}
         title="Add Content"
         description="You can increase the semantic depth of your page by adding missing queries to the relevant section"
         link="Find out more"
-        isLoading={isLoading}
+        isLoading={isLoadingExisting}
         emptyMessage="No Suggested Content to Add"
-        comingSoon
         onLinkClick={() => handleLinkClick("https://wordseek.getbaser.com/faqs/adding-content")}
       />
-      <SuggestionsTable
+      {/* <SuggestionsTable
         rowHeaders={rowHeaders}
         rowItems={[]}
         title="New Section or Page"
@@ -76,7 +85,7 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
         emptyMessage="No suggested New Content"
         comingSoon
         onLinkClick={() => handleLinkClick("https://wordseek.getbaser.com/faqs/new-pages")}
-      />
+      /> */}
     </Stack>
   );
 };
