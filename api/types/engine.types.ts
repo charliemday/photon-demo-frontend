@@ -1,11 +1,11 @@
 import { CompetitorInterface } from "forms/competitors";
-import {
-    Faq, Team,
-    User, WordSeekItem, WordSeekJobType
-} from "types";
+import { ExistingContent, Faq, Team, User, WordSeekItem, WordSeekJobType } from "types";
 
 export interface GenerateFaqsResponse {
-    data: Faq[];
+    data: {
+        faqs: Faq[];
+        existing: ExistingContent[];
+    }
 }
 
 export interface GenerateFaqsQueryParams {

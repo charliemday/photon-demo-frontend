@@ -2,6 +2,7 @@ export { useActiveContentStrategy } from './useActiveContentStrategy.hook';
 export { useActiveTeam } from './useActiveTeam.hook';
 export { useFathom } from "./useAnalytics.hook";
 export { useAuth } from "./useAuth.hook";
+export { useBuildExistingContentTableData } from './useBuildExistingContentTableData.hook';
 export { useBuildFaqsTableData } from './useBuildFaqsTableData.hook';
 export { useBuildJobTableData } from './useBuildJobTableData.hook';
 export { useBuildOverviewStats } from "./useBuildOverviewStats.hook";
