@@ -1,15 +1,5 @@
-import {
-  Flex,
-  HStack,
-  ModalBody,
-  Progress,
-  Spinner,
-  Stack,
-  Text,
-  useClipboard,
-} from "@chakra-ui/react";
+import { Flex, HStack, ModalBody, Progress, Spinner, Stack, Text } from "@chakra-ui/react";
 import { useWordSeekJobsQuery, useWordSeekResultsQuery } from "api/engine.api";
-import { Button } from "components/button";
 import { Modal } from "components/modals";
 import { Select } from "components/select";
 import { Tab } from "components/tab";
@@ -44,7 +34,6 @@ export const WordSeekResultsModal: FC<Props> = ({
   const [wordSeekJob, setWordSeekJob] = useState<WordSeekJob | null>(null);
   const [activeTab, setActiveTab] = useState<TAB>(TAB.data);
   const activeTeam = useActiveTeam();
-  const { hasCopied, onCopy, setValue } = useClipboard("");
 
   const { data: wordSeekJobs, isLoading: isLoadingWordSeekJobs } = useWordSeekJobsQuery(
     {
@@ -202,7 +191,6 @@ export const WordSeekResultsModal: FC<Props> = ({
                     : []
                 }
                 onChange={({ value }) => {
-                  setValue(value);
                   setSelectedPage(value);
                 }}
                 placeholder="🔍 Search for a page..."
@@ -215,15 +203,6 @@ export const WordSeekResultsModal: FC<Props> = ({
               />
             </Flex>
           )}
-          <Button
-            onClick={() => {
-              if (selectedResult) {
-                onCopy();
-              }
-            }}
-          >
-            {hasCopied ? "Copied" : "Copy Keyword"}
-          </Button>
         </HStack>
 
         <HStack justifyContent="space-between" alignItems="flex-end">
