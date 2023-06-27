@@ -79,7 +79,7 @@ export const AppSumoSubscriptionModal: FC<Props> = ({ isOpen, onClose }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="4xl">
       <Stack>
-        <ModalHeader>Your App Sumo Subscription</ModalHeader>
+        <ModalHeader>Your AppSumo Subscription</ModalHeader>
         <Divider />
 
         <HStack p={12} alignItems="flex-start" justifyContent="center" spacing={8}>
