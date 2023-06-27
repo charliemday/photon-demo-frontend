@@ -8,6 +8,7 @@ import {
   HStack,
   Stack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { useFindSimilarKeywordsMutation, useRetrieveSimilarKeywordsQuery } from "api/engine.api";
 import { SimilarKeywordsStatus, SuggestionType } from "api/types";
@@ -27,11 +28,12 @@ export const SimilarQueriesAccordion: FC<Props> = ({
   title,
   suggestionType,
   suggestionPk,
-  subtitle = "Similar Queries on page",
+  subtitle = "Similar queries on page",
 }) => {
   const [similarKeywordsId, setSimilarKeywordsId] = useState<number | null>(null);
   const [isInProgress, setIsInProgress] = useState(false);
   const [similarKeywordData, setSimilarKeywordData] = useState<string[]>([]);
+  const toast = useToast();
 
   const [findSimilarKeywordsReq, { isLoading }] = useFindSimilarKeywordsMutation();
   const { data: similarKeywordsAPIData, refetch: refetchSimilarKeywordsId } =
@@ -50,16 +52,30 @@ export const SimilarQueriesAccordion: FC<Props> = ({
      */
 
     let count = 0; // Max 30 times to request polling
+    const maxCount = 10;
 
     const interval = setInterval(() => {
-      if (isInProgress && count < 30) {
-        refetchSimilarKeywordsId();
-        count++;
+      if (isInProgress) {
+        if (count < maxCount) {
+          refetchSimilarKeywordsId();
+          count++;
+        } else {
+          toast({
+            title: "This is taking a while...",
+            description:
+              "Finding queries on this page is taking longer than usual. Please check back a bit later.",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+          setIsInProgress(false);
+          clearInterval(interval);
+        }
       }
     }, 2000); // 4 seconds
 
     return () => clearInterval(interval);
-  }, [isInProgress, refetchSimilarKeywordsId]);
+  }, [isInProgress, refetchSimilarKeywordsId, toast]);
 
   useEffect(() => {
     /**
@@ -74,6 +90,8 @@ export const SimilarQueriesAccordion: FC<Props> = ({
   }, [similarKeywordsAPIData]);
 
   const findSimilarKeywords = async () => {
+    if (similarKeywordData.length > 0) return;
+
     setSimilarKeywordData([]);
 
     if (suggestionType && suggestionPk) {
@@ -101,9 +119,13 @@ export const SimilarQueriesAccordion: FC<Props> = ({
     }
   };
 
+  console.log(isLoading || isInProgress);
+
   return (
     <Stack flexDir="column">
-      <Text fontSize="xs">{title}</Text>
+      <Text fontSize="xs" fontWeight="semibold">
+        {title}
+      </Text>
       <ChakraAccordion
         allowMultiple
         w="full"
