@@ -66,7 +66,7 @@ export const SuggestionsTable: FC<Props> = ({
     <HStack
       justifyContent="space-evenly"
       divider={<Divider orientation="vertical" />}
-      h={rowItems?.length < previewCount ? "full" : ITEM_HEIGHT}
+      minH={rowItems?.length < previewCount ? "full" : ITEM_HEIGHT}
     >
       {row.map((row, key) => (
         <Box
@@ -155,15 +155,8 @@ export const SuggestionsTable: FC<Props> = ({
 
   return (
     <Stack w="full" pointerEvents={comingSoon ? "none" : "auto"}>
-      <Flex
-        border="solid 1px lightgray"
-        w="full"
-        borderRadius="md"
-        h={tableSize}
-        position="relative"
-        opacity={comingSoon ? 0.5 : 1}
-      >
-        <Stack flex={1} p={6} justifyContent="flex-start">
+      <Flex border="solid 1px #EEF1F6" w="full" borderRadius="md" opacity={comingSoon ? 0.5 : 1}>
+        <Stack flex={1} p={6} justifyContent="flex-start" borderRight="solid 1px #EEF1F6">
           <Heading>{title}</Heading>
           <Body>{description}</Body>
           <Link
@@ -174,8 +167,7 @@ export const SuggestionsTable: FC<Props> = ({
             {link}
           </Link>
         </Stack>
-        <Divider orientation="vertical" />
-        <Stack flex={4} spacing={0}>
+        <Stack flex={4} spacing={0} h="auto">
           {renderHeaders()}
           <Divider />
           {showAll ? renderAll() : renderPreview()}

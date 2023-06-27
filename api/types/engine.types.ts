@@ -142,12 +142,49 @@ export interface CreateKeywordInsightsOrderBody {
 
 export interface WordSeekJobsResponse {
     progress: number;
-    jobsRemaining: number; //WordSeekJob[];
-    jobsCompleted: number; //WordSeekJob[];
+    jobsRemaining: number;
+    jobsCompleted: number;
     user: Partial<User>;
     jobType: WordSeekJobType;
     jobCreated: string;
     site: string;
     jobGroupUuid: string;
     team: Team;
+}
+
+
+export enum SuggestionType {
+    EXISTING_CONTENT = "existing_content",
+    FAQS = "faqs",
+}
+
+export interface SimilarKeywordsBody {
+    suggestionType: SuggestionType;
+    suggestionPk: number;
+}
+
+export enum SimilarKeywordsStatus {
+    IN_PROGRESS = "in_progress",
+    COMPLETE = "completed",
+    FAILED = "failed",
+}
+
+export interface SimilarKeywords {
+    contentType: number;
+    created: string;
+    id: number;
+    modified: string;
+    objectId: number;
+    query: string;
+    similarKeywords: string[];
+    status: SimilarKeywordsStatus;
+}
+
+export interface SimilarKeywordsResponse {
+    status: SimilarKeywordsStatus;
+    data: SimilarKeywords
+}
+
+export interface SimilarKeywordsQueryParams {
+    similarKeywordsId: number;
 }

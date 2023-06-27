@@ -1,3 +1,4 @@
+export { SimilarKeywordsStatus, SuggestionType } from "./engine.types";
 export type {
     CreateKeywordInsightsOrderBody,
     CreateKeywordsThemesBody,
@@ -10,8 +11,7 @@ export type {
     KeywordInsightsResultsRequest,
     KeywordTheme,
     PeopleAlsoAskBody,
-    SeedKeywordsBody,
-    WordSeekBody,
+    SeedKeywordsBody, SimilarKeywordsBody, SimilarKeywordsQueryParams, SimilarKeywordsResponse, WordSeekBody,
     WordSeekJobsResponse,
     WordSeekResultsResponse
 } from "./engine.types";
