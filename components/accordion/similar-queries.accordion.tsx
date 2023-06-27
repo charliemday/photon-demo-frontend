@@ -52,7 +52,7 @@ export const SimilarQueriesAccordion: FC<Props> = ({
      */
 
     let count = 0; // Max 30 times to request polling
-    const maxCount = 10;
+    const maxCount = 30;
 
     const interval = setInterval(() => {
       if (isInProgress) {
