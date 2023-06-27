@@ -8,6 +8,8 @@ export const apiUrls = {
     WORD_SEEK_TRIGGER_JOB: "engine/word-seek/trigger-job",
     WORD_SEEK_RESUME: "engine/word-seek/resume",
     GENERATE_FAQS: (teamId: number, resultId: number) => `wordseek/generate-faqs/?team_id=${teamId}&result_id=${resultId}`,
+    FIND_SIMILAR_KEYWORDS: "wordseek/find-similar-keywords/",
+    RETRIEVE_SIMILAR_KEYWORDS: (similarKeywordId: number) => `wordseek/similar-keywords/${similarKeywordId}/`,
     // Engine
     MISSING_KEYWORDS: 'engine/missing-keywords-job',
     PEOPLE_ALSO_ASK: 'engine/people-also-ask/',

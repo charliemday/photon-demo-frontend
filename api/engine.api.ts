@@ -8,12 +8,12 @@ import {
   KeywordInsightsResult,
   KeywordInsightsResultsRequest,
   PeopleAlsoAskBody,
-  SeedKeywordsBody,
-  WordSeekBody, WordSeekResultsResponse
+  SeedKeywordsBody, SimilarKeywordsBody, SimilarKeywordsQueryParams, SimilarKeywordsResponse, WordSeekBody, WordSeekResultsResponse
 } from "api/types";
 import { camelizeKeys, decamelizeKeys } from "humps";
 import { ConvertToSnakeCase, WordSeekItem, WordSeekJob } from "types";
 import { apiUrls, baseApi } from ".";
+import { SimilarKeywords } from "./types/engine.types";
 
 // Define a service using a base URL and expected endpoints
 export const engineApi = baseApi.injectEndpoints({
@@ -151,6 +151,29 @@ export const engineApi = baseApi.injectEndpoints({
           camelizeKeys(response) as GenerateFaqsResponse,
       }),
     }),
+    /**
+     * Generates the similar queries for a given keyword
+     */
+    findSimilarKeywords: builder.mutation<SimilarKeywordsResponse, SimilarKeywordsBody>({
+      query: (body) => ({
+        url: apiUrls.FIND_SIMILAR_KEYWORDS,
+        body: decamelizeKeys(body),
+        method: "POST",
+      }),
+      transformResponse: (response: ConvertToSnakeCase<SimilarKeywordsResponse>) =>
+        camelizeKeys(response) as SimilarKeywordsResponse,
+    }),
+    /**
+     * Retrieves the similar keywords
+     */
+    retrieveSimilarKeywords: builder.query<SimilarKeywords, SimilarKeywordsQueryParams>({
+      query: ({ similarKeywordsId }) => ({
+        url: apiUrls.RETRIEVE_SIMILAR_KEYWORDS(similarKeywordsId),
+      }),
+      transformResponse: (response: ConvertToSnakeCase<SimilarKeywords>) =>
+        camelizeKeys(response) as SimilarKeywords,
+
+    })
   }),
 });
 
@@ -170,4 +193,6 @@ export const {
   useWordSeekJobsQuery,
   useReRunWordSeekJobMutation,
   useGenerateFaqsQuery,
+  useFindSimilarKeywordsMutation,
+  useRetrieveSimilarKeywordsQuery
 } = engineApi;

@@ -55,7 +55,6 @@ export const WordSeekResultsModal: FC<Props> = ({
     data: wordSeekResults,
     refetch,
     isLoading,
-    isFetching,
   } = useWordSeekResultsQuery(
     {
       teamUid: activeTeam?.uid,
@@ -191,7 +190,9 @@ export const WordSeekResultsModal: FC<Props> = ({
                       }))
                     : []
                 }
-                onChange={({ value }) => setSelectedPage(value)}
+                onChange={({ value }) => {
+                  setSelectedPage(value);
+                }}
                 placeholder="🔍 Search for a page..."
                 {...(selectedPage && {
                   defaultValue: {

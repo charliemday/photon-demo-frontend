@@ -14,10 +14,14 @@ export enum RowItemTypes {
   avatar = "avatar",
   progress = "progress",
   button = "button",
+  /**
+   * For more complex components
+   */
+  component = "component",
 }
 
 export interface RowDataItem {
-  value: string | number;
+  value: string | number | FC;
   type: RowItemTypes;
   flex?: number;
   size?: RowSize;
@@ -85,6 +89,11 @@ export const TableRowItem: FC<Props> = ({
         {value}
       </Button>
     );
+  }
+
+  if (type === RowItemTypes.component) {
+    const Component = value as FC;
+    return <Component />;
   }
 
   return null;

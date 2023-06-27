@@ -75,6 +75,7 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
         emptyMessage="No Suggested Content to Add"
         onLinkClick={() => handleLinkClick("https://wordseek.getbaser.com/faqs/adding-content")}
       />
+      {/* Uncomment when ready */}
       {/* <SuggestionsTable
         rowHeaders={rowHeaders}
         rowItems={[]}
