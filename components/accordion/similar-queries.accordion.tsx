@@ -4,7 +4,7 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Grid,
+  Flex,
   HStack,
   Stack,
   Text,
@@ -119,8 +119,6 @@ export const SimilarQueriesAccordion: FC<Props> = ({
     }
   };
 
-  console.log(isLoading || isInProgress);
-
   return (
     <Stack flexDir="column">
       <Text fontSize="xs" fontWeight="semibold">
@@ -169,18 +167,14 @@ export const SimilarQueriesAccordion: FC<Props> = ({
                 <MoonLoader size={12} />
               </HStack>
             ) : similarKeywordData?.length > 0 ? (
-              <Grid templateColumns="repeat(3, 1fr)" gap={2}>
+              <HStack flexWrap="wrap">
+                <div />
                 {similarKeywordData.map((item, index) => (
-                  <Tag
-                    key={index}
-                    text={item}
-                    fontSize="xs"
-                    size="sm"
-                    showTooltip
-                    fontWeight="medium"
-                  />
+                  <Flex key={index} py={1}>
+                    <Tag text={item} fontSize="xs" size="sm" showTooltip fontWeight="medium" />
+                  </Flex>
                 ))}
-              </Grid>
+              </HStack>
             ) : (
               <Body pl={5} opacity={0.5}>
                 No similar queries found

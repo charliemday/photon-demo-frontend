@@ -1,7 +1,5 @@
 import { useClipboard, useToast } from "@chakra-ui/react";
 import { useGenerateFaqsQuery } from "api/engine.api";
-import { SuggestionType } from "api/types";
-import { SimilarQueriesAccordion } from "components/accordion";
 import { RowDataItem, RowItemTypes } from "components/table";
 import { RowItem } from "components/table/table";
 import { HeaderItem } from "components/table/table.header";
@@ -175,17 +173,19 @@ export const useBuildExistingContentTableData = (args: Props): ReturnProps => {
       });
     }
 
-    return dataToBuildFrom?.map(({ id, query, impressions, clicks, position }) => {
+    return dataToBuildFrom?.map(({ query, impressions, clicks, position }) => {
       const rowData: RowDataItem[] = [
         {
-          value: () => (
-            <SimilarQueriesAccordion
-              title={query}
-              suggestionType={SuggestionType.EXISTING_CONTENT}
-              suggestionPk={id}
-            />
-          ),
-          type: RowItemTypes.component,
+          // value: () => (
+          //   <SimilarQueriesAccordion
+          //     title={query}
+          //     suggestionType={SuggestionType.EXISTING_CONTENT}
+          //     suggestionPk={id}
+          //   />
+          // ),
+          // type: RowItemTypes.component,
+          value: query,
+          type: RowItemTypes.text,
           flex: 4,
           tooltip: false,
         },
