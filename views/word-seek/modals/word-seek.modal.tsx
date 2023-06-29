@@ -44,9 +44,9 @@ export const WordSeekModal: FC<Props> = ({ isOpen, onClose, onUpgrade }) => {
   );
 
   const { refetch, isLoading: isLoadingResults } = useWordSeekResultsQuery(
-    { teamUid: activeTeam?.uid },
+    { teamId: activeTeam?.id },
     {
-      skip: !activeTeam?.uid,
+      skip: !activeTeam?.id,
     },
   );
 
