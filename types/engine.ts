@@ -33,7 +33,9 @@ export interface WordSeekJob {
     jobType: WordSeekJobType;
     jobCreated: string;
     site: string;
+    // Soon to be deprecated
     jobGroupUuid: string;
+    jobGroup: number;
     team: TeamMin;
 }
 

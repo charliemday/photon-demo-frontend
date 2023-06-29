@@ -15,7 +15,7 @@ interface ReturnProps {
 }
 
 interface Props {
-    onClick: (jobGroupUuid: string) => void;
+    onClick: (jobGroup: number) => void;
 }
 
 export const useBuildJobTableData = (props: Props): ReturnProps => {
@@ -59,7 +59,6 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
         },
     ];
 
-
     const jobTableData = useMemo(() => sortedJobsByCreated?.map(({
         jobsRemaining,
         progress,
@@ -67,7 +66,7 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
         jobType,
         user,
         site,
-        jobGroupUuid
+        jobGroup
     }) => {
         const firstName = user?.firstName || "";
         const lastName = user?.lastName || "";
@@ -109,7 +108,7 @@ export const useBuildJobTableData = (props: Props): ReturnProps => {
         ]
         return {
             rowData,
-            rowClick: () => props.onClick(jobGroupUuid),
+            rowClick: () => props.onClick(jobGroup),
             rowClickable: false
         }
 

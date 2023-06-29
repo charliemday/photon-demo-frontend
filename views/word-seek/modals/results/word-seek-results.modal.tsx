@@ -16,7 +16,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   defaultPage?: string | null;
-  jobGroupUuid: string | null;
+  jobGroup: number | null;
 }
 
 enum TAB {
@@ -27,7 +27,7 @@ enum TAB {
 export const WordSeekResultsModal: FC<Props> = ({
   isOpen,
   onClose,
-  jobGroupUuid,
+  jobGroup,
   defaultPage = null,
 }) => {
   const [selectedPage, setSelectedPage] = useState<string | null>(defaultPage);
@@ -44,24 +44,27 @@ export const WordSeekResultsModal: FC<Props> = ({
     },
   );
 
+  console.log("Selected Page", selectedPage);
+
   useEffect(() => {
     if (!isLoadingWordSeekJobs && wordSeekJobs) {
-      const job = wordSeekJobs.find((job) => job.jobGroupUuid === jobGroupUuid);
+      const job = wordSeekJobs.find((job) => job.jobGroup === jobGroup);
       if (job) setWordSeekJob(job);
     }
-  }, [isLoadingWordSeekJobs, wordSeekJobs, jobGroupUuid]);
+  }, [isLoadingWordSeekJobs, wordSeekJobs, jobGroup]);
 
   const {
     data: wordSeekResults,
     refetch,
     isLoading,
+    isFetching,
   } = useWordSeekResultsQuery(
     {
-      teamUid: activeTeam?.uid,
-      jobGroupUuid,
+      teamId: activeTeam?.id,
+      jobGroup,
     },
     {
-      skip: !activeTeam?.uid,
+      skip: !activeTeam?.uid || !isOpen || !jobGroup,
     },
   );
 
@@ -79,7 +82,7 @@ export const WordSeekResultsModal: FC<Props> = ({
     if (wordSeekResults && wordSeekResults?.length > 0) {
       setSelectedPage(wordSeekResults[0].page);
     }
-  }, [wordSeekResults]);
+  }, [wordSeekResults, isOpen]);
 
   const pages = wordSeekResults?.map((res) => res.page);
 
@@ -87,7 +90,7 @@ export const WordSeekResultsModal: FC<Props> = ({
     const item = wordSeekResults?.find((i) => i.page === selectedPage);
 
     if (item) {
-      return item.missingKeywords.map((i, index) => i);
+      return item.missingKeywords.map((i) => i);
     }
 
     return [];
@@ -144,7 +147,7 @@ export const WordSeekResultsModal: FC<Props> = ({
       const latestJob = wordSeekJobs.reduce((prev, current) =>
         prev.jobCreated > current.jobCreated ? prev : current,
       );
-      return latestJob.jobGroupUuid === wordSeekJob.jobGroupUuid;
+      return latestJob.jobGroup === wordSeekJob.jobGroup;
     }
   }, [wordSeekJobs, wordSeekJob]);
 
@@ -193,6 +196,7 @@ export const WordSeekResultsModal: FC<Props> = ({
                 onChange={({ value }) => {
                   setSelectedPage(value);
                 }}
+                isLoading={isLoading || isFetching}
                 placeholder="🔍 Search for a page..."
                 {...(selectedPage && {
                   defaultValue: {
@@ -223,7 +227,7 @@ export const WordSeekResultsModal: FC<Props> = ({
         </HStack>
       </Stack>
       <ModalBody overflowY="hidden" pt={6}>
-        {isLoading ? (
+        {isLoading || isFetching ? (
           <Flex alignItems="center" justifyContent="center" h="40vh">
             <Spinner size="lg" />
           </Flex>
