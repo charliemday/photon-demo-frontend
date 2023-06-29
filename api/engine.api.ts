@@ -70,10 +70,10 @@ export const engineApi = baseApi.injectEndpoints({
      */
     wordSeekResults: builder.query<
       WordSeekItem[],
-      { teamUid: string; jobGroupUuid?: string | null }
+      { teamId: number; jobGroup?: number | null }
     >({
-      query: ({ teamUid, jobGroupUuid }) => ({
-        url: apiUrls.WORD_SEEK_RESULTS(teamUid, jobGroupUuid),
+      query: ({ teamId, jobGroup }) => ({
+        url: apiUrls.WORD_SEEK_RESULTS(teamId, jobGroup),
       }),
       transformResponse: (response: ConvertToSnakeCase<WordSeekResultsResponse>) => {
         if (response.success) {

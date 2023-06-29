@@ -26,7 +26,7 @@ export const WordSeekJobTable: FC = () => {
 
   // Local State
   const [defaultPage, setDefaultPage] = useState<string | null>(null);
-  const [selectedJobGroupUuid, setSelectedJobGroupUuid] = useState<string | null>(null);
+  const [selectedJobGroup, setSelectedJobGroup] = useState<number | null>(null);
 
   // RTK Queries
   const { data: userDetails } = useUserDetailsQuery();
@@ -76,8 +76,8 @@ export const WordSeekJobTable: FC = () => {
   } = useDisclosure();
 
   const { rowItems, rowHeaders, isLoading } = useBuildJobTableData({
-    onClick: (jobGroupUuid) => {
-      setSelectedJobGroupUuid(jobGroupUuid);
+    onClick: (jobGroup) => {
+      setSelectedJobGroup(jobGroup);
       onWordSeekResultsToggle();
     },
   });
@@ -103,7 +103,7 @@ export const WordSeekJobTable: FC = () => {
         isOpen={isWordSeekResultsOpen}
         onClose={onWordSeekResultsClose}
         defaultPage={defaultPage}
-        jobGroupUuid={selectedJobGroupUuid}
+        jobGroup={selectedJobGroup}
       />
       <PricingModal isOpen={isPricingModalOpen} onClose={onPricingModalClose} />
       <Onboarding
