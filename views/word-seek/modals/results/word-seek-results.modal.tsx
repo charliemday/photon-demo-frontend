@@ -44,8 +44,6 @@ export const WordSeekResultsModal: FC<Props> = ({
     },
   );
 
-  console.log("Selected Page", selectedPage);
-
   useEffect(() => {
     if (!isLoadingWordSeekJobs && wordSeekJobs) {
       const job = wordSeekJobs.find((job) => job.jobGroup === jobGroup);

@@ -1,5 +1,7 @@
-import { Skeleton, Stack, Text } from "@chakra-ui/react";
+import { Box, HStack, Skeleton, Stack, Text } from "@chakra-ui/react";
 import { FC } from "react";
+import { BiRefresh } from "react-icons/bi";
+import { MoonLoader } from "react-spinners";
 import { HeaderItem, TableHeader } from "./table.header";
 import { TableRow } from "./table.row";
 import { RowDataItem } from "./table.row-item";
@@ -15,12 +17,18 @@ interface Props {
   rowItems?: RowItem[];
   isLoading?: boolean;
   emptyText?: string;
+  onRefresh?: () => void;
+  isRefreshing?: boolean;
 }
 
 export const Table: FC<Props> = ({
+  isLoading,
+  onRefresh,
+  isRefreshing,
+
   headers = [],
   rowItems = [],
-  isLoading,
+
   emptyText = "No data to display",
 }) => {
   const renderSkeleton = () => (
@@ -44,7 +52,24 @@ export const Table: FC<Props> = ({
       borderWidth="1px"
       justify="space-between"
       spacing="20px"
+      position="relative"
+      opacity={isRefreshing ? 0.5 : 1}
     >
+      {onRefresh && (
+        <HStack
+          opacity={0.75}
+          _hover={{ opacity: 1 }}
+          position="absolute"
+          top={3}
+          right={3}
+          cursor="pointer"
+          onClick={onRefresh}
+          title="Refresh"
+        >
+          {/* <Body>{isRefreshing ? "Refreshing..." : "Refresh"}</Body> */}
+          <Box>{isRefreshing ? <MoonLoader size={16} /> : <BiRefresh size={20} />}</Box>
+        </HStack>
+      )}
       {isLoading ? (
         <>{renderSkeleton()}</>
       ) : (

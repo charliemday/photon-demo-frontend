@@ -30,7 +30,11 @@ export const WordSeekJobTable: FC = () => {
 
   // RTK Queries
   const { data: userDetails } = useUserDetailsQuery();
-  const { data: wordSeekJobs } = useWordSeekJobsQuery(
+  const {
+    data: wordSeekJobs,
+    refetch,
+    isFetching,
+  } = useWordSeekJobsQuery(
     {
       teamId: activeTeam?.id,
     },
@@ -150,6 +154,8 @@ export const WordSeekJobTable: FC = () => {
           headers={rowHeaders}
           isLoading={isLoading}
           emptyText="You have no tasks to display."
+          onRefresh={refetch}
+          isRefreshing={isFetching}
         />
       )}
       {renderModals()}

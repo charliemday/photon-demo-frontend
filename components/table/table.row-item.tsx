@@ -78,7 +78,7 @@ export const TableRowItem: FC<Props> = ({
         <Flex>
           <Progress value={value} size="md" width={75} borderRadius="md" />
         </Flex>
-        <Body>{value}%</Body>
+        <Body>{value === 0 ? value : value.toFixed(0)}%</Body>
       </HStack>
     );
   }
