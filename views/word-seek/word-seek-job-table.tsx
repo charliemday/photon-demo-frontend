@@ -25,7 +25,6 @@ export const WordSeekJobTable: FC = () => {
   const hasWordSeekAccess = hasAccess({ features: [FeatureKeys.WORD_SEEK_PREMIUM] });
 
   // Local State
-  const [defaultPage, setDefaultPage] = useState<string | null>(null);
   const [selectedJobGroup, setSelectedJobGroup] = useState<number | null>(null);
 
   // RTK Queries
@@ -106,7 +105,6 @@ export const WordSeekJobTable: FC = () => {
       <WordSeekResultsModal
         isOpen={isWordSeekResultsOpen}
         onClose={onWordSeekResultsClose}
-        defaultPage={defaultPage}
         jobGroup={selectedJobGroup}
       />
       <PricingModal isOpen={isPricingModalOpen} onClose={onPricingModalClose} />

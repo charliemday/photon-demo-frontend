@@ -4,7 +4,6 @@ export const apiUrls = {
     // WordSeek
     WORD_SEEK: 'engine/word-seek/',
     WORD_SEEK_RESULTS: (teamId: number, jobGroup?: number | null) => {
-        console.log('Job Group: ', jobGroup)
         return `/engine/word-seek/results?team_id=${teamId}${jobGroup ? `&job_group=${jobGroup}` : ''}`
     },
     WORD_SEEK_JOBS: (teamId?: number) => `engine/word-seek/jobs${teamId ? `?team_id=${teamId}` : ''}`,
@@ -13,6 +12,7 @@ export const apiUrls = {
     GENERATE_FAQS: (teamId: number, resultId: number) => `wordseek/generate-faqs/?team_id=${teamId}&result_id=${resultId}`,
     FIND_SIMILAR_KEYWORDS: "wordseek/find-similar-keywords/",
     RETRIEVE_SIMILAR_KEYWORDS: (similarKeywordId: number) => `wordseek/similar-keywords/${similarKeywordId}/`,
+    UPDATE_MISSPELLED_KEYWORDS: "wordseek/update-misspelled-keywords/",
     // Engine
     MISSING_KEYWORDS: 'engine/missing-keywords-job',
     PEOPLE_ALSO_ASK: 'engine/people-also-ask/',

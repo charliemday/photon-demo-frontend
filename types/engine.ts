@@ -7,6 +7,7 @@ export interface MissingKeyword {
     keyword: string;
     position: number;
     impressions: number;
+    misspelled?: boolean;
 }
 
 export interface JobInterface {

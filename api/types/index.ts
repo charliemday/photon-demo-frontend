@@ -1,4 +1,4 @@
-export { SimilarKeywordsStatus, SuggestionType } from "./engine.types";
+export { MisspelledKeywordAction, SimilarKeywordsStatus, SuggestionType } from "./engine.types";
 export type {
     CreateKeywordInsightsOrderBody,
     CreateKeywordsThemesBody,
@@ -11,7 +11,7 @@ export type {
     KeywordInsightsResultsRequest,
     KeywordTheme,
     PeopleAlsoAskBody,
-    SeedKeywordsBody, SimilarKeywordsBody, SimilarKeywordsQueryParams, SimilarKeywordsResponse, WordSeekBody,
+    SeedKeywordsBody, SimilarKeywordsBody, SimilarKeywordsQueryParams, SimilarKeywordsResponse, UpdateMisspelledKeywordsBody, WordSeekBody,
     WordSeekJobsResponse,
     WordSeekResultsResponse
 } from "./engine.types";
