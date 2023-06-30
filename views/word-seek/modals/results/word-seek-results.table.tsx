@@ -1,5 +1,16 @@
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
-import { Box, chakra, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+  Box,
+  chakra,
+  HStack,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
 import {
   ColumnDef,
   flexRender,
@@ -8,15 +19,18 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { ManualKeywordCheck } from "components/manual-keyword-check";
 import { FC, useState } from "react";
 import { MissingKeyword } from "types";
 
 export interface Props {
   data: MissingKeyword[];
   columns: ColumnDef<MissingKeyword, any>[];
+  resultId?: number;
+  jobGroup?: number | null;
 }
 
-export const WordSeekResultsTable: FC<Props> = ({ data, columns }) => {
+export const WordSeekResultsTable: FC<Props> = ({ data, columns, resultId, jobGroup }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const table = useReactTable({
     columns,
@@ -65,12 +79,25 @@ export const WordSeekResultsTable: FC<Props> = ({ data, columns }) => {
           <Tbody>
             {table.getRowModel().rows.map((row) => (
               <Tr key={row.id}>
-                {row.getVisibleCells().map((cell) => {
+                {row.getVisibleCells().map((cell, i) => {
                   // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
                   const meta: any = cell.column.columnDef.meta;
+                  const { original } = cell.row;
+                  const isMisspelled = original?.misspelled;
+                  const keyword = original?.keyword;
+
                   return (
                     <Td key={cell.id} isNumeric={meta?.isNumeric} border="none">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      <HStack justifyContent={i === 0 ? "flex-start" : "center"}>
+                        <Box>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Box>
+                        {i === 0 && isMisspelled ? (
+                          <ManualKeywordCheck
+                            jobGroup={jobGroup}
+                            resultId={resultId}
+                            keyword={keyword}
+                          />
+                        ) : null}
+                      </HStack>
                     </Td>
                   );
                 })}

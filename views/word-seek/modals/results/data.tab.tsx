@@ -11,6 +11,7 @@ import { WordSeekResultsTable } from "./word-seek-results.table";
 interface Props {
   data?: WordSeekItem | null;
   exportData?: string[][];
+  jobGroup?: number | null;
 }
 
 const columnHelper = createColumnHelper<MissingKeyword>();
@@ -43,7 +44,7 @@ const columns = [
   }),
 ];
 
-export const DataTab: FC<Props> = ({ data, exportData }) => {
+export const DataTab: FC<Props> = ({ data, exportData, jobGroup }) => {
   const csvData = useRef<any>([]);
 
   const tableData = useMemo(() => {
@@ -77,7 +78,12 @@ export const DataTab: FC<Props> = ({ data, exportData }) => {
           </HStack>
         </Button>
       </Flex>
-      <WordSeekResultsTable data={tableData} columns={columns} />
+      <WordSeekResultsTable
+        data={tableData}
+        columns={columns}
+        resultId={data?.id}
+        jobGroup={jobGroup}
+      />
     </TableContainer>
   );
 };

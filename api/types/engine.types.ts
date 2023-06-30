@@ -188,3 +188,14 @@ export interface SimilarKeywordsResponse {
 export interface SimilarKeywordsQueryParams {
     similarKeywordsId: number;
 }
+
+export enum MisspelledKeywordAction {
+    KEEP = "keep",
+    DELETE = "delete",
+}
+
+export interface UpdateMisspelledKeywordsBody {
+    resultId: number;
+    keyword: string;
+    action: MisspelledKeywordAction
+}

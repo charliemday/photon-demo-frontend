@@ -8,7 +8,7 @@ import {
   KeywordInsightsResult,
   KeywordInsightsResultsRequest,
   PeopleAlsoAskBody,
-  SeedKeywordsBody, SimilarKeywordsBody, SimilarKeywordsQueryParams, SimilarKeywordsResponse, WordSeekBody, WordSeekResultsResponse
+  SeedKeywordsBody, SimilarKeywordsBody, SimilarKeywordsQueryParams, SimilarKeywordsResponse, UpdateMisspelledKeywordsBody, WordSeekBody, WordSeekResultsResponse
 } from "api/types";
 import { camelizeKeys, decamelizeKeys } from "humps";
 import { ConvertToSnakeCase, WordSeekItem, WordSeekJob } from "types";
@@ -172,8 +172,17 @@ export const engineApi = baseApi.injectEndpoints({
       }),
       transformResponse: (response: ConvertToSnakeCase<SimilarKeywords>) =>
         camelizeKeys(response) as SimilarKeywords,
-
-    })
+    }),
+    /**
+     * Updates misspelled keywords
+     */
+    updateMisspelledKeywords: builder.mutation<undefined, UpdateMisspelledKeywordsBody>({
+      query: (body) => ({
+        url: apiUrls.UPDATE_MISSPELLED_KEYWORDS,
+        body: decamelizeKeys(body),
+        method: "POST",
+      }),
+    }),
   }),
 });
 
@@ -194,5 +203,6 @@ export const {
   useReRunWordSeekJobMutation,
   useGenerateFaqsQuery,
   useFindSimilarKeywordsMutation,
-  useRetrieveSimilarKeywordsQuery
+  useRetrieveSimilarKeywordsQuery,
+  useUpdateMisspelledKeywordsMutation
 } = engineApi;

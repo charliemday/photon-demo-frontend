@@ -3,8 +3,9 @@ import { Assigned } from "components/assigned";
 import { Button } from "components/button";
 import { Tag } from "components/tag";
 import { Body } from "components/text";
-import { GREEN } from "config";
+import { BRAND_COLOR, GREEN } from "config";
 import { FC } from "react";
+import { BarLoader } from "react-spinners";
 
 export type RowSize = "xs" | "sm" | "md" | "lg";
 
@@ -73,10 +74,14 @@ export const TableRowItem: FC<Props> = ({
       return <Tag key={value} fontSize={size} text={"✅ Complete"} bgColor={GREEN} />;
     }
 
+    if (value === 0) {
+      return <BarLoader width={75} color={BRAND_COLOR} />;
+    }
+
     return (
       <HStack>
         <Flex>
-          <Progress value={value} size="md" width={75} borderRadius="md" />
+          <Progress value={value} size="md" h={1} width={75} borderRadius="md" />
         </Flex>
         <Body>{value === 0 ? value : value.toFixed(0)}%</Body>
       </HStack>

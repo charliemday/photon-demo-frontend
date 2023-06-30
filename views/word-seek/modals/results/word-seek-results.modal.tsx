@@ -15,7 +15,6 @@ import { DataTab } from "./data.tab";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  defaultPage?: string | null;
   jobGroup: number | null;
 }
 
@@ -24,13 +23,8 @@ enum TAB {
   suggestions = "suggestions",
 }
 
-export const WordSeekResultsModal: FC<Props> = ({
-  isOpen,
-  onClose,
-  jobGroup,
-  defaultPage = null,
-}) => {
-  const [selectedPage, setSelectedPage] = useState<string | null>(defaultPage);
+export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) => {
+  const [selectedPage, setSelectedPage] = useState<string | null>(null);
   const [wordSeekJob, setWordSeekJob] = useState<WordSeekJob | null>(null);
   const [activeTab, setActiveTab] = useState<TAB>(TAB.data);
   const activeTeam = useActiveTeam();
@@ -43,7 +37,6 @@ export const WordSeekResultsModal: FC<Props> = ({
       skip: !activeTeam?.id || !isOpen,
     },
   );
-
   useEffect(() => {
     if (!isLoadingWordSeekJobs && wordSeekJobs) {
       const job = wordSeekJobs.find((job) => job.jobGroup === jobGroup);
@@ -55,7 +48,6 @@ export const WordSeekResultsModal: FC<Props> = ({
     data: wordSeekResults,
     refetch,
     isLoading,
-    isFetching,
   } = useWordSeekResultsQuery(
     {
       teamId: activeTeam?.id,
@@ -73,14 +65,9 @@ export const WordSeekResultsModal: FC<Props> = ({
   }, [isOpen, refetch]);
 
   useEffect(() => {
-    /**
-     * Set the selected page to the first page in the list
-     * when the results change
-     */
-    if (wordSeekResults && wordSeekResults?.length > 0) {
-      setSelectedPage(wordSeekResults[0].page);
-    }
-  }, [wordSeekResults, isOpen]);
+    setSelectedPage(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jobGroup]);
 
   const pages = wordSeekResults?.map((res) => res.page);
 
@@ -122,7 +109,7 @@ export const WordSeekResultsModal: FC<Props> = ({
 
   const renderTab = () => {
     if (activeTab === TAB.data) {
-      return <DataTab data={selectedResult} exportData={exportData} />;
+      return <DataTab data={selectedResult} exportData={exportData} jobGroup={jobGroup} />;
     }
 
     if (selectedResult) {
@@ -194,7 +181,7 @@ export const WordSeekResultsModal: FC<Props> = ({
                 onChange={({ value }) => {
                   setSelectedPage(value);
                 }}
-                isLoading={isLoading || isFetching}
+                isLoading={isLoading}
                 placeholder="🔍 Search for a page..."
                 {...(selectedPage && {
                   defaultValue: {
@@ -207,27 +194,36 @@ export const WordSeekResultsModal: FC<Props> = ({
           )}
         </HStack>
 
-        <HStack justifyContent="space-between" alignItems="flex-end">
-          <HStack>
+        {!isLoading && selectedPage && tableData?.length ? (
+          <HStack justifyContent="space-between" alignItems="flex-end">
             <HStack>
-              <Tab
-                label="Missing Query Data"
-                onClick={() => setActiveTab(TAB.data)}
-                isActive={activeTab === TAB.data}
-              />
-              <Tab
-                label="Optimisation Suggestions"
-                onClick={() => setActiveTab(TAB.suggestions)}
-                isActive={activeTab === TAB.suggestions}
-              />
+              <HStack>
+                <Tab
+                  label="Missing Query Data"
+                  onClick={() => setActiveTab(TAB.data)}
+                  isActive={activeTab === TAB.data}
+                />
+                <Tab
+                  label="Optimisation Suggestions"
+                  onClick={() => setActiveTab(TAB.suggestions)}
+                  isActive={activeTab === TAB.suggestions}
+                />
+              </HStack>
             </HStack>
           </HStack>
-        </HStack>
+        ) : null}
       </Stack>
       <ModalBody overflowY="hidden" pt={6}>
-        {isLoading || isFetching ? (
+        {isLoading ? (
           <Flex alignItems="center" justifyContent="center" h="40vh">
             <Spinner size="lg" />
+          </Flex>
+        ) : !selectedPage ? (
+          <Flex alignItems="center" justifyContent="center" h="50vh">
+            <Stack m="auto" w="full" textAlign="center" alignItems="center">
+              <Text fontSize="xl">👆</Text>
+              <Body fontSize="lg" w="50%">{`Select a page to see the results...`}</Body>
+            </Stack>
           </Flex>
         ) : tableData?.length === 0 ? (
           <Flex alignItems="center" justifyContent="center" h="50vh">
