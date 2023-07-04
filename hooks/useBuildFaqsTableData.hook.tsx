@@ -116,7 +116,7 @@ export const useBuildFaqsTableData = (args: Props): ReturnProps => {
 
     const headers: HeaderItem[] = [
       {
-        text: "Clustered Missing Queries",
+        text: "Missing Queries",
         flex: 4,
         onClick: () => handleHeaderClick(SortKey.question),
         icon: renderChevron(SortKey.question),

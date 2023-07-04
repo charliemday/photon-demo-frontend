@@ -1,4 +1,4 @@
-import { Flex, HStack, ModalBody, Progress, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, HStack, ModalBody, Progress, Spinner, Stack, Text } from "@chakra-ui/react";
 import { useWordSeekJobsQuery, useWordSeekResultsQuery } from "api/engine.api";
 import { Modal } from "components/modals";
 import { Select } from "components/select";
@@ -8,6 +8,7 @@ import { Body } from "components/text";
 import { GREEN } from "config";
 import { useActiveTeam } from "hooks";
 import { FC, useEffect, useMemo, useState } from "react";
+import { GoLinkExternal } from "react-icons/go";
 import { WordSeekJob } from "types";
 import { ActionsTab } from "./actions.tab";
 import { DataTab } from "./data.tab";
@@ -167,7 +168,7 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
       }}
     >
       <Stack spacing={6}>
-        <HStack spacing={4}>
+        <HStack spacing={12}>
           <Stack>
             <Text fontSize="xl" fontWeight="semibold">
               {activeTeam?.name}
@@ -176,27 +177,45 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
           </Stack>
           {pages && pages?.length > 0 && (
             <Flex w="60%">
-              <Select
-                options={
-                  pages
-                    ? pages.map((page) => ({
-                        label: page,
-                        value: page,
-                      }))
-                    : []
-                }
-                onChange={({ value }) => {
-                  setSelectedPage(value);
-                }}
-                isLoading={isLoading}
-                placeholder="🔍 Search for a page..."
-                {...(selectedPage && {
-                  defaultValue: {
-                    label: selectedPage,
-                    value: selectedPage,
-                  },
-                })}
-              />
+              <HStack w="full">
+                <Select
+                  options={
+                    pages
+                      ? pages.map((page) => ({
+                          label: page,
+                          value: page,
+                        }))
+                      : []
+                  }
+                  onChange={({ value }) => {
+                    setSelectedPage(value);
+                  }}
+                  isLoading={isLoading}
+                  placeholder="🔍 Search for a page..."
+                  {...(selectedPage && {
+                    defaultValue: {
+                      label: selectedPage,
+                      value: selectedPage,
+                    },
+                  })}
+                />
+                {selectedPage && (
+                  <Box
+                    onClick={() => {
+                      if (selectedPage) {
+                        window.open(selectedPage, "_blank");
+                      }
+                    }}
+                    cursor="pointer"
+                    opacity={0.5}
+                    _hover={{
+                      opacity: 1,
+                    }}
+                  >
+                    <GoLinkExternal fontSize={32} />
+                  </Box>
+                )}
+              </HStack>
             </Flex>
           )}
         </HStack>
