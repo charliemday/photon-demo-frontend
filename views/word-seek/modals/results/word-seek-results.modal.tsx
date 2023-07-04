@@ -158,7 +158,14 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="6xl">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="6xl"
+      contentProps={{
+        maxW: "90vw",
+      }}
+    >
       <Stack spacing={6}>
         <HStack spacing={4}>
           <Stack>

@@ -1,12 +1,15 @@
-import { useClipboard, useToast } from "@chakra-ui/react";
+import { Box, Divider, Stack } from "@chakra-ui/react";
 import { useGenerateFaqsQuery } from "api/engine.api";
 import { SuggestionType } from "api/types";
-import { SimilarQueriesAccordion } from "components/accordion";
+import { ClusterAccordion, SimilarQueriesAccordion } from "components/accordion";
 import { RowDataItem, RowItemTypes } from "components/table";
 import { RowItem } from "components/table/table";
 import { HeaderItem } from "components/table/table.header";
-import { useEffect, useMemo, useState } from "react";
+import { Tag } from "components/tag";
+import { useMemo, useState } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { createClusters } from "utils";
+import { ClusterItem } from "utils/createCluster";
 import { useActiveTeam } from "./useActiveTeam.hook";
 
 interface ReturnProps {
@@ -34,15 +37,31 @@ enum SortDirection {
   desc = "desc",
 }
 
+const renderClusterValues = (
+  clusterItems: ClusterItem[],
+  prefix?: string,
+  key?: keyof ClusterItem,
+  color?: string,
+) =>
+  key ? (
+    <Stack h="full" alignItems="flex-start" mt={8} spacing={1}>
+      {clusterItems.map((item, index) => (
+        <Box key={index}>
+          <Tag key={index} bgColor={color} size="sm" text={`${prefix}${item[key]}`} />
+        </Box>
+      ))}
+    </Stack>
+  ) : null;
+
 export const useBuildFaqsTableData = (args: Props): ReturnProps => {
   const { resultId, minPosition, maxPosition } = args;
 
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection | null>(null);
 
+  const [clustersExpanded, setClustersExpanded] = useState<number[]>([]);
+
   const activeTeam = useActiveTeam();
-  const toast = useToast();
-  const { onCopy, value, setValue, hasCopied } = useClipboard("");
   const {
     data: faqData,
     isLoading,
@@ -56,17 +75,6 @@ export const useBuildFaqsTableData = (args: Props): ReturnProps => {
       skip: !activeTeam.id || !resultId,
     },
   );
-
-  useEffect(() => {
-    if (hasCopied) {
-      toast({
-        title: "Copied!",
-        description: `Copied "${value}" to clipboard`,
-        duration: 2000,
-        isClosable: true,
-      });
-    }
-  }, [hasCopied, toast, value]);
 
   const getTagColour = (position: number) => {
     if (position > 0 && position <= 5) {
@@ -108,7 +116,7 @@ export const useBuildFaqsTableData = (args: Props): ReturnProps => {
 
     const headers: HeaderItem[] = [
       {
-        text: "Missing Queries",
+        text: "Clustered Missing Queries",
         flex: 4,
         onClick: () => handleHeaderClick(SortKey.question),
         icon: renderChevron(SortKey.question),
@@ -134,12 +142,13 @@ export const useBuildFaqsTableData = (args: Props): ReturnProps => {
     return headers;
   }, [sortKey, sortDirection]);
 
-  const faqTableData = useMemo(() => {
+  const faqTableData = () => {
     if (!faqData?.data) {
       return [];
     }
 
     let dataToBuildFrom = faqData.data.faqs;
+    const dataClusters = faqData.data.clusters.faqs;
 
     // Handle pre-filtering
     if (minPosition && maxPosition) {
@@ -175,44 +184,104 @@ export const useBuildFaqsTableData = (args: Props): ReturnProps => {
       });
     }
 
-    return dataToBuildFrom?.map(({ id, question, impressions, clicks, position }) => {
-      const rowData: RowDataItem[] = [
-        {
-          value: () => (
-            <SimilarQueriesAccordion
-              title={question}
-              suggestionType={SuggestionType.FAQS}
-              suggestionPk={id}
-            />
-          ),
-          type: RowItemTypes.component,
-          flex: 4,
-          tooltip: false,
-        },
-        {
-          value: `👀 ${impressions}`,
-          type: RowItemTypes.tag,
-        },
-        {
-          value: `⭐ ${clicks}`,
-          type: RowItemTypes.tag,
-        },
-        {
-          value: `${position}`,
-          type: RowItemTypes.tag,
-          flex: 2,
-          tagColor: getTagColour(position),
-        },
-      ];
+    const clusters = createClusters(dataToBuildFrom, dataClusters);
 
-      return {
-        rowData,
-      };
-    });
-  }, [faqData?.data, minPosition, maxPosition, sortKey, sortDirection]);
+    return clusters?.map(
+      (
+        {
+          suggestionId,
+          clusterName,
+          clusterItems,
+          clusterTotals: { impressions, clicks, position },
+        },
+        index,
+      ) => {
+        const rowData: RowDataItem[] = [
+          {
+            value: () => (
+              <Stack>
+                <ClusterAccordion
+                  title={clusterName}
+                  clusterItems={clusterItems.map((i) => i.name)}
+                  isOpen={clustersExpanded.includes(index)}
+                  onToggle={() => {
+                    setClustersExpanded((prev) => {
+                      if (prev.includes(index)) {
+                        return prev.filter((i) => i !== index);
+                      } else {
+                        return [...prev, index];
+                      }
+                    });
+                  }}
+                />
+
+                {suggestionId ? (
+                  <Stack>
+                    {clustersExpanded.includes(index) ? <Divider color="#EEF1F6" /> : null}
+                    <SimilarQueriesAccordion
+                      suggestionType={SuggestionType.FAQS}
+                      suggestionPk={suggestionId}
+                    />
+                  </Stack>
+                ) : null}
+              </Stack>
+            ),
+            type: RowItemTypes.component,
+            flex: 4,
+            tooltip: false,
+          },
+          {
+            value: () => (
+              <Box>
+                {clustersExpanded.includes(index) ? (
+                  renderClusterValues(clusterItems, "👀 ", "impressions")
+                ) : (
+                  <Tag size="sm" text={`👀 ${impressions}`} />
+                )}
+              </Box>
+            ),
+            type: RowItemTypes.component,
+          },
+          {
+            value: () => (
+              <Box>
+                {clustersExpanded.includes(index) ? (
+                  renderClusterValues(clusterItems, "⭐ ", "clicks")
+                ) : (
+                  <Tag size="sm" text={`⭐ ${clicks}`} />
+                )}
+              </Box>
+            ),
+            type: RowItemTypes.component,
+          },
+          {
+            value: () => (
+              <Box>
+                {clustersExpanded.includes(index)
+                  ? renderClusterValues(
+                      clusterItems,
+                      "",
+                      "position",
+                      getTagColour(position as number),
+                    )
+                  : null}
+              </Box>
+            ),
+            type: RowItemTypes.component,
+            flex: 2,
+          },
+        ];
+
+        return {
+          rowData,
+        };
+      },
+    );
+  };
+  // faqData?.data, minPosition, maxPosition, sortKey, sortDirection
 
   return {
-    rowItems: faqTableData || [],
+    rowItems: faqTableData() || [],
     rowHeaders: faqTableHeaders,
     isLoading: isLoading,
     isError,

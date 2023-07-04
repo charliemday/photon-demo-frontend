@@ -18,7 +18,7 @@ import { FC, useEffect, useState } from "react";
 import { MoonLoader } from "react-spinners";
 
 interface Props {
-  title: string;
+  title?: string;
   subtitle?: string;
   suggestionType?: SuggestionType;
   suggestionPk?: number;
@@ -121,9 +121,11 @@ export const SimilarQueriesAccordion: FC<Props> = ({
 
   return (
     <Stack flexDir="column">
-      <Text fontSize="xs" fontWeight="semibold">
-        {title}
-      </Text>
+      {title && (
+        <Text fontSize="xs" fontWeight="semibold">
+          {title}
+        </Text>
+      )}
       <ChakraAccordion
         allowMultiple
         w="full"

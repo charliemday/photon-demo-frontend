@@ -75,6 +75,7 @@ export const SuggestionsTable: FC<Props> = ({
           p={3}
           cursor={row.onClick ? "pointer" : "default"}
           onClick={() => row.onClick && row.onClick()}
+          h="full"
         >
           <TableRowItem {...row} />
         </Box>
@@ -141,10 +142,6 @@ export const SuggestionsTable: FC<Props> = ({
     );
   };
 
-  const tableSize = showAll
-    ? (Math.max(rowItems?.length || 0, previewCount) + 1) * ITEM_HEIGHT + rowItems?.length
-    : 157;
-
   if (isLoading) {
     return (
       <Stack w="full">
@@ -167,7 +164,7 @@ export const SuggestionsTable: FC<Props> = ({
             {link}
           </Link>
         </Stack>
-        <Stack flex={4} spacing={0} h="auto">
+        <Stack flex={6} spacing={0} h="auto">
           {renderHeaders()}
           <Divider />
           {showAll ? renderAll() : renderPreview()}
