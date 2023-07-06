@@ -210,8 +210,8 @@ export const SimilarQueriesAccordion: FC<Props> = ({
                 ))}
               </HStack>
             ) : (
-              <Body pl={5} opacity={0.5}>
-                No similar queries found
+              <Body pl={6} opacity={0.5}>
+                No similar queries found on the page.
               </Body>
             )}
           </AccordionPanel>
