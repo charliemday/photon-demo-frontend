@@ -44,12 +44,14 @@ const columns = [
   }),
 ];
 
+const POSITION_LIMIT = 50;
+
 export const DataTab: FC<Props> = ({ data, exportData, jobGroup }) => {
   const csvData = useRef<any>([]);
 
   const tableData = useMemo(() => {
     if (data) {
-      return data.missingKeywords.map((i) => i);
+      return data.missingKeywords.map((i) => i).filter((i) => i.position < POSITION_LIMIT);
     }
 
     return [];
