@@ -8,6 +8,7 @@ import {
   HStack,
   Stack,
   Text,
+  useClipboard,
   useToast,
 } from "@chakra-ui/react";
 import { useFindSimilarKeywordsMutation, useRetrieveSimilarKeywordsQuery } from "api/engine.api";
@@ -16,6 +17,7 @@ import { Tag } from "components/tag";
 import { Body } from "components/text";
 import { FC, useEffect, useState } from "react";
 import { MoonLoader } from "react-spinners";
+import { typeCheckError } from "utils";
 
 interface Props {
   title?: string;
@@ -33,6 +35,9 @@ export const SimilarQueriesAccordion: FC<Props> = ({
   const [similarKeywordsId, setSimilarKeywordsId] = useState<number | null>(null);
   const [isInProgress, setIsInProgress] = useState(false);
   const [similarKeywordData, setSimilarKeywordData] = useState<string[]>([]);
+
+  const { onCopy, hasCopied, setValue } = useClipboard("");
+
   const toast = useToast();
 
   const [findSimilarKeywordsReq, { isLoading }] = useFindSimilarKeywordsMutation();
@@ -47,10 +52,20 @@ export const SimilarQueriesAccordion: FC<Props> = ({
     );
 
   useEffect(() => {
+    if (hasCopied) {
+      toast({
+        title: "Copied to clipboard",
+        status: "info",
+        duration: 1000,
+        isClosable: true,
+      });
+    }
+  }, [hasCopied, toast]);
+
+  useEffect(() => {
     /**
      * A polling function that checks if the similar keywords are ready
      */
-
     let count = 0; // Max 30 times to request polling
     const maxCount = 30;
 
@@ -79,7 +94,7 @@ export const SimilarQueriesAccordion: FC<Props> = ({
 
   useEffect(() => {
     /**
-     * If the similar keywords are leady, set the data
+     * If the similar keywords are ready, set the data
      */
     if (similarKeywordsAPIData?.similarKeywords) {
       setSimilarKeywordData(similarKeywordsAPIData.similarKeywords);
@@ -115,6 +130,15 @@ export const SimilarQueriesAccordion: FC<Props> = ({
           if (!data) return;
           setSimilarKeywordData(data.similarKeywords);
         }
+      } else if ("error" in response) {
+        let error = response.error;
+        toast({
+          title: "Error",
+          description: typeCheckError(error) || "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       }
     }
   };
@@ -172,7 +196,15 @@ export const SimilarQueriesAccordion: FC<Props> = ({
               <HStack flexWrap="wrap">
                 <div />
                 {similarKeywordData.map((item, index) => (
-                  <Flex key={index} py={1}>
+                  <Flex
+                    key={index}
+                    py={1}
+                    cursor="pointer"
+                    onClick={() => {
+                      setValue(item);
+                      onCopy();
+                    }}
+                  >
                     <Tag text={item} fontSize="xs" size="sm" showTooltip fontWeight="medium" />
                   </Flex>
                 ))}
