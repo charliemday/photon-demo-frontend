@@ -1,10 +1,19 @@
 import { CompetitorInterface } from "forms/competitors";
 import { ExistingContent, Faq, Team, User, WordSeekItem, WordSeekJobType } from "types";
 
+export interface SuggestionCluster {
+    cluster: string[];
+    name: string;
+}
+
 export interface GenerateFaqsResponse {
     data: {
         faqs: Faq[];
         existing: ExistingContent[];
+        clusters: {
+            faqs: SuggestionCluster[];
+            existing: SuggestionCluster[];
+        }
     }
 }
 

@@ -44,12 +44,23 @@ const columns = [
   }),
 ];
 
+const POSITION_LIMIT = 50;
+const KEYWORD_LIMIT = 40;
+
 export const DataTab: FC<Props> = ({ data, exportData, jobGroup }) => {
   const csvData = useRef<any>([]);
 
   const tableData = useMemo(() => {
     if (data) {
-      return data.missingKeywords.map((i) => i);
+      /**
+       * We only want to show the top 40 keywords sorted
+       * by position and the position must be less than 50
+       */
+      return data.missingKeywords
+        .map((i) => i)
+        .filter((i) => i.position < POSITION_LIMIT)
+        .sort((a, b) => b.position - a.position)
+        .slice(0, KEYWORD_LIMIT);
     }
 
     return [];

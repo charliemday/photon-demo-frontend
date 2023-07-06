@@ -18,8 +18,6 @@ interface Props {
   onLinkClick?: () => void;
 }
 
-const ITEM_HEIGHT = 39;
-
 export const SuggestionsTable: FC<Props> = ({
   title,
   description,
@@ -65,8 +63,9 @@ export const SuggestionsTable: FC<Props> = ({
   const renderRows = (row: RowDataItem[]) => (
     <HStack
       justifyContent="space-evenly"
+      alignItems="center"
       divider={<Divider orientation="vertical" />}
-      minH={rowItems?.length < previewCount ? "full" : ITEM_HEIGHT}
+      flex={1}
     >
       {row.map((row, key) => (
         <Box
@@ -75,6 +74,8 @@ export const SuggestionsTable: FC<Props> = ({
           p={3}
           cursor={row.onClick ? "pointer" : "default"}
           onClick={() => row.onClick && row.onClick()}
+          h="full"
+          verticalAlign="center"
         >
           <TableRowItem {...row} />
         </Box>
@@ -141,10 +142,6 @@ export const SuggestionsTable: FC<Props> = ({
     );
   };
 
-  const tableSize = showAll
-    ? (Math.max(rowItems?.length || 0, previewCount) + 1) * ITEM_HEIGHT + rowItems?.length
-    : 157;
-
   if (isLoading) {
     return (
       <Stack w="full">
@@ -167,7 +164,7 @@ export const SuggestionsTable: FC<Props> = ({
             {link}
           </Link>
         </Stack>
-        <Stack flex={4} spacing={0} h="auto">
+        <Stack flex={6} spacing={0} h="auto">
           {renderHeaders()}
           <Divider />
           {showAll ? renderAll() : renderPreview()}
