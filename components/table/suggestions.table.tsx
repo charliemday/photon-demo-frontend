@@ -1,6 +1,8 @@
 import { Box, Divider, Flex, HStack, Skeleton, Stack } from "@chakra-ui/react";
 import { Body, Heading, Link } from "components/text";
+import { BRAND_COLOR } from "config";
 import { FC, useState } from "react";
+import { IoWarning } from "react-icons/io5";
 import { RowItem } from "./table";
 import { HeaderItem } from "./table.header";
 import { RowDataItem, TableRowItem } from "./table.row-item";
@@ -16,6 +18,7 @@ interface Props {
   isLoading: boolean;
   emptyMessage?: string;
   onLinkClick?: () => void;
+  errorMessage?: string | null;
 }
 
 export const SuggestionsTable: FC<Props> = ({
@@ -26,6 +29,7 @@ export const SuggestionsTable: FC<Props> = ({
   rowItems,
   isLoading,
   comingSoon,
+  errorMessage,
   onLinkClick,
   previewCount = 3,
   emptyMessage = "No suggestions found",
@@ -142,10 +146,21 @@ export const SuggestionsTable: FC<Props> = ({
     );
   };
 
+  if (errorMessage) {
+    return (
+      <Stack border="solid 1px #EEF1F6" w="full" borderRadius="md" alignItems="center" py={12}>
+        <IoWarning size={26} color="#EC8884" />
+        <Body color="red.300" fontSize="md">
+          {errorMessage}
+        </Body>
+      </Stack>
+    );
+  }
+
   if (isLoading) {
     return (
       <Stack w="full">
-        <Skeleton height={200} borderRadius="lg" />
+        <Skeleton height={150} borderRadius="lg" startColor={BRAND_COLOR} />
       </Stack>
     );
   }

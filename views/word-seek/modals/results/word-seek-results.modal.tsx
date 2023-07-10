@@ -38,6 +38,7 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
       skip: !activeTeam?.id || !isOpen,
     },
   );
+
   useEffect(() => {
     if (!isLoadingWordSeekJobs && wordSeekJobs) {
       const job = wordSeekJobs.find((job) => job.jobGroup === jobGroup);
@@ -59,6 +60,20 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
     },
   );
 
+  const withMissingKeywords = useMemo(
+    () => wordSeekResults?.filter((i) => i.missingKeywords.length > 0),
+    [wordSeekResults],
+  );
+
+  const suggestedPages = useMemo(() => {
+    if (!withMissingKeywords || withMissingKeywords?.length < 2) return null;
+
+    const randonIndex1 = Math.floor(Math.random() * withMissingKeywords?.length);
+    const randonIndex2 = Math.floor(Math.random() * withMissingKeywords?.length);
+
+    return [withMissingKeywords?.[randonIndex1], withMissingKeywords?.[randonIndex2]];
+  }, [withMissingKeywords]);
+
   useEffect(() => {
     if (isOpen) {
       refetch();
@@ -70,7 +85,15 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jobGroup]);
 
-  const pages = wordSeekResults?.map((res) => res.page);
+  const pages = useMemo(() => {
+    if (wordSeekResults) {
+      return [...wordSeekResults]
+        ?.sort((a, b) => b.missingKeywords.length - a.missingKeywords.length)
+        .map((res) => res.page);
+    }
+
+    return [];
+  }, [wordSeekResults]);
 
   const tableData = useMemo(() => {
     const item = wordSeekResults?.find((i) => i.page === selectedPage);
@@ -189,6 +212,7 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
                   }
                   onChange={({ value }) => {
                     setSelectedPage(value);
+                    setActiveTab(TAB.data);
                   }}
                   isLoading={isLoading}
                   placeholder="🔍 Search for a page..."
@@ -249,6 +273,27 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
             <Stack m="auto" w="full" textAlign="center" alignItems="center">
               <Text fontSize="xl">👆</Text>
               <Body fontSize="lg" w="50%">{`Select a page to see the results...`}</Body>
+              {suggestedPages && (
+                <Body fontSize="lg">
+                  or start with{" "}
+                  <Body
+                    as="a"
+                    onClick={() => {
+                      if (suggestedPages) {
+                        setSelectedPage(suggestedPages[1].page);
+                      }
+                    }}
+                    cursor="pointer"
+                    color="blue.500"
+                    _hover={{
+                      textDecoration: "underline",
+                    }}
+                    fontSize="lg"
+                  >
+                    this one
+                  </Body>
+                </Body>
+              )}
             </Stack>
           </Flex>
         ) : tableData?.length === 0 ? (
@@ -258,6 +303,43 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
               <Text fontSize="lg" w="50%">
                 {`No missing keywords found for this page. This means this page is already optimized for the keywords you are targeting.`}
               </Text>
+              {suggestedPages && (
+                <Text fontSize="lg" w="50%">
+                  Try{" "}
+                  <Text
+                    as="a"
+                    onClick={() => {
+                      if (suggestedPages) {
+                        setSelectedPage(suggestedPages[0].page);
+                      }
+                    }}
+                    cursor="pointer"
+                    color="blue.500"
+                    _hover={{
+                      textDecoration: "underline",
+                    }}
+                  >
+                    this page
+                  </Text>{" "}
+                  or{" "}
+                  <Text
+                    as="a"
+                    onClick={() => {
+                      if (suggestedPages) {
+                        setSelectedPage(suggestedPages[1].page);
+                      }
+                    }}
+                    cursor="pointer"
+                    color="blue.500"
+                    _hover={{
+                      textDecoration: "underline",
+                    }}
+                  >
+                    another page
+                  </Text>
+                  .
+                </Text>
+              )}
             </Stack>
           </Flex>
         ) : (

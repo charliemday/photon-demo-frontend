@@ -12,7 +12,7 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
   const [maxPosition, setMaxPosition] = useState<number | null>(null);
   const [minPosition, setMinPosition] = useState<number | null>(null);
 
-  const { rowHeaders, rowItems, isLoading } = useBuildFaqsTableData({
+  const { rowHeaders, rowItems, isLoading, isError } = useBuildFaqsTableData({
     resultId,
     maxPosition,
     minPosition,
@@ -22,6 +22,7 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
     rowHeaders: existingRowHeaders,
     rowItems: existingRowItems,
     isLoading: isLoadingExisting,
+    isError: isErrorExisting,
   } = useBuildExistingContentTableData({
     resultId,
     maxPosition,
@@ -62,6 +63,7 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
         description="Add a short answer to these missing questions as an FAQ at the bottom of the page"
         link="Find out more"
         isLoading={isLoading}
+        errorMessage={isError ? "Unable to load FAQs" : null}
         emptyMessage="No FAQs suggested"
         onLinkClick={() => handleLinkClick("https://wordseek.getbaser.com/faqs/adding-faqs")}
       />
@@ -71,6 +73,7 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
         title="Add Content"
         description="You can increase the semantic depth of your page by adding missing queries to the relevant section"
         link="Find out more"
+        errorMessage={isErrorExisting ? "Unable to load Existing Content" : null}
         isLoading={isLoadingExisting}
         emptyMessage="No Suggested Content to Add"
         onLinkClick={() => handleLinkClick("https://wordseek.getbaser.com/faqs/adding-content")}
