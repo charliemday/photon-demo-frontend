@@ -76,8 +76,6 @@ export const InsertionQueryTab: FC<Props> = ({ insertQueryId, onBack, isLoading,
 
   const renderLoading = () => (
     <Stack alignItems="center" py={24} spacing={6}>
-      {/* <Skeleton height="60px" w="full" borderRadius="md" />
-      <Skeleton height="60px" w="full" borderRadius="md" /> */}
       <Body fontSize="sm">
         👀 Finding places to insert your query, this will only take a minute...
       </Body>

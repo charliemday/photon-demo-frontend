@@ -83,7 +83,7 @@ export const InsertTextSwipe: FC<Props> = ({ sentences, originalSentences, query
           onClick={() => setSentenceRandomIndex(Math.floor(Math.random() * sentences.length))}
           fontSize="sm"
         >
-          🤔 Try another
+          {`🤔 This doesn't look right, try another`}
         </Body>
         <BsArrowRight />
       </HStack>
