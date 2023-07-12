@@ -13,6 +13,8 @@ export const apiUrls = {
     FIND_SIMILAR_KEYWORDS: "wordseek/find-similar-keywords/",
     RETRIEVE_SIMILAR_KEYWORDS: (similarKeywordId: number) => `wordseek/similar-keywords/${similarKeywordId}/`,
     UPDATE_MISSPELLED_KEYWORDS: "wordseek/update-misspelled-keywords/",
+    GENERATE_INSERT_QUERIES: "wordseek/generate-insert-queries/",
+    RETRIEVE_INSERT_QUERY: (insertQueryId: number) => `wordseek/insert-query/${insertQueryId}/`,
     // Engine
     MISSING_KEYWORDS: 'engine/missing-keywords-job',
     PEOPLE_ALSO_ASK: 'engine/people-also-ask/',

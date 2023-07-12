@@ -2,18 +2,24 @@ import {
   CreateKeywordInsightsOrderBody,
   GenerateFaqsQueryParams,
   GenerateFaqsResponse,
-  GenerateKIInputBody,
+  GenerateInsertQueriesBody, GenerateInsertQueriesResponse, GenerateKIInputBody,
   GenerateSeedKeywordsBody,
   KeywordInsightsOrder,
   KeywordInsightsResult,
   KeywordInsightsResultsRequest,
   PeopleAlsoAskBody,
-  SeedKeywordsBody, SimilarKeywordsBody, SimilarKeywordsQueryParams, SimilarKeywordsResponse, UpdateMisspelledKeywordsBody, WordSeekBody, WordSeekResultsResponse
+  SeedKeywordsBody,
+  SimilarKeywordsBody,
+  SimilarKeywordsQueryParams,
+  SimilarKeywordsResponse,
+  UpdateMisspelledKeywordsBody,
+  WordSeekBody,
+  WordSeekResultsResponse
 } from "api/types";
 import { camelizeKeys, decamelizeKeys } from "humps";
 import { ConvertToSnakeCase, WordSeekItem, WordSeekJob } from "types";
 import { apiUrls, baseApi } from ".";
-import { SimilarKeywords } from "./types/engine.types";
+import { InsertQuery, SimilarKeywords } from "./types/engine.types";
 
 // Define a service using a base URL and expected endpoints
 export const engineApi = baseApi.injectEndpoints({
@@ -68,10 +74,7 @@ export const engineApi = baseApi.injectEndpoints({
     /**
      * Fetches the WordSeek results
      */
-    wordSeekResults: builder.query<
-      WordSeekItem[],
-      { teamId: number; jobGroup?: number | null }
-    >({
+    wordSeekResults: builder.query<WordSeekItem[], { teamId: number; jobGroup?: number | null }>({
       query: ({ teamId, jobGroup }) => ({
         url: apiUrls.WORD_SEEK_RESULTS(teamId, jobGroup),
       }),
@@ -183,6 +186,29 @@ export const engineApi = baseApi.injectEndpoints({
         method: "POST",
       }),
     }),
+    /**
+     * Generates insert queries
+     */
+    generateInsertQueries: builder.mutation<GenerateInsertQueriesResponse, GenerateInsertQueriesBody>({
+      query: (body) => ({
+        url: apiUrls.GENERATE_INSERT_QUERIES,
+        method: "POST",
+        body: decamelizeKeys(body),
+      }),
+      transformResponse: (response: ConvertToSnakeCase<GenerateInsertQueriesResponse>) =>
+        camelizeKeys(response) as GenerateInsertQueriesResponse,
+    }),
+    /**
+     * Retrieves an insert query
+     */
+    retrieveInsertQuery: builder.query<InsertQuery, { insertQueryId: number }>({
+      query: ({ insertQueryId }) => ({
+        url: apiUrls.RETRIEVE_INSERT_QUERY(insertQueryId),
+      }),
+      transformResponse: (response: ConvertToSnakeCase<InsertQuery>) =>
+        camelizeKeys(response) as InsertQuery,
+    }),
+
   }),
 });
 
@@ -204,5 +230,7 @@ export const {
   useGenerateFaqsQuery,
   useFindSimilarKeywordsMutation,
   useRetrieveSimilarKeywordsQuery,
-  useUpdateMisspelledKeywordsMutation
+  useUpdateMisspelledKeywordsMutation,
+  useGenerateInsertQueriesMutation,
+  useRetrieveInsertQueryQuery
 } = engineApi;

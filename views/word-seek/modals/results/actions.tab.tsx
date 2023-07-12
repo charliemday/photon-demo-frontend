@@ -6,9 +6,10 @@ import { FC, useState } from "react";
 
 interface Props {
   resultId: number;
+  onInsertClick: (query: string) => void;
 }
 
-export const ActionsTab: FC<Props> = ({ resultId }) => {
+export const ActionsTab: FC<Props> = ({ resultId, onInsertClick }) => {
   const [maxPosition, setMaxPosition] = useState<number | null>(null);
   const [minPosition, setMinPosition] = useState<number | null>(null);
 
@@ -27,6 +28,7 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
     resultId,
     maxPosition,
     minPosition,
+    onClick: onInsertClick,
   });
 
   const handleLinkClick = (link: string) => window.open(link, "_blank");
@@ -78,18 +80,6 @@ export const ActionsTab: FC<Props> = ({ resultId }) => {
         emptyMessage="No Suggested Content to Add"
         onLinkClick={() => handleLinkClick("https://wordseek.getbaser.com/faqs/adding-content")}
       />
-      {/* Uncomment when ready */}
-      {/* <SuggestionsTable
-        rowHeaders={rowHeaders}
-        rowItems={[]}
-        title="New Section or Page"
-        description="You might consider a new content section or a brand new page based around less relevant queries "
-        link="Find out more"
-        isLoading={isLoading}
-        emptyMessage="No suggested New Content"
-        comingSoon
-        onLinkClick={() => handleLinkClick("https://wordseek.getbaser.com/faqs/new-pages")}
-      /> */}
     </Stack>
   );
 };

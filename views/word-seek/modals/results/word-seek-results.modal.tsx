@@ -1,5 +1,19 @@
-import { Box, Flex, HStack, ModalBody, Progress, Spinner, Stack, Text } from "@chakra-ui/react";
-import { useWordSeekJobsQuery, useWordSeekResultsQuery } from "api/engine.api";
+import {
+  Box,
+  Flex,
+  HStack,
+  ModalBody,
+  Progress,
+  Spinner,
+  Stack,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
+import {
+  useGenerateInsertQueriesMutation,
+  useWordSeekJobsQuery,
+  useWordSeekResultsQuery,
+} from "api/engine.api";
 import { Modal } from "components/modals";
 import { Select } from "components/select";
 import { Tab } from "components/tab";
@@ -12,6 +26,7 @@ import { GoLinkExternal } from "react-icons/go";
 import { WordSeekJob } from "types";
 import { ActionsTab } from "./actions.tab";
 import { DataTab } from "./data.tab";
+import { InsertionQueryTab } from "./insert-query.tab";
 
 interface Props {
   isOpen: boolean;
@@ -25,10 +40,14 @@ enum TAB {
 }
 
 export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) => {
+  const toast = useToast();
   const [selectedPage, setSelectedPage] = useState<string | null>(null);
   const [wordSeekJob, setWordSeekJob] = useState<WordSeekJob | null>(null);
   const [activeTab, setActiveTab] = useState<TAB>(TAB.data);
   const activeTeam = useActiveTeam();
+  const [generateInsertQueries, { isLoading: isGeneratingInsertQueries }] =
+    useGenerateInsertQueriesMutation();
+  const [insertQueryId, setInsertQueryId] = useState<number | null>(null);
 
   const { data: wordSeekJobs, isLoading: isLoadingWordSeekJobs } = useWordSeekJobsQuery(
     {
@@ -131,13 +150,36 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
     return null;
   }, [wordSeekResults, selectedPage]);
 
+  const handleInsertionClick = async (query: string) => {
+    /**
+     * Generates the insert queries for the selected result
+     */
+    if (!selectedResult?.id) return;
+
+    const response = await generateInsertQueries({
+      resultId: selectedResult?.id,
+      query,
+    });
+
+    if ("data" in response && response.data) {
+      setInsertQueryId(response.data.id);
+    } else {
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        status: "error",
+        duration: 5000,
+      });
+    }
+  };
+
   const renderTab = () => {
     if (activeTab === TAB.data) {
       return <DataTab data={selectedResult} exportData={exportData} jobGroup={jobGroup} />;
     }
 
     if (selectedResult) {
-      return <ActionsTab resultId={selectedResult?.id} />;
+      return <ActionsTab resultId={selectedResult?.id} onInsertClick={handleInsertionClick} />;
     }
 
     return null;
@@ -181,88 +223,26 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
     return <Tag text={"✅ Complete"} bgColor={GREEN} />;
   };
 
-  return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      size="6xl"
-      contentProps={{
-        maxW: "90vw",
-      }}
-    >
-      <Stack spacing={6}>
-        <HStack spacing={12}>
-          <Stack>
-            <Text fontSize="xl" fontWeight="semibold">
-              {activeTeam?.name}
-            </Text>
-            <Flex alignItems="center">{renderSubheader()}</Flex>
-          </Stack>
-          {pages && pages?.length > 0 && (
-            <Flex w="60%">
-              <HStack w="full">
-                <Select
-                  options={
-                    pages
-                      ? pages.map((page) => ({
-                          label: page,
-                          value: page,
-                        }))
-                      : []
-                  }
-                  onChange={({ value }) => {
-                    setSelectedPage(value);
-                    setActiveTab(TAB.data);
-                  }}
-                  isLoading={isLoading}
-                  placeholder="🔍 Search for a page..."
-                  {...(selectedPage && {
-                    defaultValue: {
-                      label: selectedPage,
-                      value: selectedPage,
-                    },
-                  })}
-                />
-                {selectedPage && (
-                  <Box
-                    onClick={() => {
-                      if (selectedPage) {
-                        window.open(selectedPage, "_blank");
-                      }
-                    }}
-                    cursor="pointer"
-                    opacity={0.5}
-                    _hover={{
-                      opacity: 1,
-                    }}
-                  >
-                    <GoLinkExternal fontSize={32} />
-                  </Box>
-                )}
-              </HStack>
-            </Flex>
-          )}
-        </HStack>
-
-        {!isLoading && selectedPage && tableData?.length ? (
-          <HStack justifyContent="space-between" alignItems="flex-end">
+  const renderStep1 = () => (
+    <>
+      {!isLoading && selectedPage && tableData?.length ? (
+        <HStack justifyContent="space-between" alignItems="flex-end">
+          <HStack>
             <HStack>
-              <HStack>
-                <Tab
-                  label="Missing Query Data"
-                  onClick={() => setActiveTab(TAB.data)}
-                  isActive={activeTab === TAB.data}
-                />
-                <Tab
-                  label="Optimisation Suggestions"
-                  onClick={() => setActiveTab(TAB.suggestions)}
-                  isActive={activeTab === TAB.suggestions}
-                />
-              </HStack>
+              <Tab
+                label="Missing Query Data"
+                onClick={() => setActiveTab(TAB.data)}
+                isActive={activeTab === TAB.data}
+              />
+              <Tab
+                label="Optimisation Suggestions"
+                onClick={() => setActiveTab(TAB.suggestions)}
+                isActive={activeTab === TAB.suggestions}
+              />
             </HStack>
           </HStack>
-        ) : null}
-      </Stack>
+        </HStack>
+      ) : null}
       <ModalBody overflowY="hidden" pt={6}>
         {isLoading ? (
           <Flex alignItems="center" justifyContent="center" h="40vh">
@@ -346,6 +326,85 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
           renderTab()
         )}
       </ModalBody>
+    </>
+  );
+
+  const renderStep2 = () => (
+    <InsertionQueryTab
+      insertQueryId={insertQueryId}
+      onBack={() => {
+        setInsertQueryId(null);
+      }}
+      isLoading={isGeneratingInsertQueries}
+      url={selectedPage || ""}
+    />
+  );
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="6xl"
+      contentProps={{
+        maxW: "90vw",
+      }}
+    >
+      <Stack spacing={6} mb={6}>
+        <HStack spacing={12}>
+          <Stack>
+            <Text fontSize="xl" fontWeight="semibold">
+              {activeTeam?.name}
+            </Text>
+            <Flex alignItems="center">{renderSubheader()}</Flex>
+          </Stack>
+          {pages && pages?.length > 0 && (
+            <Flex w="60%">
+              <HStack w="full">
+                <Select
+                  options={
+                    pages
+                      ? pages.map((page) => ({
+                          label: page,
+                          value: page,
+                        }))
+                      : []
+                  }
+                  onChange={({ value }) => {
+                    setSelectedPage(value);
+                    setActiveTab(TAB.data);
+                  }}
+                  isLoading={isLoading}
+                  placeholder="🔍 Search for a page..."
+                  {...(selectedPage && {
+                    defaultValue: {
+                      label: selectedPage,
+                      value: selectedPage,
+                    },
+                  })}
+                />
+                {selectedPage && (
+                  <Box
+                    onClick={() => {
+                      if (selectedPage) {
+                        window.open(selectedPage, "_blank");
+                      }
+                    }}
+                    cursor="pointer"
+                    opacity={0.5}
+                    _hover={{
+                      opacity: 1,
+                    }}
+                  >
+                    <GoLinkExternal fontSize={32} />
+                  </Box>
+                )}
+              </HStack>
+            </Flex>
+          )}
+        </HStack>
+
+        {insertQueryId ? renderStep2() : renderStep1()}
+      </Stack>
     </Modal>
   );
 };

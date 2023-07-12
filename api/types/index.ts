@@ -1,10 +1,9 @@
-export { MisspelledKeywordAction, SimilarKeywordsStatus, SuggestionType } from "./engine.types";
+export { MisspelledKeywordAction, ProgressStatus, SuggestionType } from "./engine.types";
 export type {
     CreateKeywordInsightsOrderBody,
     CreateKeywordsThemesBody,
     GenerateFaqsQueryParams,
-    GenerateFaqsResponse,
-    GenerateKIInputBody,
+    GenerateFaqsResponse, GenerateInsertQueriesBody, GenerateInsertQueriesResponse, GenerateKIInputBody,
     GenerateSeedKeywordsBody,
     KeywordInsightsOrder,
     KeywordInsightsResult,

@@ -1,10 +1,9 @@
-import { useClipboard, useToast } from "@chakra-ui/react";
+import { Stack, useClipboard, useToast } from "@chakra-ui/react";
 import { useGenerateFaqsQuery } from "api/engine.api";
-import { SuggestionType } from "api/types";
-import { SimilarQueriesAccordion } from "components/accordion";
 import { RowDataItem, RowItemTypes } from "components/table";
 import { RowItem } from "components/table/table";
 import { HeaderItem } from "components/table/table.header";
+import { Body } from "components/text";
 import { useEffect, useMemo, useState } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { useActiveTeam } from "./useActiveTeam.hook";
@@ -20,6 +19,7 @@ interface Props {
   resultId: number;
   maxPosition?: number | null;
   minPosition?: number | null;
+  onClick: (query: string) => void;
 }
 
 enum SortKey {
@@ -35,7 +35,7 @@ enum SortDirection {
 }
 
 export const useBuildExistingContentTableData = (args: Props): ReturnProps => {
-  const { resultId, minPosition, maxPosition } = args;
+  const { resultId, minPosition, maxPosition, onClick } = args;
 
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection | null>(null);
@@ -179,11 +179,23 @@ export const useBuildExistingContentTableData = (args: Props): ReturnProps => {
       const rowData: RowDataItem[] = [
         {
           value: () => (
-            <SimilarQueriesAccordion
-              title={query}
-              suggestionType={SuggestionType.EXISTING_CONTENT}
-              suggestionPk={id}
-            />
+            <Stack justifyContent="center" spacing={4}>
+              <Body fontSize="xs" fontWeight="semibold">
+                {query}
+              </Body>
+              <Body
+                fontSize="xs"
+                color="#6062F6"
+                fontWeight="semibold"
+                _hover={{
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                }}
+                onClick={() => onClick(query)}
+              >
+                Where can I insert this onto the page?
+              </Body>
+            </Stack>
           ),
           type: RowItemTypes.component,
           flex: 4,
