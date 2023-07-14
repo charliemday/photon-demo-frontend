@@ -1,5 +1,4 @@
 import {
-    AhrefsRequestData,
     AppSumoDetailsResponse,
     CompareConsoleData,
     GetAuthUrlRequest,
@@ -11,10 +10,10 @@ import {
     GoogleClientResponse,
     SearchConsoleSitesResponse
 } from "api/types";
-import { authUrls, vendorUrls } from "api/urls";
+import { authUrls, engineUrls, vendorUrls } from "api/urls";
 import { camelizeKeys } from "humps";
 import { ConvertToSnakeCase } from "types";
-import { apiUrls, baseApi, TAG_TYPES } from ".";
+import { baseApi, TAG_TYPES } from ".";
 
 const {
     APPSUMO_DETAILS,
@@ -23,6 +22,9 @@ const {
     GOOGLE_INTERNAL_CLIENT,
     POPULATE_REPORTS,
 } = vendorUrls;
+const {
+    MISSING_KEYWORDS,
+} = engineUrls;
 
 // Define a service using a base URL and expected endpoints
 export const vendorApi = baseApi.injectEndpoints({
@@ -65,7 +67,7 @@ export const vendorApi = baseApi.injectEndpoints({
         }),
         compareSearchConsoleReport: builder.mutation<null, CompareConsoleData>({
             query: (data) => {
-                let url = apiUrls.MISSING_KEYWORDS;
+                let url = MISSING_KEYWORDS;
                 if (data.teamIds) {
                     url = url + `?team_ids=[${data.teamIds.join(",")}]`;
                 }
@@ -95,16 +97,6 @@ export const vendorApi = baseApi.injectEndpoints({
                 }
                 return response;
             },
-        }),
-        /**
-         * Uploads ahrefs report to the server
-         */
-        uploadAhrefsReport: builder.mutation<null, AhrefsRequestData>({
-            query: (data) => ({
-                url: apiUrls.AHREFS,
-                method: "POST",
-                body: data,
-            }),
         }),
         /**
          * Populates search console reports for all sites
@@ -159,7 +151,6 @@ export const {
     useGetSearchConsoleSitesQuery,
     useCompareSearchConsoleReportMutation,
     useGetSearchConsolePagesQuery,
-    useUploadAhrefsReportMutation,
     usePopulateSearchConsoleReportsMutation,
     useGetGoogleExternalClientQuery,
     useGetGoogleInternalClientQuery,

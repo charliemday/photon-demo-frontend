@@ -2,18 +2,45 @@ import {
   CreateKeywordInsightsOrderBody,
   GenerateFaqsQueryParams,
   GenerateFaqsResponse,
+  GenerateInsertQueriesBody,
+  GenerateInsertQueriesResponse,
   GenerateKIInputBody,
   GenerateSeedKeywordsBody,
   KeywordInsightsOrder,
   KeywordInsightsResult,
   KeywordInsightsResultsRequest,
   PeopleAlsoAskBody,
-  SeedKeywordsBody, SimilarKeywordsBody, SimilarKeywordsQueryParams, SimilarKeywordsResponse, UpdateMisspelledKeywordsBody, WordSeekBody, WordSeekResultsResponse
+  SimilarKeywordsBody,
+  SimilarKeywordsQueryParams,
+  SimilarKeywordsResponse,
+  UpdateMisspelledKeywordsBody,
+  WordSeekBody,
+  WordSeekResultsResponse
 } from "api/types";
+import { engineUrls } from "api/urls";
 import { camelizeKeys, decamelizeKeys } from "humps";
 import { ConvertToSnakeCase, WordSeekItem, WordSeekJob } from "types";
-import { apiUrls, baseApi } from ".";
-import { SimilarKeywords } from "./types/engine.types";
+import { baseApi } from ".";
+import { InsertQuery, SimilarKeywords } from "./types/engine.types";
+
+const {
+  GENERATE_SEED_KEYWORDS,
+  PEOPLE_ALSO_ASK,
+  GENERATE_KI_INPUT,
+  WORD_SEEK,
+  WORD_SEEK_RESULTS,
+  KEYWORD_INSIGHTS_RESULTS,
+  CREATE_KEYWORD_INSIGHTS_ORDER,
+  KEYWORD_INSIGHTS_ORDER,
+  WORD_SEEK_JOBS,
+  WORD_SEEK_RESUME,
+  GENERATE_FAQS,
+  FIND_SIMILAR_KEYWORDS,
+  RETRIEVE_SIMILAR_KEYWORDS,
+  UPDATE_MISSPELLED_KEYWORDS,
+  GENERATE_INSERT_QUERIES,
+  RETRIEVE_INSERT_QUERY,
+} = engineUrls;
 
 // Define a service using a base URL and expected endpoints
 export const engineApi = baseApi.injectEndpoints({
@@ -21,26 +48,17 @@ export const engineApi = baseApi.injectEndpoints({
     /**
      * API for uploading the Ahrefs CSV
      */
-
-    // // TODO: This might be the "unused" endpoint (keyword-research)
-    seedKeywords: builder.mutation<undefined, SeedKeywordsBody>({
-      query: (body) => ({
-        url: apiUrls.SEED_KEYWORDS,
-        method: "POST",
-        body: decamelizeKeys(body),
-      }),
-    }),
     // Old Version (e.g. Step 1.1)
     generateSeedKeywords: builder.mutation<undefined, GenerateSeedKeywordsBody>({
       query: (body) => ({
-        url: apiUrls.GENERATE_SEED_KEYWORDS,
+        url: GENERATE_SEED_KEYWORDS,
         method: "POST",
         body: decamelizeKeys(body),
       }),
     }),
     peopleAlsoAsk: builder.mutation<undefined, PeopleAlsoAskBody>({
       query: (body) => ({
-        url: apiUrls.PEOPLE_ALSO_ASK,
+        url: PEOPLE_ALSO_ASK,
         method: "POST",
         body,
       }),
@@ -50,7 +68,7 @@ export const engineApi = baseApi.injectEndpoints({
      */
     generateKIInput: builder.mutation<undefined, GenerateKIInputBody>({
       query: (body) => ({
-        url: apiUrls.GENERATE_KI_INPUT,
+        url: GENERATE_KI_INPUT,
         method: "POST",
         body: decamelizeKeys(body),
       }),
@@ -60,7 +78,7 @@ export const engineApi = baseApi.injectEndpoints({
      */
     wordSeek: builder.mutation<undefined, WordSeekBody>({
       query: (body) => ({
-        url: apiUrls.WORD_SEEK,
+        url: WORD_SEEK,
         method: "POST",
         body: decamelizeKeys(body),
       }),
@@ -68,12 +86,9 @@ export const engineApi = baseApi.injectEndpoints({
     /**
      * Fetches the WordSeek results
      */
-    wordSeekResults: builder.query<
-      WordSeekItem[],
-      { teamId: number; jobGroup?: number | null }
-    >({
+    wordSeekResults: builder.query<WordSeekItem[], { teamId: number; jobGroup?: number | null }>({
       query: ({ teamId, jobGroup }) => ({
-        url: apiUrls.WORD_SEEK_RESULTS(teamId, jobGroup),
+        url: WORD_SEEK_RESULTS(teamId, jobGroup),
       }),
       transformResponse: (response: ConvertToSnakeCase<WordSeekResultsResponse>) => {
         if (response.success) {
@@ -87,7 +102,7 @@ export const engineApi = baseApi.injectEndpoints({
      */
     keywordInsightsResults: builder.query<KeywordInsightsResult[], KeywordInsightsResultsRequest>({
       query: ({ orderId }) => ({
-        url: apiUrls.KEYWORD_INSIGHTS_RESULTS(orderId),
+        url: KEYWORD_INSIGHTS_RESULTS(orderId),
       }),
       // transformResponse: (response: ConvertToSnakeCase<KeywordInsightsResult[]>) => camelizeKeys(response) as KeywordInsightsResult[]
     }),
@@ -99,7 +114,7 @@ export const engineApi = baseApi.injectEndpoints({
       CreateKeywordInsightsOrderBody
     >({
       query: (body) => ({
-        url: apiUrls.CREATE_KEYWORD_INSIGHTS_ORDER,
+        url: CREATE_KEYWORD_INSIGHTS_ORDER,
         method: "POST",
         body: decamelizeKeys(body),
       }),
@@ -111,7 +126,7 @@ export const engineApi = baseApi.injectEndpoints({
      */
     keywordInsightsOrder: builder.query<KeywordInsightsOrder[], number>({
       query: (contentStrategyId) => ({
-        url: apiUrls.KEYWORD_INSIGHTS_ORDER(contentStrategyId),
+        url: KEYWORD_INSIGHTS_ORDER(contentStrategyId),
       }),
       transformResponse: (response: ConvertToSnakeCase<KeywordInsightsOrder[]>) =>
         camelizeKeys(response) as KeywordInsightsOrder[],
@@ -121,7 +136,7 @@ export const engineApi = baseApi.injectEndpoints({
      */
     wordSeekJobs: builder.query<WordSeekJob[], { teamId: number | undefined } | void>({
       query: (body) => ({
-        url: apiUrls.WORD_SEEK_JOBS(body?.teamId || undefined),
+        url: WORD_SEEK_JOBS(body?.teamId || undefined),
       }),
       transformResponse: (response: ConvertToSnakeCase<WordSeekJob[]>) =>
         response.map((job) => camelizeKeys(job)) as WordSeekJob[],
@@ -136,7 +151,7 @@ export const engineApi = baseApi.injectEndpoints({
       }
     >({
       query: (body) => ({
-        url: apiUrls.WORD_SEEK_RESUME,
+        url: WORD_SEEK_RESUME,
         body: decamelizeKeys(body),
         method: "POST",
       }),
@@ -146,7 +161,7 @@ export const engineApi = baseApi.injectEndpoints({
      */
     generateFaqs: builder.query<GenerateFaqsResponse, GenerateFaqsQueryParams>({
       query: ({ teamId, resultId }) => ({
-        url: apiUrls.GENERATE_FAQS(teamId, resultId),
+        url: GENERATE_FAQS(teamId, resultId),
         transformResponse: (response: ConvertToSnakeCase<GenerateFaqsResponse>) =>
           camelizeKeys(response) as GenerateFaqsResponse,
       }),
@@ -156,7 +171,7 @@ export const engineApi = baseApi.injectEndpoints({
      */
     findSimilarKeywords: builder.mutation<SimilarKeywordsResponse, SimilarKeywordsBody>({
       query: (body) => ({
-        url: apiUrls.FIND_SIMILAR_KEYWORDS,
+        url: FIND_SIMILAR_KEYWORDS,
         body: decamelizeKeys(body),
         method: "POST",
       }),
@@ -168,7 +183,7 @@ export const engineApi = baseApi.injectEndpoints({
      */
     retrieveSimilarKeywords: builder.query<SimilarKeywords, SimilarKeywordsQueryParams>({
       query: ({ similarKeywordsId }) => ({
-        url: apiUrls.RETRIEVE_SIMILAR_KEYWORDS(similarKeywordsId),
+        url: RETRIEVE_SIMILAR_KEYWORDS(similarKeywordsId),
       }),
       transformResponse: (response: ConvertToSnakeCase<SimilarKeywords>) =>
         camelizeKeys(response) as SimilarKeywords,
@@ -178,10 +193,35 @@ export const engineApi = baseApi.injectEndpoints({
      */
     updateMisspelledKeywords: builder.mutation<undefined, UpdateMisspelledKeywordsBody>({
       query: (body) => ({
-        url: apiUrls.UPDATE_MISSPELLED_KEYWORDS,
+        url: UPDATE_MISSPELLED_KEYWORDS,
         body: decamelizeKeys(body),
         method: "POST",
       }),
+    }),
+    /**
+     * Generates insert queries
+     */
+    generateInsertQueries: builder.mutation<
+      GenerateInsertQueriesResponse,
+      GenerateInsertQueriesBody
+    >({
+      query: (body) => ({
+        url: GENERATE_INSERT_QUERIES,
+        method: "POST",
+        body: decamelizeKeys(body),
+      }),
+      transformResponse: (response: ConvertToSnakeCase<GenerateInsertQueriesResponse>) =>
+        camelizeKeys(response) as GenerateInsertQueriesResponse,
+    }),
+    /**
+     * Retrieves an insert query
+     */
+    retrieveInsertQuery: builder.query<InsertQuery, { insertQueryId: number }>({
+      query: ({ insertQueryId }) => ({
+        url: RETRIEVE_INSERT_QUERY(insertQueryId),
+      }),
+      transformResponse: (response: ConvertToSnakeCase<InsertQuery>) =>
+        camelizeKeys(response) as InsertQuery,
     }),
   }),
 });
@@ -191,7 +231,6 @@ export const engineApi = baseApi.injectEndpoints({
 
 export const {
   usePeopleAlsoAskMutation,
-  useSeedKeywordsMutation,
   useGenerateSeedKeywordsMutation,
   useGenerateKIInputMutation,
   useWordSeekMutation,
@@ -204,5 +243,7 @@ export const {
   useGenerateFaqsQuery,
   useFindSimilarKeywordsMutation,
   useRetrieveSimilarKeywordsQuery,
-  useUpdateMisspelledKeywordsMutation
+  useUpdateMisspelledKeywordsMutation,
+  useGenerateInsertQueriesMutation,
+  useRetrieveInsertQueryQuery,
 } = engineApi;

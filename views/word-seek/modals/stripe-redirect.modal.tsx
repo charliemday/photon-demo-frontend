@@ -8,7 +8,8 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { CheckoutResponse, useGetCheckoutUrlMutation } from "api/payment.api";
+import { useGetCheckoutUrlMutation } from "api/payment.api";
+import { CheckoutResponse } from "api/types";
 import { Button } from "components/button";
 import { CANCEL_URL, PRICEA, SUCCESS_URL } from "config";
 import { FC, useEffect, useState } from "react";

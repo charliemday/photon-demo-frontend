@@ -5,11 +5,12 @@ import { Breadcrumb, Breadcrumbs } from "components/breadcrumbs";
 import { TeamDropdown } from "components/dropdown";
 import { Sidebar } from "components/sidebar";
 import { Heading } from "components/text";
+import { BRAND_COLOR } from "config";
 import { useAuth, useLogout } from "hooks";
 import Head from "next/head";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { IoPhonePortraitOutline } from "react-icons/io5";
-import { MoonLoader } from "react-spinners";
+import { PropagateLoader } from "react-spinners";
 
 interface Props {
   children?: ReactNode;
@@ -96,7 +97,7 @@ export const SidebarLayout: FC<Props> = ({ children, title, headerTitle, breadcr
           bottom={0}
           bgColor="rgba(255, 255, 255, 0.75)"
         >
-          <MoonLoader size={40} />
+          <PropagateLoader color={BRAND_COLOR} />
         </Flex>
       </>
     );

@@ -5,6 +5,6 @@ export { paymentApi } from './payment.api';
 export { strategiesApi } from './strategies.api';
 export { taskApi } from './tasks.api';
 export { teamApi } from './team.api';
-export { apiUrls } from './urls.api';
 export { userApi } from './user.api';
 export { vendorApi } from './vendor.api';
+

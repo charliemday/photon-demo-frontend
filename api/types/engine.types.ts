@@ -172,7 +172,7 @@ export interface SimilarKeywordsBody {
     suggestionPk: number;
 }
 
-export enum SimilarKeywordsStatus {
+export enum ProgressStatus {
     IN_PROGRESS = "in_progress",
     COMPLETE = "completed",
     FAILED = "failed",
@@ -186,11 +186,11 @@ export interface SimilarKeywords {
     objectId: number;
     query: string;
     similarKeywords: string[];
-    status: SimilarKeywordsStatus;
+    status: ProgressStatus;
 }
 
 export interface SimilarKeywordsResponse {
-    status: SimilarKeywordsStatus;
+    status: ProgressStatus;
     data: SimilarKeywords
 }
 
@@ -207,4 +207,24 @@ export interface UpdateMisspelledKeywordsBody {
     resultId: number;
     keyword: string;
     action: MisspelledKeywordAction
+}
+
+export interface GenerateInsertQueriesBody {
+    resultId: number;
+    query: string;
+}
+
+export interface InsertQuery {
+    id: number;
+    sentences: string[];
+    originalSentences: string[];
+    query: string;
+    status: ProgressStatus;
+    result: number;
+}
+
+export interface GenerateInsertQueriesResponse {
+    id: number;
+    status: ProgressStatus;
+    data: InsertQuery
 }

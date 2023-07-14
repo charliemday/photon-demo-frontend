@@ -12,7 +12,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useFindSimilarKeywordsMutation, useRetrieveSimilarKeywordsQuery } from "api/engine.api";
-import { SimilarKeywordsStatus, SuggestionType } from "api/types";
+import { ProgressStatus, SuggestionType } from "api/types";
 import { Tag } from "components/tag";
 import { Body } from "components/text";
 import { FC, useEffect, useState } from "react";
@@ -98,7 +98,7 @@ export const SimilarQueriesAccordion: FC<Props> = ({
      */
     if (similarKeywordsAPIData?.similarKeywords) {
       setSimilarKeywordData(similarKeywordsAPIData.similarKeywords);
-      if (similarKeywordsAPIData.status !== SimilarKeywordsStatus.IN_PROGRESS) {
+      if (similarKeywordsAPIData.status !== ProgressStatus.IN_PROGRESS) {
         setIsInProgress(false);
       }
     }
@@ -123,7 +123,7 @@ export const SimilarQueriesAccordion: FC<Props> = ({
           setSimilarKeywordsId(data.id);
         }
 
-        if (status === SimilarKeywordsStatus.IN_PROGRESS) {
+        if (status === ProgressStatus.IN_PROGRESS) {
           setIsInProgress(true);
         } else {
           setIsInProgress(false);

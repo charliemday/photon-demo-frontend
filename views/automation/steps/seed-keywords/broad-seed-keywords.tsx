@@ -1,10 +1,8 @@
-import { Box, Divider, Flex, Heading, HStack, Stack, Text, useToast } from "@chakra-ui/react";
+import { Box, Divider, Flex, Heading, HStack, Stack, useToast } from "@chakra-ui/react";
 import { useCreateSeedKeywordMutation } from "api/strategies.api";
-import {
-  // useBulkCreateSeedKeywordsMutation,
-  useGenerateBroadKeywordsMutation,
-} from "api/team.api";
+import { useGenerateBroadKeywordsMutation } from "api/team.api";
 import { Button } from "components/button";
+import { Body } from "components/text";
 import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import React, { useEffect, useState } from "react";
 import { calculateSemrushCost, typeCheckError } from "utils";
@@ -12,7 +10,6 @@ import { ModalStepWrapper } from "../modal-step-wrapper";
 import DatabaseSection from "./database-section";
 import InputSection from "./input-section";
 import TargetKeywordsSection from "./target-keywords-section";
-import { Body } from "components/text";
 
 interface Props {
   isOpen: boolean;

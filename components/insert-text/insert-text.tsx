@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { FC } from "react";
 
 interface Props {
@@ -7,14 +7,25 @@ interface Props {
 }
 
 export const InsertText: FC<Props> = ({ text, insertText }) => {
-  const splitText = text.split(insertText);
+  const splitText = text ? text.split(insertText) : null;
+
+  if (!splitText) return null;
+
   return (
     <Flex>
-      <Text>{splitText[0]}</Text>
-      <Text px={1} mx={1} bgColor="green.200" borderRadius="md">
-        {insertText}
-      </Text>
-      <Text>{splitText[1]}</Text>
+      <i>
+        <i>...{splitText[0]}</i>
+        <i
+          style={{
+            backgroundColor: "#68D391",
+            borderRadius: "5px",
+            padding: "0 5px",
+          }}
+        >
+          {insertText}
+        </i>
+        <i>{splitText[1]}...</i>
+      </i>
     </Flex>
   );
 };
