@@ -2,6 +2,7 @@ import { baseApi } from "api/base-query";
 import { camelizeKeys, decamelizeKeys } from "humps";
 import { ConvertToSnakeCase, CreateUpdateTask, Task, TaskStatusType, TaskType } from "types";
 
+import { ListTaskQueryParams } from "./types";
 import { tasksUrls } from "./urls";
 
 const {
@@ -14,9 +15,6 @@ const {
     LIST_TASK_TYPES,
 } = tasksUrls;
 
-export interface ListTaskQueryParams {
-    teamId: number;
-}
 
 // Define a service using a base URL and expected endpoints
 export const taskApi = baseApi.injectEndpoints({

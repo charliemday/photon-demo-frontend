@@ -1,14 +1,4 @@
-import {
-  Box,
-  Flex,
-  HStack,
-  ModalBody,
-  Progress,
-  Spinner,
-  Stack,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Flex, HStack, ModalBody, Progress, Stack, Text, useToast } from "@chakra-ui/react";
 import {
   useGenerateInsertQueriesMutation,
   useWordSeekJobsQuery,
@@ -19,10 +9,11 @@ import { Select } from "components/select";
 import { Tab } from "components/tab";
 import { Tag } from "components/tag";
 import { Body } from "components/text";
-import { GREEN } from "config";
+import { BRAND_COLOR, GREEN } from "config";
 import { useActiveTeam } from "hooks";
 import { FC, useEffect, useMemo, useState } from "react";
 import { GoLinkExternal } from "react-icons/go";
+import { PropagateLoader } from "react-spinners";
 import { WordSeekJob } from "types";
 import { ActionsTab } from "./actions.tab";
 import { DataTab } from "./data.tab";
@@ -64,6 +55,17 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
       if (job) setWordSeekJob(job);
     }
   }, [isLoadingWordSeekJobs, wordSeekJobs, jobGroup]);
+
+  useEffect(() => {
+    /**
+     * If the modal is closed, reset the state
+     */
+    if (!isOpen) {
+      setSelectedPage(null);
+      setInsertQueryId(null);
+      setActiveTab(TAB.data);
+    }
+  }, [isOpen]);
 
   const {
     data: wordSeekResults,
@@ -245,16 +247,16 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
       ) : null}
       <ModalBody overflowY="hidden" pt={6}>
         {isLoading ? (
-          <Flex alignItems="center" justifyContent="center" h="40vh">
-            <Spinner size="lg" />
-          </Flex>
+          <Stack alignItems="center" justifyContent="center" h="40vh" spacing={6}>
+            <Body fontSize="sm">👷‍♂️ Fetching results...</Body>
+            <PropagateLoader color={BRAND_COLOR} />
+          </Stack>
         ) : !selectedPage ? (
           <Flex alignItems="center" justifyContent="center" h="50vh">
             <Stack m="auto" w="full" textAlign="center" alignItems="center">
-              <Text fontSize="xl">👆</Text>
-              <Body fontSize="lg" w="50%">{`Select a page to see the results...`}</Body>
+              <Body fontSize="sm">👆 Select a page to see the results...</Body>
               {suggestedPages && (
-                <Body fontSize="lg">
+                <Body fontSize="sm">
                   or start with{" "}
                   <Body
                     as="a"
@@ -268,7 +270,7 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
                     _hover={{
                       textDecoration: "underline",
                     }}
-                    fontSize="lg"
+                    fontSize="sm"
                   >
                     this one
                   </Body>
@@ -279,10 +281,10 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
         ) : tableData?.length === 0 ? (
           <Flex alignItems="center" justifyContent="center" h="50vh">
             <Stack m="auto" w="full" textAlign="center" alignItems="center">
-              <Text fontSize="xl">🎉</Text>
-              <Text fontSize="lg" w="50%">
+              <Body fontSize="md">🎉</Body>
+              <Body fontSize="md" w="50%">
                 {`No missing keywords found for this page. This means this page is already optimized for the keywords you are targeting.`}
-              </Text>
+              </Body>
               {suggestedPages && (
                 <Text fontSize="lg" w="50%">
                   Try{" "}

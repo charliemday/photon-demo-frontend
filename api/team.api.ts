@@ -3,21 +3,18 @@ import { APIErrorResponse, Team, TeamPerformance } from "types";
 import { baseApi, TAG_TYPES } from ".";
 
 import {
-  BroadKeywordBody,
-  BulkUpdateCompetitorsInterface,
-  CompetitorResponse,
-  CreateTeamInterface,
-  ListTeamRequestParams,
-  SeedKeywords,
-  TeamPerformanceRequestParams,
+  BroadKeywordBody, CreateTeamInterface,
+  ListTeamRequestParams, TeamPerformanceRequestParams,
   TeamResponse,
   UpdateTeamInterface
 } from "api/types";
 import { TeamMember } from "types/team";
-import { apiUrls } from ".";
-import { teamUrls } from "./urls";
+import { engineUrls, teamUrls } from "./urls";
 
-const { TEAMS, TEAM, TEAM_PERFORMANCE, TEAM_MEMBERS, TEAM_COMPETITORS_BULK } = teamUrls;
+const { TEAMS, TEAM, TEAM_PERFORMANCE, TEAM_MEMBERS } = teamUrls;
+const {
+  BROAD_KEYWORD_API,
+} = engineUrls;
 
 // Define a service using a base URL and expected endpoints
 export const teamApi = baseApi.injectEndpoints({
@@ -67,38 +64,11 @@ export const teamApi = baseApi.injectEndpoints({
       invalidatesTags: [TAG_TYPES.TEAMS],
     }),
     /**
-     * Bulk create seed keywords for a team
-     */
-    // TODO: Remove
-    bulkCreateSeedKeywords: builder.mutation<
-      SeedKeywords[],
-      { teamUid: string; keywords: string[] }
-    >({
-      query: (body) => ({
-        url: apiUrls.BULK_CREATE_SEED_KEYWORDS,
-        method: "POST",
-        body: decamelizeKeys(body),
-      }),
-      invalidatesTags: [TAG_TYPES.TEAMS],
-    }),
-    /**
-     * Bulk Update the team's competitors
-     */
-    // TODO: Remove
-    bulkUpdateCompetitors: builder.mutation<CompetitorResponse[], BulkUpdateCompetitorsInterface>({
-      query: (body) => ({
-        url: TEAM_COMPETITORS_BULK,
-        method: "PATCH",
-        body: decamelizeKeys(body),
-      }),
-    }),
-    /**
      * Run keywords through Broad Keyword API
      */
-    // TODO: This is the "new" version we've been using (e.g. Step 1.2)
     generateBroadKeywords: builder.mutation<undefined, BroadKeywordBody>({
       query: (body) => ({
-        url: apiUrls.BROAD_KEYWORD_API,
+        url: BROAD_KEYWORD_API,
         method: "POST",
         body: decamelizeKeys(body),
       }),
@@ -130,8 +100,6 @@ export const {
   useUpdateTeamMutation,
   useDeleteTeamMutation,
   useCreateTeamMutation,
-  useBulkCreateSeedKeywordsMutation,
-  useBulkUpdateCompetitorsMutation,
   useGenerateBroadKeywordsMutation,
   useTeamPerformanceQuery,
   useTeamMembersQuery,

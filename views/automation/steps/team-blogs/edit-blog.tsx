@@ -13,7 +13,8 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { UpdateBlogBody, useDeleteBlogMutation, useUpdateBlogMutation } from "api/blog.api";
+import { useDeleteBlogMutation, useUpdateBlogMutation } from "api/blog.api";
+import { UpdateBlogBody } from "api/types";
 import { Button } from "components/button";
 import { ConfirmationModal } from "components/modals";
 import { Label } from "components/text";

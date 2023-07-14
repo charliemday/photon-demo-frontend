@@ -1,8 +1,8 @@
-import { Box, Divider, Flex, Heading, HStack, Stack, Text, useToast } from "@chakra-ui/react";
+import { Box, Divider, Flex, Heading, HStack, Stack, useToast } from "@chakra-ui/react";
 import { useGenerateKIInputMutation } from "api/engine.api";
-// import { useBulkCreateSeedKeywordsMutation } from "api/team.api";
 import { useCreateSeedKeywordMutation } from "api/strategies.api";
 import { Button } from "components/button";
+import { Body } from "components/text";
 import { useActiveContentStrategy, useActiveTeam } from "hooks";
 import React, { useEffect, useState } from "react";
 import { SeedKeywordSource } from "types";
@@ -12,7 +12,6 @@ import DatabaseSection from "./database-section";
 import InputSection from "./input-section";
 import SliderInputSection from "./slider-input-section";
 import TargetKeywordsSection from "./target-keywords-section";
-import { Body } from "components/text";
 
 interface Props {
   isOpen: boolean;

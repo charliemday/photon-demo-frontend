@@ -66,7 +66,6 @@ export const Table: FC<Props> = ({
           onClick={onRefresh}
           title="Refresh"
         >
-          {/* <Body>{isRefreshing ? "Refreshing..." : "Refresh"}</Body> */}
           <Box>{isRefreshing ? <MoonLoader size={16} /> : <BiRefresh size={20} />}</Box>
         </HStack>
       )}

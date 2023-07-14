@@ -1,12 +1,13 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 import { useListTeamsQuery } from "api/team.api";
 import { useUserDetailsQuery, useUserTiersQuery } from "api/user.api";
-import { ROUTES } from "config";
+import { BRAND_COLOR, ROUTES } from "config";
 import { useFeatureFlag } from "hooks";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { BiRefresh } from "react-icons/bi";
 import { useDispatch } from "react-redux";
-import { MoonLoader } from "react-spinners";
+import { PropagateLoader } from "react-spinners";
 import { setActiveTeam } from "store/slices";
 
 interface Props {}
@@ -69,9 +70,21 @@ export const BackgroundView: React.FC<Props> = () => {
         bottom={0}
         bgColor="rgba(255, 255, 255, 0.75)"
       >
-        <Text fontSize="xl" fontWeight="semibold">
-          ⚠️ Something went wrong. Please refresh the page.
-        </Text>
+        <Stack alignItems="center">
+          <Text fontSize="xl" fontWeight="semibold" color="red.400">
+            ⚠️ Something went wrong. Please refresh the page.
+          </Text>
+          <Box
+            color="#E4706C"
+            fontSize={32}
+            cursor="pointer"
+            onClick={() => {
+              window.location.reload();
+            }}
+          >
+            <BiRefresh />
+          </Box>
+        </Stack>
       </Flex>
     );
   }
@@ -88,7 +101,7 @@ export const BackgroundView: React.FC<Props> = () => {
         bottom={0}
         bgColor="rgba(255, 255, 255, 0.75)"
       >
-        <MoonLoader size={40} />
+        <PropagateLoader color={BRAND_COLOR} />
       </Flex>
     </>
   );

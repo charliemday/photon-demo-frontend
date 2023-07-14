@@ -34,6 +34,16 @@ export const InsertTextSwipe: FC<Props> = ({ sentences, originalSentences, query
   }, [hasCopied, toast]);
 
   const navigateToPage = () => {
+    if (!url) {
+      toast({
+        title: "No URL found",
+        description: "Please enter a URL to navigate to",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
     const locator = "#:~:text=";
     const urlEncodedSentence = encodeURIComponent(originalSentences[sentenceRandomIndex]);
     const urlToNavigateTo = url + locator + urlEncodedSentence;

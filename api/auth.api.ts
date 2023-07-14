@@ -6,40 +6,26 @@ import { camelizeKeys, decamelizeKeys } from "humps";
 import { authUrls } from "api/urls";
 import { MagicTokenUrl } from "types";
 
-interface LoginReturnProps {
-    token: string;
-}
+import {
+    CompleteSignupRequestProps,
+    CompleteSignupReturnProps,
+    LoginReturnProps,
+    OAuthProps,
+    OAuthReturnProps,
+    SetPasswordRequestProps,
+    SetPasswordReturnProps,
+    SignupReturnProps
+} from "./types/auth.types";
 
-interface SignupReturnProps {
-    token: string;
-}
-
-interface OAuthReturnProps { }
-
-interface OAuthProps {
-    code: string;
-    app: string;
-}
-
-interface SetPasswordRequestProps {
-    token: string;
-    password: string;
-}
-
-interface SetPasswordReturnProps {
-    token: string;
-}
-
-interface CompleteSignupRequestProps {
-    token: string;
-    firstName: string;
-    lastName: string;
-    password: string;
-}
-
-interface CompleteSignupReturnProps extends SetPasswordReturnProps { }
-
-const { LOGIN, SIGNUP, COMPLETE_OAUTH, SET_PASSWORD, GENERATE_MAGIC_TOKEN, COMPLETE_SIGNUP, VALIDATE_TOKEN } = authUrls;
+const {
+    LOGIN,
+    SIGNUP,
+    COMPLETE_OAUTH,
+    SET_PASSWORD,
+    GENERATE_MAGIC_TOKEN,
+    COMPLETE_SIGNUP,
+    VALIDATE_TOKEN,
+} = authUrls;
 
 // Define a service using a base URL and expected endpoints
 export const authApi = baseApi.injectEndpoints({
@@ -91,7 +77,7 @@ export const authApi = baseApi.injectEndpoints({
                 url: COMPLETE_SIGNUP,
                 method: "POST",
                 body: decamelizeKeys(values),
-            })
+            }),
         }),
         /**
          * Validate the auth token
@@ -99,8 +85,8 @@ export const authApi = baseApi.injectEndpoints({
         validateToken: builder.mutation<undefined, void>({
             query: () => ({
                 url: VALIDATE_TOKEN,
-                method: "POST"
-            })
+                method: "POST",
+            }),
         }),
     }),
 });
