@@ -4,6 +4,7 @@ export { AppSumoSubscriptionModal } from "./app-sumo-subscription.modal";
 export { ConfirmationModal } from "./confirmation.modal";
 export { ContentStrategyCompetitorsModal } from "./content-strategy-competitors.modal";
 export { ContentStrategyModal } from "./content-strategy.modal";
+export { CsvExampleModal } from "./csv-example.modal";
 export { FeedbackModal } from "./feedback.modal";
 export { Modal } from "./modal";
 export { ModalField } from "./modal.field";

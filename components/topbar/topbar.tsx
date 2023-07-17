@@ -1,6 +1,6 @@
-import { Flex, HStack, Text } from "@chakra-ui/react";
-import { Button } from "components/button";
-import { BRAND_NAME, LANDING_PAGE } from "config";
+import { Flex, HStack } from "@chakra-ui/react";
+import { Body, Heading } from "components/text";
+import { BRAND_NAME } from "config";
 import { useLogout } from "hooks";
 import React from "react";
 import { BiExit } from "react-icons/bi";
@@ -13,28 +13,24 @@ export const Topbar: React.FC<Props> = () => {
     <Flex
       w="full"
       h={75}
-      bgColor="gray.100"
       px="15%"
       alignItems="center"
       justifyContent="space-between"
-      boxShadow="sm"
+      borderBottom="solid 1px #E2E8F0"
     >
-      <Text
-        cursor="pointer"
-        onClick={() => {
-          window.location.href = LANDING_PAGE;
-        }}
-        fontSize="xl"
-      >
-        {BRAND_NAME} | Automated SEO
-      </Text>
-      <HStack spacing={12}>
-        <Button onClick={logout} variant="outline">
-          <HStack>
-            <BiExit fontSize={24} />
-            <Text>Logout</Text>
-          </HStack>
-        </Button>
+      <Heading>{BRAND_NAME} | Automated SEO</Heading>
+      <HStack>
+        <Body
+          fontSize="md"
+          onClick={logout}
+          _hover={{
+            cursor: "pointer",
+            textDecoration: "underline",
+          }}
+        >
+          Logout
+        </Body>
+        <BiExit />
       </HStack>
     </Flex>
   );

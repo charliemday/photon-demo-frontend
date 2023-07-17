@@ -18,5 +18,6 @@ export const ROUTES = {
     FAQS: '/faqs',
     CONTENT_STRATEGY: '/content-strategy',
     PERFORMANCE: '/performance',
+    DEMO_QUESTIONS_ASKED: '/demo/people-also-asked',
     TASK: (id: number) => `/task/${id}`,
 }
