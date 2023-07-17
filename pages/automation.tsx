@@ -1,8 +1,8 @@
 import { AdminWrapper, MainLayout } from "components/layouts";
-import React from "react";
+import { FC } from "react";
 import { AutomationView } from "views/automation";
 
-const Automation: React.FC = () => (
+const Automation: FC = () => (
   <MainLayout>
     <AdminWrapper>
       <AutomationView />

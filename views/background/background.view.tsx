@@ -49,9 +49,16 @@ export const BackgroundView: React.FC<Props> = () => {
     if (isSuccess && !isLoading && !isLoadingUserTiers && hasLoadedUserTiers) {
       // Initialize the active team if the user has one
       dispatch(setActiveTeam(teams?.[0]));
+      const { email } = userDetails;
+
       if (userDetails?.isStaff) {
         router.push(ROUTES.AUTOMATION);
       } else {
+        if (email && email.includes("+demopaa")) {
+          router.push(ROUTES.DEMO_QUESTIONS_ASKED);
+          return;
+        }
+
         router.push(ROUTES.WORD_SEEK);
       }
     }
