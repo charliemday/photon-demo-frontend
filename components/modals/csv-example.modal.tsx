@@ -31,6 +31,7 @@ export const CsvExampleModal: FC<Props> = ({ url, isOpen, onClose }) => {
         overflow="hidden"
         alignItems="center"
         justifyContent="center"
+        position="relative"
       >
         <iframe
           src={url}
@@ -38,8 +39,26 @@ export const CsvExampleModal: FC<Props> = ({ url, isOpen, onClose }) => {
           height="100%"
           title="CSV Example"
           onLoad={() => setShowLoader(false)}
+          style={{
+            opacity: showLoader ? 0.5 : 1,
+          }}
         />
-        {showLoader && <PropagateLoader color={BRAND_COLOR} />}
+        {showLoader && (
+          <Flex
+            position="absolute"
+            top={0}
+            left={0}
+            w="full"
+            h="full"
+            bottom={0}
+            right={0}
+            alignItems="center"
+            justifyContent="center"
+            zIndex={99}
+          >
+            <PropagateLoader color={BRAND_COLOR} />
+          </Flex>
+        )}
       </Flex>
     </Modal>
   );
