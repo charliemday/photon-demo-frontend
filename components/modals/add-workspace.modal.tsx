@@ -16,6 +16,7 @@ import { useCreateTeamMutation, useListTeamsQuery } from "api/team.api";
 import { useUserTiersQuery } from "api/user.api";
 import { Button } from "components/button";
 import { Modal } from "components/modals";
+import { Body } from "components/text";
 import { useFormik } from "formik";
 import { FC, useEffect, useState } from "react";
 import { FeatureKeys } from "types";
@@ -106,10 +107,8 @@ export const AddWorkspaceModal: FC<Props> = ({ isOpen, onClose }) => {
 
   const renderRestrictedMessage = () => (
     <Stack alignItems="center" py={12}>
-      <Text fontSize="lg">🔒</Text>
-      <Text fontSize="lg" fontWeight="semibold">
-        {restrictedMessage}
-      </Text>
+      <Text fontSize="sm">🔒</Text>
+      <Body fontSize="sm">{restrictedMessage}</Body>
     </Stack>
   );
 

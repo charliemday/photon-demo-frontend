@@ -59,7 +59,7 @@ export const DataTab: FC<Props> = ({ data, exportData, jobGroup }) => {
       return data.missingKeywords
         .map((i) => i)
         .filter((i) => i.position < POSITION_LIMIT)
-        .sort((a, b) => b.position - a.position)
+        .sort((a, b) => a.position - b.position)
         .slice(0, KEYWORD_LIMIT);
     }
 

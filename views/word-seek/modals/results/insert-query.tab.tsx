@@ -94,8 +94,8 @@ export const InsertionQueryTab: FC<Props> = ({ insertQueryId, onBack, isLoading,
         {showSkeleton ? (
           renderLoading()
         ) : query.length === 0 || sentences.length === 0 ? (
-          <Stack>
-            <Body fontSize="sm">{`Hmmm...we couldn't find a place to insert your query. Try another page or another query.`}</Body>
+          <Stack alignItems="center" justifyContent="center" my={12}>
+            <Body fontSize="sm">{`🤔 Hmmm...we couldn't find a place to insert your query. Try another page or another query.`}</Body>
           </Stack>
         ) : (
           <Stack spacing={6}>

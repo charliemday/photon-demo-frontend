@@ -254,7 +254,11 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
         ) : !selectedPage ? (
           <Flex alignItems="center" justifyContent="center" h="50vh">
             <Stack m="auto" w="full" textAlign="center" alignItems="center">
-              <Body fontSize="sm">👆 Select a page to see the results...</Body>
+              <Body fontSize="sm">
+                {pages?.length
+                  ? `👆 Select a page to see the results...`
+                  : `⏳ This job is being processed...`}
+              </Body>
               {suggestedPages && (
                 <Body fontSize="sm">
                   or start with{" "}
