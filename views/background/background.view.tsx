@@ -47,6 +47,10 @@ export const BackgroundView: React.FC<Props> = () => {
 
   useEffect(() => {
     if (isSuccess && !isLoading && !isLoadingUserTiers && hasLoadedUserTiers) {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const isPaa = urlParams.get("product") === "paa";
+
       // Initialize the active team if the user has one
       dispatch(setActiveTeam(teams?.[0]));
       const { email } = userDetails;
@@ -54,7 +58,7 @@ export const BackgroundView: React.FC<Props> = () => {
       if (userDetails?.isStaff) {
         router.push(ROUTES.AUTOMATION);
       } else {
-        if (email && email.includes("+demopaa")) {
+        if ((email && email.includes("+demopaa")) || isPaa) {
           router.push(ROUTES.DEMO_QUESTIONS_ASKED);
           return;
         }

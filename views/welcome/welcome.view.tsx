@@ -5,7 +5,7 @@ import { useLoginMutation, useSignupMutation } from "api/auth.api";
 import { LoginForm, LoginFormValues } from "forms/login";
 import { SignupForm, SignupFormValues } from "forms/signup";
 
-import { WordSeekLogo } from "components/logos";
+import { BaserLogo, WordSeekLogo } from "components/logos";
 import { BRAND_COLOR, FATHOM_EVENTS } from "config";
 import { useFathom } from "hooks";
 import { typeCheckError } from "utils";
@@ -56,6 +56,10 @@ export const WelcomeView: React.FC = () => {
       });
   };
 
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const isPaa = urlParams.get("product") === "paa";
+
   if (showBackground) {
     return <BackgroundView />;
   }
@@ -85,9 +89,7 @@ export const WelcomeView: React.FC = () => {
       </Box>
       <Box flex={1} bgColor={BRAND_COLOR} display={{ base: "none", md: "block" }}>
         <HStack spacing={12} w="full" justifyContent="center" h="full">
-          <Box>
-            <WordSeekLogo />
-          </Box>
+          <Box>{!isPaa ? <WordSeekLogo /> : <BaserLogo />}</Box>
         </HStack>
       </Box>
     </Flex>
