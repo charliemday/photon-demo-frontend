@@ -290,10 +290,11 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
                 {`No missing keywords found for this page. This means this page is already optimized for the keywords you are targeting.`}
               </Body>
               {suggestedPages && (
-                <Text fontSize="lg" w="50%">
+                <Body fontSize="md" w="50%">
                   Try{" "}
-                  <Text
+                  <Body
                     as="a"
+                    fontSize="md"
                     onClick={() => {
                       if (suggestedPages) {
                         setSelectedPage(suggestedPages[0].page);
@@ -306,10 +307,11 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
                     }}
                   >
                     this page
-                  </Text>{" "}
+                  </Body>{" "}
                   or{" "}
-                  <Text
+                  <Body
                     as="a"
+                    fontSize="md"
                     onClick={() => {
                       if (suggestedPages) {
                         setSelectedPage(suggestedPages[1].page);
@@ -322,9 +324,9 @@ export const WordSeekResultsModal: FC<Props> = ({ isOpen, onClose, jobGroup }) =
                     }}
                   >
                     another page
-                  </Text>
+                  </Body>
                   .
-                </Text>
+                </Body>
               )}
             </Stack>
           </Flex>

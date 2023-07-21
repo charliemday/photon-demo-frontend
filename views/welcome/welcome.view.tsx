@@ -5,7 +5,7 @@ import { useLoginMutation, useSignupMutation } from "api/auth.api";
 import { LoginForm, LoginFormValues } from "forms/login";
 import { SignupForm, SignupFormValues } from "forms/signup";
 
-import { BaserLogo, WordSeekLogo } from "components/logos";
+import { PaaLogo, WordSeekLogo } from "components/logos";
 import { BRAND_COLOR, FATHOM_EVENTS } from "config";
 import { useFathom } from "hooks";
 import { typeCheckError } from "utils";
@@ -89,7 +89,7 @@ export const WelcomeView: React.FC = () => {
       </Box>
       <Box flex={1} bgColor={BRAND_COLOR} display={{ base: "none", md: "block" }}>
         <HStack spacing={12} w="full" justifyContent="center" h="full">
-          <Box>{!isPaa ? <WordSeekLogo /> : <BaserLogo />}</Box>
+          <Box>{!isPaa ? <WordSeekLogo /> : <PaaLogo />}</Box>
         </HStack>
       </Box>
     </Flex>
