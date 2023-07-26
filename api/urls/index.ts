@@ -1,9 +1,0 @@
-export { authUrls } from './auth.urls';
-export { blogUrls } from "./blog.urls";
-export { engineUrls } from './engine.urls';
-export { paymentUrls } from './payment.urls';
-export { strategiesUrls } from './strategies.urls';
-export { tasksUrls } from './tasks.urls';
-export { teamUrls } from './team.urls';
-export { userUrls } from './users.urls';
-export { vendorUrls } from './vendors.urls';
