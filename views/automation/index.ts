@@ -1,1 +1,0 @@
-export { AutomationView } from './automation.view';

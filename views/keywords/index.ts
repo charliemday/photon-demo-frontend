@@ -1,1 +1,0 @@
-export { KeywordsView } from './keywords.view';

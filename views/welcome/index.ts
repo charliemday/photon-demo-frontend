@@ -1,1 +1,0 @@
-export { WelcomeView } from './welcome.view';

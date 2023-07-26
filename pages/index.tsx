@@ -1,17 +1,14 @@
-import { BRAND_NAME, TAG_LINE } from "config";
+import Layout from "components/layout";
+import Page from "components/page";
 import type { NextPage } from "next";
-import Head from "next/head";
-import { WelcomeView } from "views/welcome";
-
 const Home: NextPage = () => {
   return (
     <>
-      <Head>
-        <title>
-          {BRAND_NAME} | {TAG_LINE}
-        </title>
-      </Head>
-      <WelcomeView />
+      <div>
+        <Layout>
+          <Page />
+        </Layout>
+      </div>
     </>
   );
 };

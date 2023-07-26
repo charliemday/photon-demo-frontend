@@ -11,6 +11,7 @@ const moduleExports = {
       "antler-frontend.s3.amazonaws.com",
       "a.slack-edge.com",
       "baser-public.s3.amazonaws.com",
+      "avatar.vercel.sh",
     ],
   },
   sentry: {
